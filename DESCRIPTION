@@ -1,0 +1,18 @@
+Package: snowRMM
+Type: Package
+Title: Rasch Mixture Model
+Version: 1.0.0
+Author: Hyunsoo Seol
+Maintainer: Hyunsoo Seol <snow@cau.ac.kr>
+Description: This module provides Rasch mixture model based on dichotomous, rating, and partial credit model.
+License: GPL3
+LazyData: TRUE
+Encoding: UTF-8
+RoxygenNote: 7.1.1
+Imports:
+    jmvcore (>= 0.8.5), 
+    R6,
+    stats,
+    mixRasch,
+    mixRaschTools,
+    boot

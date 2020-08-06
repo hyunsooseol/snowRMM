@@ -1,0 +1,24 @@
+---
+title: Rasch Mixture Model for jamovi
+name: snowRMM
+version: 1.0.0
+jms: '1.0'
+authors:
+  - Hyunsoo Seol
+maintainer: Hyunsoo Seol <snow@cau.ac.kr>
+date: '2020-08-06'
+type: R
+description: >-
+  This module provides Rasch mixture model based on dichotomous, rating, and
+  partial credit model.
+analyses:
+  - title: Rasch Model
+    name: rasch
+    ns: snowRMM
+    menuGroup: snowRMM
+    menuTitle: Rasch Model
+    menuSubgroup: Rasch
+usesNative: true
+minApp: 1.0.8
+
+...
