@@ -94,6 +94,10 @@ raschClass <- if (requireNamespace('jmvcore')) R6::R6Class(
                 
                   private$.populateBootTable(results)
                 
+                # populate Person statistics table
+                
+                private$.populatePersonTable(results)
+                
                
                 
             }
@@ -146,7 +150,22 @@ raschClass <- if (requireNamespace('jmvcore')) R6::R6Class(
             class<- res0$nC
             
         
-        ### Computing Bootstrap item fit ### 
+            # person statistics---------
+            
+            total <- res$person.par$r
+            
+            pmeasure <- res$person.par$theta 
+            
+            pse <- res$person.par$SE.theta 
+            
+            pinfit <- res$person.par$infit
+            
+            poutfit <- res$person.par$outfit
+            
+    
+    
+            
+            ## Computing Bootstrap item fit ### 
         
         ### Computing boot infit-------------
 
@@ -214,7 +233,12 @@ raschClass <- if (requireNamespace('jmvcore')) R6::R6Class(
                 'pbis'= pbis,
                 'class'=class,
                 'binfit'=binfit,
-                'boutfit'=boutfit
+                'boutfit'=boutfit,
+                'total'=total,
+                'pmeasure' = pmeasure,
+                'pse' = pse,
+                'pinfit' = pinfit,
+                'poutfit'= poutfit
                
             )
        },
@@ -328,6 +352,51 @@ raschClass <- if (requireNamespace('jmvcore')) R6::R6Class(
        },
 
 
+       # populate Person statistics table
+       
+       .populatePersonTable = function(results) {
+           
+           data <- self$data
+           
+           table <- self$results$person$persons
+           
+          
+           #result---
+           
+           total <- results$total
+           
+           pmeasure <- results$pmeasure
+           
+           pse <- results$pse
+           
+           pinfit <- results$pinfit
+           
+           poutfit <- results$poutfit
+           
+          
+           
+           for (i in 1:nrow(data)) {
+               
+               row <- list()
+               
+               
+               row[["total"]] <- total[i]
+               
+               row[["pmeasure"]] <- pmeasure[i]
+               
+               row[["pse"]] <- pse[i]
+               
+               row[["pinfit"]] <- pinfit[i]
+               
+               row[["poutfit"]] <- poutfit[i]
+               
+               table$addRow(rowKey =i, values = row)
+              
+           }
+           
+       },
+       
+       
 
 #### Helper functions =================================
         

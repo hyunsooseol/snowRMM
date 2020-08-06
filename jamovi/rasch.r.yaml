@@ -100,4 +100,36 @@ items:
               type: number
               superTitle: '95% CI'
 
+    - name: person
+      title: Person Analysis
+      type: Group
+      items:          
+        - name: persons
+          title: 'Person Statistics'
+          type: Table
+          visible: (total || pmeasure || pse || pinfit || poutfit)
+          clearWith:
+            - vars
+          refs: mixRasch
+          columns:
+            - name: name
+              title: ''
+              type: 'text'
+              content: ($key)
+            - name: total
+              title: Total score
+              visible: (total)
+            - name: pmeasure
+              title: Measure
+              visible: (pmeasure)
+            - name: pse
+              title: S.E.Measure
+              visible: (pse)
+            - name: pinfit
+              title: Infit
+              visible: (pinfit)
+            - name: poutfit
+              title: Outfit
+              visible: (poutfit)
+ 
 ...

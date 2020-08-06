@@ -18,7 +18,12 @@ raschOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
             infit = FALSE,
             outfit = FALSE,
             pbis = FALSE,
-            bfit = FALSE, ...) {
+            bfit = FALSE,
+            total = TRUE,
+            pmeasure = TRUE,
+            pse = TRUE,
+            pinfit = FALSE,
+            poutfit = FALSE, ...) {
 
             super$initialize(
                 package='snowRMM',
@@ -85,6 +90,26 @@ raschOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
                 "bfit",
                 bfit,
                 default=FALSE)
+            private$..total <- jmvcore::OptionBool$new(
+                "total",
+                total,
+                default=TRUE)
+            private$..pmeasure <- jmvcore::OptionBool$new(
+                "pmeasure",
+                pmeasure,
+                default=TRUE)
+            private$..pse <- jmvcore::OptionBool$new(
+                "pse",
+                pse,
+                default=TRUE)
+            private$..pinfit <- jmvcore::OptionBool$new(
+                "pinfit",
+                pinfit,
+                default=FALSE)
+            private$..poutfit <- jmvcore::OptionBool$new(
+                "poutfit",
+                poutfit,
+                default=FALSE)
 
             self$.addOption(private$..vars)
             self$.addOption(private$..step)
@@ -99,6 +124,11 @@ raschOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
             self$.addOption(private$..outfit)
             self$.addOption(private$..pbis)
             self$.addOption(private$..bfit)
+            self$.addOption(private$..total)
+            self$.addOption(private$..pmeasure)
+            self$.addOption(private$..pse)
+            self$.addOption(private$..pinfit)
+            self$.addOption(private$..poutfit)
         }),
     active = list(
         vars = function() private$..vars$value,
@@ -113,7 +143,12 @@ raschOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
         infit = function() private$..infit$value,
         outfit = function() private$..outfit$value,
         pbis = function() private$..pbis$value,
-        bfit = function() private$..bfit$value),
+        bfit = function() private$..bfit$value,
+        total = function() private$..total$value,
+        pmeasure = function() private$..pmeasure$value,
+        pse = function() private$..pse$value,
+        pinfit = function() private$..pinfit$value,
+        poutfit = function() private$..poutfit$value),
     private = list(
         ..vars = NA,
         ..step = NA,
@@ -127,14 +162,20 @@ raschOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
         ..infit = NA,
         ..outfit = NA,
         ..pbis = NA,
-        ..bfit = NA)
+        ..bfit = NA,
+        ..total = NA,
+        ..pmeasure = NA,
+        ..pse = NA,
+        ..pinfit = NA,
+        ..poutfit = NA)
 )
 
 raschResults <- if (requireNamespace('jmvcore')) R6::R6Class(
     inherit = jmvcore::Group,
     active = list(
         instructions = function() private$.items[["instructions"]],
-        item = function() private$.items[["item"]]),
+        item = function() private$.items[["item"]],
+        person = function() private$.items[["person"]]),
     private = list(),
     public=list(
         initialize=function(options) {
@@ -263,7 +304,52 @@ raschResults <- if (requireNamespace('jmvcore')) R6::R6Class(
                                     `name`="u[outfit]", 
                                     `title`="Upper", 
                                     `type`="number", 
-                                    `superTitle`="95% CI"))))}))$new(options=options))}))
+                                    `superTitle`="95% CI"))))}))$new(options=options))
+            self$add(R6::R6Class(
+                inherit = jmvcore::Group,
+                active = list(
+                    persons = function() private$.items[["persons"]]),
+                private = list(),
+                public=list(
+                    initialize=function(options) {
+                        super$initialize(
+                            options=options,
+                            name="person",
+                            title="Person Analysis")
+                        self$add(jmvcore::Table$new(
+                            options=options,
+                            name="persons",
+                            title="Person Statistics",
+                            visible="(total || pmeasure || pse || pinfit || poutfit)",
+                            clearWith=list(
+                                "vars"),
+                            refs="mixRasch",
+                            columns=list(
+                                list(
+                                    `name`="name", 
+                                    `title`="", 
+                                    `type`="text", 
+                                    `content`="($key)"),
+                                list(
+                                    `name`="total", 
+                                    `title`="Total score", 
+                                    `visible`="(total)"),
+                                list(
+                                    `name`="pmeasure", 
+                                    `title`="Measure", 
+                                    `visible`="(pmeasure)"),
+                                list(
+                                    `name`="pse", 
+                                    `title`="S.E.Measure", 
+                                    `visible`="(pse)"),
+                                list(
+                                    `name`="pinfit", 
+                                    `title`="Infit", 
+                                    `visible`="(pinfit)"),
+                                list(
+                                    `name`="poutfit", 
+                                    `title`="Outfit", 
+                                    `visible`="(poutfit)"))))}))$new(options=options))}))
 
 raschBase <- if (requireNamespace('jmvcore')) R6::R6Class(
     "raschBase",
@@ -302,12 +388,18 @@ raschBase <- if (requireNamespace('jmvcore')) R6::R6Class(
 #' @param outfit .
 #' @param pbis .
 #' @param bfit .
+#' @param total .
+#' @param pmeasure .
+#' @param pse .
+#' @param pinfit .
+#' @param poutfit .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
 #'   \code{results$item$model} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$item$items} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$item$bfit} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$person$persons} \tab \tab \tab \tab \tab a table \cr
 #' }
 #'
 #' @export
@@ -325,7 +417,12 @@ rasch <- function(
     infit = FALSE,
     outfit = FALSE,
     pbis = FALSE,
-    bfit = FALSE) {
+    bfit = FALSE,
+    total = TRUE,
+    pmeasure = TRUE,
+    pse = TRUE,
+    pinfit = FALSE,
+    poutfit = FALSE) {
 
     if ( ! requireNamespace('jmvcore'))
         stop('rasch requires jmvcore to be installed (restart may be required)')
@@ -350,7 +447,12 @@ rasch <- function(
         infit = infit,
         outfit = outfit,
         pbis = pbis,
-        bfit = bfit)
+        bfit = bfit,
+        total = total,
+        pmeasure = pmeasure,
+        pse = pse,
+        pinfit = pinfit,
+        poutfit = poutfit)
 
     analysis <- raschClass$new(
         options = options,

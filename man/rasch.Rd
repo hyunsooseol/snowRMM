@@ -18,7 +18,12 @@ rasch(
   infit = FALSE,
   outfit = FALSE,
   pbis = FALSE,
-  bfit = FALSE
+  bfit = FALSE,
+  total = TRUE,
+  pmeasure = TRUE,
+  pse = TRUE,
+  pinfit = FALSE,
+  poutfit = FALSE
 )
 }
 \arguments{
@@ -49,6 +54,16 @@ rasch(
 \item{pbis}{.}
 
 \item{bfit}{.}
+
+\item{total}{.}
+
+\item{pmeasure}{.}
+
+\item{pse}{.}
+
+\item{pinfit}{.}
+
+\item{poutfit}{.}
 }
 \value{
 A results object containing:
@@ -57,6 +72,7 @@ A results object containing:
   \code{results$item$model} \tab \tab \tab \tab \tab a table \cr
   \code{results$item$items} \tab \tab \tab \tab \tab a table \cr
   \code{results$item$bfit} \tab \tab \tab \tab \tab a table \cr
+  \code{results$person$persons} \tab \tab \tab \tab \tab a table \cr
 }
 }
 \description{

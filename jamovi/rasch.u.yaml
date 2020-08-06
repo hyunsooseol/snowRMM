@@ -79,3 +79,29 @@ children:
             children:
               - type: CheckBox
                 name: bfit
+  - type: CollapseBox
+    label: Person Analysis
+    margin: normal
+    collapsed: true
+    children:
+      - type: LayoutBox
+        stretchFactor: 1
+        margin: large
+        children:
+          - type: Label
+            label: Person Statistics
+            fitToGrid: true
+            cell:
+              column: 0
+              row: 0
+            children:
+              - type: CheckBox
+                name: total
+              - type: CheckBox
+                name: pmeasure
+              - type: CheckBox
+                name: pse
+              - type: CheckBox
+                name: pinfit
+              - type: CheckBox
+                name: poutfit

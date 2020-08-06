@@ -86,4 +86,30 @@ options:
       type: Bool
       default: FALSE
 
+    - name: total
+      title: Total score
+      type: Bool
+      default: True
+
+    - name: pmeasure
+      title: Measure
+      type: Bool
+      default: True
+
+    - name: pse
+      title: S.E. measure
+      type: Bool
+      default: TRUE
+
+    - name: pinfit
+      title: Infit
+      type: Bool
+      default: FALSE
+
+    - name: poutfit
+      title: Outfit
+      type: Bool
+      default: FALSE
+
+
 ...
