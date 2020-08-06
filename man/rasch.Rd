@@ -8,7 +8,7 @@ rasch(
   data,
   vars,
   step = 1,
-  type = "rating",
+  type = "RSM",
   aic = TRUE,
   bic = TRUE,
   caic = FALSE,

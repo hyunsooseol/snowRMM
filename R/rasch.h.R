@@ -8,7 +8,7 @@ raschOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
         initialize = function(
             vars = NULL,
             step = 1,
-            type = "rating",
+            type = "RSM",
             aic = TRUE,
             bic = TRUE,
             caic = FALSE,
@@ -47,9 +47,9 @@ raschOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
                 "type",
                 type,
                 options=list(
-                    "rating",
-                    "partial"),
-                default="rating")
+                    "RSM",
+                    "PCM"),
+                default="RSM")
             private$..aic <- jmvcore::OptionBool$new(
                 "aic",
                 aic,
@@ -407,7 +407,7 @@ rasch <- function(
     data,
     vars,
     step = 1,
-    type = "rating",
+    type = "RSM",
     aic = TRUE,
     bic = TRUE,
     caic = FALSE,

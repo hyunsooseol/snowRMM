@@ -30,11 +30,11 @@ options:
       title: Type
       type: List
       options:
-      - name: rating
-        title: Rating scale
-      - name: partial
-        title: Partial credit
-      default: rating
+      - name: RSM
+        title: 'Rating scale'
+      - name: PCM
+        title: 'Partial credit'
+      default: RSM
 
     - name: aic
       title: AIC

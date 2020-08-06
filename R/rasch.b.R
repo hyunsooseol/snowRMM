@@ -38,7 +38,7 @@ raschClass <- if (requireNamespace('jmvcore')) R6::R6Class(
             
             <p><b>To get started:</b></p>
             
-            <p>- identify the correct number of <b>'Step' and 'Type'</b> in the 'Analysis option'.</p>
+            <p>- Identify </b> the number of 'Step' and model 'Type'</b> in the 'Analysis option'.</p>
             
             <P>- Step is defined as number of category-1. </p>
             
