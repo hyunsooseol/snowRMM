@@ -23,7 +23,8 @@ rasch(
   pmeasure = TRUE,
   pse = TRUE,
   pinfit = FALSE,
-  poutfit = FALSE
+  poutfit = FALSE,
+  wrightmap = FALSE
 )
 }
 \arguments{
@@ -64,6 +65,8 @@ rasch(
 \item{pinfit}{.}
 
 \item{poutfit}{.}
+
+\item{wrightmap}{.}
 }
 \value{
 A results object containing:
@@ -73,6 +76,7 @@ A results object containing:
   \code{results$item$items} \tab \tab \tab \tab \tab a table \cr
   \code{results$item$bfit} \tab \tab \tab \tab \tab a table \cr
   \code{results$person$persons} \tab \tab \tab \tab \tab a table \cr
+  \code{results$wrightmap} \tab \tab \tab \tab \tab an image \cr
 }
 }
 \description{

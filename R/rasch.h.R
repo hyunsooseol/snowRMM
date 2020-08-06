@@ -23,7 +23,8 @@ raschOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
             pmeasure = TRUE,
             pse = TRUE,
             pinfit = FALSE,
-            poutfit = FALSE, ...) {
+            poutfit = FALSE,
+            wrightmap = FALSE, ...) {
 
             super$initialize(
                 package='snowRMM',
@@ -110,6 +111,10 @@ raschOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
                 "poutfit",
                 poutfit,
                 default=FALSE)
+            private$..wrightmap <- jmvcore::OptionBool$new(
+                "wrightmap",
+                wrightmap,
+                default=FALSE)
 
             self$.addOption(private$..vars)
             self$.addOption(private$..step)
@@ -129,6 +134,7 @@ raschOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
             self$.addOption(private$..pse)
             self$.addOption(private$..pinfit)
             self$.addOption(private$..poutfit)
+            self$.addOption(private$..wrightmap)
         }),
     active = list(
         vars = function() private$..vars$value,
@@ -148,7 +154,8 @@ raschOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
         pmeasure = function() private$..pmeasure$value,
         pse = function() private$..pse$value,
         pinfit = function() private$..pinfit$value,
-        poutfit = function() private$..poutfit$value),
+        poutfit = function() private$..poutfit$value,
+        wrightmap = function() private$..wrightmap$value),
     private = list(
         ..vars = NA,
         ..step = NA,
@@ -167,7 +174,8 @@ raschOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
         ..pmeasure = NA,
         ..pse = NA,
         ..pinfit = NA,
-        ..poutfit = NA)
+        ..poutfit = NA,
+        ..wrightmap = NA)
 )
 
 raschResults <- if (requireNamespace('jmvcore')) R6::R6Class(
@@ -175,7 +183,8 @@ raschResults <- if (requireNamespace('jmvcore')) R6::R6Class(
     active = list(
         instructions = function() private$.items[["instructions"]],
         item = function() private$.items[["item"]],
-        person = function() private$.items[["person"]]),
+        person = function() private$.items[["person"]],
+        wrightmap = function() private$.items[["wrightmap"]]),
     private = list(),
     public=list(
         initialize=function(options) {
@@ -349,7 +358,16 @@ raschResults <- if (requireNamespace('jmvcore')) R6::R6Class(
                                 list(
                                     `name`="poutfit", 
                                     `title`="Outfit", 
-                                    `visible`="(poutfit)"))))}))$new(options=options))}))
+                                    `visible`="(poutfit)"))))}))$new(options=options))
+            self$add(jmvcore::Image$new(
+                options=options,
+                name="wrightmap",
+                title="Wright Map",
+                width=500,
+                height=500,
+                visible="(wrightmap)",
+                renderFun=".wrightmapPlot",
+                refs="mixRasch"))}))
 
 raschBase <- if (requireNamespace('jmvcore')) R6::R6Class(
     "raschBase",
@@ -393,6 +411,7 @@ raschBase <- if (requireNamespace('jmvcore')) R6::R6Class(
 #' @param pse .
 #' @param pinfit .
 #' @param poutfit .
+#' @param wrightmap .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
@@ -400,6 +419,7 @@ raschBase <- if (requireNamespace('jmvcore')) R6::R6Class(
 #'   \code{results$item$items} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$item$bfit} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$person$persons} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$wrightmap} \tab \tab \tab \tab \tab an image \cr
 #' }
 #'
 #' @export
@@ -422,7 +442,8 @@ rasch <- function(
     pmeasure = TRUE,
     pse = TRUE,
     pinfit = FALSE,
-    poutfit = FALSE) {
+    poutfit = FALSE,
+    wrightmap = FALSE) {
 
     if ( ! requireNamespace('jmvcore'))
         stop('rasch requires jmvcore to be installed (restart may be required)')
@@ -452,7 +473,8 @@ rasch <- function(
         pmeasure = pmeasure,
         pse = pse,
         pinfit = pinfit,
-        poutfit = poutfit)
+        poutfit = poutfit,
+        wrightmap = wrightmap)
 
     analysis <- raschClass$new(
         options = options,

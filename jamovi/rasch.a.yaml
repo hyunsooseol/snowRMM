@@ -110,6 +110,11 @@ options:
       title: Outfit
       type: Bool
       default: FALSE
+      
+    - name: wrightmap
+      title: Wright map
+      type: Bool
+      default: false
 
 
 ...

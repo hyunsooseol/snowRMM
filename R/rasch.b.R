@@ -4,14 +4,12 @@
 #' Mixture Rasch Analysis
 #' @importFrom R6 R6Class
 #' @import jmvcore
-#' @importFrom mixRasch mixRasch
 #' @import mixRasch
-#' @import mixRaschTools
+#' @importFrom mixRasch mixRasch
+#' @importFrom mixRasch personItemPlot
+#' @import boot
 #' @importFrom boot boot
-#' @import boot 
 #' @importFrom boot boot.ci
-#' @importFrom mixRaschTools mixRasch.plot
-#' @importFrom mixRaschTools avg.theta
 #' @export
 
 
@@ -98,6 +96,10 @@ raschClass <- if (requireNamespace('jmvcore')) R6::R6Class(
                 
                 private$.populatePersonTable(results)
                 
+                # prepare wrightmap plot-----
+                
+                private$.prepareWrightmapPlot(data)
+                
                
                 
             }
@@ -106,8 +108,8 @@ raschClass <- if (requireNamespace('jmvcore')) R6::R6Class(
         .compute = function(data) {
             
             
-            # get variables------
-            
+          # get variables--------
+          
             data <- self$data
             
             vars <- self$options$vars
@@ -351,7 +353,7 @@ raschClass <- if (requireNamespace('jmvcore')) R6::R6Class(
 
        },
 
-
+       
        # populate Person statistics table
        
        .populatePersonTable = function(results) {
@@ -396,6 +398,53 @@ raschClass <- if (requireNamespace('jmvcore')) R6::R6Class(
            
        },
        
+  
+       ### wrightmap Plot functions ----
+       
+       
+       .prepareWrightmapPlot = function(data) {
+         
+         # get variables--------
+         
+         data <- self$data
+         
+        step <- self$options$step
+         
+         type <- self$options$type
+         
+         
+         #compute wright---
+         
+         wright = mixRasch::mixRasch(data=data, steps=step, model=type, n.c=1)
+           
+           
+       # Prepare Data For wrightmap Plot -------
+           
+           image <- self$results$wrightmap
+           image$setState(wright)
+           
+       },
+       
+       
+       # wright map plot--------------
+       
+       .wrightmapPlot = function(image, ...) {
+       
+          wrightmap <- self$options$wrightmap
+           
+           if (!wrightmap)
+               return()
+           
+           
+           wright <- image$state
+           
+   plot <- mixRasch::personItemPlot(wright)
+                                   
+               
+         print(plot)
+           TRUE
+           
+       },
        
 
 #### Helper functions =================================
