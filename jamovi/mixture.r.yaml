@@ -1,0 +1,158 @@
+---
+name:  mixture
+title: Rasch Mixture Model
+jrs:   '1.1'
+
+items:
+    - name: instructions
+      title: 'Instructions'
+      type: Html
+      visible: True
+      refs: RMM
+
+    - name: item
+      title: Item Analysis
+      type: Group
+      items:   
+        - name: model
+          title: 'Model Information' 
+          type: Table
+          rows: 1
+          clearWith:
+            - vars
+          refs: mixRasch
+  
+          columns:
+            - name: class
+              title: 'Class'
+              visible: (class)
+            - name: aic
+              title: 'AIC'
+              visible: (aic)
+            - name: bic
+              title: 'BIC'
+              visible: (bic)
+            - name: caic
+              title: 'CAIC'
+              visible: (caic)
+
+        - name: items
+          title: 'Item Statistics'
+          type: Table
+          visible: (imean || imeasure || ise || infit || outfit || pbis)
+          rows: (vars)
+          clearWith:
+            - vars
+          refs: mixRasch
+        
+          columns:
+            - name: name
+              title: ''
+              type: 'text'
+              content: ($key)
+            - name: imean
+              title: Item mean
+              visible: (imean)
+            - name: imeasure
+              title: Measure
+              visible: (imeasure) 
+            - name: ise
+              title: S.E.Measure
+              visible: (ise)  
+            - name: infit
+              title: Infit 
+              visible: (infit)  
+            - name: outfit
+              title: Outfit 
+              visible: (outfit) 
+            - name: pbis
+              title: Point biserial 
+              visible: (pbis) 
+              
+        - name: bfit
+          title: 'Bootstrap item fit' 
+          type: Table
+          rows: 1
+          clearWith:
+            - vars
+          columns: 
+            - name: binfit[in]
+              title: ''
+              type: 'text'
+              content: Infit
+              
+            - name: binfit[out]
+              title: ''
+              type: 'text'
+              content: Outfit
+        
+            - name: l[infit]
+              title: 'Lower'
+              type: number
+              superTitle: '95% CI'
+          
+            - name: u[infit]
+              title: 'Upper'
+              type: number
+              superTitle: '95% CI'
+
+            - name: l[outfit]
+              title: 'Lower'
+              type: number
+              superTitle: '95% CI'
+          
+            - name: u[outfit]
+              title: 'Upper'
+              type: number
+              superTitle: '95% CI'
+          
+    - name: person
+      title: Person Analysis
+      type: Group
+      items:          
+        - name: average
+          title: 'Mean ability level for each class'
+          type: Table
+          visible: (average)
+          rows: (nc)
+          clearWith:
+            - vars
+
+          columns:
+            - name: class
+              title: 'Class'
+              content: ($key)
+            - name: value
+              title: 'Theta'
+              type: number
+
+        - name: persons
+          title: Person membership
+          type: Table
+          clearWith:
+            - vars
+          refs: mixRasch
+          
+          columns:
+            - name: name
+              title: 'Person number'
+              type: 'text'
+              content: ($key)
+             
+            - name: pc1
+              title: '1'
+              type: number
+              superTitle: 'Class'
+             
+    - name: iplot
+      title: 'Item Plot'
+      type: Image
+      visible: (iplot)
+      width: 700
+      height: 500
+      renderFun: .itemPlot
+      refs: mixRaschTools              
+...
+
+
+

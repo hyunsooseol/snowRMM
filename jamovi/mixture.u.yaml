@@ -1,0 +1,118 @@
+title: Rasch Mixture Model
+name: mixture
+jus: '3.0'
+stage: 0
+compilerMode: tame
+children:
+  - type: VariableSupplier
+    suggested:
+      - continuous
+    permitted:
+      - numeric
+    persistentItems: false
+    stretchFactor: 1
+    children:
+      - type: TargetLayoutBox
+        label: Variables
+        children:
+          - type: VariablesListBox
+            name: vars
+            isTarget: true
+  - type: LayoutBox
+    margin: large
+    style: inline
+    children:
+      - type: Label
+        label: Analysis option
+        margin: large
+        style: list-inline
+        children:
+          - name: nc
+            type: TextBox
+            label: class
+            format: number
+          - name: step
+            type: TextBox
+            label: Step
+            format: number
+          - type: ComboBox
+            name: type
+  - type: CollapseBox
+    label: Item Analysis
+    margin: normal
+    collapsed: true
+    children:
+      - type: LayoutBox
+        stretchFactor: 1
+        margin: large
+        children:
+          - type: Label
+            label: Item Statistics
+            children:
+              - type: CheckBox
+                name: imean
+              - type: CheckBox
+                name: imeasure
+              - type: CheckBox
+                name: ise
+              - type: CheckBox
+                name: infit
+              - type: CheckBox
+                name: outfit
+              - type: CheckBox
+                name: pbis
+      - type: LayoutBox
+        stretchFactor: 1
+        margin: large
+        cell:
+          column: 1
+          row: 0
+        fitToGrid: true
+        children:
+          - type: Label
+            label: Model Fit
+            children:
+              - type: CheckBox
+                name: aic
+              - type: CheckBox
+                name: bic
+              - type: CheckBox
+                name: caic
+          - type: Label
+            label: Bootstrap
+            children:
+              - type: CheckBox
+                name: bfit
+  - type: CollapseBox
+    label: Person Analysis
+    margin: normal
+    collapsed: true
+    children:
+      - type: LayoutBox
+        stretchFactor: 1
+        margin: large
+        children:
+          - type: Label
+            label: Person Statistics
+            fitToGrid: true
+            cell:
+              column: 0
+              row: 0
+            children:
+              - type: CheckBox
+                name: average
+              - type: CheckBox
+                name: pclass  
+      - type: LayoutBox
+        stretchFactor: 1
+        margin: large
+        cell:
+          column: 1
+          row: 0
+        fitToGrid: true
+        children:
+          - type: Label
+            label: Plot
+            children:
+              - type: CheckBox
+                name: iplot

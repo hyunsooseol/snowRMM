@@ -1,0 +1,112 @@
+---
+name:  mixture
+title: Rasch Mixture Model
+menuGroup: snowRMM
+menuSubgroup: Mixture
+version: '1.0.0'
+jas: '1.2'
+
+options:
+    - name: data
+      type: Data
+      description:
+          R: >
+            The data as a data frame.
+
+    - name: vars
+      title: Variables
+      type: Variables
+      suggested:
+         - continuous
+      permitted:
+        - numeric
+        
+    - name: nc
+      title: Class(es)
+      type: Integer
+      min: 2
+      default: 2
+
+    - name: step
+      title: Step(s)
+      type: Integer
+      min: 1
+      default: 1
+
+    - name: type
+      title: Type
+      type: List
+      options:
+      - name: RSM
+        title: 'Rating scale'
+      - name: PCM
+        title: 'Partial credit'
+      default: RSM
+
+    - name: aic
+      title: AIC
+      type: Bool
+      default: True
+
+    - name: bic
+      title: BIC
+      type: Bool
+      default: TRUE
+
+    - name: caic
+      title: CAIC
+      type: Bool
+      default: FALSE
+
+    - name: imean
+      title: Item mean
+      type: Bool
+      default: True
+
+    - name: imeasure
+      title: Measure
+      type: Bool
+      default: True
+
+    - name: ise
+      title: S.E. measure 
+      type: Bool
+      default: false
+
+    - name: infit
+      title: Infit
+      type: Bool
+      default: false
+
+    - name: outfit
+      title: Outfit
+      type: Bool
+      default: false
+
+    - name: pbis
+      title: Point biserial
+      type: Bool
+      default: false    
+
+    - name: bfit
+      title: Item Bootstrap fit
+      type: Bool
+      default: false
+      
+    - name: average
+      title: Average ability
+      type: Bool
+      default: false
+      
+    - name: pclass
+      title: Person Membership
+      type: Bool
+      default: false    
+      
+    - name: iplot
+      title: Item plot
+      type: Bool
+      default: false    
+      
+
+...

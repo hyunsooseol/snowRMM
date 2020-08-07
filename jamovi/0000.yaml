@@ -18,6 +18,12 @@ analyses:
     menuGroup: snowRMM
     menuTitle: Rasch Model
     menuSubgroup: Rasch
+  - title: Rasch Mixture Model
+    name: mixture
+    ns: snowRMM
+    menuGroup: snowRMM
+    menuTitle: Rasch Mixture Model
+    menuSubgroup: Mixture
 usesNative: true
 minApp: 1.0.8
 
