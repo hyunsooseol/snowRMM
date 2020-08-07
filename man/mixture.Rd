@@ -19,7 +19,6 @@ mixture(
   infit = FALSE,
   outfit = FALSE,
   pbis = FALSE,
-  bfit = FALSE,
   average = FALSE,
   pclass = FALSE,
   iplot = FALSE
@@ -54,8 +53,6 @@ mixture(
 
 \item{pbis}{.}
 
-\item{bfit}{.}
-
 \item{average}{.}
 
 \item{pclass}{.}
@@ -68,7 +65,6 @@ A results object containing:
   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
   \code{results$item$model} \tab \tab \tab \tab \tab a table \cr
   \code{results$item$items} \tab \tab \tab \tab \tab a table \cr
-  \code{results$item$bfit} \tab \tab \tab \tab \tab a table \cr
   \code{results$person$average} \tab \tab \tab \tab \tab a table \cr
   \code{results$person$persons} \tab \tab \tab \tab \tab a table \cr
   \code{results$iplot} \tab \tab \tab \tab \tab an image \cr

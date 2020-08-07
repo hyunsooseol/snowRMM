@@ -69,43 +69,6 @@ items:
               title: Point biserial 
               visible: (pbis) 
               
-        - name: bfit
-          title: 'Bootstrap item fit' 
-          type: Table
-          rows: 1
-          clearWith:
-            - vars
-          columns: 
-            - name: binfit[in]
-              title: ''
-              type: 'text'
-              content: Infit
-              
-            - name: binfit[out]
-              title: ''
-              type: 'text'
-              content: Outfit
-        
-            - name: l[infit]
-              title: 'Lower'
-              type: number
-              superTitle: '95% CI'
-          
-            - name: u[infit]
-              title: 'Upper'
-              type: number
-              superTitle: '95% CI'
-
-            - name: l[outfit]
-              title: 'Lower'
-              type: number
-              superTitle: '95% CI'
-          
-            - name: u[outfit]
-              title: 'Upper'
-              type: number
-              superTitle: '95% CI'
-          
     - name: person
       title: Person Analysis
       type: Group

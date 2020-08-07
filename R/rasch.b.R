@@ -22,7 +22,7 @@ raschClass <- if (requireNamespace('jmvcore')) R6::R6Class(
 
  .personItemPlot = function(raschResult, nBreaks=15, plotTitle="Person Item Histogram",
                                   xlab = "Relative Frequency", ylab = "Ability",
-                                  col = c("darkgrey","lightgrey"), colTheme, makeLegend=TRUE,
+                                  col = c("darkgrey","lightgrey"), colTheme="spartans", makeLegend=TRUE,
                                   legendLabels=c("items", "people"), legendLoc="bottomleft",
                                   file)
       {

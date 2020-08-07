@@ -19,7 +19,6 @@ mixtureOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
             infit = FALSE,
             outfit = FALSE,
             pbis = FALSE,
-            bfit = FALSE,
             average = FALSE,
             pclass = FALSE,
             iplot = FALSE, ...) {
@@ -90,10 +89,6 @@ mixtureOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
                 "pbis",
                 pbis,
                 default=FALSE)
-            private$..bfit <- jmvcore::OptionBool$new(
-                "bfit",
-                bfit,
-                default=FALSE)
             private$..average <- jmvcore::OptionBool$new(
                 "average",
                 average,
@@ -120,7 +115,6 @@ mixtureOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
             self$.addOption(private$..infit)
             self$.addOption(private$..outfit)
             self$.addOption(private$..pbis)
-            self$.addOption(private$..bfit)
             self$.addOption(private$..average)
             self$.addOption(private$..pclass)
             self$.addOption(private$..iplot)
@@ -139,7 +133,6 @@ mixtureOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
         infit = function() private$..infit$value,
         outfit = function() private$..outfit$value,
         pbis = function() private$..pbis$value,
-        bfit = function() private$..bfit$value,
         average = function() private$..average$value,
         pclass = function() private$..pclass$value,
         iplot = function() private$..iplot$value),
@@ -157,7 +150,6 @@ mixtureOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
         ..infit = NA,
         ..outfit = NA,
         ..pbis = NA,
-        ..bfit = NA,
         ..average = NA,
         ..pclass = NA,
         ..iplot = NA)
@@ -187,8 +179,7 @@ mixtureResults <- if (requireNamespace('jmvcore')) R6::R6Class(
                 inherit = jmvcore::Group,
                 active = list(
                     model = function() private$.items[["model"]],
-                    items = function() private$.items[["items"]],
-                    bfit = function() private$.items[["bfit"]]),
+                    items = function() private$.items[["items"]]),
                 private = list(),
                 public=list(
                     initialize=function(options) {
@@ -259,45 +250,7 @@ mixtureResults <- if (requireNamespace('jmvcore')) R6::R6Class(
                                 list(
                                     `name`="pbis", 
                                     `title`="Point biserial", 
-                                    `visible`="(pbis)"))))
-                        self$add(jmvcore::Table$new(
-                            options=options,
-                            name="bfit",
-                            title="Bootstrap item fit",
-                            rows=1,
-                            clearWith=list(
-                                "vars"),
-                            columns=list(
-                                list(
-                                    `name`="binfit[in]", 
-                                    `title`="", 
-                                    `type`="text", 
-                                    `content`="Infit"),
-                                list(
-                                    `name`="binfit[out]", 
-                                    `title`="", 
-                                    `type`="text", 
-                                    `content`="Outfit"),
-                                list(
-                                    `name`="l[infit]", 
-                                    `title`="Lower", 
-                                    `type`="number", 
-                                    `superTitle`="95% CI"),
-                                list(
-                                    `name`="u[infit]", 
-                                    `title`="Upper", 
-                                    `type`="number", 
-                                    `superTitle`="95% CI"),
-                                list(
-                                    `name`="l[outfit]", 
-                                    `title`="Lower", 
-                                    `type`="number", 
-                                    `superTitle`="95% CI"),
-                                list(
-                                    `name`="u[outfit]", 
-                                    `title`="Upper", 
-                                    `type`="number", 
-                                    `superTitle`="95% CI"))))}))$new(options=options))
+                                    `visible`="(pbis)"))))}))$new(options=options))
             self$add(R6::R6Class(
                 inherit = jmvcore::Group,
                 active = list(
@@ -392,7 +345,6 @@ mixtureBase <- if (requireNamespace('jmvcore')) R6::R6Class(
 #' @param infit .
 #' @param outfit .
 #' @param pbis .
-#' @param bfit .
 #' @param average .
 #' @param pclass .
 #' @param iplot .
@@ -401,7 +353,6 @@ mixtureBase <- if (requireNamespace('jmvcore')) R6::R6Class(
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
 #'   \code{results$item$model} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$item$items} \tab \tab \tab \tab \tab a table \cr
-#'   \code{results$item$bfit} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$person$average} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$person$persons} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$iplot} \tab \tab \tab \tab \tab an image \cr
@@ -423,7 +374,6 @@ mixture <- function(
     infit = FALSE,
     outfit = FALSE,
     pbis = FALSE,
-    bfit = FALSE,
     average = FALSE,
     pclass = FALSE,
     iplot = FALSE) {
@@ -452,7 +402,6 @@ mixture <- function(
         infit = infit,
         outfit = outfit,
         pbis = pbis,
-        bfit = bfit,
         average = average,
         pclass = pclass,
         iplot = iplot)

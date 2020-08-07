@@ -140,5 +140,5 @@ items:
       visible: (wrightmap)
       renderFun: .plot
       requiresData: TRUE
-      refs: mixRasch 
+     
 ...

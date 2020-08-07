@@ -78,11 +78,6 @@ children:
                 name: bic
               - type: CheckBox
                 name: caic
-          - type: Label
-            label: Bootstrap
-            children:
-              - type: CheckBox
-                name: bfit
   - type: CollapseBox
     label: Person Analysis
     margin: normal

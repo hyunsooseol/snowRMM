@@ -367,8 +367,7 @@ raschResults <- if (requireNamespace('jmvcore')) R6::R6Class(
                 height=450,
                 visible="(wrightmap)",
                 renderFun=".plot",
-                requiresData=TRUE,
-                refs="mixRasch"))}))
+                requiresData=TRUE))}))
 
 raschBase <- if (requireNamespace('jmvcore')) R6::R6Class(
     "raschBase",

@@ -88,11 +88,6 @@ options:
       type: Bool
       default: false    
 
-    - name: bfit
-      title: Item Bootstrap fit
-      type: Bool
-      default: false
-      
     - name: average
       title: Average ability
       type: Bool
