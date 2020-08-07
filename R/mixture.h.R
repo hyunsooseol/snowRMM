@@ -284,6 +284,7 @@ mixtureResults <- if (requireNamespace('jmvcore')) R6::R6Class(
                             options=options,
                             name="persons",
                             title="Person membership",
+                            visible="(pclass)",
                             clearWith=list(
                                 "vars"),
                             refs="mixRasch",

@@ -92,6 +92,7 @@ items:
         - name: persons
           title: Person membership
           type: Table
+          visible: (pclass)
           clearWith:
             - vars
           refs: mixRasch
