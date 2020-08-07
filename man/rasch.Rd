@@ -76,7 +76,7 @@ A results object containing:
   \code{results$item$items} \tab \tab \tab \tab \tab a table \cr
   \code{results$item$bfit} \tab \tab \tab \tab \tab a table \cr
   \code{results$person$persons} \tab \tab \tab \tab \tab a table \cr
-  \code{results$wrightmap} \tab \tab \tab \tab \tab an image \cr
+  \code{results$plot} \tab \tab \tab \tab \tab an image \cr
 }
 }
 \description{

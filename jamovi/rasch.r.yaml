@@ -132,12 +132,13 @@ items:
               title: Outfit
               visible: (poutfit)
 
-    - name: wrightmap
+    - name: plot
       title: 'Wright Map'
       type: Image
-      width: 500
-      height: 500
+      width: 600
+      height: 450
       visible: (wrightmap)
-      renderFun: .wrightmapPlot
+      renderFun: .plot
+      requiresData: TRUE
       refs: mixRasch 
 ...

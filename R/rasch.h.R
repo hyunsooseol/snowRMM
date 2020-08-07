@@ -184,7 +184,7 @@ raschResults <- if (requireNamespace('jmvcore')) R6::R6Class(
         instructions = function() private$.items[["instructions"]],
         item = function() private$.items[["item"]],
         person = function() private$.items[["person"]],
-        wrightmap = function() private$.items[["wrightmap"]]),
+        plot = function() private$.items[["plot"]]),
     private = list(),
     public=list(
         initialize=function(options) {
@@ -361,12 +361,13 @@ raschResults <- if (requireNamespace('jmvcore')) R6::R6Class(
                                     `visible`="(poutfit)"))))}))$new(options=options))
             self$add(jmvcore::Image$new(
                 options=options,
-                name="wrightmap",
+                name="plot",
                 title="Wright Map",
-                width=500,
-                height=500,
+                width=600,
+                height=450,
                 visible="(wrightmap)",
-                renderFun=".wrightmapPlot",
+                renderFun=".plot",
+                requiresData=TRUE,
                 refs="mixRasch"))}))
 
 raschBase <- if (requireNamespace('jmvcore')) R6::R6Class(
@@ -419,7 +420,7 @@ raschBase <- if (requireNamespace('jmvcore')) R6::R6Class(
 #'   \code{results$item$items} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$item$bfit} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$person$persons} \tab \tab \tab \tab \tab a table \cr
-#'   \code{results$wrightmap} \tab \tab \tab \tab \tab an image \cr
+#'   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
 #' }
 #'
 #' @export
