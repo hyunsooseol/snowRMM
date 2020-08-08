@@ -4,7 +4,7 @@ Title: Rasch Mixture Model
 Version: 1.0.0
 Author: Hyunsoo Seol
 Maintainer: Hyunsoo Seol <snow@cau.ac.kr>
-Description: This module provides Rasch mixture model based on dichotomous, rating, and partial credit model.
+Description: This module provides Rasch mixture model including model information,fit statistics,and bootstrap fit based on JMLE.
 License: GPL3
 LazyData: TRUE
 Encoding: UTF-8

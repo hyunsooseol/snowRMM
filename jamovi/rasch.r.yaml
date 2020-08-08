@@ -8,7 +8,7 @@ items:
       title: 'Instructions'
       type: Html
       visible: True
-      refs: RMM
+      refs: snowRMM
 
     - name: item
       title: Item Analysis
@@ -74,6 +74,7 @@ items:
           rows: 1
           clearWith:
             - vars
+          refs: snowRMM
           columns:
             - name: binfit[in]
               title: ''

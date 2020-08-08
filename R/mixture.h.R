@@ -174,7 +174,7 @@ mixtureResults <- if (requireNamespace('jmvcore')) R6::R6Class(
                 name="instructions",
                 title="Instructions",
                 visible=TRUE,
-                refs="RMM"))
+                refs="snowRMM"))
             self$add(R6::R6Class(
                 inherit = jmvcore::Group,
                 active = list(

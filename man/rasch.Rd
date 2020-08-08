@@ -10,7 +10,7 @@ rasch(
   step = 1,
   type = "RSM",
   aic = TRUE,
-  bic = TRUE,
+  bic = FALSE,
   caic = FALSE,
   imean = TRUE,
   imeasure = TRUE,

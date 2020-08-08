@@ -10,7 +10,7 @@ raschOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
             step = 1,
             type = "RSM",
             aic = TRUE,
-            bic = TRUE,
+            bic = FALSE,
             caic = FALSE,
             imean = TRUE,
             imeasure = TRUE,
@@ -58,7 +58,7 @@ raschOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
             private$..bic <- jmvcore::OptionBool$new(
                 "bic",
                 bic,
-                default=TRUE)
+                default=FALSE)
             private$..caic <- jmvcore::OptionBool$new(
                 "caic",
                 caic,
@@ -197,7 +197,7 @@ raschResults <- if (requireNamespace('jmvcore')) R6::R6Class(
                 name="instructions",
                 title="Instructions",
                 visible=TRUE,
-                refs="RMM"))
+                refs="snowRMM"))
             self$add(R6::R6Class(
                 inherit = jmvcore::Group,
                 active = list(
@@ -283,6 +283,7 @@ raschResults <- if (requireNamespace('jmvcore')) R6::R6Class(
                             rows=1,
                             clearWith=list(
                                 "vars"),
+                            refs="snowRMM",
                             columns=list(
                                 list(
                                     `name`="binfit[in]", 
@@ -429,7 +430,7 @@ rasch <- function(
     step = 1,
     type = "RSM",
     aic = TRUE,
-    bic = TRUE,
+    bic = FALSE,
     caic = FALSE,
     imean = TRUE,
     imeasure = TRUE,

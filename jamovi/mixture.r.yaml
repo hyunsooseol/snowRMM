@@ -8,7 +8,7 @@ items:
       title: 'Instructions'
       type: Html
       visible: True
-      refs: RMM
+      refs: snowRMM
 
     - name: item
       title: Item Analysis

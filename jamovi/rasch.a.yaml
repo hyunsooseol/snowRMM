@@ -44,7 +44,7 @@ options:
     - name: bic
       title: BIC
       type: Bool
-      default: TRUE
+      default: FALSE
 
     - name: caic
       title: CAIC
@@ -79,7 +79,7 @@ options:
     - name: pbis
       title: Point biserial
       type: Bool
-      default: false
+      default: FALSE
 
     - name: bfit
       title: Item Fit
@@ -114,7 +114,7 @@ options:
     - name: wrightmap
       title: Wright map
       type: Bool
-      default: false
+      default: FALSE
 
 
 ...

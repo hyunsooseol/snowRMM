@@ -6,11 +6,11 @@ jms: '1.0'
 authors:
   - Hyunsoo Seol
 maintainer: Hyunsoo Seol <snow@cau.ac.kr>
-date: '2020-08-06'
+date: '2020-08-08'
 type: R
 description: >-
-  This module provides Rasch mixture model based on dichotomous, rating, and
-  partial credit model.
+  This module provides Rasch mixture model including model information,fit
+  statistics,and bootstrap fit based on JMLE.
 analyses:
   - title: Rasch Model
     name: rasch
