@@ -64,7 +64,7 @@ options:
     - name: ise
       title: S.E. measure
       type: Bool
-      default: TRUE
+      default: FALSE
 
     - name: infit
       title: Infit
@@ -89,17 +89,17 @@ options:
     - name: total
       title: Total score
       type: Bool
-      default: True
+      default: FALSE
 
     - name: pmeasure
       title: Measure
       type: Bool
-      default: True
+      default: FALSE
 
     - name: pse
       title: S.E. measure
       type: Bool
-      default: TRUE
+      default: FALSE
 
     - name: pinfit
       title: Infit

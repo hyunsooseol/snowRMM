@@ -305,7 +305,7 @@ raschClass <- if (requireNamespace('jmvcore'))
         boot.in <-
           boot::boot(data = data,
                      statistic = boot.infit,
-                     R = 10)
+                     R = 1000)
         
         binfit <- boot::boot.ci(boot.in, type = "perc")
         
@@ -339,7 +339,7 @@ raschClass <- if (requireNamespace('jmvcore'))
         boot.out <-
           boot::boot(data = data,
                      statistic = boot.outfit,
-                     R = 10)
+                     R = 1000)
         
         boutfit <- boot::boot.ci(boot.out, type = "perc")
         

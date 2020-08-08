@@ -14,14 +14,14 @@ raschOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
             caic = FALSE,
             imean = TRUE,
             imeasure = TRUE,
-            ise = TRUE,
+            ise = FALSE,
             infit = FALSE,
             outfit = FALSE,
             pbis = FALSE,
             bfit = FALSE,
-            total = TRUE,
-            pmeasure = TRUE,
-            pse = TRUE,
+            total = FALSE,
+            pmeasure = FALSE,
+            pse = FALSE,
             pinfit = FALSE,
             poutfit = FALSE,
             wrightmap = FALSE, ...) {
@@ -74,7 +74,7 @@ raschOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
             private$..ise <- jmvcore::OptionBool$new(
                 "ise",
                 ise,
-                default=TRUE)
+                default=FALSE)
             private$..infit <- jmvcore::OptionBool$new(
                 "infit",
                 infit,
@@ -94,15 +94,15 @@ raschOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
             private$..total <- jmvcore::OptionBool$new(
                 "total",
                 total,
-                default=TRUE)
+                default=FALSE)
             private$..pmeasure <- jmvcore::OptionBool$new(
                 "pmeasure",
                 pmeasure,
-                default=TRUE)
+                default=FALSE)
             private$..pse <- jmvcore::OptionBool$new(
                 "pse",
                 pse,
-                default=TRUE)
+                default=FALSE)
             private$..pinfit <- jmvcore::OptionBool$new(
                 "pinfit",
                 pinfit,
@@ -434,14 +434,14 @@ rasch <- function(
     caic = FALSE,
     imean = TRUE,
     imeasure = TRUE,
-    ise = TRUE,
+    ise = FALSE,
     infit = FALSE,
     outfit = FALSE,
     pbis = FALSE,
     bfit = FALSE,
-    total = TRUE,
-    pmeasure = TRUE,
-    pse = TRUE,
+    total = FALSE,
+    pmeasure = FALSE,
+    pse = FALSE,
     pinfit = FALSE,
     poutfit = FALSE,
     wrightmap = FALSE) {
