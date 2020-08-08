@@ -156,6 +156,8 @@ raschClass <- if (requireNamespace('jmvcore'))
             <p>- Specify </b> the number of 'Step' and model 'Type'</b> in the 'Analysis option'.</p>
 
             <P>- Step is defined as number of category-1. </p>
+            
+            <p>- It takes time to display the full results because 'Bootstrap Item Fit(n=1000) is computationally intensive.</p>
 
             <p>- Feature requests and bug reports can be made on my <a href='https://github.com/hyunsooseol/snowRMM/'  target = '_blank'>GitHub</a></p>
 
