@@ -39,6 +39,7 @@ options:
     - name: bn
       title: Bootstrap N
       type: Integer
+      min: 2
       default: 1000
 
     - name: bfit

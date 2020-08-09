@@ -35,14 +35,12 @@ bfitClass <- if (requireNamespace('jmvcore')) R6::R6Class(
           
             <p><b>To get started:</b></p>
 
-            <p> When class=1, the traditional Rasch model is performed by Jonint Maximum Liklihood(JML).</p>
+            <p> The traditional Rasch model is performed by Jonint Maximum Liklihood(JML).</p>
 
-            <p>- Specify </b> the number of 'Step' and model 'Type'</b> in the 'Analysis option'.</p>
+            <p>- Specify <b>'Step', 'Type', and 'Bootstrap N'</b> in the 'Analysis option'.</p>
 
-            <p>- The bootstrapped confidence interval is based on 1000 replications, which is quite time-consuming.</p>
+            <p>- Please, be patient. The bootstrapped confidence interval is <b>quite time-consuming !</b></p>
 
-            <p>- For example, it takes about 5 minutes to diplay the results with 15 dichotomous items.</p>
-            
             <p>- Feature requests and bug reports can be made on my <a href='https://github.com/hyunsooseol/snowRMM/'  target = '_blank'>GitHub</a></p>
 
             <p> If you have any questions, please e-mail me: snow@cau.ac.kr</a></p>
@@ -66,8 +64,7 @@ bfitClass <- if (requireNamespace('jmvcore')) R6::R6Class(
             
             ready <- TRUE
             
-            if (is.null(self$options$vars) |
-                length(self$options$vars) < 2)
+            if (is.null(self$options$vars) | length(self$options$vars) < 2)
                 
                 ready <- FALSE
             

@@ -40,6 +40,7 @@ bfitOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
             private$..bn <- jmvcore::OptionInteger$new(
                 "bn",
                 bn,
+                min=2,
                 default=1000)
             private$..bfit <- jmvcore::OptionBool$new(
                 "bfit",
