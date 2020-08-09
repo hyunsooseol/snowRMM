@@ -24,6 +24,12 @@ analyses:
     menuGroup: snowRMM
     menuTitle: Rasch Mixture Model
     menuSubgroup: Mixture
+  - title: Bootstrap Item Fit
+    name: bfit
+    ns: snowRMM
+    menuGroup: snowRMM
+    menuTitle: Bootstrap Item Fit
+    menuSubgroup: Rasch
 usesNative: true
 minApp: 1.0.8
 

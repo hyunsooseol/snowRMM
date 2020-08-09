@@ -1,0 +1,47 @@
+---
+name:  bfit
+title: Bootstrap Item Fit
+menuGroup: snowRMM
+version: '1.0.0'
+jas: '1.2'
+
+options:
+    - name: data
+      type: Data
+      description:
+          R: >
+            The data as a data frame.
+
+    - name: vars
+      title: Variables
+      type: Variables
+      suggested:
+         - continuous
+      permitted:
+        - numeric
+
+    - name: step
+      title: Step(s)
+      type: Integer
+      min: 1
+      default: 1
+
+    - name: type
+      title: Type
+      type: List
+      options:
+      - name: RSM
+        title: 'Rating scale'
+      - name: PCM
+        title: 'Partial credit'
+      default: RSM
+
+    - name: bn
+      title: Bootstrap N
+      type: Integer
+      default: 1000
+
+    - name: bfit
+      title: Confidence interval
+      type: Bool
+      default: TRUE

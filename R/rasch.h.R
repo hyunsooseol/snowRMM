@@ -18,7 +18,6 @@ raschOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
             infit = FALSE,
             outfit = FALSE,
             pbis = FALSE,
-            bfit = FALSE,
             total = FALSE,
             pmeasure = FALSE,
             pse = FALSE,
@@ -87,10 +86,6 @@ raschOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
                 "pbis",
                 pbis,
                 default=FALSE)
-            private$..bfit <- jmvcore::OptionBool$new(
-                "bfit",
-                bfit,
-                default=FALSE)
             private$..total <- jmvcore::OptionBool$new(
                 "total",
                 total,
@@ -128,7 +123,6 @@ raschOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
             self$.addOption(private$..infit)
             self$.addOption(private$..outfit)
             self$.addOption(private$..pbis)
-            self$.addOption(private$..bfit)
             self$.addOption(private$..total)
             self$.addOption(private$..pmeasure)
             self$.addOption(private$..pse)
@@ -149,7 +143,6 @@ raschOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
         infit = function() private$..infit$value,
         outfit = function() private$..outfit$value,
         pbis = function() private$..pbis$value,
-        bfit = function() private$..bfit$value,
         total = function() private$..total$value,
         pmeasure = function() private$..pmeasure$value,
         pse = function() private$..pse$value,
@@ -169,7 +162,6 @@ raschOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
         ..infit = NA,
         ..outfit = NA,
         ..pbis = NA,
-        ..bfit = NA,
         ..total = NA,
         ..pmeasure = NA,
         ..pse = NA,
@@ -202,8 +194,7 @@ raschResults <- if (requireNamespace('jmvcore')) R6::R6Class(
                 inherit = jmvcore::Group,
                 active = list(
                     model = function() private$.items[["model"]],
-                    items = function() private$.items[["items"]],
-                    bfit = function() private$.items[["bfit"]]),
+                    items = function() private$.items[["items"]]),
                 private = list(),
                 public=list(
                     initialize=function(options) {
@@ -274,47 +265,7 @@ raschResults <- if (requireNamespace('jmvcore')) R6::R6Class(
                                 list(
                                     `name`="pbis", 
                                     `title`="Point biserial", 
-                                    `visible`="(pbis)"))))
-                        self$add(jmvcore::Table$new(
-                            options=options,
-                            name="bfit",
-                            title="Bootstrap item fit",
-                            visible="(bfit)",
-                            rows=1,
-                            clearWith=list(
-                                "vars"),
-                            refs="snowRMM",
-                            columns=list(
-                                list(
-                                    `name`="binfit[in]", 
-                                    `title`="", 
-                                    `type`="text", 
-                                    `content`="Infit"),
-                                list(
-                                    `name`="binfit[out]", 
-                                    `title`="", 
-                                    `type`="text", 
-                                    `content`="Outfit"),
-                                list(
-                                    `name`="l[infit]", 
-                                    `title`="Lower", 
-                                    `type`="number", 
-                                    `superTitle`="95% CI"),
-                                list(
-                                    `name`="u[infit]", 
-                                    `title`="Upper", 
-                                    `type`="number", 
-                                    `superTitle`="95% CI"),
-                                list(
-                                    `name`="l[outfit]", 
-                                    `title`="Lower", 
-                                    `type`="number", 
-                                    `superTitle`="95% CI"),
-                                list(
-                                    `name`="u[outfit]", 
-                                    `title`="Upper", 
-                                    `type`="number", 
-                                    `superTitle`="95% CI"))))}))$new(options=options))
+                                    `visible`="(pbis)"))))}))$new(options=options))
             self$add(R6::R6Class(
                 inherit = jmvcore::Group,
                 active = list(
@@ -406,7 +357,6 @@ raschBase <- if (requireNamespace('jmvcore')) R6::R6Class(
 #' @param infit .
 #' @param outfit .
 #' @param pbis .
-#' @param bfit .
 #' @param total .
 #' @param pmeasure .
 #' @param pse .
@@ -418,7 +368,6 @@ raschBase <- if (requireNamespace('jmvcore')) R6::R6Class(
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
 #'   \code{results$item$model} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$item$items} \tab \tab \tab \tab \tab a table \cr
-#'   \code{results$item$bfit} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$person$persons} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
 #' }
@@ -438,7 +387,6 @@ rasch <- function(
     infit = FALSE,
     outfit = FALSE,
     pbis = FALSE,
-    bfit = FALSE,
     total = FALSE,
     pmeasure = FALSE,
     pse = FALSE,
@@ -469,7 +417,6 @@ rasch <- function(
         infit = infit,
         outfit = outfit,
         pbis = pbis,
-        bfit = bfit,
         total = total,
         pmeasure = pmeasure,
         pse = pse,

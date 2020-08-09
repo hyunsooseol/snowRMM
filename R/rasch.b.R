@@ -18,6 +18,7 @@ raschClass <- if (requireNamespace('jmvcore'))
     "raschClass",
     inherit = raschBase,
     private = list(
+      
       # personItemPlot---
       
       .personItemPlot = function(raschResult,
@@ -204,7 +205,7 @@ raschClass <- if (requireNamespace('jmvcore'))
           
           # populate Boot Fit table-------------
           
-          private$.populateBootTable(results)
+      #    private$.populateBootTable(results)
           
           # populate Person statistics table
           
@@ -279,77 +280,75 @@ raschClass <- if (requireNamespace('jmvcore'))
         poutfit <- res$person.par$outfit
         
         
-        
-        ## Computing Bootstrap item fit ###
-        
-        ### Computing boot infit-------------
-        
-        boot.infit <- function(data, indices) {
-          d = data[indices, ]
-          
-          # estimate Rasch model--------
-          res1 <-
-            mixRasch::mixRasch(
-              data = d,
-              steps = step,
-              model = type,
-              n.c = 1
-            )
-          
-          
-          # item infit--------
-          infit <- res1$item.par$in.out[, 1]
-          
-          return(infit)
-          
-        }
-        
-        boot.in <-
-          boot::boot(data = data,
-                     statistic = boot.infit,
-                     R = 1000)
-        
-        binfit <- boot::boot.ci(boot.in, type = "perc")
-        
-        # get boot infit------
-        
-        binfit <- binfit$percent
-        
-        
-        ### computing boot outfit------
-        
-        boot.outfit <- function(data, indices) {
-          d = data[indices, ]
-          
-          # estimate Rasch model
-          res1 <-
-            mixRasch::mixRasch(
-              data = d,
-              steps = step,
-              model = type,
-              n.c = 1
-            )
-          
-          
-          # item outfit-------
-          
-          outfit <- res1$item.par$in.out[, 3]
-          
-          return(outfit)
-        }
-        
-        boot.out <-
-          boot::boot(data = data,
-                     statistic = boot.outfit,
-                     R = 1000)
-        
-        boutfit <- boot::boot.ci(boot.out, type = "perc")
-        
-        # get boot outfit-------
-        
-        boutfit <- boutfit$percent
-        
-        
+        # ## Computing Bootstrap item fit ###
+        # 
+        # # Computing boot infit-------------
+        # 
+        # boot.infit <- function(data, indices) {
+        #   d = data[indices, ]
+        #   
+        #   # estimate Rasch model--------
+        #   res1 <-
+        #     mixRasch::mixRasch(
+        #       data = d,
+        #       steps = step,
+        #       model = type,
+        #       n.c = 1
+        #     )
+        #   
+        #   
+        #   # item infit--------
+        #   infit <- res1$item.par$in.out[, 1]
+        #   
+        #   return(infit)
+        #   
+        # }
+        # 
+        # boot.in <-
+        #   boot::boot(data = data,
+        #              statistic = boot.infit,
+        #              R = 1000)
+        # 
+        # binfit <- boot::boot.ci(boot.in, type = "perc")
+        # 
+        # # get boot infit------
+        # 
+        # binfit <- binfit$percent
+        # 
+        # 
+        # # computing boot outfit------
+        # 
+        # boot.outfit <- function(data, indices) {
+        #   d = data[indices, ]
+        #   
+        #   # estimate Rasch model
+        #   res1 <-
+        #     mixRasch::mixRasch(
+        #       data = d,
+        #       steps = step,
+        #       model = type,
+        #       n.c = 1
+        #     )
+        #   
+        #   
+        #   # item outfit-------
+        #   
+        #   outfit <- res1$item.par$in.out[, 3]
+        #   
+        #   return(outfit)
+        # }
+        # 
+        # boot.out <-
+        #   boot::boot(data = data,
+        #              statistic = boot.outfit,
+        #              R = 1000)
+        # 
+        # boutfit <- boot::boot.ci(boot.out, type = "perc")
+        # 
+        # # get boot outfit-------
+        # 
+        # boutfit <- boutfit$percent
+        # 
         results <-
           list(
             'aic' = aic,
@@ -362,17 +361,20 @@ raschClass <- if (requireNamespace('jmvcore'))
             'outfit' = outfit,
             'pbis' = pbis,
             'class' = class,
-            'binfit' = binfit,
-            'boutfit' = boutfit,
-            'total' = total,
+            #  'binfit' = binfit,
+            #  'boutfit' = boutfit,
+             'total' = total,
             'pmeasure' = pmeasure,
             'pse' = pse,
             'pinfit' = pinfit,
             'poutfit' = poutfit
             
           )
+        
+       
       },
       
+     
       
       # populate Model information table-----
       
@@ -451,30 +453,30 @@ raschClass <- if (requireNamespace('jmvcore'))
       
       # populate Boot table--------
       
-      .populateBootTable = function(results) {
-        table <- self$results$item$bfit
-        
-        
-        values <- list()
-        
-        binfit <- results$binfit
-        
-        boutfit <- results$boutfit
-        
-        
-        values[['l[infit]']] <- binfit[4]
-        values[['u[infit]']] <- binfit[5]
-        
-        values[['l[outfit]']] <- boutfit[4]
-        values[['u[outfit]']] <- boutfit[5]
-        
-        
-        table$setRow(rowNo = 1, values)
-        
-        
-      },
-      
-      
+      # .populateBootTable = function(results) {
+      #   table <- self$results$item$bfit
+      #   
+      #   
+      #   values <- list()
+      #   
+      #   binfit <- results$binfit
+      #   
+      #   boutfit <- results$boutfit
+      #   
+      #   
+      #   values[['l[infit]']] <- binfit[4]
+      #   values[['u[infit]']] <- binfit[5]
+      #   
+      #   values[['l[outfit]']] <- boutfit[4]
+      #   values[['u[outfit]']] <- boutfit[5]
+      #   
+      #   
+      #   table$setRow(rowNo = 1, values)
+      #   
+      #   
+      # },
+      # 
+      # 
       # populate Person statistics table---------
       
       .populatePersonTable = function(results) {

@@ -1,0 +1,48 @@
+---
+name:  bfit
+title: Bootstrap Item Fit
+jrs:   '1.1'
+
+items:
+    - name: instructions
+      title: 'Instructions'
+      type: Html
+      visible: True
+      refs: snowRMM
+
+    - name: bfit
+      title: 'Bootstrap item fit'
+      type: Table
+      visible: (bfit)
+      rows: 1
+      clearWith:
+        - vars
+      refs: snowRMM
+      columns:
+        - name: binfit[in]
+          title: ''
+          type: 'text'
+          content: Infit
+        - name: binfit[out]
+          title: ''
+          type: 'text'
+          content: Outfit
+        - name: l[infit]
+          title: 'Lower'
+          type: number
+          superTitle: '95% CI'
+        - name: u[infit]
+          title: 'Upper'
+          type: number
+          superTitle: '95% CI'
+        - name: l[outfit]
+          title: 'Lower'
+          type: number
+          superTitle: '95% CI'
+        - name: u[outfit]
+          title: 'Upper'
+          type: number
+          superTitle: '95% CI'
+
+
+...

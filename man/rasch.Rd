@@ -18,7 +18,6 @@ rasch(
   infit = FALSE,
   outfit = FALSE,
   pbis = FALSE,
-  bfit = FALSE,
   total = FALSE,
   pmeasure = FALSE,
   pse = FALSE,
@@ -54,8 +53,6 @@ rasch(
 
 \item{pbis}{.}
 
-\item{bfit}{.}
-
 \item{total}{.}
 
 \item{pmeasure}{.}
@@ -74,7 +71,6 @@ A results object containing:
   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
   \code{results$item$model} \tab \tab \tab \tab \tab a table \cr
   \code{results$item$items} \tab \tab \tab \tab \tab a table \cr
-  \code{results$item$bfit} \tab \tab \tab \tab \tab a table \cr
   \code{results$person$persons} \tab \tab \tab \tab \tab a table \cr
   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
 }

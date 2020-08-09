@@ -81,11 +81,6 @@ options:
       type: Bool
       default: FALSE
 
-    - name: bfit
-      title: Item Fit
-      type: Bool
-      default: FALSE
-
     - name: total
       title: Total score
       type: Bool
