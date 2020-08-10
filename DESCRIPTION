@@ -15,4 +15,5 @@ Imports:
     stats,
     mixRasch,
     mixRaschTools,
-    boot
+    boot,
+    ggplot2

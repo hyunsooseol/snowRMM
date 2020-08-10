@@ -37,6 +37,8 @@ A results object containing:
 \tabular{llllll}{
   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
   \code{results$bfit} \tab \tab \tab \tab \tab a table \cr
+  \code{results$inplot} \tab \tab \tab \tab \tab an image \cr
+  \code{results$outplot} \tab \tab \tab \tab \tab an image \cr
 }
 
 Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:

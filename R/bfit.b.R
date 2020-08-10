@@ -9,6 +9,7 @@
 #' @import boot
 #' @importFrom boot boot
 #' @importFrom boot boot.ci
+#' @import ggplot2
 #' @export
 
 
@@ -80,11 +81,11 @@ bfitClass <- if (requireNamespace('jmvcore')) R6::R6Class(
                     private$.populateBootTable(results)
                 
                 #  prepare infit plot-----
-                # 
-                # private$.prepareInPlot(data)
-                # 
-                #  prepare infit plot-----
-                #  
+                 
+              #   private$.prepareInPlot(results)
+                 
+                #  prepare outfit plot-----
+                  
                 #  private$.prepareOutPlot(data)
             }
         },
@@ -133,7 +134,18 @@ bfitClass <- if (requireNamespace('jmvcore')) R6::R6Class(
                            statistic = boot.infit,
                            R = bn)
             
-            binfit <- boot::boot.ci(boot.in, type = "perc")
+            
+            # plotData---------
+            
+            infit <- boot.in$t[,1]
+            
+            indata<- as.data.frame(infit)
+            
+            
+            
+            # 95% confidence interval----
+            
+            binfit <- boot::boot.ci( boot.in, type = "perc")
             
             # get boot infit------
             
@@ -175,12 +187,14 @@ bfitClass <- if (requireNamespace('jmvcore')) R6::R6Class(
             
         
             results <-
-                list('boot.in'=boot.in,
-                     'boot.out'=boot.out,
+                list(
+                   'boot.in'=boot.in,
+                   'boot.out'=boot.out,
                      'binfit'=binfit,
                      'boutfit'=boutfit
                 )
         
+            
             
             },
         
@@ -206,62 +220,75 @@ bfitClass <- if (requireNamespace('jmvcore')) R6::R6Class(
             
             table$setRow(rowNo = 1, values)
             
-            
-        },
+           },
    
  
-   # #### Plot functions ----
-   # 
-   # .prepareInPlot = function(data) {
-   #     
-   #    
-   #     
-   #     # Prepare Data For Plot -------
-   #     image <- self$results$plot
-   #     image$setState(partial)
-   #     
-   #     
-   #     
-   # }, 
-   
-   
+   #### Plot functions ----
+
+   .prepareInPlot = function(results) {
+
+
+      boot.in <- results$boot.in
+      
+      infit <- boot.in$t[,1]
+      
+      indata<- as.data.frame(infit)
+      
+      image <- self$results$inplot
+      
+      image$setState(indata)
+      
+
+
+   },
+
+
    # Infit plot--------------
    
    .inPlot = function(image, ...) {
       
-        inplot <- self$options$inplot
+      binfit <- self$results$binfit
+      
+      indata <- image$state
+      
+     
+      if (!inplot)
+         return()
+      
+      p <- ggplot(indata, aes(x=infit)) + 
+         geom_histogram(aes(y=..density..), colour="black", fill="white")+
+         geom_density(alpha=.2, fill="#FF6666") 
+      
+      
+      plot <- p + geom_vline(aes(xintercept=binfit[4]),
+                    color='red',size=1) +
+         
+                  geom_vline(aes(xintercept=binfit[5]),
+                    color='red', size=1)
+      
+      print(plot)
+      TRUE
        
-       if (!inplot)
-           return()
-       
-        boot.in <- self$results$boot.in
+   },
+    
+        
+        
         
         # infit Distribution--------
         
-        boot.in$t[,1]
-        
-        hist(boot.in$t[,1], main = 'Infit Distribution ', 
-             xlab = 'Infit', col = 'yellow', prob = T)
-        
-        lines(density(boot.in$t[,1]), col = 'blue')
-        
-        ci_H=binfit[c(4,5)]
-        
-        abline(v = ci_H, col = 'red')
-        
+        # boot.in$t[,1]
+        # 
+        # hist(boot.in$t[,1], main = 'Infit Distribution ', 
+        #      xlab = 'Infit', col = 'yellow', prob = T)
+        # 
+        # lines(density(boot.in$t[,1]), col = 'blue')
+        # 
+        # ci_H=binfit[c(4,5)]
+        # 
+        # abline(v = ci_H, col = 'red')
+        # 
             
-        },
-        
-   # # wright <- image$state
-   # 
-   # 
-   # plot <- private$.personItemPlot(wright)
-   # 
-   # 
-   # 
-   # print(plot)
-   # TRUE  
-   # 
+  
    
    
      #### Helper functions =================================
