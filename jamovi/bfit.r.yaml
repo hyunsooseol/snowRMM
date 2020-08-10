@@ -43,6 +43,21 @@ items:
           title: 'Upper'
           type: number
           superTitle: '95% CI'
-
-
+          
+    - name: inplot
+      title: 'Infit distribution'
+      type: Image
+      width: 600
+      height: 450
+      visible: (inplot)
+      renderFun: .inplot
+     
+    - name: outplot
+      title: 'Outfit distribution'
+      type: Image
+      width: 600
+      height: 450
+      visible: (outplot)
+      renderFun: .outplot
+      
 ...

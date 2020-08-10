@@ -33,21 +33,32 @@ children:
             type: TextBox
             label: Bootstrap N
             format: number   
-            
-  - type: LayoutBox
-    stretchFactor: 1
-    margin: large
-    children:
+  - type: CollapseBox
+    label: Bootstrap Analysis
+    margin: normal
+    collapsed: true
+    children:            
+      - type: LayoutBox
+        stretchFactor: 1
+        margin: large
+        children:
+          - type: Label
+            label: ""
+            fitToGrid: true
+            cell:
+              column: 0
+              row: 0
+            children:
+              - type: CheckBox
+                name: bfit
+
       - type: Label
-        label: ""
-        fitToGrid: true
-        cell:
-          column: 0
-          row: 0
+        label: Bootstrap Plot
         children:
           - type: CheckBox
-            name: bfit
-            
+            name: inplot
+          - type: CheckBox
+            name: outplot
             
             
 

@@ -4,7 +4,16 @@
 \alias{bfit}
 \title{Bootstrap Item Fit}
 \usage{
-bfit(data, vars, step = 1, type = "RSM", bn = 1000, bfit = TRUE)
+bfit(
+  data,
+  vars,
+  step = 1,
+  type = "RSM",
+  bn = 1000,
+  bfit = TRUE,
+  inplot = FALSE,
+  outplot = FALSE
+)
 }
 \arguments{
 \item{data}{The data as a data frame.}
@@ -18,6 +27,10 @@ bfit(data, vars, step = 1, type = "RSM", bn = 1000, bfit = TRUE)
 \item{bn}{.}
 
 \item{bfit}{.}
+
+\item{inplot}{.}
+
+\item{outplot}{.}
 }
 \value{
 A results object containing:

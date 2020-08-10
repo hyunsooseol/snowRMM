@@ -78,7 +78,14 @@ bfitClass <- if (requireNamespace('jmvcore')) R6::R6Class(
                 # populate Boot Fit table-------------
                 
                     private$.populateBootTable(results)
-            
+                
+                #  prepare infit plot-----
+                # 
+                # private$.prepareInPlot(data)
+                # 
+                #  prepare infit plot-----
+                #  
+                #  private$.prepareOutPlot(data)
             }
         },
             
@@ -168,7 +175,9 @@ bfitClass <- if (requireNamespace('jmvcore')) R6::R6Class(
             
         
             results <-
-                list('binfit'=binfit,
+                list('boot.in'=boot.in,
+                     'boot.out'=boot.out,
+                     'binfit'=binfit,
                      'boutfit'=boutfit
                 )
         
@@ -200,7 +209,62 @@ bfitClass <- if (requireNamespace('jmvcore')) R6::R6Class(
             
         },
    
-   #### Helper functions =================================
+ 
+   # #### Plot functions ----
+   # 
+   # .prepareInPlot = function(data) {
+   #     
+   #    
+   #     
+   #     # Prepare Data For Plot -------
+   #     image <- self$results$plot
+   #     image$setState(partial)
+   #     
+   #     
+   #     
+   # }, 
+   
+   
+   # Infit plot--------------
+   
+   .inPlot = function(image, ...) {
+      
+        inplot <- self$options$inplot
+       
+       if (!inplot)
+           return()
+       
+        boot.in <- self$results$boot.in
+        
+        # infit Distribution--------
+        
+        boot.in$t[,1]
+        
+        hist(boot.in$t[,1], main = 'Infit Distribution ', 
+             xlab = 'Infit', col = 'yellow', prob = T)
+        
+        lines(density(boot.in$t[,1]), col = 'blue')
+        
+        ci_H=binfit[c(4,5)]
+        
+        abline(v = ci_H, col = 'red')
+        
+            
+        },
+        
+   # # wright <- image$state
+   # 
+   # 
+   # plot <- private$.personItemPlot(wright)
+   # 
+   # 
+   # 
+   # print(plot)
+   # TRUE  
+   # 
+   
+   
+     #### Helper functions =================================
    
    .cleanData = function() {
        items <- self$options$vars

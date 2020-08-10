@@ -46,3 +46,13 @@ options:
       title: Confidence interval
       type: Bool
       default: TRUE
+      
+    - name: inplot
+      title: Infit plot
+      type: Bool
+      default: false 
+      
+    - name: outplot
+      title: Outfit plot
+      type: Bool
+      default: false   

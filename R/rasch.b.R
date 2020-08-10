@@ -149,10 +149,10 @@ raschClass <- if (requireNamespace('jmvcore'))
             <body>
             <div class='instructions'>
             <p>Welcome to Rasch Measurement Model.</p>
+            
+            <p> The standard Rasch model is performed by Jonint Maximum Liklihood(JML).</p>
 
             <p><b>To get started:</b></p>
-
-            <p> when class=1, the traditional Rasch model is performed by Jonint Maximum Liklihood(JML).</p>
 
             <p>- Specify </b> the number of 'Step' and model 'Type'</b> in the 'Analysis option'.</p>
 

@@ -10,7 +10,9 @@ bfitOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
             step = 1,
             type = "RSM",
             bn = 1000,
-            bfit = TRUE, ...) {
+            bfit = TRUE,
+            inplot = FALSE,
+            outplot = FALSE, ...) {
 
             super$initialize(
                 package='snowRMM',
@@ -46,32 +48,48 @@ bfitOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
                 "bfit",
                 bfit,
                 default=TRUE)
+            private$..inplot <- jmvcore::OptionBool$new(
+                "inplot",
+                inplot,
+                default=FALSE)
+            private$..outplot <- jmvcore::OptionBool$new(
+                "outplot",
+                outplot,
+                default=FALSE)
 
             self$.addOption(private$..vars)
             self$.addOption(private$..step)
             self$.addOption(private$..type)
             self$.addOption(private$..bn)
             self$.addOption(private$..bfit)
+            self$.addOption(private$..inplot)
+            self$.addOption(private$..outplot)
         }),
     active = list(
         vars = function() private$..vars$value,
         step = function() private$..step$value,
         type = function() private$..type$value,
         bn = function() private$..bn$value,
-        bfit = function() private$..bfit$value),
+        bfit = function() private$..bfit$value,
+        inplot = function() private$..inplot$value,
+        outplot = function() private$..outplot$value),
     private = list(
         ..vars = NA,
         ..step = NA,
         ..type = NA,
         ..bn = NA,
-        ..bfit = NA)
+        ..bfit = NA,
+        ..inplot = NA,
+        ..outplot = NA)
 )
 
 bfitResults <- if (requireNamespace('jmvcore')) R6::R6Class(
     inherit = jmvcore::Group,
     active = list(
         instructions = function() private$.items[["instructions"]],
-        bfit = function() private$.items[["bfit"]]),
+        bfit = function() private$.items[["bfit"]],
+        inplot = function() private$.items[["inplot"]],
+        outplot = function() private$.items[["outplot"]]),
     private = list(),
     public=list(
         initialize=function(options) {
@@ -124,7 +142,23 @@ bfitResults <- if (requireNamespace('jmvcore')) R6::R6Class(
                         `name`="u[outfit]", 
                         `title`="Upper", 
                         `type`="number", 
-                        `superTitle`="95% CI"))))}))
+                        `superTitle`="95% CI"))))
+            self$add(jmvcore::Image$new(
+                options=options,
+                name="inplot",
+                title="Infit distribution",
+                width=600,
+                height=450,
+                visible="(inplot)",
+                renderFun=".inplot"))
+            self$add(jmvcore::Image$new(
+                options=options,
+                name="outplot",
+                title="Outfit distribution",
+                width=600,
+                height=450,
+                visible="(outplot)",
+                renderFun=".outplot"))}))
 
 bfitBase <- if (requireNamespace('jmvcore')) R6::R6Class(
     "bfitBase",
@@ -155,10 +189,14 @@ bfitBase <- if (requireNamespace('jmvcore')) R6::R6Class(
 #' @param type .
 #' @param bn .
 #' @param bfit .
+#' @param inplot .
+#' @param outplot .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
 #'   \code{results$bfit} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$inplot} \tab \tab \tab \tab \tab an image \cr
+#'   \code{results$outplot} \tab \tab \tab \tab \tab an image \cr
 #' }
 #'
 #' Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
@@ -174,7 +212,9 @@ bfit <- function(
     step = 1,
     type = "RSM",
     bn = 1000,
-    bfit = TRUE) {
+    bfit = TRUE,
+    inplot = FALSE,
+    outplot = FALSE) {
 
     if ( ! requireNamespace('jmvcore'))
         stop('bfit requires jmvcore to be installed (restart may be required)')
@@ -191,7 +231,9 @@ bfit <- function(
         step = step,
         type = type,
         bn = bn,
-        bfit = bfit)
+        bfit = bfit,
+        inplot = inplot,
+        outplot = outplot)
 
     analysis <- bfitClass$new(
         options = options,
