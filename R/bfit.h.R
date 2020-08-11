@@ -9,7 +9,7 @@ bfitOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
             vars = NULL,
             step = 1,
             type = "RSM",
-            bn = 1000,
+            bn = 100,
             binfit = TRUE,
             boutfit = FALSE, ...) {
 
@@ -42,7 +42,7 @@ bfitOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
                 "bn",
                 bn,
                 min=2,
-                default=1000)
+                default=100)
             private$..binfit <- jmvcore::OptionBool$new(
                 "binfit",
                 binfit,
@@ -197,7 +197,7 @@ bfit <- function(
     vars,
     step = 1,
     type = "RSM",
-    bn = 1000,
+    bn = 100,
     binfit = TRUE,
     boutfit = FALSE) {
 

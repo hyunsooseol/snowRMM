@@ -149,7 +149,7 @@ raschClass <- if (requireNamespace('jmvcore'))
             <body>
             <div class='instructions'>
             <p>Welcome to Rasch Measurement Model.</p>
-            
+
             <p> The standard Rasch model is performed by Jonint Maximum Liklihood(JML).</p>
 
             <p><b>To get started:</b></p>
@@ -157,7 +157,7 @@ raschClass <- if (requireNamespace('jmvcore'))
             <p>- Specify </b> the number of 'Step' and model 'Type'</b> in the 'Analysis option'.</p>
 
             <P>- Step is defined as number of category-1. </p>
-            
+
             <p>- It takes time to display the full results because 'Bootstrap Item Fit(n=1000) is computationally intensive.</p>
 
             <p>- Feature requests and bug reports can be made on my <a href='https://github.com/hyunsooseol/snowRMM/'  target = '_blank'>GitHub</a></p>
@@ -196,17 +196,12 @@ raschClass <- if (requireNamespace('jmvcore'))
           #  populate Model information table-----
           
           private$.populateModelTable(results)
-          
-          
+         
           # populate Item Statistics table-----
           
           private$.populateItemTable(results)
           
-          
-          # populate Boot Fit table-------------
-          
-      #    private$.populateBootTable(results)
-          
+         
           # populate Person statistics table
           
           private$.populatePersonTable(results)
@@ -280,75 +275,6 @@ raschClass <- if (requireNamespace('jmvcore'))
         poutfit <- res$person.par$outfit
         
         
-        # ## Computing Bootstrap item fit ###
-        # 
-        # # Computing boot infit-------------
-        # 
-        # boot.infit <- function(data, indices) {
-        #   d = data[indices, ]
-        #   
-        #   # estimate Rasch model--------
-        #   res1 <-
-        #     mixRasch::mixRasch(
-        #       data = d,
-        #       steps = step,
-        #       model = type,
-        #       n.c = 1
-        #     )
-        #   
-        #   
-        #   # item infit--------
-        #   infit <- res1$item.par$in.out[, 1]
-        #   
-        #   return(infit)
-        #   
-        # }
-        # 
-        # boot.in <-
-        #   boot::boot(data = data,
-        #              statistic = boot.infit,
-        #              R = 1000)
-        # 
-        # binfit <- boot::boot.ci(boot.in, type = "perc")
-        # 
-        # # get boot infit------
-        # 
-        # binfit <- binfit$percent
-        # 
-        # 
-        # # computing boot outfit------
-        # 
-        # boot.outfit <- function(data, indices) {
-        #   d = data[indices, ]
-        #   
-        #   # estimate Rasch model
-        #   res1 <-
-        #     mixRasch::mixRasch(
-        #       data = d,
-        #       steps = step,
-        #       model = type,
-        #       n.c = 1
-        #     )
-        #   
-        #   
-        #   # item outfit-------
-        #   
-        #   outfit <- res1$item.par$in.out[, 3]
-        #   
-        #   return(outfit)
-        # }
-        # 
-        # boot.out <-
-        #   boot::boot(data = data,
-        #              statistic = boot.outfit,
-        #              R = 1000)
-        # 
-        # boutfit <- boot::boot.ci(boot.out, type = "perc")
-        # 
-        # # get boot outfit-------
-        # 
-        # boutfit <- boutfit$percent
-        # 
         results <-
           list(
             'aic' = aic,
@@ -361,9 +287,7 @@ raschClass <- if (requireNamespace('jmvcore'))
             'outfit' = outfit,
             'pbis' = pbis,
             'class' = class,
-            #  'binfit' = binfit,
-            #  'boutfit' = boutfit,
-             'total' = total,
+            'total' = total,
             'pmeasure' = pmeasure,
             'pse' = pse,
             'pinfit' = pinfit,
@@ -371,11 +295,10 @@ raschClass <- if (requireNamespace('jmvcore'))
             
           )
         
-       
+        
       },
       
      
-      
       # populate Model information table-----
       
       .populateModelTable = function(results) {
@@ -409,7 +332,6 @@ raschClass <- if (requireNamespace('jmvcore'))
       # populate Item Statistics table-----
       
       .populateItemTable = function(results) {
-        
         table <- self$results$item$items
         
         vars <- self$options$vars
@@ -452,33 +374,7 @@ raschClass <- if (requireNamespace('jmvcore'))
       },
       
       
-      # populate Boot table--------
-      
-      # .populateBootTable = function(results) {
-      #   table <- self$results$item$bfit
-      #   
-      #   
-      #   values <- list()
-      #   
-      #   binfit <- results$binfit
-      #   
-      #   boutfit <- results$boutfit
-      #   
-      #   
-      #   values[['l[infit]']] <- binfit[4]
-      #   values[['u[infit]']] <- binfit[5]
-      #   
-      #   values[['l[outfit]']] <- boutfit[4]
-      #   values[['u[outfit]']] <- boutfit[5]
-      #   
-      #   
-      #   table$setRow(rowNo = 1, values)
-      #   
-      #   
-      # },
-      # 
-      # 
-      # populate Person statistics table---------
+      # populate Person analysis table-----   
       
       .populatePersonTable = function(results) {
         data <- self$data
@@ -525,7 +421,6 @@ raschClass <- if (requireNamespace('jmvcore'))
       
       
       .prepareWrightmapPlot = function(data) {
-        
         # get variables--------
         
         data <- self$data

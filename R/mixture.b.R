@@ -17,8 +17,10 @@ mixtureClass <- if (requireNamespace('jmvcore'))
     "mixtureClass",
     inherit = mixtureBase,
     private = list(
-      .init = function() {
-        if (is.null(self$data) | is.null(self$options$vars)) {
+ 
+           .init = function() {
+      
+          if (is.null(self$data) | is.null(self$options$vars)) {
           self$results$instructions$setVisible(visible = TRUE)
           
         }
@@ -378,7 +380,7 @@ mixtureClass <- if (requireNamespace('jmvcore'))
       
       
       
-      #### Helper functions =================================
+     #### Helper functions =================================
       
       .cleanData = function() {
         items <- self$options$vars

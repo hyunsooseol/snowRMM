@@ -13,27 +13,27 @@
 #' @export
 
 
-bfitClass <- if (requireNamespace('jmvcore')) R6::R6Class(
-    "bfitClass",
-    inherit = bfitBase,
-    private = list(
-        
-        
-        ###### .init function--------
-        
-        .init = function() {
+bfitClass <- if (requireNamespace('jmvcore'))
+   R6::R6Class(
+      "bfitClass",
+      inherit = bfitBase,
+      private = list(
+         
+         ###### .init function--------
+         
+         .init = function() {
             if (is.null(self$data) | is.null(self$options$vars)) {
-                self$results$instructions$setVisible(visible = TRUE)
-                
+               self$results$instructions$setVisible(visible = TRUE)
+               
             }
             
             self$results$instructions$setContent(
-                "<html>
+               "<html>
             <head>
             </head>
             <body>
             <div class='instructions'>
-          
+
             <p><b>To get started:</b></p>
 
             <p> The traditional Rasch model is performed by Jonint Maximum Liklihood(JML).</p>
@@ -50,10 +50,9 @@ bfitClass <- if (requireNamespace('jmvcore')) R6::R6Class(
             </html>"
             )
             
-        },
-        
-        .run = function() {
-            
+         },
+         
+         .run = function() {
             # get variables-------
             
             data <- self$data
@@ -65,325 +64,232 @@ bfitClass <- if (requireNamespace('jmvcore')) R6::R6Class(
             
             ready <- TRUE
             
-            if (is.null(self$options$vars) | length(self$options$vars) < 2)
-                
-                ready <- FALSE
+            if (is.null(self$options$vars) |
+                length(self$options$vars) < 2)
+               
+               ready <- FALSE
             
             if (ready) {
-                
-                data <- private$.cleanData()
-                
-                results <- private$.compute(data)
-                
-                
-                # populate Boot Fit table-------------
-                
-                private$.populateInTable(results)
-                
-                private$.populateOutTable(results)
+               data <- private$.cleanData()
+               
+               results <- private$.compute(data)
+               
+               
+               # populate Boot Fit table-------------
+               
+               private$.populateInTable(results)
+               
+               private$.populateOutTable(results)
                
             }
-        },
-            
-     .compute = function(data) {
-                    
+         },
          
-         # get variables--------
-                    
-                    data <- self$data
-                    
-                    vars <- self$options$vars
-                    
-                    step <- self$options$step
-                    
-                    type <- self$options$type
-                    
-                    bn <- self$options$bn
+         .compute = function(data) {
+            # get variables--------
             
-     # Computing Bootstrap item fit 
+            data <- self$data
+            
+            vars <- self$options$vars
+            
+            step <- self$options$step
+            
+            type <- self$options$type
+            
+            bn <- self$options$bn
+            
+            # Computing Bootstrap item fit
             
             # Computing boot infit-------------
             
             boot.infit <- function(data, indices) {
-                d = data[indices, ]
-                
-                # estimate Rasch model--------
-                res1 <-
-                    mixRasch::mixRasch(
-                        data = d,
-                        steps = step,
-                        model = type,
-                        n.c = 1
-                    )
-                
-                
-                # item infit--------
-                infit <- res1$item.par$in.out[, 1]
-                
-                return(infit)
-                
+               d = data[indices,]
+               
+               # estimate Rasch model--------
+               res1 <-
+                  mixRasch::mixRasch(
+                     data = d,
+                     steps = step,
+                     model = type,
+                     n.c = 1
+                  )
+               
+               
+               # item infit--------
+               infit <- res1$item.par$in.out[, 1]
+               
+               return(infit)
+               
             }
             
             boot.in <-
-                boot::boot(data = data,
-                           statistic = boot.infit,
-                           R = bn)
+               boot::boot(data = data,
+                          statistic = boot.infit,
+                          R = bn)
             
-            infit<- boot.in$t 
-          
-            infitlow=NA
+            infit <- boot.in$t
             
-            for(i in 1:ncol(data)){
-              
-              
-              infitlow[i]<- stats::quantile(infit[,i], .025)
-              
-              
+            infitlow = NA
+            
+            for (i in 1:ncol(data)) {
+               infitlow[i] <- stats::quantile(infit[, i], .025)
+               
+               
             }
             
             #infit lower--
             
-            infitlow<- infitlow
+            infitlow <- infitlow
             
             
             #infit high-
             
-            infithigh=NA
+            infithigh = NA
             
-            for(i in 1:ncol(data)){
-              
-              
-              infithigh[i]<- stats::quantile(infit[,i], .975)
-              
-              
+            for (i in 1:ncol(data)) {
+               infithigh[i] <- stats::quantile(infit[, i], .975)
+               
+               
             }
             
-                infithigh<- infithigh
+            infithigh <- infithigh
             
-            
-            
-            
+           
             # computing boot outfit------
             
             boot.outfit <- function(data, indices) {
-                d = data[indices, ]
-                
-                # estimate Rasch model
-                res1 <-
-                    mixRasch::mixRasch(
-                        data = d,
-                        steps = step,
-                        model = type,
-                        n.c = 1
-                    )
-                
-                
-                # item outfit-------
-                
-                outfit <- res1$item.par$in.out[, 3]
-                
-                return(outfit)
+               d = data[indices,]
+               
+               # estimate Rasch model
+               res1 <-
+                  mixRasch::mixRasch(
+                     data = d,
+                     steps = step,
+                     model = type,
+                     n.c = 1
+                  )
+               
+               
+               # item outfit-------
+               
+               outfit <- res1$item.par$in.out[, 3]
+               
+               return(outfit)
             }
             
             boot.out <-
-                boot::boot(data = data,
-                           statistic = boot.outfit,
-                           R = bn)
+               boot::boot(data = data,
+                          statistic = boot.outfit,
+                          R = bn)
             
-            outfit<- boot.out$t
+            outfit <- boot.out$t
             
-            outfitlow=NA
+            outfitlow = NA
             
-            for(i in 1:ncol(data)){
-              
-              
-              
-              outfitlow[i]<- stats::quantile(outfit[,i], .025)
-              
-              
+            for (i in 1:ncol(data)) {
+               outfitlow[i] <- stats::quantile(outfit[, i], .025)
+               
+               
             }
             
             # outfit low------
             
-            outfitlow<- outfitlow
+            outfitlow <- outfitlow
             
             
             #outfit high------------
             
-            outfithigh=NA
+            outfithigh = NA
             
-            for(i in 1:ncol(data)){
-              
-              
-              outfithigh[i]<- stats::quantile(outfit[,i], .975)
-              
-              
+            for (i in 1:ncol(data)) {
+               outfithigh[i] <- stats::quantile(outfit[, i], .975)
+               
+               
             }
             
-            outfithigh<- outfithigh
+            outfithigh <- outfithigh
             
             
-        
+            
             results <-
-                list(
-                   'infitlow'=infitlow,
-                   'infithigh'=infithigh,
-                     'outfitlow'=outfithigh,
-                     'outfithigh'=outfithigh
-                )
-        
+               list(
+                  'infitlow' = infitlow,
+                  'infithigh' = infithigh,
+                  'outfitlow' = outfithigh,
+                  'outfithigh' = outfithigh
+               )
             
             
-            },
-        
- 
-   .populateInTable = function(results) {
             
-        table <- self$results$item$binfit
-            
-        vars <- self$options$vars
-        
-        # results------
-        
-        infitlow<- results$infitlow
-        infithigh<- results$infithigh
-       
-        
-        for (i in seq_along(vars)) {
+         },
          
-            row <- list()
-            
-            
-            row[["infitlow"]] <- infitlow[i]
-            row[["infithigh"]] <- infithigh[i]
-            
-           
-            table$setRow(rowKey = vars[i], values = row)
-            
-        }
-           },
-   
-
-   
-   .populateOutTable = function(results) {
      
-     table <- self$results$item$boutfit
-     
-     vars <- self$options$vars
-     
-     outfitlow<- results$outfitlow
-     outfithigh<- results$outfithigh
-   
-   
-     for (i in seq_along(vars)) {
-       
-       row <- list()
-       
-       row[['outfitlow']] <- outfitlow[i]
-       row[['outfithigh']] <- outfithigh[i]
-       
-       
-       table$setRow(rowKey =vars[i], values = row)
-       
-     }
-   },
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   #### Plot functions ----
-# 
-#    .prepareInPlot = function(results) {
-# 
-# 
-#       boot.in <- results$boot.in
-#       
-#       infit <- boot.in$t[,1]
-#       
-#       indata<- as.data.frame(infit)
-#       
-#       image <- self$results$inplot
-#       
-#       image$setState(indata)
-#       
-# 
-# 
-#    },
-
-
-   # # Infit plot--------------
-   # 
-   # .inPlot = function(image, ...) {
-   #    
-   #    binfit <- self$results$binfit
-   #    
-   #    indata <- image$state
-   #    
-   #   
-   #    if (!inplot)
-   #       return()
-   #    
-   #    p <- ggplot(indata, aes(x=infit)) + 
-   #       geom_histogram(aes(y=..density..), colour="black", fill="white")+
-   #       geom_density(alpha=.2, fill="#FF6666") 
-   #    
-   #    
-   #    plot <- p + geom_vline(aes(xintercept=binfit[4]),
-   #                  color='red',size=1) +
-   #       
-   #                geom_vline(aes(xintercept=binfit[5]),
-   #                  color='red', size=1)
-   #    
-   #    print(plot)
-   #    TRUE
-   #     
-   # },
-   #  
-   #      
-        
-        
-        # infit Distribution--------
-        
-        # boot.in$t[,1]
-        # 
-        # hist(boot.in$t[,1], main = 'Infit Distribution ', 
-        #      xlab = 'Infit', col = 'yellow', prob = T)
-        # 
-        # lines(density(boot.in$t[,1]), col = 'blue')
-        # 
-        # ci_H=binfit[c(4,5)]
-        # 
-        # abline(v = ci_H, col = 'red')
-        # 
+         # Populate boot table------------
+         
+         .populateInTable = function(results) {
+            table <- self$results$item$binfit
             
-  
-   
-   
-     #### Helper functions =================================
-   
-   .cleanData = function() {
-       items <- self$options$vars
-       
-       data <- list()
-       
-       for (item in items)
-           data[[item]] <-
-           jmvcore::toNumeric(self$data[[item]])
-       
-       attr(data, 'row.names') <- seq_len(length(data[[1]]))
-       attr(data, 'class') <- 'data.frame'
-       data <- jmvcore::naOmit(data)
-       
-       return(data)
-   }
-   
-        
-        
-       )
-)
+            vars <- self$options$vars
+            
+            # results------
+            
+            infitlow <- results$infitlow
+            infithigh <- results$infithigh
+            
+            
+            for (i in seq_along(vars)) {
+               row <- list()
+               
+               
+               row[["infitlow"]] <- infitlow[i]
+               row[["infithigh"]] <- infithigh[i]
+               
+               
+               table$setRow(rowKey = vars[i], values = row)
+               
+            }
+         },
+         
+         
+         
+         .populateOutTable = function(results) {
+            table <- self$results$item$boutfit
+            
+            vars <- self$options$vars
+            
+            outfitlow <- results$outfitlow
+            outfithigh <- results$outfithigh
+            
+            
+            for (i in seq_along(vars)) {
+               row <- list()
+               
+               row[['outfitlow']] <- outfitlow[i]
+               row[['outfithigh']] <- outfithigh[i]
+               
+               
+               table$setRow(rowKey = vars[i], values = row)
+               
+            }
+         },
+         
+         
+         #### Helper functions =================================
+         
+         .cleanData = function() {
+            items <- self$options$vars
+            
+            data <- list()
+            
+            for (item in items)
+               data[[item]] <-
+               jmvcore::toNumeric(self$data[[item]])
+            
+            attr(data, 'row.names') <- seq_len(length(data[[1]]))
+            attr(data, 'class') <- 'data.frame'
+            data <- jmvcore::naOmit(data)
+            
+            return(data)
+         }
+         
+      )
+   )
