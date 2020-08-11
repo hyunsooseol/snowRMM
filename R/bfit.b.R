@@ -254,8 +254,8 @@ bfitClass <- if (requireNamespace('jmvcore')) R6::R6Class(
             row <- list()
             
             
-            values[["infitlow"]] <- infitlow[i]
-            values[["infithigh"]] <- infithigh[i]
+            row[["infitlow"]] <- infitlow[i]
+            row[["infithigh"]] <- infithigh[i]
             
            
             table$setRow(rowKey = vars[i], values = row)
@@ -279,11 +279,11 @@ bfitClass <- if (requireNamespace('jmvcore')) R6::R6Class(
        
        row <- list()
        
-       values[['outfitlow']] <- outfitlow[i]
-       values[['outfithigh']] <- outfithigh[i]
+       row[['outfitlow']] <- outfitlow[i]
+       row[['outfithigh']] <- outfithigh[i]
        
        
-       table$setRow(rowKey = vars[i], values = row)
+       table$setRow(rowKey =vars[i], values = row)
        
      }
    },
