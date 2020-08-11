@@ -10,9 +10,8 @@ bfit(
   step = 1,
   type = "RSM",
   bn = 1000,
-  bfit = TRUE,
-  inplot = FALSE,
-  outplot = FALSE
+  binfit = TRUE,
+  boutfit = FALSE
 )
 }
 \arguments{
@@ -26,26 +25,17 @@ bfit(
 
 \item{bn}{.}
 
-\item{bfit}{.}
+\item{binfit}{.}
 
-\item{inplot}{.}
-
-\item{outplot}{.}
+\item{boutfit}{.}
 }
 \value{
 A results object containing:
 \tabular{llllll}{
   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
-  \code{results$bfit} \tab \tab \tab \tab \tab a table \cr
-  \code{results$inplot} \tab \tab \tab \tab \tab an image \cr
-  \code{results$outplot} \tab \tab \tab \tab \tab an image \cr
+  \code{results$item$binfit} \tab \tab \tab \tab \tab a table \cr
+  \code{results$item$boutfit} \tab \tab \tab \tab \tab a table \cr
 }
-
-Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
-
-\code{results$bfit$asDF}
-
-\code{as.data.frame(results$bfit)}
 }
 \description{
 Bootstrap Item Fit

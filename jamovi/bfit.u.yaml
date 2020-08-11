@@ -50,15 +50,10 @@ children:
               row: 0
             children:
               - type: CheckBox
-                name: bfit
-
-      - type: Label
-        label: Bootstrap Plot
-        children:
-          - type: CheckBox
-            name: inplot
-          - type: CheckBox
-            name: outplot
+                name: binfit
+              - type: CheckBox
+                name: boutfit
+  
             
             
 

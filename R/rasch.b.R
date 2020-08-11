@@ -409,6 +409,7 @@ raschClass <- if (requireNamespace('jmvcore'))
       # populate Item Statistics table-----
       
       .populateItemTable = function(results) {
+        
         table <- self$results$item$items
         
         vars <- self$options$vars

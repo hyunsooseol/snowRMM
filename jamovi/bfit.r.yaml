@@ -9,55 +9,52 @@ items:
       type: Html
       visible: True
       refs: snowRMM
-
-    - name: bfit
-      title: 'Bootstrap item fit'
-      type: Table
-      visible: (bfit)
-      rows: 1
-      clearWith:
-        - vars
-      refs: snowRMM
-      columns:
-        - name: binfit[in]
-          title: ''
-          type: 'text'
-          content: Infit
-        - name: binfit[out]
-          title: ''
-          type: 'text'
-          content: Outfit
-        - name: l[infit]
-          title: 'Lower'
-          type: number
-          superTitle: '95% CI'
-        - name: u[infit]
-          title: 'Upper'
-          type: number
-          superTitle: '95% CI'
-        - name: l[outfit]
-          title: 'Lower'
-          type: number
-          superTitle: '95% CI'
-        - name: u[outfit]
-          title: 'Upper'
-          type: number
-          superTitle: '95% CI'
-          
-    - name: inplot
-      title: 'Infit distribution'
-      type: Image
-      width: 600
-      height: 450
-      visible: (inplot)
-      renderFun: .inplot
-     
-    - name: outplot
-      title: 'Outfit distribution'
-      type: Image
-      width: 600
-      height: 450
-      visible: (outplot)
-      renderFun: .outplot
       
+    - name: item
+      title: Bootstrap Analysis
+      type: Group
+      items:
+        - name: binfit
+          title: 'Bootstraped item infit'
+          type: Table
+          visible: (binfit)
+          rows: (vars)
+          clearWith:
+            - vars
+          columns:
+            - name: name
+              title: ''
+              type: 'text'
+              content: ($key)
+            - name: infitlow
+              title: 'Lower'
+              type: number
+              superTitle: '95% CI'
+            - name: infithigh
+              title: 'Upper'
+              type: number
+              superTitle: '95% CI'
+    
+        - name: boutfit
+          title: 'Bootstraped item outfit'
+          type: Table
+          visible: (boutfit)
+          rows: (vars)
+          clearWith:
+            - vars
+          columns:
+            - name: name
+              title: ''
+              type: 'text'
+              content: ($key)
+            - name: outfitlow
+              title: 'Lower'
+              type: number
+              superTitle: '95% CI'
+            - name: outfithigh
+              title: 'Upper'
+              type: number
+              superTitle: '95% CI'
+  
+    
 ...

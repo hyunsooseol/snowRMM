@@ -42,17 +42,14 @@ options:
       min: 2
       default: 1000
 
-    - name: bfit
-      title: Confidence interval
+    - name: binfit
+      title: Item infit
       type: Bool
       default: TRUE
       
-    - name: inplot
-      title: Infit plot
+    - name: boutfit
+      title: Item outfit
       type: Bool
-      default: false 
+      default: FALSE
       
-    - name: outplot
-      title: Outfit plot
-      type: Bool
-      default: false   
+ 

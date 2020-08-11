@@ -9,7 +9,7 @@
 #' @import boot
 #' @importFrom boot boot
 #' @importFrom boot boot.ci
-#' @import ggplot2
+#' @importFrom stats quantile
 #' @export
 
 
@@ -78,15 +78,10 @@ bfitClass <- if (requireNamespace('jmvcore')) R6::R6Class(
                 
                 # populate Boot Fit table-------------
                 
-                    private$.populateBootTable(results)
+                private$.populateInTable(results)
                 
-                #  prepare infit plot-----
-                 
-              #   private$.prepareInPlot(results)
-                 
-                #  prepare outfit plot-----
-                  
-                #  private$.prepareOutPlot(data)
+                private$.populateOutTable(results)
+               
             }
         },
             
@@ -134,22 +129,38 @@ bfitClass <- if (requireNamespace('jmvcore')) R6::R6Class(
                            statistic = boot.infit,
                            R = bn)
             
+            infit<- boot.in$t 
+          
+            infitlow=NA
             
-            # plotData---------
+            for(i in 1:ncol(data)){
+              
+              
+              infitlow[i]<- stats::quantile(infit[,i], .025)
+              
+              
+            }
             
-            infit <- boot.in$t[,1]
+            #infit lower--
             
-            indata<- as.data.frame(infit)
+            infitlow<- infitlow
             
             
+            #infit high-
             
-            # 95% confidence interval----
+            infithigh=NA
             
-            binfit <- boot::boot.ci( boot.in, type = "perc")
+            for(i in 1:ncol(data)){
+              
+              
+              infithigh[i]<- stats::quantile(infit[,i], .975)
+              
+              
+            }
             
-            # get boot infit------
+                infithigh<- infithigh
             
-            binfit <- binfit$percent
+            
             
             
             # computing boot outfit------
@@ -179,19 +190,46 @@ bfitClass <- if (requireNamespace('jmvcore')) R6::R6Class(
                            statistic = boot.outfit,
                            R = bn)
             
-            boutfit <- boot::boot.ci(boot.out, type = "perc")
+            outfit<- boot.out$t
             
-            # get boot outfit-------
+            outfitlow=NA
             
-            boutfit <- boutfit$percent
+            for(i in 1:ncol(data)){
+              
+              
+              
+              outfitlow[i]<- stats::quantile(outfit[,i], .025)
+              
+              
+            }
+            
+            # outfit low------
+            
+            outfitlow<- outfitlow
+            
+            
+            #outfit high------------
+            
+            outfithigh=NA
+            
+            for(i in 1:ncol(data)){
+              
+              
+              outfithigh[i]<- stats::quantile(outfit[,i], .975)
+              
+              
+            }
+            
+            outfithigh<- outfithigh
+            
             
         
             results <-
                 list(
-                   'boot.in'=boot.in,
-                   'boot.out'=boot.out,
-                     'binfit'=binfit,
-                     'boutfit'=boutfit
+                   'infitlow'=infitlow,
+                   'infithigh'=infithigh,
+                     'outfitlow'=outfithigh,
+                     'outfithigh'=outfithigh
                 )
         
             
@@ -199,79 +237,115 @@ bfitClass <- if (requireNamespace('jmvcore')) R6::R6Class(
             },
         
  
-   .populateBootTable = function(results) {
+   .populateInTable = function(results) {
             
-        table <- self$results$bfit
+        table <- self$results$item$binfit
             
-            
-            values <- list()
-            
-            binfit <- results$binfit
-            
-            boutfit <- results$boutfit
-            
-            
-            values[['l[infit]']] <- binfit[4]
-            values[['u[infit]']] <- binfit[5]
-            
-            values[['l[outfit]']] <- boutfit[4]
-            values[['u[outfit]']] <- boutfit[5]
+        vars <- self$options$vars
+        
+        # results------
+        
+        infitlow<- results$infitlow
+        infithigh<- results$infithigh
+       
+        
+        for (i in seq_along(vars)) {
+         
+            row <- list()
             
             
-            table$setRow(rowNo = 1, values)
+            values[["infitlow"]] <- infitlow[i]
+            values[["infithigh"]] <- infithigh[i]
             
+           
+            table$setRow(rowKey = vars[i], values = row)
+            
+        }
            },
    
- 
-   #### Plot functions ----
 
-   .prepareInPlot = function(results) {
-
-
-      boot.in <- results$boot.in
-      
-      infit <- boot.in$t[,1]
-      
-      indata<- as.data.frame(infit)
-      
-      image <- self$results$inplot
-      
-      image$setState(indata)
-      
-
-
-   },
-
-
-   # Infit plot--------------
    
-   .inPlot = function(image, ...) {
-      
-      binfit <- self$results$binfit
-      
-      indata <- image$state
-      
+   .populateOutTable = function(results) {
      
-      if (!inplot)
-         return()
-      
-      p <- ggplot(indata, aes(x=infit)) + 
-         geom_histogram(aes(y=..density..), colour="black", fill="white")+
-         geom_density(alpha=.2, fill="#FF6666") 
-      
-      
-      plot <- p + geom_vline(aes(xintercept=binfit[4]),
-                    color='red',size=1) +
-         
-                  geom_vline(aes(xintercept=binfit[5]),
-                    color='red', size=1)
-      
-      print(plot)
-      TRUE
+     table <- self$results$item$boutfit
+     
+     vars <- self$options$vars
+     
+     outfitlow<- results$outfitlow
+     outfithigh<- results$outfithigh
+   
+   
+     for (i in seq_along(vars)) {
        
+       row <- list()
+       
+       values[['outfitlow']] <- outfitlow[i]
+       values[['outfithigh']] <- outfithigh[i]
+       
+       
+       table$setRow(rowKey = vars[i], values = row)
+       
+     }
    },
-    
-        
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   #### Plot functions ----
+# 
+#    .prepareInPlot = function(results) {
+# 
+# 
+#       boot.in <- results$boot.in
+#       
+#       infit <- boot.in$t[,1]
+#       
+#       indata<- as.data.frame(infit)
+#       
+#       image <- self$results$inplot
+#       
+#       image$setState(indata)
+#       
+# 
+# 
+#    },
+
+
+   # # Infit plot--------------
+   # 
+   # .inPlot = function(image, ...) {
+   #    
+   #    binfit <- self$results$binfit
+   #    
+   #    indata <- image$state
+   #    
+   #   
+   #    if (!inplot)
+   #       return()
+   #    
+   #    p <- ggplot(indata, aes(x=infit)) + 
+   #       geom_histogram(aes(y=..density..), colour="black", fill="white")+
+   #       geom_density(alpha=.2, fill="#FF6666") 
+   #    
+   #    
+   #    plot <- p + geom_vline(aes(xintercept=binfit[4]),
+   #                  color='red',size=1) +
+   #       
+   #                geom_vline(aes(xintercept=binfit[5]),
+   #                  color='red', size=1)
+   #    
+   #    print(plot)
+   #    TRUE
+   #     
+   # },
+   #  
+   #      
         
         
         # infit Distribution--------
