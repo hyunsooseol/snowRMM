@@ -40,7 +40,7 @@ options:
       title: Bootstrap N
       type: Integer
       min: 2
-      default: 1000
+      default: 100
 
     - name: binfit
       title: Item infit
