@@ -9,7 +9,7 @@ bfit(
   vars,
   step = 1,
   type = "RSM",
-  bn = 1000,
+  bn = 100,
   binfit = TRUE,
   boutfit = FALSE
 )
