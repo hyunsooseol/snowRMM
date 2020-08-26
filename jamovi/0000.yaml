@@ -1,12 +1,12 @@
 ---
 title: Rasch Mixture Model for jamovi
 name: snowRMM
-version: 1.0.0
+version: 1.1.0
 jms: '1.0'
 authors:
   - Hyunsoo Seol
 maintainer: Hyunsoo Seol <snow@cau.ac.kr>
-date: '2020-08-11'
+date: '2020-08-26'
 type: R
 description: >-
   This module allows users to conduct Rasch mixture model including model
@@ -30,6 +30,12 @@ analyses:
     menuGroup: snowRMM
     menuTitle: Bootstrap Item Fit
     menuSubgroup: Rasch
+datasets:
+  - name: mixture
+    path: mix.omv
+    description: Mixture data
+    tags:
+      - Mixture
 usesNative: true
 minApp: 1.0.8
 
