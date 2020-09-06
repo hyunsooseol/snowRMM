@@ -38,36 +38,42 @@ items:
 
         - name: items
           title: 'Item Statistics'
-          type: Table
+          type: Array
+          items: (nc)
           visible: (imean || imeasure || ise || infit || outfit || pbis)
-          rows: (vars)
           clearWith:
             - vars
           refs: mixRasch
         
-          columns:
-            - name: name
-              title: ''
-              type: 'text'
-              content: ($key)
-            - name: imean
-              title: Item mean
-              visible: (imean)
-            - name: imeasure
-              title: Measure
-              visible: (imeasure) 
-            - name: ise
-              title: S.E.Measure
-              visible: (ise)  
-            - name: infit
-              title: Infit 
-              visible: (infit)  
-            - name: outfit
-              title: Outfit 
-              visible: (outfit) 
-            - name: pbis
-              title: Point biserial 
-              visible: (pbis) 
+          template:
+            title: Item Statistics - $key
+            type: Table
+            rows: (vars)
+            clearWith:
+          
+            columns:
+              - name: name
+                title: ''
+                type: 'text'
+                content: ($key)
+              - name: imean
+                title: Item mean
+                visible: (imean)
+              - name: imeasure
+                title: Measure
+                visible: (imeasure) 
+              - name: ise
+                title: S.E.Measure
+                visible: (ise)  
+              - name: infit
+                title: Infit 
+                visible: (infit)  
+              - name: outfit
+                title: Outfit 
+                visible: (outfit) 
+              - name: pbis
+                title: Point biserial 
+                visible: (pbis) 
               
     - name: person
       title: Person Analysis

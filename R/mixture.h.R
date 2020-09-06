@@ -212,45 +212,50 @@ mixtureResults <- if (requireNamespace('jmvcore')) R6::R6Class(
                                     `name`="caic", 
                                     `title`="CAIC", 
                                     `visible`="(caic)"))))
-                        self$add(jmvcore::Table$new(
+                        self$add(jmvcore::Array$new(
                             options=options,
                             name="items",
                             title="Item Statistics",
+                            items="(nc)",
                             visible="(imean || imeasure || ise || infit || outfit || pbis)",
-                            rows="(vars)",
                             clearWith=list(
                                 "vars"),
                             refs="mixRasch",
-                            columns=list(
-                                list(
-                                    `name`="name", 
-                                    `title`="", 
-                                    `type`="text", 
-                                    `content`="($key)"),
-                                list(
-                                    `name`="imean", 
-                                    `title`="Item mean", 
-                                    `visible`="(imean)"),
-                                list(
-                                    `name`="imeasure", 
-                                    `title`="Measure", 
-                                    `visible`="(imeasure)"),
-                                list(
-                                    `name`="ise", 
-                                    `title`="S.E.Measure", 
-                                    `visible`="(ise)"),
-                                list(
-                                    `name`="infit", 
-                                    `title`="Infit", 
-                                    `visible`="(infit)"),
-                                list(
-                                    `name`="outfit", 
-                                    `title`="Outfit", 
-                                    `visible`="(outfit)"),
-                                list(
-                                    `name`="pbis", 
-                                    `title`="Point biserial", 
-                                    `visible`="(pbis)"))))}))$new(options=options))
+                            template=jmvcore::Table$new(
+                                options=options,
+                                title="Item Statistics - $key",
+                                rows="(vars)",
+                                clearWith=NULL,
+                                columns=list(
+                                    list(
+                                        `name`="name", 
+                                        `title`="", 
+                                        `type`="text", 
+                                        `content`="($key)"),
+                                    list(
+                                        `name`="imean", 
+                                        `title`="Item mean", 
+                                        `visible`="(imean)"),
+                                    list(
+                                        `name`="imeasure", 
+                                        `title`="Measure", 
+                                        `visible`="(imeasure)"),
+                                    list(
+                                        `name`="ise", 
+                                        `title`="S.E.Measure", 
+                                        `visible`="(ise)"),
+                                    list(
+                                        `name`="infit", 
+                                        `title`="Infit", 
+                                        `visible`="(infit)"),
+                                    list(
+                                        `name`="outfit", 
+                                        `title`="Outfit", 
+                                        `visible`="(outfit)"),
+                                    list(
+                                        `name`="pbis", 
+                                        `title`="Point biserial", 
+                                        `visible`="(pbis)")))))}))$new(options=options))
             self$add(R6::R6Class(
                 inherit = jmvcore::Group,
                 active = list(
@@ -353,7 +358,7 @@ mixtureBase <- if (requireNamespace('jmvcore')) R6::R6Class(
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
 #'   \code{results$item$model} \tab \tab \tab \tab \tab a table \cr
-#'   \code{results$item$items} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$item$items} \tab \tab \tab \tab \tab an array \cr
 #'   \code{results$person$average} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$person$persons} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$iplot} \tab \tab \tab \tab \tab an image \cr

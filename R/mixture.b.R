@@ -9,6 +9,9 @@
 #' @import mixRaschTools
 #' @importFrom mixRaschTools mixRasch.plot
 #' @importFrom mixRaschTools avg.theta
+#' @import magicfor
+#' @importFrom magicfor magic_for
+#' @importFrom magicfor magic_result
 #' @export
 
 
@@ -125,6 +128,41 @@ mixtureClass <- if (requireNamespace('jmvcore'))
             n.c = nc
           )
         
+        # item statistics--------
+       
+        magicfor::magic_for(silent = TRUE)
+        
+        for(c in 1:nc){
+        
+        imean <-
+          res1$LatentClass[[c]]$item.par$itemDescriptives
+
+        imeasure <-
+          res1$LatentClass[[c]]$item.par$delta.i
+
+        ise <-
+          res1$LatentClass[[c]]$item.par$SE.delta.i
+
+        infit <- res1$LatentClass[[c]]$item.par$in.out
+
+        outfit <-
+          res1$LatentClass[[c]]$item.par$in.out
+
+        pbis <-
+          res1$LatentClass[[c]]$item.par$itemDescriptives
+        
+        put(imean, imeasure, ise, infit, outfit, pbis)
+
+        }
+        
+        itemstat<- magicfor::magic_result()
+        
+        imean <-  itemstat$imean
+        imeasure<- itemstat$imeasure
+        ise <-  itemstat$ise
+        infit <-  itemstat$infit
+        outfit <-  itemstat$outfit
+        pbis <-  itemstat$pbis
         
         # model information------
         
@@ -134,24 +172,6 @@ mixtureClass <- if (requireNamespace('jmvcore'))
         
         caic <- res1$info.fit$CAIC
         
-        # item statistics--------
-        
-        imean <-
-          res1$LatentClass[[1]][["item.par"]]$itemDescriptives
-        
-        imeasure <-
-          res1$LatentClass[[1]][["item.par"]][["delta.i"]]
-        
-        ise <-
-          res1$LatentClass[[1]][["item.par"]][["SE.delta.i"]]
-        
-        infit <- res1$LatentClass[[1]][["item.par"]][["in.out"]]
-        
-        outfit <-
-          res1$LatentClass[[1]][["item.par"]][["in.out"]]
-        
-        pbis <-
-          res1$LatentClass[[1]][["item.par"]]$itemDescriptives
         
         # number of class
         
@@ -174,11 +194,11 @@ mixtureClass <- if (requireNamespace('jmvcore'))
             'bic' = bic,
             'caic' = caic,
             'imean' = imean,
-            'imeasure' = imeasure,
-            'ise' = ise,
-            'infit' = infit,
-            'outfit' = outfit,
-            'pbis' = pbis,
+             'imeasure' = imeasure,
+             'ise' = ise,
+             'infit' = infit,
+             'outfit' = outfit,
+             'pbis' = pbis,
             'class' = class,
             'average' = average,
             'pclass' = pclass
@@ -219,30 +239,51 @@ mixtureClass <- if (requireNamespace('jmvcore'))
       # populate Item Statistics table-----
       
       .populateItemTable = function(results) {
+        
+        
         table <- self$results$item$items
+        
+        nc <- self$options$nc
         
         vars <- self$options$vars
         
         
         #result---
         
+       
         imean <- results$imean
-        
+
         imeasure <- results$imeasure
-        
+
         ise <- results$ise
-        
+
         infit <- results$infit
-        
+
         outfit <- results$outfit
-        
+
         pbis <- results$pbis
+
         
+        for(c in 1:nc){
         
-        for (i in seq_along(vars)) {
-          row <- list()
+          imean <- imean[[c]]
           
+          imeasure <- imeasure[[c]]
           
+          ise <- ise[[c]]
+          
+          infit <- infit[[c]]
+          
+          outfit <- outfit[[c]]
+            
+          pbis <- pbis[[c]]
+            
+          
+         for (i in seq_along(vars)) {
+        
+            row <- list()
+         
+            
           row[["imean"]] <- imean[i, 1]
           
           row[["imeasure"]] <- imeasure[i]
@@ -256,6 +297,7 @@ mixtureClass <- if (requireNamespace('jmvcore'))
           row[["pbis"]] <- pbis[i, 2]
           
           table$setRow(rowKey = vars[i], values = row)
+        }
         }
         
       },
