@@ -38,7 +38,7 @@ mixtureClass <- if (requireNamespace('jmvcore'))
 
             <p><b>To get started:</b></p>
 
-            <p>- First, specify the number of <b>'Class', Step', and 'Type'</b> in the 'Analysis option'.</p>
+            <p>- First, specify the number of <b>'Class(more than 2 classes)', Step', and 'Type'</b> in the 'Analysis option'.</p>
 
             <p>- Second, highlight the variables and click the arrow to move it across into the 'Variables' box.</p>
 
@@ -265,35 +265,27 @@ mixtureClass <- if (requireNamespace('jmvcore'))
 
         
         for(c in 1:nc){
+          
+          row <- list()
+          vars <- nc[[i]]$vars
         
           imean <- imean[[c]]
-          
           imeasure <- imeasure[[c]]
-          
           ise <- ise[[c]]
-          
           infit <- infit[[c]]
-          
           outfit <- outfit[[c]]
-            
           pbis <- pbis[[c]]
             
           
          for (i in seq_along(vars)) {
         
-            row <- list()
+         #   row <- list()
          
-            
           row[["imean"]] <- imean[i, 1]
-          
           row[["imeasure"]] <- imeasure[i]
-          
           row[["ise"]] <- ise[i]
-          
           row[["infit"]] <- infit[i, 1]
-          
           row[["outfit"]] <- outfit[i, 3]
-          
           row[["pbis"]] <- pbis[i, 2]
           
           table$setRow(rowKey = vars[i], values = row)
