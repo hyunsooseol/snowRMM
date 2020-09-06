@@ -61,7 +61,7 @@ options:
     - name: imean
       title: Item mean
       type: Bool
-      default: True
+      default: TRUE
 
     - name: imeasure
       title: Measure

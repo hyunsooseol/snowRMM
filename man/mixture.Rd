@@ -64,7 +64,12 @@ A results object containing:
 \tabular{llllll}{
   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
   \code{results$item$model} \tab \tab \tab \tab \tab a table \cr
-  \code{results$item$items} \tab \tab \tab \tab \tab an array \cr
+  \code{results$item$imean} \tab \tab \tab \tab \tab a table \cr
+  \code{results$item$imeasure} \tab \tab \tab \tab \tab a table \cr
+  \code{results$item$ise} \tab \tab \tab \tab \tab a table \cr
+  \code{results$item$infit} \tab \tab \tab \tab \tab a table \cr
+  \code{results$item$outfit} \tab \tab \tab \tab \tab a table \cr
+  \code{results$item$pbis} \tab \tab \tab \tab \tab a table \cr
   \code{results$person$average} \tab \tab \tab \tab \tab a table \cr
   \code{results$person$persons} \tab \tab \tab \tab \tab a table \cr
   \code{results$iplot} \tab \tab \tab \tab \tab an image \cr

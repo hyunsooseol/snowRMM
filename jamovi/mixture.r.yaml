@@ -35,46 +35,121 @@ items:
             - name: caic
               title: 'CAIC'
               visible: (caic)
-
-        - name: items
-          title: 'Item Statistics'
-          type: Array
-          items: (nc)
-          visible: (imean || imeasure || ise || infit || outfit || pbis)
+              
+        - name: imean
+          title: Item mean
+          type: Table
+          visible: (imean)
           clearWith:
             - vars
           refs: mixRasch
-        
-          template:
-            title: Item Statistics - $key
-            type: Table
-            rows: (vars)
-            clearWith:
           
-            columns:
-              - name: name
-                title: ''
-                type: 'text'
-                content: ($key)
-              - name: imean
-                title: Item mean
-                visible: (imean)
-              - name: imeasure
-                title: Measure
-                visible: (imeasure) 
-              - name: ise
-                title: S.E.Measure
-                visible: (ise)  
-              - name: infit
-                title: Infit 
-                visible: (infit)  
-              - name: outfit
-                title: Outfit 
-                visible: (outfit) 
-              - name: pbis
-                title: Point biserial 
-                visible: (pbis) 
+          columns:
+            - name: name
+              title: 'Item'
+              type: 'text'
+              content: ($key)
+             
+            - name: pc1
+              title: '1'
+              type: number
+              superTitle: 'Class'
+    
+        - name: imeasure
+          title: Measure
+          type: Table
+          visible: (imeasure)
+          clearWith:
+            - vars
+          refs: mixRasch
+          
+          columns:
+            - name: name
+              title: 'Item'
+              type: 'text'
+              content: ($key)
+             
+            - name: pc1
+              title: '1'
+              type: number
+              superTitle: 'Class'
               
+        - name: ise
+          title: S.E.Measure
+          type: Table
+          visible: (ise)
+          clearWith:
+            - vars
+          refs: mixRasch
+          
+          columns:
+            - name: name
+              title: 'Item'
+              type: 'text'
+              content: ($key)
+             
+            - name: pc1
+              title: '1'
+              type: number
+              superTitle: 'Class'      
+              
+        - name: infit
+          title: Infit
+          type: Table
+          visible: (infit)
+          clearWith:
+            - vars
+          refs: mixRasch
+          
+          columns:
+            - name: name
+              title: 'Item'
+              type: 'text'
+              content: ($key)
+             
+            - name: pc1
+              title: '1'
+              type: number
+              superTitle: 'Class'      
+              
+        - name: outfit
+          title: Outfit
+          type: Table
+          visible: (outfit)
+          clearWith:
+            - vars
+          refs: mixRasch
+          
+          columns:
+            - name: name
+              title: 'Item'
+              type: 'text'
+              content: ($key)
+             
+            - name: pc1
+              title: '1'
+              type: number
+              superTitle: 'Class'      
+              
+        - name: pbis
+          title: Point biserial
+          type: Table
+          visible: (pbis)
+          clearWith:
+            - vars
+          refs: mixRasch
+          
+          columns:
+            - name: name
+              title: 'Item'
+              type: 'text'
+              content: ($key)
+             
+            - name: pc1
+              title: '1'
+              type: number
+              superTitle: 'Class'      
+    
     - name: person
       title: Person Analysis
       type: Group

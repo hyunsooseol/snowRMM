@@ -179,7 +179,12 @@ mixtureResults <- if (requireNamespace('jmvcore')) R6::R6Class(
                 inherit = jmvcore::Group,
                 active = list(
                     model = function() private$.items[["model"]],
-                    items = function() private$.items[["items"]]),
+                    imean = function() private$.items[["imean"]],
+                    imeasure = function() private$.items[["imeasure"]],
+                    ise = function() private$.items[["ise"]],
+                    infit = function() private$.items[["infit"]],
+                    outfit = function() private$.items[["outfit"]],
+                    pbis = function() private$.items[["pbis"]]),
                 private = list(),
                 public=list(
                     initialize=function(options) {
@@ -212,50 +217,120 @@ mixtureResults <- if (requireNamespace('jmvcore')) R6::R6Class(
                                     `name`="caic", 
                                     `title`="CAIC", 
                                     `visible`="(caic)"))))
-                        self$add(jmvcore::Array$new(
+                        self$add(jmvcore::Table$new(
                             options=options,
-                            name="items",
-                            title="Item Statistics",
-                            items="(nc)",
-                            visible="(imean || imeasure || ise || infit || outfit || pbis)",
+                            name="imean",
+                            title="Item mean",
+                            visible="(imean)",
                             clearWith=list(
                                 "vars"),
                             refs="mixRasch",
-                            template=jmvcore::Table$new(
-                                options=options,
-                                title="Item Statistics - $key",
-                                rows="(vars)",
-                                clearWith=NULL,
-                                columns=list(
-                                    list(
-                                        `name`="name", 
-                                        `title`="", 
-                                        `type`="text", 
-                                        `content`="($key)"),
-                                    list(
-                                        `name`="imean", 
-                                        `title`="Item mean", 
-                                        `visible`="(imean)"),
-                                    list(
-                                        `name`="imeasure", 
-                                        `title`="Measure", 
-                                        `visible`="(imeasure)"),
-                                    list(
-                                        `name`="ise", 
-                                        `title`="S.E.Measure", 
-                                        `visible`="(ise)"),
-                                    list(
-                                        `name`="infit", 
-                                        `title`="Infit", 
-                                        `visible`="(infit)"),
-                                    list(
-                                        `name`="outfit", 
-                                        `title`="Outfit", 
-                                        `visible`="(outfit)"),
-                                    list(
-                                        `name`="pbis", 
-                                        `title`="Point biserial", 
-                                        `visible`="(pbis)")))))}))$new(options=options))
+                            columns=list(
+                                list(
+                                    `name`="name", 
+                                    `title`="Item", 
+                                    `type`="text", 
+                                    `content`="($key)"),
+                                list(
+                                    `name`="pc1", 
+                                    `title`="1", 
+                                    `type`="number", 
+                                    `superTitle`="Class"))))
+                        self$add(jmvcore::Table$new(
+                            options=options,
+                            name="imeasure",
+                            title="Measure",
+                            visible="(imeasure)",
+                            clearWith=list(
+                                "vars"),
+                            refs="mixRasch",
+                            columns=list(
+                                list(
+                                    `name`="name", 
+                                    `title`="Item", 
+                                    `type`="text", 
+                                    `content`="($key)"),
+                                list(
+                                    `name`="pc1", 
+                                    `title`="1", 
+                                    `type`="number", 
+                                    `superTitle`="Class"))))
+                        self$add(jmvcore::Table$new(
+                            options=options,
+                            name="ise",
+                            title="S.E.Measure",
+                            visible="(ise)",
+                            clearWith=list(
+                                "vars"),
+                            refs="mixRasch",
+                            columns=list(
+                                list(
+                                    `name`="name", 
+                                    `title`="Item", 
+                                    `type`="text", 
+                                    `content`="($key)"),
+                                list(
+                                    `name`="pc1", 
+                                    `title`="1", 
+                                    `type`="number", 
+                                    `superTitle`="Class"))))
+                        self$add(jmvcore::Table$new(
+                            options=options,
+                            name="infit",
+                            title="Infit",
+                            visible="(infit)",
+                            clearWith=list(
+                                "vars"),
+                            refs="mixRasch",
+                            columns=list(
+                                list(
+                                    `name`="name", 
+                                    `title`="Item", 
+                                    `type`="text", 
+                                    `content`="($key)"),
+                                list(
+                                    `name`="pc1", 
+                                    `title`="1", 
+                                    `type`="number", 
+                                    `superTitle`="Class"))))
+                        self$add(jmvcore::Table$new(
+                            options=options,
+                            name="outfit",
+                            title="Outfit",
+                            visible="(outfit)",
+                            clearWith=list(
+                                "vars"),
+                            refs="mixRasch",
+                            columns=list(
+                                list(
+                                    `name`="name", 
+                                    `title`="Item", 
+                                    `type`="text", 
+                                    `content`="($key)"),
+                                list(
+                                    `name`="pc1", 
+                                    `title`="1", 
+                                    `type`="number", 
+                                    `superTitle`="Class"))))
+                        self$add(jmvcore::Table$new(
+                            options=options,
+                            name="pbis",
+                            title="Point biserial",
+                            visible="(pbis)",
+                            clearWith=list(
+                                "vars"),
+                            refs="mixRasch",
+                            columns=list(
+                                list(
+                                    `name`="name", 
+                                    `title`="Item", 
+                                    `type`="text", 
+                                    `content`="($key)"),
+                                list(
+                                    `name`="pc1", 
+                                    `title`="1", 
+                                    `type`="number", 
+                                    `superTitle`="Class"))))}))$new(options=options))
             self$add(R6::R6Class(
                 inherit = jmvcore::Group,
                 active = list(
@@ -358,7 +433,12 @@ mixtureBase <- if (requireNamespace('jmvcore')) R6::R6Class(
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
 #'   \code{results$item$model} \tab \tab \tab \tab \tab a table \cr
-#'   \code{results$item$items} \tab \tab \tab \tab \tab an array \cr
+#'   \code{results$item$imean} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$item$imeasure} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$item$ise} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$item$infit} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$item$outfit} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$item$pbis} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$person$average} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$person$persons} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$iplot} \tab \tab \tab \tab \tab an image \cr

@@ -9,9 +9,6 @@
 #' @import mixRaschTools
 #' @importFrom mixRaschTools mixRasch.plot
 #' @importFrom mixRaschTools avg.theta
-#' @import magicfor
-#' @importFrom magicfor magic_for
-#' @importFrom magicfor magic_result
 #' @export
 
 
@@ -85,7 +82,12 @@ mixtureClass <- if (requireNamespace('jmvcore'))
           
           # populate Item Statistics table-----
           
-          private$.populateItemTable(results)
+          private$.populateImeasureTable(results)
+          private$.populateIseTable(results)
+          private$.populateImeanTable(results)
+          private$.populateInfitTable(results)
+          private$.populateOutfitTable(results)
+          private$.populatePbisTable(results)
           
           # populate Average theta table----
           
@@ -130,40 +132,67 @@ mixtureClass <- if (requireNamespace('jmvcore'))
         
         # item statistics--------
        
-        magicfor::magic_for(silent = TRUE)
+        imeasure <- sapply(res1$LatentClass, function(x) x$item.par$delta.i)
+        imeasure <- as.data.frame(imeasure)
         
-        for(c in 1:nc){
         
-        imean <-
-          res1$LatentClass[[c]]$item.par$itemDescriptives
-
-        imeasure <-
-          res1$LatentClass[[c]]$item.par$delta.i
-
-        ise <-
-          res1$LatentClass[[c]]$item.par$SE.delta.i
-
-        infit <- res1$LatentClass[[c]]$item.par$in.out
-
-        outfit <-
-          res1$LatentClass[[c]]$item.par$in.out
-
-        pbis <-
-          res1$LatentClass[[c]]$item.par$itemDescriptives
+        ise <- sapply(res1$LatentClass, function(x) x$item.par$SE.delta.i)
+        ise <- as.data.frame(ise)
         
-        put(imean, imeasure, ise, infit, outfit, pbis)
-
-        }
         
-        itemstat<- magicfor::magic_result()
+      #  fit <- sapply(res1$LatentClass, function(x) x$item.par$in.out)
         
-        imean <-  itemstat$imean
-        imeasure<- itemstat$imeasure
-        ise <-  itemstat$ise
-        infit <-  itemstat$infit
-        outfit <-  itemstat$outfit
-        pbis <-  itemstat$pbis
+        infit <- sapply(res1$LatentClass, function(x) x$item.par$in.out[,1])   
+        infit <- as.data.frame(infit)
         
+        
+        outfit <- sapply(res1$LatentClass, function(x) x$item.par$in.out[,3])
+        outfit <- as.data.frame(outfit)
+        
+        
+        # desc <- sapply(res1$LatentClass, function(x) x$item.par$itemDescriptives)
+        
+         imean <- sapply(res1$LatentClass, function(x) x$item.par$itemDescriptives[,1])
+         imean <- as.data.frame(imean)
+         
+         
+         pbis <- sapply(res1$LatentClass, function(x) x$item.par$itemDescriptives[,2])
+         pbis <- as.data.frame(pbis)
+        
+        # magicfor::magic_for(silent = TRUE)
+        # 
+        # for(c in 1:nc){
+        # 
+        # imean <-
+        #   res1$LatentClass[[c]]$item.par$itemDescriptives
+        # 
+        # imeasure <-
+        #   res1$LatentClass[[c]]$item.par$delta.i
+        # 
+        # ise <-
+        #   res1$LatentClass[[c]]$item.par$SE.delta.i
+        # 
+        # infit <- res1$LatentClass[[c]]$item.par$in.out
+        # 
+        # outfit <-
+        #   res1$LatentClass[[c]]$item.par$in.out
+        # 
+        # pbis <-
+        #   res1$LatentClass[[c]]$item.par$itemDescriptives
+        # 
+        # put(imean, imeasure, ise, infit, outfit, pbis)
+        # 
+        # }
+        # 
+        # itemstat<- magicfor::magic_result()
+        # 
+        # imean <-  itemstat$imean
+        # imeasure<- itemstat$imeasure
+        # ise <-  itemstat$ise
+        # infit <-  itemstat$infit
+        # outfit <-  itemstat$outfit
+        # pbis <-  itemstat$pbis
+        # 
         # model information------
         
         aic <- res1$info.fit$AIC
@@ -193,12 +222,12 @@ mixtureClass <- if (requireNamespace('jmvcore'))
             'aic' = aic,
             'bic' = bic,
             'caic' = caic,
-            'imean' = imean,
-             'imeasure' = imeasure,
+            'imeasure' = imeasure,
              'ise' = ise,
              'infit' = infit,
-             'outfit' = outfit,
-             'pbis' = pbis,
+            'outfit' = outfit,
+            'imean' = imean,
+            'pbis'=pbis,
             'class' = class,
             'average' = average,
             'pclass' = pclass
@@ -238,10 +267,10 @@ mixtureClass <- if (requireNamespace('jmvcore'))
       
       # populate Item Statistics table-----
       
-      .populateItemTable = function(results) {
+      .populateImeasureTable = function(results) {
         
         
-        table <- self$results$item$items
+        table <- self$results$item$imeasure
         
         nc <- self$options$nc
         
@@ -251,50 +280,278 @@ mixtureClass <- if (requireNamespace('jmvcore'))
         #result---
         
        
-        imean <- results$imean
-
         imeasure <- results$imeasure
 
-        ise <- results$ise
-
-        infit <- results$infit
-
-        outfit <- results$outfit
-
-        pbis <- results$pbis
-
+       #  ise <- results$ise
+       # 
+       #  infit <- results$infit
+       #  outfit <- results$outfit
+       #  
+       #  
+       # imean <- results$imean
+       # pbis <- results$pbis
+       # 
+       
+        # for(c in 1:nc){
+        #   
+        #   row <- list()
+        #   vars <- nc[[i]]$vars
+        # 
+        #   imean <- imean[[c]]
+        #   imeasure <- imeasure[[c]]
+        #   ise <- ise[[c]]
+        #   infit <- infit[[c]]
+        #   outfit <- outfit[[c]]
+        #   pbis <- pbis[[c]]
         
-        for(c in 1:nc){
-          
-          row <- list()
-          vars <- nc[[i]]$vars
-        
-          imean <- imean[[c]]
-          imeasure <- imeasure[[c]]
-          ise <- ise[[c]]
-          infit <- infit[[c]]
-          outfit <- outfit[[c]]
-          pbis <- pbis[[c]]
-            
-          
-         for (i in seq_along(vars)) {
-        
-         #   row <- list()
+       nclass <- results$class
+       
+       if (nclass > 1) {
+         for (i in 2:nclass)
+           
+           table$addColumn(
+             name = paste0("pc", i),
+             title = as.character(i),
+             type = 'number',
+             superTitle = 'Class'
+           )
          
-          row[["imean"]] <- imean[i, 1]
-          row[["imeasure"]] <- imeasure[i]
-          row[["ise"]] <- ise[i]
-          row[["infit"]] <- infit[i, 1]
-          row[["outfit"]] <- outfit[i, 3]
-          row[["pbis"]] <- pbis[i, 2]
-          
-          table$setRow(rowKey = vars[i], values = row)
-        }
-        }
+       }
+       
+       for (i in seq_along(vars)) {
+         row <- list()
+         
+         
+         for (j in 1:nclass) {
+           row[[paste0("pc", j)]] <- imeasure[i, j]
+         }
+         
+         table$addRow(rowKey = i, values = row)
+         
+       }
+       
+       
+        # for (i in seq_along(vars)) {
+        # 
+        #     row <- list()
+        #  
+        #   row[["imean"]] <- imean[i]
+        #   row[["imeasure"]] <- imeasure[i]
+        #   row[["ise"]] <- ise[i]
+        #   row[["infit"]] <- infit[i]
+        #   row[["outfit"]] <- outfit[i]
+        #   row[["pbis"]] <- pbis[i]
+        #   
+        #   table$setRow(rowKey = vars[i], values = row)
+        # }
+        # 
         
       },
       
-      # populate Average theta table-----
+      .populateIseTable = function(results) {
+        
+        
+        table <- self$results$item$ise
+        
+        nc <- self$options$nc
+        
+        vars <- self$options$vars
+        
+        #result---
+        
+        ise <- results$ise
+        
+        nclass <- results$class
+        
+        if (nclass > 1) {
+          for (i in 2:nclass)
+            
+            table$addColumn(
+              name = paste0("pc", i),
+              title = as.character(i),
+              type = 'number',
+              superTitle = 'Class'
+            )
+          
+        }
+        
+        for (i in seq_along(vars)) {
+          row <- list()
+          
+          
+          for (j in 1:nclass) {
+            row[[paste0("pc", j)]] <- ise[i, j]
+          }
+          
+          table$addRow(rowKey = i, values = row)
+          
+        }
+      },
+        
+     
+.populateImeanTable = function(results) {
+        
+        
+        table <- self$results$item$imean
+        
+        nc <- self$options$nc
+        
+        vars <- self$options$vars
+        
+        #result---
+        
+        imean <- results$imean
+        
+        nclass <- results$class
+        
+        if (nclass > 1) {
+          for (i in 2:nclass)
+            
+            table$addColumn(
+              name = paste0("pc", i),
+              title = as.character(i),
+              type = 'number',
+              superTitle = 'Class'
+            )
+          
+        }
+        
+        for (i in seq_along(vars)) {
+          row <- list()
+          
+          
+          for (j in 1:nclass) {
+            row[[paste0("pc", j)]] <- imean[i, j]
+          }
+          
+          table$addRow(rowKey = i, values = row)
+          
+        }
+      },
+      
+ 
+.populateInfitTable = function(results) {
+  
+  
+  table <- self$results$item$infit
+  
+  nc <- self$options$nc
+  
+  vars <- self$options$vars
+  
+  #result---
+  
+  infit <- results$infit
+  
+  nclass <- results$class
+  
+  if (nclass > 1) {
+    for (i in 2:nclass)
+      
+      table$addColumn(
+        name = paste0("pc", i),
+        title = as.character(i),
+        type = 'number',
+        superTitle = 'Class'
+      )
+    
+  }
+  
+  for (i in seq_along(vars)) {
+    row <- list()
+    
+    
+    for (j in 1:nclass) {
+      row[[paste0("pc", j)]] <- infit[i, j]
+    }
+    
+    table$addRow(rowKey = i, values = row)
+    
+  }
+},
+
+.populateOutfitTable = function(results) {
+  
+  
+  table <- self$results$item$outfit
+  
+  nc <- self$options$nc
+  
+  vars <- self$options$vars
+  
+  #result---
+  
+  outfit <- results$outfit
+  
+  nclass <- results$class
+  
+  if (nclass > 1) {
+    for (i in 2:nclass)
+      
+      table$addColumn(
+        name = paste0("pc", i),
+        title = as.character(i),
+        type = 'number',
+        superTitle = 'Class'
+      )
+    
+  }
+  
+  for (i in seq_along(vars)) {
+    row <- list()
+    
+    
+    for (j in 1:nclass) {
+      row[[paste0("pc", j)]] <- outfit[i, j]
+    }
+    
+    table$addRow(rowKey = i, values = row)
+    
+  }
+},
+
+
+.populatePbisTable = function(results) {
+  
+  
+  table <- self$results$item$pbis
+  
+  nc <- self$options$nc
+  
+  vars <- self$options$vars
+  
+  #result---
+  
+  pbis <- results$pbis
+  
+  nclass <- results$class
+  
+  if (nclass > 1) {
+    for (i in 2:nclass)
+      
+      table$addColumn(
+        name = paste0("pc", i),
+        title = as.character(i),
+        type = 'number',
+        superTitle = 'Class'
+      )
+    
+  }
+  
+  for (i in seq_along(vars)) {
+    row <- list()
+    
+    
+    for (j in 1:nclass) {
+      row[[paste0("pc", j)]] <- pbis[i, j]
+    }
+    
+    table$addRow(rowKey = i, values = row)
+    
+  }
+},
+
+       # populate Average theta table-----
       
       .populateAverageTable = function(results) {
         nc <- self$options$nc
