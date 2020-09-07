@@ -8,10 +8,11 @@
 #' @importFrom mixRasch mixRasch
 #' @import mixRaschTools
 #' @importFrom mixRaschTools avg.theta
-#' @importFrom ggplot2 autoplot
+#' @importFrom ggplot2 geom_line
 #' @importFrom ggplot2 geom_point
 #' @importFrom ggplot2 labs
-#' @importFrom zoo zoo
+#' @importFrom ggplot2 aes
+#' @importFrom tidyr gather
 #' @export
 
 
@@ -100,11 +101,7 @@ mixtureClass <- if (requireNamespace('jmvcore'))
           
           private$.populatePersonTable(results)
           
-          # prepare item by class plot-----
-          
-          # private$.prepareItemPlot(data)
-          
-          
+         
         }
       },
       
@@ -284,7 +281,12 @@ mixtureClass <- if (requireNamespace('jmvcore'))
         
         image <- self$results$iplot
         
-        image$setState(imeasure)
+        imeasure$item <- seq.int(nrow(imeasure))
+        
+        data<- tidyr::gather(data =imeasure, class, measure, -item)
+        
+        
+        image$setState(data)
         
         
       },
@@ -573,11 +575,12 @@ mixtureClass <- if (requireNamespace('jmvcore'))
         
         plotData <- image$state
         
-        plot <- ggplot2::autoplot(zoo(plotData),facet = NULL)+
-          geom_point() +
-          
-          labs(title="Item Measures by Class",
-               x ="Item number)", y = "Measure", color='Class')
+        
+        plot<- ggplot2::ggplot(plotData, aes(x=as.factor(item), y=measure, group=class)) +
+          geom_line(aes(color=class))+
+          geom_point(aes(color=class))+
+          labs(title="Item parameters by class",
+               x ="Item number", y = "Measure", color='Class')
         
         print(plot)
         TRUE
