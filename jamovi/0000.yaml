@@ -6,7 +6,7 @@ jms: '1.0'
 authors:
   - Hyunsoo Seol
 maintainer: Hyunsoo Seol <snow@cau.ac.kr>
-date: '2020-09-06'
+date: '2020-09-07'
 type: R
 description: >-
   This module allows users to conduct Rasch mixture model including model

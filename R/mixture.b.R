@@ -102,7 +102,7 @@ mixtureClass <- if (requireNamespace('jmvcore'))
           
           # prepare item by class plot-----
           
-         # private$.prepareItemPlot(data)
+          # private$.prepareItemPlot(data)
           
           
         }
@@ -134,7 +134,7 @@ mixtureClass <- if (requireNamespace('jmvcore'))
           )
         
         # item statistics--------
-       
+        
         imeasure <- sapply(res1$LatentClass, function(x) x$item.par$delta.i)
         imeasure <- as.data.frame(imeasure)
         
@@ -143,7 +143,7 @@ mixtureClass <- if (requireNamespace('jmvcore'))
         ise <- as.data.frame(ise)
         
         
-      #  fit <- sapply(res1$LatentClass, function(x) x$item.par$in.out)
+        #  fit <- sapply(res1$LatentClass, function(x) x$item.par$in.out)
         
         infit <- sapply(res1$LatentClass, function(x) x$item.par$in.out[,1])   
         infit <- as.data.frame(infit)
@@ -155,47 +155,14 @@ mixtureClass <- if (requireNamespace('jmvcore'))
         
         # desc <- sapply(res1$LatentClass, function(x) x$item.par$itemDescriptives)
         
-         imean <- sapply(res1$LatentClass, function(x) x$item.par$itemDescriptives[,1])
-         imean <- as.data.frame(imean)
-         
-         
-         pbis <- sapply(res1$LatentClass, function(x) x$item.par$itemDescriptives[,2])
-         pbis <- as.data.frame(pbis)
+        imean <- sapply(res1$LatentClass, function(x) x$item.par$itemDescriptives[,1])
+        imean <- as.data.frame(imean)
         
-        # magicfor::magic_for(silent = TRUE)
-        # 
-        # for(c in 1:nc){
-        # 
-        # imean <-
-        #   res1$LatentClass[[c]]$item.par$itemDescriptives
-        # 
-        # imeasure <-
-        #   res1$LatentClass[[c]]$item.par$delta.i
-        # 
-        # ise <-
-        #   res1$LatentClass[[c]]$item.par$SE.delta.i
-        # 
-        # infit <- res1$LatentClass[[c]]$item.par$in.out
-        # 
-        # outfit <-
-        #   res1$LatentClass[[c]]$item.par$in.out
-        # 
-        # pbis <-
-        #   res1$LatentClass[[c]]$item.par$itemDescriptives
-        # 
-        # put(imean, imeasure, ise, infit, outfit, pbis)
-        # 
-        # }
-        # 
-        # itemstat<- magicfor::magic_result()
-        # 
-        # imean <-  itemstat$imean
-        # imeasure<- itemstat$imeasure
-        # ise <-  itemstat$ise
-        # infit <-  itemstat$infit
-        # outfit <-  itemstat$outfit
-        # pbis <-  itemstat$pbis
-        # 
+        
+        pbis <- sapply(res1$LatentClass, function(x) x$item.par$itemDescriptives[,2])
+        pbis <- as.data.frame(pbis)
+        
+        
         # model information------
         
         aic <- res1$info.fit$AIC
@@ -226,8 +193,8 @@ mixtureClass <- if (requireNamespace('jmvcore'))
             'bic' = bic,
             'caic' = caic,
             'imeasure' = imeasure,
-             'ise' = ise,
-             'infit' = infit,
+            'ise' = ise,
+            'infit' = infit,
             'outfit' = outfit,
             'imean' = imean,
             'pbis'=pbis,
@@ -236,8 +203,8 @@ mixtureClass <- if (requireNamespace('jmvcore'))
             'pclass' = pclass
           )
         
-       
-        },
+        
+      },
       
       # populate Model information table-----
       
@@ -283,78 +250,42 @@ mixtureClass <- if (requireNamespace('jmvcore'))
         
         #result---
         
-       
-        imeasure <- results$imeasure
-
-       #  ise <- results$ise
-       # 
-       #  infit <- results$infit
-       #  outfit <- results$outfit
-       #  
-       #  
-       # imean <- results$imean
-       # pbis <- results$pbis
-       # 
-       
-        # for(c in 1:nc){
-        #   
-        #   row <- list()
-        #   vars <- nc[[i]]$vars
-        # 
-        #   imean <- imean[[c]]
-        #   imeasure <- imeasure[[c]]
-        #   ise <- ise[[c]]
-        #   infit <- infit[[c]]
-        #   outfit <- outfit[[c]]
-        #   pbis <- pbis[[c]]
         
-       nclass <- results$class
-       
-       if (nclass > 1) {
-         for (i in 2:nclass)
-           
-           table$addColumn(
-             name = paste0("pc", i),
-             title = as.character(i),
-             type = 'number',
-             superTitle = 'Class'
-           )
-         
-       }
-       
-       for (i in seq_along(vars)) {
-         row <- list()
-         
-         
-         for (j in 1:nclass) {
-           row[[paste0("pc", j)]] <- imeasure[i, j]
-         }
-         
-         table$addRow(rowKey = i, values = row)
-         
-       }
-       
-       # Prepare Data For Item Plot -------
-       
-       image <- self$results$iplot
-       
-       image$setState(imeasure)
-       
-       
-        # for (i in seq_along(vars)) {
-        # 
-        #     row <- list()
-        #  
-        #   row[["imean"]] <- imean[i]
-        #   row[["imeasure"]] <- imeasure[i]
-        #   row[["ise"]] <- ise[i]
-        #   row[["infit"]] <- infit[i]
-        #   row[["outfit"]] <- outfit[i]
-        #   row[["pbis"]] <- pbis[i]
-        #   
-        #   table$setRow(rowKey = vars[i], values = row)
-        # }
-        # 
+        imeasure <- results$imeasure
+        
+        
+        nclass <- results$class
+        
+        if (nclass > 1) {
+          for (i in 2:nclass)
+            
+            table$addColumn(
+              name = paste0("pc", i),
+              title = as.character(i),
+              type = 'number',
+              superTitle = 'Class'
+            )
+          
+        }
+        
+        for (i in seq_along(vars)) {
+          row <- list()
+          
+          
+          for (j in 1:nclass) {
+            row[[paste0("pc", j)]] <- imeasure[i, j]
+          }
+          
+          table$addRow(rowKey = i, values = row)
+          
+        }
+        
+        # Prepare Data For Item Plot -------
+        
+        image <- self$results$iplot
+        
+        image$setState(imeasure)
+        
         
       },
       
@@ -397,9 +328,9 @@ mixtureClass <- if (requireNamespace('jmvcore'))
           
         }
       },
-        
-     
-.populateImeanTable = function(results) {
+      
+      
+      .populateImeanTable = function(results) {
         
         
         table <- self$results$item$imean
@@ -439,129 +370,129 @@ mixtureClass <- if (requireNamespace('jmvcore'))
         }
       },
       
- 
-.populateInfitTable = function(results) {
-  
-  
-  table <- self$results$item$infit
-  
-  nc <- self$options$nc
-  
-  vars <- self$options$vars
-  
-  #result---
-  
-  infit <- results$infit
-  
-  nclass <- results$class
-  
-  if (nclass > 1) {
-    for (i in 2:nclass)
       
-      table$addColumn(
-        name = paste0("pc", i),
-        title = as.character(i),
-        type = 'number',
-        superTitle = 'Class'
-      )
-    
-  }
-  
-  for (i in seq_along(vars)) {
-    row <- list()
-    
-    
-    for (j in 1:nclass) {
-      row[[paste0("pc", j)]] <- infit[i, j]
-    }
-    
-    table$addRow(rowKey = i, values = row)
-    
-  }
-},
-
-.populateOutfitTable = function(results) {
-  
-  
-  table <- self$results$item$outfit
-  
-  nc <- self$options$nc
-  
-  vars <- self$options$vars
-  
-  #result---
-  
-  outfit <- results$outfit
-  
-  nclass <- results$class
-  
-  if (nclass > 1) {
-    for (i in 2:nclass)
+      .populateInfitTable = function(results) {
+        
+        
+        table <- self$results$item$infit
+        
+        nc <- self$options$nc
+        
+        vars <- self$options$vars
+        
+        #result---
+        
+        infit <- results$infit
+        
+        nclass <- results$class
+        
+        if (nclass > 1) {
+          for (i in 2:nclass)
+            
+            table$addColumn(
+              name = paste0("pc", i),
+              title = as.character(i),
+              type = 'number',
+              superTitle = 'Class'
+            )
+          
+        }
+        
+        for (i in seq_along(vars)) {
+          row <- list()
+          
+          
+          for (j in 1:nclass) {
+            row[[paste0("pc", j)]] <- infit[i, j]
+          }
+          
+          table$addRow(rowKey = i, values = row)
+          
+        }
+      },
       
-      table$addColumn(
-        name = paste0("pc", i),
-        title = as.character(i),
-        type = 'number',
-        superTitle = 'Class'
-      )
-    
-  }
-  
-  for (i in seq_along(vars)) {
-    row <- list()
-    
-    
-    for (j in 1:nclass) {
-      row[[paste0("pc", j)]] <- outfit[i, j]
-    }
-    
-    table$addRow(rowKey = i, values = row)
-    
-  }
-},
-
-
-.populatePbisTable = function(results) {
-  
-  
-  table <- self$results$item$pbis
-  
-  nc <- self$options$nc
-  
-  vars <- self$options$vars
-  
-  #result---
-  
-  pbis <- results$pbis
-  
-  nclass <- results$class
-  
-  if (nclass > 1) {
-    for (i in 2:nclass)
+      .populateOutfitTable = function(results) {
+        
+        
+        table <- self$results$item$outfit
+        
+        nc <- self$options$nc
+        
+        vars <- self$options$vars
+        
+        #result---
+        
+        outfit <- results$outfit
+        
+        nclass <- results$class
+        
+        if (nclass > 1) {
+          for (i in 2:nclass)
+            
+            table$addColumn(
+              name = paste0("pc", i),
+              title = as.character(i),
+              type = 'number',
+              superTitle = 'Class'
+            )
+          
+        }
+        
+        for (i in seq_along(vars)) {
+          row <- list()
+          
+          
+          for (j in 1:nclass) {
+            row[[paste0("pc", j)]] <- outfit[i, j]
+          }
+          
+          table$addRow(rowKey = i, values = row)
+          
+        }
+      },
       
-      table$addColumn(
-        name = paste0("pc", i),
-        title = as.character(i),
-        type = 'number',
-        superTitle = 'Class'
-      )
-    
-  }
-  
-  for (i in seq_along(vars)) {
-    row <- list()
-    
-    
-    for (j in 1:nclass) {
-      row[[paste0("pc", j)]] <- pbis[i, j]
-    }
-    
-    table$addRow(rowKey = i, values = row)
-    
-  }
-},
-
-       # populate Average theta table-----
+      
+      .populatePbisTable = function(results) {
+        
+        
+        table <- self$results$item$pbis
+        
+        nc <- self$options$nc
+        
+        vars <- self$options$vars
+        
+        #result---
+        
+        pbis <- results$pbis
+        
+        nclass <- results$class
+        
+        if (nclass > 1) {
+          for (i in 2:nclass)
+            
+            table$addColumn(
+              name = paste0("pc", i),
+              title = as.character(i),
+              type = 'number',
+              superTitle = 'Class'
+            )
+          
+        }
+        
+        for (i in seq_along(vars)) {
+          row <- list()
+          
+          
+          for (j in 1:nclass) {
+            row[[paste0("pc", j)]] <- pbis[i, j]
+          }
+          
+          table$addRow(rowKey = i, values = row)
+          
+        }
+      },
+      
+      # populate Average theta table-----
       
       .populateAverageTable = function(results) {
         nc <- self$options$nc
@@ -630,19 +561,6 @@ mixtureClass <- if (requireNamespace('jmvcore'))
       },
       
       
-      ### Item Plot by Class ----
-      
-      # .prepareItemPlot = function(data) {
-      # 
-      #   
-      #   # Prepare Data For Item Plot -------
-      # 
-      #   image <- self$results$iplot
-      # 
-      #   image$setState(imeasure)
-      # 
-      # },
-
       # Item plot--------------
       
       .itemPlot = function(image, ggtheme, theme, ...) {
@@ -651,23 +569,23 @@ mixtureClass <- if (requireNamespace('jmvcore'))
           return(FALSE)
         
         
-         itemplot <- self$options$iplot
+        itemplot <- self$options$iplot
         
-         plotData <- image$state
-         
-         plot <- ggplot2::autoplot(zoo(plotData),facet = NULL)+
-                 geom_point() +
-                 
-           labs(title="Item Measures by Class",
-                x ="Item number)", y = "Measure", color='Class')
+        plotData <- image$state
+        
+        plot <- ggplot2::autoplot(zoo(plotData),facet = NULL)+
+          geom_point() +
           
+          labs(title="Item Measures by Class",
+               x ="Item number)", y = "Measure", color='Class')
+        
         print(plot)
         TRUE
         
       },
       
- 
-     #### Helper functions =================================
+      
+      #### Helper functions =================================
       
       .cleanData = function() {
         items <- self$options$vars
