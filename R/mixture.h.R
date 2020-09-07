@@ -384,10 +384,9 @@ mixtureResults <- if (requireNamespace('jmvcore')) R6::R6Class(
                 name="iplot",
                 title="Item Plot",
                 visible="(iplot)",
-                width=700,
-                height=500,
-                renderFun=".itemPlot",
-                refs="mixRaschTools"))}))
+                width=600,
+                height=450,
+                renderFun=".itemPlot"))}))
 
 mixtureBase <- if (requireNamespace('jmvcore')) R6::R6Class(
     "mixtureBase",

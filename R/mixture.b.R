@@ -7,8 +7,11 @@
 #' @import mixRasch
 #' @importFrom mixRasch mixRasch
 #' @import mixRaschTools
-#' @importFrom mixRaschTools mixRasch.plot
 #' @importFrom mixRaschTools avg.theta
+#' @importFrom ggplot2 autoplot
+#' @importFrom ggplot2 geom_point
+#' @importFrom ggplot2 labs
+#' @importFrom zoo zoo
 #' @export
 
 
@@ -35,7 +38,7 @@ mixtureClass <- if (requireNamespace('jmvcore'))
 
             <p><b>To get started:</b></p>
 
-            <p>- First, specify the number of <b>'Class(more than 2 classes)', Step', and 'Type'</b> in the 'Analysis option'.</p>
+            <p>- First, specify the number of <b>'Class', Step', and 'Type'</b> in the 'Analysis option'.</p>
 
             <p>- Second, highlight the variables and click the arrow to move it across into the 'Variables' box.</p>
 
@@ -99,7 +102,7 @@ mixtureClass <- if (requireNamespace('jmvcore'))
           
           # prepare item by class plot-----
           
-          private$.prepareItemPlot(data)
+         # private$.prepareItemPlot(data)
           
           
         }
@@ -233,7 +236,8 @@ mixtureClass <- if (requireNamespace('jmvcore'))
             'pclass' = pclass
           )
         
-      },
+       
+        },
       
       # populate Model information table-----
       
@@ -329,6 +333,12 @@ mixtureClass <- if (requireNamespace('jmvcore'))
          table$addRow(rowKey = i, values = row)
          
        }
+       
+       # Prepare Data For Item Plot -------
+       
+       image <- self$results$iplot
+       
+       image$setState(imeasure)
        
        
         # for (i in seq_along(vars)) {
@@ -622,55 +632,41 @@ mixtureClass <- if (requireNamespace('jmvcore'))
       
       ### Item Plot by Class ----
       
-      
-      .prepareItemPlot = function(data) {
-        data <- self$data
-        
-        step <- self$options$step
-        
-        nc <- self$options$nc
-        
-        # computing mixRasch------------
-        
-        res2 <-
-          mixRasch::mixRasch(
-            data = data,
-            steps = step,
-            model = 'RSM',
-            n.c = nc
-          )
-        
-        # Prepare Data For Item Plot -------
-        
-        image <- self$results$iplot
-        
-        image$setState(res2)
-        
-      },
-      
+      # .prepareItemPlot = function(data) {
+      # 
+      #   
+      #   # Prepare Data For Item Plot -------
+      # 
+      #   image <- self$results$iplot
+      # 
+      #   image$setState(imeasure)
+      # 
+      # },
+
       # Item plot--------------
       
-      .itemPlot = function(image, ...) {
-        itemplot <- self$options$iplot
+      .itemPlot = function(image, ggtheme, theme, ...) {
         
-        nc <- self$options$nc
-        
-        
-        res2 <- image$state
+        if (is.null(image$state))
+          return(FALSE)
         
         
-        if (is.null(res2))
-          return()
+         itemplot <- self$options$iplot
         
-        plot <- mixRaschTools::mixRasch.plot(res2)
-        
+         plotData <- image$state
+         
+         plot <- ggplot2::autoplot(zoo(plotData),facet = NULL)+
+                 geom_point() +
+                 
+           labs(title="Item Measures by Class",
+                x ="Item number)", y = "Measure", color='Class')
+          
         print(plot)
         TRUE
         
       },
       
-      
-      
+ 
      #### Helper functions =================================
       
       .cleanData = function() {

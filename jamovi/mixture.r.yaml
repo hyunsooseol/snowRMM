@@ -193,10 +193,10 @@ items:
       title: 'Item Plot'
       type: Image
       visible: (iplot)
-      width: 700
-      height: 500
+      width: 600
+      height: 450
       renderFun: .itemPlot
-      refs: mixRaschTools              
+         
 ...
 
 
