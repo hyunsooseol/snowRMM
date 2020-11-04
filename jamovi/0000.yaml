@@ -1,7 +1,7 @@
 ---
 title: Rasch Mixture Model for jamovi
 name: snowRMM
-version: 2.1.0
+version: 2.1.1
 jms: '1.0'
 authors:
   - Hyunsoo Seol

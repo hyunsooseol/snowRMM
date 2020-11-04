@@ -176,6 +176,13 @@ raschClass <- if (requireNamespace('jmvcore'))
         
         vars <- self$options$get('vars')
         
+        #Removing perfect score items before estimation (for example all 1 or 0)-------
+        
+        for (varName in self$options$vars) {
+          var <- self$data[[varName]]
+          if (length(unique(var)) < 2)
+          stop(paste("Variable '", varName, "' contains all the same value and should be removed before estimation."))
+        }
         
         # Ready--------
         
@@ -212,6 +219,7 @@ raschClass <- if (requireNamespace('jmvcore'))
       },
       
       .compute = function(data) {
+        
         # get variables--------
         
         data <- self$data
