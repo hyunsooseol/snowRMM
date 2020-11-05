@@ -181,7 +181,7 @@ raschClass <- if (requireNamespace('jmvcore'))
         for (varName in self$options$vars) {
           var <- self$data[[varName]]
           if (length(unique(var)) < 2)
-          stop(paste("Variable '", varName, "' contains all the same value and should be removed before estimation."))
+          stop(paste("Variable '", varName, "' contains all the same value and should be removed in the variable box."))
         }
         
         # Ready--------
