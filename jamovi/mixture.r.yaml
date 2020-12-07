@@ -2,14 +2,13 @@
 name:  mixture
 title: Rasch Mixture Model
 jrs:   '1.1'
-
+refs: snowRMM
 items:
     - name: instructions
       title: 'Instructions'
       type: Html
       visible: True
-      refs: snowRMM
-
+      
     - name: item
       title: Item Analysis
       type: Group

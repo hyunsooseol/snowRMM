@@ -86,13 +86,13 @@ bfitResults <- if (requireNamespace('jmvcore')) R6::R6Class(
             super$initialize(
                 options=options,
                 name="",
-                title="Bootstrap Item Fit")
+                title="Bootstrap Item Fit",
+                refs="snowRMM")
             self$add(jmvcore::Html$new(
                 options=options,
                 name="instructions",
                 title="Instructions",
-                visible=TRUE,
-                refs="snowRMM"))
+                visible=TRUE))
             self$add(R6::R6Class(
                 inherit = jmvcore::Group,
                 active = list(

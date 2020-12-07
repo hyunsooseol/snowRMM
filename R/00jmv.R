@@ -29,4 +29,11 @@
         `year`=2020, 
         `title`="boot: Bootstrap R (S-Plus) Functions", 
         `publisher`="[R package]. Retrieved from  https://CRAN.R-project.org/package=boot", 
-        `url`="https://CRAN.R-project.org/package=boot"))
+        `url`="https://CRAN.R-project.org/package=boot"), 
+    `WrightMap`=list(
+        `type`="software", 
+        `author`="Torres Irribarra, D. & Freund, R.", 
+        `year`=2020, 
+        `title`="Wright Map: IRT item-person map with ConQuest integration", 
+        `publisher`="[R package]. Retrieved from https://CRAN.R-project.org/package=WrightMap", 
+        `url`="http://github.com/david-ti/wrightmap"))
