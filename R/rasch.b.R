@@ -340,6 +340,12 @@ raschClass <- if (requireNamespace('jmvcore'))
         
         image <- self$results$plot
         
+        vars <- length(self$options$vars)
+        
+        width <- 400 + vars * 30
+        
+        image$setSize(width, 400)
+        
         state <- list(pmeasure, imeasure)
         
         image$setState(state)

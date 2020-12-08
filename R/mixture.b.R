@@ -289,6 +289,11 @@ mixtureClass <- if (requireNamespace('jmvcore'))
         
         data<- tidyr::gather(data =imeasure, class, measure, -item)
         
+        # nvars <- length(self$options$vars)
+        # 
+        # width <- 200 + nvars * 50
+        # 
+        # image$setSize(width, 200)
         
         image$setState(data)
         
@@ -633,13 +638,21 @@ mixtureClass <- if (requireNamespace('jmvcore'))
         
         image <- self$results$plot
         
+        vars <- length(self$options$vars)
+        
+        width <- 400 + vars * 30
+        
+        image$setSize(width, 400)
+        
         state <- list(theta, dif)
         
         image$setState(state)
+        
+        
       },
      
        
-      .plot = function(image, ...) {
+      .plot = function(image,...) {
         
         wrightmap <- self$options$wrightmap
         
@@ -656,8 +669,9 @@ mixtureClass <- if (requireNamespace('jmvcore'))
                                      show.thr.lab = FALSE
                                      , thr.sym.col.fg = rep(brewer.pal(10, "Set1"), each = 2)
                                      , thr.sym.col.bg = rep(brewer.pal(10, "Set1"), each = 2)
-                                     , thr.sym.cex = 2
-                                     )
+                                     , thr.sym.cex = 2)
+                                     
+                 
                                     
                                      
                                      
