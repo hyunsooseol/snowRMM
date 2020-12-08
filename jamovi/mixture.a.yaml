@@ -101,7 +101,13 @@ options:
     - name: iplot
       title: Item plot
       type: Bool
-      default: false    
+      default: TRUE
+    
+    - name: wrightmap
+      title: Wright map
+      type: Bool
+      default: false  
+      
       
 
 ...

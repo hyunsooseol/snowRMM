@@ -101,6 +101,10 @@ mixtureClass <- if (requireNamespace('jmvcore'))
           
           private$.populatePersonTable(results)
           
+          # prepare plot-----
+          
+          private$.prepareWrightmapPlot(data)
+          
          
         }
       },
@@ -580,12 +584,85 @@ mixtureClass <- if (requireNamespace('jmvcore'))
           geom_line(aes(color=class))+
           geom_point(aes(color=class))+
           labs(title="Item parameters by class",
-               x ="Item number", y = "Measure", color='Class')
+               x ="Item number", y = "Measure", color='Class')+
+          ggtheme
+        
         
         print(plot)
         TRUE
         
       },
+      
+      
+      # multidimensional wrightmap plot----------------
+      
+      
+      .prepareWrightmapPlot = function(data) {
+        
+        # get variables------
+        
+        data <- self$data
+        
+        vars <- self$options$vars
+        
+        nc <- self$options$nc
+        
+        step <- self$options$step
+        
+        unidif <-
+          mixRasch::mixRasch(
+            data = data,
+            steps = step,
+            n.c = 1
+          )  
+        
+        dif <- unidif$item.par$delta.i
+        
+        person <-
+          
+            mixRasch::mixRasch(
+            data = data,
+            steps = step,
+            n.c = nc
+          )  
+        
+        theta <- sapply(person$LatentClass, function(x) x$person.par$theta)
+        theta <- as.data.frame(theta)
+        
+        # plot---------
+        
+        image <- self$results$plot
+        
+        state <- list(theta, dif)
+        
+        image$setState(state)
+      },
+     
+       
+      .plot = function(image, ...) {
+        
+        wrightmap <- self$options$wrightmap
+        
+        if (!wrightmap)
+          return()
+        
+        theta <- image$state[[1]]
+        dif <- image$state[[2]]
+        
+        plot <- WrightMap::wrightMap(theta,dif,
+                                     item.prop= 0.7,
+                                     dim.color = brewer.pal(10, "Set1"),
+                                     axis.persons = "Person distribution",
+                                     show.thr.lab = FALSE
+                                     , thr.sym.col.fg = rep(brewer.pal(10, "Set1"), each = 2)
+                                     , thr.sym.col.bg = rep(brewer.pal(10, "Set1"), each = 2)
+                                     , thr.sym.cex = 2
+                                     )
+                                    
+                                     
+                                     
+      },                             
+      
       
       
       #### Helper functions =================================

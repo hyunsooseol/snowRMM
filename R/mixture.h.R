@@ -21,7 +21,8 @@ mixtureOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
             pbis = FALSE,
             average = FALSE,
             pclass = FALSE,
-            iplot = FALSE, ...) {
+            iplot = TRUE,
+            wrightmap = FALSE, ...) {
 
             super$initialize(
                 package='snowRMM',
@@ -100,6 +101,10 @@ mixtureOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
             private$..iplot <- jmvcore::OptionBool$new(
                 "iplot",
                 iplot,
+                default=TRUE)
+            private$..wrightmap <- jmvcore::OptionBool$new(
+                "wrightmap",
+                wrightmap,
                 default=FALSE)
 
             self$.addOption(private$..vars)
@@ -118,6 +123,7 @@ mixtureOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
             self$.addOption(private$..average)
             self$.addOption(private$..pclass)
             self$.addOption(private$..iplot)
+            self$.addOption(private$..wrightmap)
         }),
     active = list(
         vars = function() private$..vars$value,
@@ -135,7 +141,8 @@ mixtureOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
         pbis = function() private$..pbis$value,
         average = function() private$..average$value,
         pclass = function() private$..pclass$value,
-        iplot = function() private$..iplot$value),
+        iplot = function() private$..iplot$value,
+        wrightmap = function() private$..wrightmap$value),
     private = list(
         ..vars = NA,
         ..nc = NA,
@@ -152,7 +159,8 @@ mixtureOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
         ..pbis = NA,
         ..average = NA,
         ..pclass = NA,
-        ..iplot = NA)
+        ..iplot = NA,
+        ..wrightmap = NA)
 )
 
 mixtureResults <- if (requireNamespace('jmvcore')) R6::R6Class(
@@ -161,7 +169,8 @@ mixtureResults <- if (requireNamespace('jmvcore')) R6::R6Class(
         instructions = function() private$.items[["instructions"]],
         item = function() private$.items[["item"]],
         person = function() private$.items[["person"]],
-        iplot = function() private$.items[["iplot"]]),
+        iplot = function() private$.items[["iplot"]],
+        plot = function() private$.items[["plot"]]),
     private = list(),
     public=list(
         initialize=function(options) {
@@ -386,7 +395,15 @@ mixtureResults <- if (requireNamespace('jmvcore')) R6::R6Class(
                 visible="(iplot)",
                 width=600,
                 height=450,
-                renderFun=".itemPlot"))}))
+                renderFun=".itemPlot"))
+            self$add(jmvcore::Image$new(
+                options=options,
+                name="plot",
+                title="Wright Map",
+                visible="(plot)",
+                width=500,
+                height=500,
+                renderFun=".plot"))}))
 
 mixtureBase <- if (requireNamespace('jmvcore')) R6::R6Class(
     "mixtureBase",
@@ -428,6 +445,7 @@ mixtureBase <- if (requireNamespace('jmvcore')) R6::R6Class(
 #' @param average .
 #' @param pclass .
 #' @param iplot .
+#' @param wrightmap .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
@@ -441,6 +459,7 @@ mixtureBase <- if (requireNamespace('jmvcore')) R6::R6Class(
 #'   \code{results$person$average} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$person$persons} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$iplot} \tab \tab \tab \tab \tab an image \cr
+#'   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
 #' }
 #'
 #' @export
@@ -461,7 +480,8 @@ mixture <- function(
     pbis = FALSE,
     average = FALSE,
     pclass = FALSE,
-    iplot = FALSE) {
+    iplot = TRUE,
+    wrightmap = FALSE) {
 
     if ( ! requireNamespace('jmvcore'))
         stop('mixture requires jmvcore to be installed (restart may be required)')
@@ -489,7 +509,8 @@ mixture <- function(
         pbis = pbis,
         average = average,
         pclass = pclass,
-        iplot = iplot)
+        iplot = iplot,
+        wrightmap = wrightmap)
 
     analysis <- mixtureClass$new(
         options = options,

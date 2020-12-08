@@ -196,6 +196,13 @@ items:
       height: 450
       renderFun: .itemPlot
          
+    - name: plot
+      title: 'Wright Map'
+      type: Image
+      visible: (plot)
+      width: 500
+      height: 500
+      renderFun: .plot       
 ...
 
 
