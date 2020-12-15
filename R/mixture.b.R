@@ -6,6 +6,7 @@
 #' @import jmvcore
 #' @import mixRasch
 #' @importFrom mixRasch mixRasch
+#' @importFrom mixRasch getEstDetails
 #' @import mixRaschTools
 #' @importFrom mixRaschTools avg.theta
 #' @importFrom ggplot2 geom_line
@@ -35,19 +36,17 @@ mixtureClass <- if (requireNamespace('jmvcore'))
             </head>
             <body>
             <div class='instructions'>
-            <p>Welcome to Rasch Mixture Model.</p>
-
+           
             <p><b>To get started:</b></p>
 
-            <p>- First, specify the number of <b>'Class', Step', and 'Type'</b> in the 'Analysis option'.</p>
+            <p> First, specify the number of <b>'Class', Step', and 'Type'</b> in the 'Analysis option'.</p>
 
-            <p>- Second, highlight the variables and click the arrow to move it across into the 'Variables' box.</p>
+            <p> Second, highlight the variables and click the arrow to move it across into the 'Variables' box.</p>
 
-            <p>- Rasch mixture model is estimated by Jonint Maximum Liklihood(JML).</p>
+            <p> Rasch mixture model is estimated by Jonint Maximum Liklihood(JML).</p>
 
-            <p>- Feature requests and bug reports can be made on my <a href='https://github.com/hyunsooseol/snowRMM/'  target = '_blank'>GitHub</a></p>
+            <p> Feature requests and bug reports can be made on my <a href='https://github.com/hyunsooseol/snowRMM/'  target = '_blank'>GitHub.</a></p>
 
-            <p>If you have any questions, please e-mail me: snow@cau.ac.kr</a></p>
             </div>
             </body>
             </html>"
@@ -58,11 +57,12 @@ mixtureClass <- if (requireNamespace('jmvcore'))
       
       
       .run = function() {
+        
         # get variables-------
         
         data <- self$data
         
-        vars <- self$options$get('vars')
+        vars <- self$options$vars
         
         
         # Ready--------
@@ -289,12 +289,7 @@ mixtureClass <- if (requireNamespace('jmvcore'))
         
         data<- tidyr::gather(data =imeasure, class, measure, -item)
         
-        # nvars <- length(self$options$vars)
-        # 
-        # width <- 200 + nvars * 50
-        # 
-        # image$setSize(width, 200)
-        
+       
         image$setState(data)
         
         
@@ -640,9 +635,9 @@ mixtureClass <- if (requireNamespace('jmvcore'))
         
         vars <- length(self$options$vars)
         
-        width <- 400 + vars * 30
+        width <- 300 + vars * 30
         
-        image$setSize(width, 400)
+        image$setSize(width, 500)
         
         state <- list(theta, dif)
         

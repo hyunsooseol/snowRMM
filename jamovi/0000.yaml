@@ -1,12 +1,12 @@
 ---
 title: Rasch Mixture Model for jamovi
 name: snowRMM
-version: 3.0.1
+version: 3.0.2
 jms: '1.0'
 authors:
   - Hyunsoo Seol
 maintainer: Hyunsoo Seol <snow@cau.ac.kr>
-date: '2020-12-08'
+date: '2020-12-16'
 type: R
 description: >-
   This module allows users to conduct Rasch mixture model including model

@@ -4,13 +4,10 @@
 #' Mixture Rasch Analysis
 #' @importFrom R6 R6Class
 #' @import jmvcore
-#' @import mixRasch
 #' @importFrom mixRasch mixRasch
+#' @importFrom mixRasch getEstDetails
 #' @importFrom WrightMap wrightMap
-#' @import RColorBrewer
-#' @import boot
-#' @importFrom boot boot
-#' @importFrom boot boot.ci
+#' @import RColorBrewer 
 #' @export
 
 
@@ -34,19 +31,15 @@ raschClass <- if (requireNamespace('jmvcore'))
             </head>
             <body>
             <div class='instructions'>
-            <p>Welcome to Rasch Measurement Model.</p>
-
+            
             <p> The standard Rasch model is performed by Jonint Maximum Liklihood(JML).</p>
 
-            <p><b>To get started:</b></p>
+            <p> Specify </b> the number of 'Step' and model 'Type'</b> in the 'Analysis option'.</p>
 
-            <p>- Specify </b> the number of 'Step' and model 'Type'</b> in the 'Analysis option'.</p>
+            <P> Step is defined as number of category-1. </p>
 
-            <P>- Step is defined as number of category-1. </p>
+            <p> Feature requests and bug reports can be made on my <a href='https://github.com/hyunsooseol/snowRMM/'  target = '_blank'>GitHub</a></p>
 
-            <p>- Feature requests and bug reports can be made on my <a href='https://github.com/hyunsooseol/snowRMM/'  target = '_blank'>GitHub</a></p>
-
-            <p> If you have any questions, please e-mail me: snow@cau.ac.kr</a></p>
             </div>
             </body>
             </html>"
@@ -195,6 +188,7 @@ raschClass <- if (requireNamespace('jmvcore'))
       # populate Model information table-----
       
       .populateModelTable = function(results) {
+        
         table <- self$results$item$model
         
         
@@ -225,6 +219,7 @@ raschClass <- if (requireNamespace('jmvcore'))
       # populate Item Statistics table-----
       
       .populateItemTable = function(results) {
+        
         table <- self$results$item$items
         
         vars <- self$options$vars
@@ -270,6 +265,7 @@ raschClass <- if (requireNamespace('jmvcore'))
       # populate Person analysis table-----   
       
       .populatePersonTable = function(results) {
+        
         data <- self$data
         
         table <- self$results$person$persons
@@ -342,9 +338,9 @@ raschClass <- if (requireNamespace('jmvcore'))
         
         vars <- length(self$options$vars)
         
-        width <- 400 + vars * 30
+        width <- 300 + vars * 30
         
-        image$setSize(width, 400)
+        image$setSize(width, 500)
         
         state <- list(pmeasure, imeasure)
         
