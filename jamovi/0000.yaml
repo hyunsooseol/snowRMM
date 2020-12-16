@@ -36,10 +36,11 @@ datasets:
     description: Mixture data
     tags:
       - Mixture
-  - name: Rasch
+  - name: binary
     path: boot.omv
     description: Bootstrap Item Fit
     tags:
+      - Rasch
       - Bootstrap
 usesNative: true
 minApp: 1.0.8
