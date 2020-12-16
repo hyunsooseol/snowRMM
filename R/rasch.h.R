@@ -10,10 +10,10 @@ raschOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
             step = 1,
             type = "RSM",
             aic = TRUE,
-            bic = FALSE,
-            caic = FALSE,
-            imean = TRUE,
-            imeasure = TRUE,
+            bic = TRUE,
+            caic = TRUE,
+            imean = FALSE,
+            imeasure = FALSE,
             ise = FALSE,
             infit = FALSE,
             outfit = FALSE,
@@ -57,19 +57,19 @@ raschOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
             private$..bic <- jmvcore::OptionBool$new(
                 "bic",
                 bic,
-                default=FALSE)
+                default=TRUE)
             private$..caic <- jmvcore::OptionBool$new(
                 "caic",
                 caic,
-                default=FALSE)
+                default=TRUE)
             private$..imean <- jmvcore::OptionBool$new(
                 "imean",
                 imean,
-                default=TRUE)
+                default=FALSE)
             private$..imeasure <- jmvcore::OptionBool$new(
                 "imeasure",
                 imeasure,
-                default=TRUE)
+                default=FALSE)
             private$..ise <- jmvcore::OptionBool$new(
                 "ise",
                 ise,
@@ -379,10 +379,10 @@ rasch <- function(
     step = 1,
     type = "RSM",
     aic = TRUE,
-    bic = FALSE,
-    caic = FALSE,
-    imean = TRUE,
-    imeasure = TRUE,
+    bic = TRUE,
+    caic = TRUE,
+    imean = FALSE,
+    imeasure = FALSE,
     ise = FALSE,
     infit = FALSE,
     outfit = FALSE,

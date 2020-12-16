@@ -27,8 +27,6 @@ children:
             type: TextBox
             label: Step
             format: number
-          - type: ComboBox
-            name: type
           - name: bn
             type: TextBox
             label: Bootstrap N

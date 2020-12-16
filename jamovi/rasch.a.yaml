@@ -44,22 +44,22 @@ options:
     - name: bic
       title: BIC
       type: Bool
-      default: FALSE
+      default: True
 
     - name: caic
       title: CAIC
       type: Bool
-      default: FALSE
+      default: True
 
     - name: imean
       title: Item mean
       type: Bool
-      default: True
+      default: FALSE
 
     - name: imeasure
       title: Measure
       type: Bool
-      default: True
+      default: FALSE
 
     - name: ise
       title: S.E. measure

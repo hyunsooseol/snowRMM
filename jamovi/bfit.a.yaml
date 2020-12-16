@@ -26,16 +26,6 @@ options:
       min: 1
       default: 1
 
-    - name: type
-      title: Type
-      type: List
-      options:
-      - name: RSM
-        title: 'Rating scale'
-      - name: PCM
-        title: 'Partial credit'
-      default: RSM
-
     - name: bn
       title: Bootstrap N
       type: Integer
@@ -50,6 +40,6 @@ options:
     - name: boutfit
       title: Item outfit
       type: Bool
-      default: FALSE
+      default: TRUE
       
  

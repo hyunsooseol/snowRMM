@@ -8,10 +8,9 @@ bfitOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
         initialize = function(
             vars = NULL,
             step = 1,
-            type = "RSM",
             bn = 100,
             binfit = TRUE,
-            boutfit = FALSE, ...) {
+            boutfit = TRUE, ...) {
 
             super$initialize(
                 package='snowRMM',
@@ -31,13 +30,6 @@ bfitOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
                 step,
                 min=1,
                 default=1)
-            private$..type <- jmvcore::OptionList$new(
-                "type",
-                type,
-                options=list(
-                    "RSM",
-                    "PCM"),
-                default="RSM")
             private$..bn <- jmvcore::OptionInteger$new(
                 "bn",
                 bn,
@@ -50,11 +42,10 @@ bfitOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
             private$..boutfit <- jmvcore::OptionBool$new(
                 "boutfit",
                 boutfit,
-                default=FALSE)
+                default=TRUE)
 
             self$.addOption(private$..vars)
             self$.addOption(private$..step)
-            self$.addOption(private$..type)
             self$.addOption(private$..bn)
             self$.addOption(private$..binfit)
             self$.addOption(private$..boutfit)
@@ -62,14 +53,12 @@ bfitOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
     active = list(
         vars = function() private$..vars$value,
         step = function() private$..step$value,
-        type = function() private$..type$value,
         bn = function() private$..bn$value,
         binfit = function() private$..binfit$value,
         boutfit = function() private$..boutfit$value),
     private = list(
         ..vars = NA,
         ..step = NA,
-        ..type = NA,
         ..bn = NA,
         ..binfit = NA,
         ..boutfit = NA)
@@ -180,7 +169,6 @@ bfitBase <- if (requireNamespace('jmvcore')) R6::R6Class(
 #' @param data The data as a data frame.
 #' @param vars .
 #' @param step .
-#' @param type .
 #' @param bn .
 #' @param binfit .
 #' @param boutfit .
@@ -196,10 +184,9 @@ bfit <- function(
     data,
     vars,
     step = 1,
-    type = "RSM",
     bn = 100,
     binfit = TRUE,
-    boutfit = FALSE) {
+    boutfit = TRUE) {
 
     if ( ! requireNamespace('jmvcore'))
         stop('bfit requires jmvcore to be installed (restart may be required)')
@@ -214,7 +201,6 @@ bfit <- function(
     options <- bfitOptions$new(
         vars = vars,
         step = step,
-        type = type,
         bn = bn,
         binfit = binfit,
         boutfit = boutfit)

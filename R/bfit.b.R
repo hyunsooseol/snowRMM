@@ -4,9 +4,10 @@
 #' Mixture Rasch Analysis
 #' @importFrom R6 R6Class
 #' @import jmvcore
+#' @import boot
+#' @import stats
 #' @import mixRasch
 #' @importFrom mixRasch mixRasch
-#' @import boot
 #' @importFrom boot boot
 #' @importFrom boot boot.ci
 #' @importFrom stats quantile
@@ -36,7 +37,7 @@ bfitClass <- if (requireNamespace('jmvcore'))
 
             <p> The traditional Rasch model is performed by Jonint Maximum Liklihood(JML).</p>
 
-            <p> Specify <b>'Step', 'Type', and 'Bootstrap N'</b> in the 'Analysis option'.</p>
+            <p> Specify <b>'Step'(number of category-1) and 'Bootstrap N'</b> in the 'Analysis option'.</p>
 
             <p> Please, be patient. The bootstrapped confidence interval is <b>quite time-consuming !</b></p>
 
@@ -50,6 +51,12 @@ bfitClass <- if (requireNamespace('jmvcore'))
          },
          
          .run = function() {
+            
+            ### Caution ####
+            
+            # When the estimates  do not converged(for example, all 0 or 1)
+            # The error message will be shown (number of items to replace is not a multiple of replacement length)
+            
             # get variables-------
             
             data <- self$data
@@ -82,6 +89,7 @@ bfitClass <- if (requireNamespace('jmvcore'))
          },
          
          .compute = function(data) {
+            
             # get variables--------
             
             data <- self$data
@@ -90,11 +98,9 @@ bfitClass <- if (requireNamespace('jmvcore'))
             
             step <- self$options$step
             
-            type <- self$options$type
-            
             bn <- self$options$bn
             
-            # Computing Bootstrap item fit
+           
             
             # Computing boot infit-------------
             
@@ -106,7 +112,7 @@ bfitClass <- if (requireNamespace('jmvcore'))
                   mixRasch::mixRasch(
                      data = d,
                      steps = step,
-                     model = type,
+                     model = "RSM",
                      n.c = 1
                   )
                
@@ -151,7 +157,7 @@ bfitClass <- if (requireNamespace('jmvcore'))
             infithigh <- infithigh
             
            
-            # computing boot outfit------
+            ############ computing boot outfit------
             
             boot.outfit <- function(data, indices) {
                d = data[indices,]
@@ -161,7 +167,7 @@ bfitClass <- if (requireNamespace('jmvcore'))
                   mixRasch::mixRasch(
                      data = d,
                      steps = step,
-                     model = type,
+                     model = "RSM",
                      n.c = 1
                   )
                
@@ -211,7 +217,7 @@ bfitClass <- if (requireNamespace('jmvcore'))
                list(
                   'infitlow' = infitlow,
                   'infithigh' = infithigh,
-                  'outfitlow' = outfithigh,
+                  'outfitlow' = outfitlow,
                   'outfithigh' = outfithigh
                )
             

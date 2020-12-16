@@ -4,15 +4,7 @@
 \alias{bfit}
 \title{Bootstrap Item Fit}
 \usage{
-bfit(
-  data,
-  vars,
-  step = 1,
-  type = "RSM",
-  bn = 100,
-  binfit = TRUE,
-  boutfit = FALSE
-)
+bfit(data, vars, step = 1, bn = 100, binfit = TRUE, boutfit = TRUE)
 }
 \arguments{
 \item{data}{The data as a data frame.}
@@ -20,8 +12,6 @@ bfit(
 \item{vars}{.}
 
 \item{step}{.}
-
-\item{type}{.}
 
 \item{bn}{.}
 
