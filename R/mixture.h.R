@@ -12,9 +12,9 @@ mixtureOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
             type = "RSM",
             aic = TRUE,
             bic = TRUE,
-            caic = FALSE,
-            imean = TRUE,
-            imeasure = TRUE,
+            caic = TRUE,
+            imean = FALSE,
+            imeasure = FALSE,
             ise = FALSE,
             infit = FALSE,
             outfit = FALSE,
@@ -65,15 +65,15 @@ mixtureOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
             private$..caic <- jmvcore::OptionBool$new(
                 "caic",
                 caic,
-                default=FALSE)
+                default=TRUE)
             private$..imean <- jmvcore::OptionBool$new(
                 "imean",
                 imean,
-                default=TRUE)
+                default=FALSE)
             private$..imeasure <- jmvcore::OptionBool$new(
                 "imeasure",
                 imeasure,
-                default=TRUE)
+                default=FALSE)
             private$..ise <- jmvcore::OptionBool$new(
                 "ise",
                 ise,
@@ -471,9 +471,9 @@ mixture <- function(
     type = "RSM",
     aic = TRUE,
     bic = TRUE,
-    caic = FALSE,
-    imean = TRUE,
-    imeasure = TRUE,
+    caic = TRUE,
+    imean = FALSE,
+    imeasure = FALSE,
     ise = FALSE,
     infit = FALSE,
     outfit = FALSE,

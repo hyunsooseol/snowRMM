@@ -17,9 +17,9 @@ raschClass <- if (requireNamespace('jmvcore'))
     inherit = raschBase,
     private = list(
       
-      ###### .init function--------
       
       .init = function() {
+        
         if (is.null(self$data) | is.null(self$options$vars)) {
           self$results$instructions$setVisible(visible = TRUE)
           
@@ -54,7 +54,7 @@ raschClass <- if (requireNamespace('jmvcore'))
         
         data <- self$data
         
-        vars <- self$options$get('vars')
+        vars <- self$options$vars
         
         #Removing perfect score items before estimation (for example all 1 or 0)-------
         
@@ -102,7 +102,7 @@ raschClass <- if (requireNamespace('jmvcore'))
         
         # get variables--------
         
-        data <- self$data
+        # data <- self$data
         
         vars <- self$options$vars
         
@@ -313,7 +313,7 @@ raschClass <- if (requireNamespace('jmvcore'))
         
         # get variables--------
         
-        data <- self$data
+       # data <- self$data
         
         step <- self$options$step
         
