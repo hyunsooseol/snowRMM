@@ -34,17 +34,14 @@ bfitClass <- if (requireNamespace('jmvcore'))
             <body>
             <div class='instructions'>
 
-            <p><b>To get started:</b></p>
-
             <p> The traditional Rasch model is performed by Jonint Maximum Liklihood(JML).</p>
 
-            <p>- Specify <b>'Step', 'Type', and 'Bootstrap N'</b> in the 'Analysis option'.</p>
+            <p> Specify <b>'Step', 'Type', and 'Bootstrap N'</b> in the 'Analysis option'.</p>
 
-            <p>- Please, be patient. The bootstrapped confidence interval is <b>quite time-consuming !</b></p>
+            <p> Please, be patient. The bootstrapped confidence interval is <b>quite time-consuming !</b></p>
 
-            <p>- Feature requests and bug reports can be made on my <a href='https://github.com/hyunsooseol/snowRMM/'  target = '_blank'>GitHub</a></p>
+            <p> Feature requests and bug reports can be made on my <a href='https://github.com/hyunsooseol/snowRMM/'  target = '_blank'>GitHub</a></p>
 
-            <p> If you have any questions, please e-mail me: snow@cau.ac.kr</a></p>
             </div>
             </body>
             </html>"
@@ -57,7 +54,7 @@ bfitClass <- if (requireNamespace('jmvcore'))
             
             data <- self$data
             
-            vars <- self$options$get('vars')
+            vars <- self$options$vars
             
             
             # Ready--------
