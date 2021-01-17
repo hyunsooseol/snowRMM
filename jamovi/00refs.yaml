@@ -4,37 +4,34 @@ refs:
        author: Seol, H.
        year: 2020
        title: "snowRMM:Rasch Mixture Model for jamovi"
-       publisher: '[jamovi module]. Retrieved from https://github.com/hyunsooseol/snowRMM/'
-       url: https://github.com/hyunsooseol/snowRMM
-
+       publisher: '[jamovi module]. Retrieved from https://github.com/hyunsooseol/snowRMM'
+      
    mixRasch:
        type: 'software'
-       author: John T. Willse
+       author: Willse, J.
        year: 2014
        title: "mixRasch: Mixture Rasch Models with JMLE"
        publisher: '[R package]. Retrieved from https://CRAN.R-project.org/package=mixRasch'
-       url: https://CRAN.R-project.org/package=mixRasch
-
+      
    mixRaschTools:
        type: 'software'
-       author: Pamela Trantham
+       author: Trantham, P.
        year: 2019
        title: "mixRaschTools: Plotting and Average Theta Functions for Multiple Class Mixed Rasch Models"
        publisher: '[R package]. Retrieved from https://CRAN.R-project.org/package=mixRaschTools'
-       url: https://CRAN.R-project.org/package=mixRaschTools
-
+       
    boot:
        type: 'software'
-       author: Angelo Canty and Brian Ripley
+       author: Canty, A., & Ripley, B.
        year: 2020
        title: "boot: Bootstrap R (S-Plus) Functions"
        publisher: '[R package]. Retrieved from  https://CRAN.R-project.org/package=boot'
-       url: https://CRAN.R-project.org/package=boot
+       
    WrightMap:
        type: 'software'
-       author: Torres Irribarra, D. & Freund, R.    
+       author: Irribarra,T., & Freund, R.    
        year: 2020
        title: "Wright Map: IRT item-person map with ConQuest integration"
        publisher: '[R package]. Retrieved from https://CRAN.R-project.org/package=WrightMap'
-       url: http://github.com/david-ti/wrightmap
+      
    
