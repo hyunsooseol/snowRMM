@@ -6,8 +6,8 @@
 #' @import jmvcore
 #' @importFrom mixRasch mixRasch
 #' @importFrom mixRasch getEstDetails
-#' @importFrom WrightMap wrightMap
-#' @import RColorBrewer 
+#' @importFrom ShinyItemAnalysis ggWrightMap
+#' @import ggplot2
 #' @export
 
 
@@ -338,9 +338,9 @@ raschClass <- if (requireNamespace('jmvcore'))
         
         vars <- length(self$options$vars)
         
-        width <- 300 + vars * 30
-        
-        image$setSize(width, 500)
+        # width <- 300 + vars * 30
+        # 
+        # image$setSize(width, 500)
         
         state <- list(pmeasure, imeasure)
         
@@ -351,7 +351,7 @@ raschClass <- if (requireNamespace('jmvcore'))
       
       # wright map plot--------------
       
-      .plot = function(image,...) {
+      .plot = function(image,ggtheme, theme, ...) {
         
         wrightmap <- self$options$wrightmap
         
@@ -361,12 +361,9 @@ raschClass <- if (requireNamespace('jmvcore'))
         pmeasure <- image$state[[1]]
         imeasure <- image$state[[2]]
         
-        plot <- WrightMap::wrightMap(pmeasure,imeasure,
-                                     show.thr.lab= FALSE,
-                                     thr.sym.cex = 2.0,
-                                     thr.sym.pch = 17,
-                                     axis.persons = "Person distribution",
-                                     thr.sym.col.fg = RColorBrewer::brewer.pal(10, "Paired"))
+
+        plot<- ShinyItemAnalysis::ggWrightMap(pmeasure, imeasure,
+                                              color = "green")
         
         print(plot)
         TRUE

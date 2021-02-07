@@ -198,6 +198,7 @@ items:
          
     - name: plot
       title: 'Wright Map'
+      refs: WrightMap
       type: Image
       visible: (plot)
       width: 500

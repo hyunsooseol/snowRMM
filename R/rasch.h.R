@@ -315,11 +315,12 @@ raschResults <- if (requireNamespace('jmvcore')) R6::R6Class(
                 options=options,
                 name="plot",
                 title="Wright Map",
-                width=600,
-                height=450,
+                width=500,
+                height=500,
                 visible="(wrightmap)",
                 renderFun=".plot",
-                requiresData=TRUE))}))
+                requiresData=TRUE,
+                refs="ShinyItemAnalysis"))}))
 
 raschBase <- if (requireNamespace('jmvcore')) R6::R6Class(
     "raschBase",

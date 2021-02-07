@@ -8,11 +8,13 @@
 #' @importFrom mixRasch mixRasch
 #' @importFrom mixRasch getEstDetails
 #' @import mixRaschTools
+#' @import RColorBrewer
 #' @importFrom mixRaschTools avg.theta
 #' @importFrom ggplot2 geom_line
 #' @importFrom ggplot2 geom_point
 #' @importFrom ggplot2 labs
 #' @importFrom ggplot2 aes
+#' @importFrom WrightMap wrightMap
 #' @importFrom tidyr gather
 #' @export
 
