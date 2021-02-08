@@ -7,6 +7,7 @@
 #' @importFrom mixRasch mixRasch
 #' @importFrom mixRasch getEstDetails
 #' @importFrom ShinyItemAnalysis ggWrightMap
+#' @import RColorBrewer
 #' @import ggplot2
 #' @export
 
@@ -363,7 +364,7 @@ raschClass <- if (requireNamespace('jmvcore'))
         
 
         plot<- ShinyItemAnalysis::ggWrightMap(pmeasure, imeasure,
-                                              color = "green")
+                                              color = "sky blue")
         
         print(plot)
         TRUE

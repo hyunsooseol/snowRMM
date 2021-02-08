@@ -1,12 +1,12 @@
 ---
 title: Rasch Mixture Model for jamovi
 name: snowRMM
-version: 3.1.2
+version: 3.2.0
 jms: '1.0'
 authors:
   - Hyunsoo Seol
 maintainer: Hyunsoo Seol <snow@cau.ac.kr>
-date: 2021-2-7
+date: 2021-2-8
 type: R
 description: >-
   This module allows users to conduct Rasch mixture model including model
@@ -42,6 +42,12 @@ datasets:
     tags:
       - Rasch
       - Bootstrap
+  - name: Rating
+    path: bfi.omv
+    description: 'personality self report items(1000x25),6 point scale'
+    tags:
+      - Rasch
+      - Rasch model
 usesNative: true
 minApp: 1.0.8
 
