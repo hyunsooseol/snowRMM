@@ -20,6 +20,8 @@ items:
           rows: (vars)
           clearWith:
             - vars
+            - step
+            - bn
           columns:
             - name: name
               title: ''
@@ -41,6 +43,8 @@ items:
           rows: (vars)
           clearWith:
             - vars
+            - step
+            - bn
           columns:
             - name: name
               title: ''

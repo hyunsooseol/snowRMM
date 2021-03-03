@@ -19,6 +19,8 @@ items:
           rows: 1
           clearWith:
             - vars
+            - step
+            - type
           refs: mixRasch
           columns:
             - name: class
@@ -41,6 +43,8 @@ items:
           rows: (vars)
           clearWith:
             - vars
+            - step
+            - type
           refs: mixRasch
           columns:
             - name: name
@@ -76,6 +80,8 @@ items:
           visible: (total || pmeasure || pse || pinfit || poutfit)
           clearWith:
             - vars
+            - step
+            - type
           refs: mixRasch
           columns:
             - name: name
@@ -107,5 +113,9 @@ items:
       renderFun: .plot
       requiresData: TRUE
       refs: ShinyItemAnalysis
+      clearWith:
+            - vars
+            - step
+            - type
      
 ...

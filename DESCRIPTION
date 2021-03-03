@@ -1,7 +1,7 @@
 Package: snowRMM
 Type: Package
 Title: Rasch Mixture Model
-Version: 3.2.0
+Version: 3.2.1
 Author: Hyunsoo Seol
 Maintainer: Hyunsoo Seol <snow@cau.ac.kr>
 Description: This module provides Rasch mixture model including model information,fit statistics,and bootstrap fit based on JMLE.

@@ -19,6 +19,9 @@ items:
           rows: 1
           clearWith:
             - vars
+            - nc
+            - step
+            - type
           refs: mixRasch
   
           columns:
@@ -41,6 +44,9 @@ items:
           visible: (imean)
           clearWith:
             - vars
+            - nc
+            - step
+            - type
           refs: mixRasch
           
           columns:
@@ -60,6 +66,9 @@ items:
           visible: (imeasure)
           clearWith:
             - vars
+            - nc
+            - step
+            - type
           refs: mixRasch
           
           columns:
@@ -79,6 +88,9 @@ items:
           visible: (ise)
           clearWith:
             - vars
+            - nc
+            - step
+            - type
           refs: mixRasch
           
           columns:
@@ -98,6 +110,9 @@ items:
           visible: (infit)
           clearWith:
             - vars
+            - nc
+            - step
+            - type
           refs: mixRasch
           
           columns:
@@ -117,6 +132,9 @@ items:
           visible: (outfit)
           clearWith:
             - vars
+            - nc
+            - step
+            - type
           refs: mixRasch
           
           columns:
@@ -136,6 +154,9 @@ items:
           visible: (pbis)
           clearWith:
             - vars
+            - nc
+            - step
+            - type
           refs: mixRasch
           
           columns:
@@ -160,6 +181,9 @@ items:
           rows: (nc)
           clearWith:
             - vars
+            - nc
+            - step
+            - type
 
           columns:
             - name: class
@@ -175,6 +199,9 @@ items:
           visible: (pclass)
           clearWith:
             - vars
+            - nc
+            - step
+            - type
           refs: mixRasch
           
           columns:
@@ -195,6 +222,11 @@ items:
       width: 600
       height: 450
       renderFun: .itemPlot
+      clearWith:
+            - vars
+            - nc
+            - step
+            - type
          
     - name: plot
       title: 'Wright Map'
@@ -203,7 +235,12 @@ items:
       visible: (plot)
       width: 500
       height: 500
-      renderFun: .plot       
+      renderFun: .plot
+      clearWith:
+            - vars
+            - nc
+            - step
+            - type
 ...
 
 
