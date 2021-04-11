@@ -20,7 +20,6 @@ mixture(
   outfit = FALSE,
   pbis = FALSE,
   average = FALSE,
-  pclass = FALSE,
   iplot = TRUE,
   wrightmap = FALSE
 )
@@ -56,8 +55,6 @@ mixture(
 
 \item{average}{.}
 
-\item{pclass}{.}
-
 \item{iplot}{.}
 
 \item{wrightmap}{.}
@@ -74,9 +71,9 @@ A results object containing:
   \code{results$item$outfit} \tab \tab \tab \tab \tab a table \cr
   \code{results$item$pbis} \tab \tab \tab \tab \tab a table \cr
   \code{results$person$average} \tab \tab \tab \tab \tab a table \cr
-  \code{results$person$persons} \tab \tab \tab \tab \tab a table \cr
   \code{results$iplot} \tab \tab \tab \tab \tab an image \cr
   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
+  \code{results$pclass} \tab \tab \tab \tab \tab an output \cr
 }
 }
 \description{

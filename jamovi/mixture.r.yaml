@@ -193,28 +193,6 @@ items:
               title: 'Theta'
               type: number
 
-        - name: persons
-          title: Person membership
-          type: Table
-          visible: (pclass)
-          clearWith:
-            - vars
-            - nc
-            - step
-            - type
-          refs: mixRasch
-          
-          columns:
-            - name: name
-              title: 'Person number'
-              type: 'text'
-              content: ($key)
-             
-            - name: pc1
-              title: '1'
-              type: number
-              superTitle: 'Class'
-             
     - name: iplot
       title: 'Item Plot'
       type: Image
@@ -241,6 +219,16 @@ items:
             - nc
             - step
             - type
+            
+    - name: pclass
+      title: Person membership
+      type: Output
+      initInRun: true
+      clearWith:
+        - vars
+        - nc
+        - step
+        - type        
 ...
 
 

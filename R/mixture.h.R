@@ -20,7 +20,6 @@ mixtureOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             outfit = FALSE,
             pbis = FALSE,
             average = FALSE,
-            pclass = FALSE,
             iplot = TRUE,
             wrightmap = FALSE, ...) {
 
@@ -94,10 +93,6 @@ mixtureOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "average",
                 average,
                 default=FALSE)
-            private$..pclass <- jmvcore::OptionBool$new(
-                "pclass",
-                pclass,
-                default=FALSE)
             private$..iplot <- jmvcore::OptionBool$new(
                 "iplot",
                 iplot,
@@ -106,6 +101,8 @@ mixtureOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "wrightmap",
                 wrightmap,
                 default=FALSE)
+            private$..pclass <- jmvcore::OptionOutput$new(
+                "pclass")
 
             self$.addOption(private$..vars)
             self$.addOption(private$..nc)
@@ -121,9 +118,9 @@ mixtureOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..outfit)
             self$.addOption(private$..pbis)
             self$.addOption(private$..average)
-            self$.addOption(private$..pclass)
             self$.addOption(private$..iplot)
             self$.addOption(private$..wrightmap)
+            self$.addOption(private$..pclass)
         }),
     active = list(
         vars = function() private$..vars$value,
@@ -140,9 +137,9 @@ mixtureOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         outfit = function() private$..outfit$value,
         pbis = function() private$..pbis$value,
         average = function() private$..average$value,
-        pclass = function() private$..pclass$value,
         iplot = function() private$..iplot$value,
-        wrightmap = function() private$..wrightmap$value),
+        wrightmap = function() private$..wrightmap$value,
+        pclass = function() private$..pclass$value),
     private = list(
         ..vars = NA,
         ..nc = NA,
@@ -158,9 +155,9 @@ mixtureOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..outfit = NA,
         ..pbis = NA,
         ..average = NA,
-        ..pclass = NA,
         ..iplot = NA,
-        ..wrightmap = NA)
+        ..wrightmap = NA,
+        ..pclass = NA)
 )
 
 mixtureResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -171,7 +168,8 @@ mixtureResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         item = function() private$.items[["item"]],
         person = function() private$.items[["person"]],
         iplot = function() private$.items[["iplot"]],
-        plot = function() private$.items[["plot"]]),
+        plot = function() private$.items[["plot"]],
+        pclass = function() private$.items[["pclass"]]),
     private = list(),
     public=list(
         initialize=function(options) {
@@ -365,8 +363,7 @@ mixtureResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(R6::R6Class(
                 inherit = jmvcore::Group,
                 active = list(
-                    average = function() private$.items[["average"]],
-                    persons = function() private$.items[["persons"]]),
+                    average = function() private$.items[["average"]]),
                 private = list(),
                 public=list(
                     initialize=function(options) {
@@ -393,29 +390,7 @@ mixtureResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 list(
                                     `name`="value", 
                                     `title`="Theta", 
-                                    `type`="number"))))
-                        self$add(jmvcore::Table$new(
-                            options=options,
-                            name="persons",
-                            title="Person membership",
-                            visible="(pclass)",
-                            clearWith=list(
-                                "vars",
-                                "nc",
-                                "step",
-                                "type"),
-                            refs="mixRasch",
-                            columns=list(
-                                list(
-                                    `name`="name", 
-                                    `title`="Person number", 
-                                    `type`="text", 
-                                    `content`="($key)"),
-                                list(
-                                    `name`="pc1", 
-                                    `title`="1", 
-                                    `type`="number", 
-                                    `superTitle`="Class"))))}))$new(options=options))
+                                    `type`="number"))))}))$new(options=options))
             self$add(jmvcore::Image$new(
                 options=options,
                 name="iplot",
@@ -438,6 +413,16 @@ mixtureResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 width=500,
                 height=500,
                 renderFun=".plot",
+                clearWith=list(
+                    "vars",
+                    "nc",
+                    "step",
+                    "type")))
+            self$add(jmvcore::Output$new(
+                options=options,
+                name="pclass",
+                title="Person membership",
+                initInRun=TRUE,
                 clearWith=list(
                     "vars",
                     "nc",
@@ -482,7 +467,6 @@ mixtureBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param outfit .
 #' @param pbis .
 #' @param average .
-#' @param pclass .
 #' @param iplot .
 #' @param wrightmap .
 #' @return A results object containing:
@@ -496,9 +480,9 @@ mixtureBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$item$outfit} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$item$pbis} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$person$average} \tab \tab \tab \tab \tab a table \cr
-#'   \code{results$person$persons} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$iplot} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
+#'   \code{results$pclass} \tab \tab \tab \tab \tab an output \cr
 #' }
 #'
 #' @export
@@ -518,7 +502,6 @@ mixture <- function(
     outfit = FALSE,
     pbis = FALSE,
     average = FALSE,
-    pclass = FALSE,
     iplot = TRUE,
     wrightmap = FALSE) {
 
@@ -547,7 +530,6 @@ mixture <- function(
         outfit = outfit,
         pbis = pbis,
         average = average,
-        pclass = pclass,
         iplot = iplot,
         wrightmap = wrightmap)
 

@@ -96,8 +96,6 @@ children:
             children:
               - type: CheckBox
                 name: average
-              - type: CheckBox
-                name: pclass
       - type: LayoutBox
         stretchFactor: 1
         margin: large
@@ -113,3 +111,14 @@ children:
                 name: iplot
               - type: CheckBox
                 name: wrightmap
+  - type: CollapseBox
+    label: Save
+    collapsed: true
+    stretchFactor: 1
+    children:
+      - type: LayoutBox
+        margin: large
+        stretchFactor: 1
+        children:
+          - type: Output
+            name: pclass

@@ -23,8 +23,25 @@ mixtureClass <- if (requireNamespace('jmvcore'))
   R6::R6Class(
     "mixtureClass",
     inherit = mixtureBase,
+    
+    # #### Active bindings ----
+    # active = list(
+    #   dataProcessed = function() {
+    #     if (is.null(private$.dataProcessed))
+    #       private$.dataProcessed <- private$.cleanData()
+    #     
+    #     return(private$.dataProcessed)
+    #   }
+    # 
+    # ),
+    
     private = list(
  
+      .dataProcessed = NULL,
+      .dataRowNums = NULL,
+      
+      #####################
+      
            .init = function() {
       
           if (is.null(self$data) | is.null(self$options$vars)) {
@@ -101,7 +118,10 @@ mixtureClass <- if (requireNamespace('jmvcore'))
           
           # populate Person analysis table-------
           
-          private$.populatePersonTable(results)
+        #  private$.populatePersonTable(results)
+          
+          private$.populateOutputs()
+          
           
           # prepare plot-----
           
@@ -524,52 +544,86 @@ mixtureClass <- if (requireNamespace('jmvcore'))
         
       },
       
-      # populate Person Statistics table-----
+      ##### Output variables for Person membership----------------
       
-      .populatePersonTable = function(results) {
-        data <- self$data
-        
-        nc <- self$options$nc
-        
-        table <- self$results$person$persons
-        
-        
-        # result-----------
-        
-        nclass <- results$class
-        
-        pclass <- results$pclass
-        
-        pclass <- as.data.frame(pclass)
-        
-        
-        if (nclass > 1) {
-          for (i in 2:nclass)
-            
-            table$addColumn(
-              name = paste0("pc", i),
-              title = as.character(i),
-              type = 'number',
-              superTitle = 'Class'
-            )
+      
+      .populateOutputs = function() {
+        if (self$options$pclass
+            && self$results$pclass$isNotFilled()) {
           
-        }
-        
-        for (i in 1:nrow(data)) {
-          row <- list()
+          # nc <- self$options$nc
           
+          keys <- 1:self$options$nc
+          titles <- paste("Class", 1:self$options$nc)
+          descriptions <- paste("Class", 1:self$options$nc)
+          measureTypes <- rep("continuous", self$options$nc)
           
-          for (j in 1:nclass) {
-            row[[paste0("pc", j)]] <- pclass[i, j]
+          self$results$pclass$set(
+            keys=keys,
+            titles=titles,
+            descriptions=descriptions,
+            measureTypes=measureTypes
+          )
+          
+          self$results$pclass$setRowNums(rownames(data))
+          
+          pclass <- results$pclass
+          pclass <- as.data.frame(pclass)
+         
+          for (i in 1:self$nc) {
+            scores <- as.numeric(pclass[, i])
+            self$results$pclass$setValues(index=i, scores)
           }
-          
-          table$addRow(rowKey = i, values = row)
-          
         }
-        
       },
       
       
+      # populate Person Statistics table-----
+      
+      # .populatePersonTable = function(results) {
+      #   data <- self$data
+      #   
+      #   nc <- self$options$nc
+      #   
+      #   table <- self$results$person$persons
+      #   
+      #   
+      #   # result-----------
+      #   
+      #   nclass <- results$class
+      #   
+      #   pclass <- results$pclass
+      #   
+      #   pclass <- as.data.frame(pclass)
+      #   
+      #   
+      #   if (nclass > 1) {
+      #     for (i in 2:nclass)
+      #       
+      #       table$addColumn(
+      #         name = paste0("pc", i),
+      #         title = as.character(i),
+      #         type = 'number',
+      #         superTitle = 'Class'
+      #       )
+      #     
+      #   }
+      #   
+      #   for (i in 1:nrow(data)) {
+      #     row <- list()
+      #     
+      #     
+      #     for (j in 1:nclass) {
+      #       row[[paste0("pc", j)]] <- pclass[i, j]
+      #     }
+      #     
+      #     table$addRow(rowKey = i, values = row)
+      #     
+      #   }
+      #   
+      # },
+      # 
+      # 
       # Item plot--------------
       
       .itemPlot = function(image, ggtheme, theme, ...) {
@@ -678,6 +732,14 @@ mixtureClass <- if (requireNamespace('jmvcore'))
       
       
       #### Helper functions =================================
+      
+      # .getDataRowNums = function() {
+      #   if (is.null(private$.dataRowNums))
+      #     private$.dataRowNums <- rownames(self$dataProcessed)
+      #   
+      #   return(private$.dataRowNums)
+      # },
+      # 
       
       .cleanData = function() {
         items <- self$options$vars
