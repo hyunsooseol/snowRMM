@@ -120,7 +120,7 @@ mixtureClass <- if (requireNamespace('jmvcore'))
           
         #  private$.populatePersonTable(results)
           
-          private$.populateOutputs()
+          private$.populateOutputs(results)
           
           
           # prepare plot-----
@@ -547,7 +547,8 @@ mixtureClass <- if (requireNamespace('jmvcore'))
       ##### Output variables for Person membership----------------
       
       
-      .populateOutputs = function() {
+      .populateOutputs = function(results) {
+        
         if (self$options$pclass
             && self$results$pclass$isNotFilled()) {
           
