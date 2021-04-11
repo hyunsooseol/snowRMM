@@ -223,7 +223,6 @@ items:
     - name: pclass
       title: Person membership
       type: Output
-      initInRun: true
       clearWith:
         - vars
         - nc

@@ -551,7 +551,6 @@ mixtureClass <- if (requireNamespace('jmvcore'))
         if (self$options$pclass
             && self$results$pclass$isNotFilled()) {
           
-          # nc <- self$options$nc
           
           keys <- 1:self$options$nc
           titles <- paste("Class", 1:self$options$nc)
@@ -570,7 +569,7 @@ mixtureClass <- if (requireNamespace('jmvcore'))
           pclass <- results$pclass
           pclass <- as.data.frame(pclass)
          
-          for (i in 1:self$nc) {
+          for (i in 1:self$options$nc) {
             scores <- as.numeric(pclass[, i])
             self$results$pclass$setValues(index=i, scores)
           }

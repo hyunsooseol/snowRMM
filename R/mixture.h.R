@@ -422,7 +422,6 @@ mixtureResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 options=options,
                 name="pclass",
                 title="Person membership",
-                initInRun=TRUE,
                 clearWith=list(
                     "vars",
                     "nc",
