@@ -70,40 +70,6 @@ items:
               title: Point biserial
               visible: (pbis)
 
-    - name: person
-      title: Person Analysis
-      type: Group
-      items:          
-        - name: persons
-          title: 'Person Statistics'
-          type: Table
-          visible: (total || pmeasure || pse || pinfit || poutfit)
-          clearWith:
-            - vars
-            - step
-            - type
-          refs: mixRasch
-          columns:
-            - name: name
-              title: ''
-              type: 'text'
-              content: ($key)
-            - name: total
-              title: Total score
-              visible: (total)
-            - name: pmeasure
-              title: Measure
-              visible: (pmeasure)
-            - name: pse
-              title: S.E.Measure
-              visible: (pse)
-            - name: pinfit
-              title: Infit
-              visible: (pinfit)
-            - name: poutfit
-              title: Outfit
-              visible: (poutfit)
-
     - name: plot
       title: 'Wright Map'
       type: Image
@@ -114,8 +80,58 @@ items:
       requiresData: TRUE
       refs: ShinyItemAnalysis
       clearWith:
-            - vars
-            - step
-            - type
+        - vars
+        - step
+        - type
+ 
+    - name: total
+      title: Total
+      type: Output
+      varTitle: Total
+      measureType: continuous
+      clearWith:
+        - vars
+        - step
+        - type
+  
+    - name: pmeasure
+      title: Measure
+      type: Output
+      varTitle: Measure
+      measureType: continuous
+      clearWith:
+        - vars
+        - step
+        - type        
+        
+    - name: pse
+      title: SE
+      type: Output
+      varTitle: SE
+      measureType: continuous
+      clearWith:
+        - vars
+        - step
+        - type 
+ 
+    - name: pinfit
+      title: Person Infit
+      type: Output
+      varTitle: Infit
+      measureType: continuous
+      clearWith:
+        - vars
+        - step
+        - type 
+ 
+    - name: poutfit
+      title: Person Outfit
+      type: Output
+      varTitle: Outfit
+      measureType: continuous
+      clearWith:
+        - vars
+        - step
+        - type 
      
 ...

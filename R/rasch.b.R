@@ -39,6 +39,8 @@ raschClass <- if (requireNamespace('jmvcore'))
 
             <P> Step is defined as number of category-1. </p>
 
+            <p> The results of <b> Save </b> will be displayed in the datasheet.</p>
+            
             <p> Feature requests and bug reports can be made on my <a href='https://github.com/hyunsooseol/snowRMM/'  target = '_blank'>GitHub</a></p>
 
             </div>
@@ -90,7 +92,12 @@ raschClass <- if (requireNamespace('jmvcore'))
          
           # populate Person statistics table
           
-          private$.populatePersonTable(results)
+         # private$.populatePersonTable(results)
+          
+          # populate output variables-----
+          
+          private$.populateOutputs(results)
+          
           
           # prepare wrightmap plot-----
           
@@ -262,50 +269,110 @@ raschClass <- if (requireNamespace('jmvcore'))
         
       },
       
+      ##### person statistics for output variable-------------------
       
-      # populate Person analysis table-----   
-      
-      .populatePersonTable = function(results) {
+      .populateOutputs= function(results) {
         
-        data <- self$data
-        
-        table <- self$results$person$persons
-        
-        
-        #result---
-        
-        total <- results$total
-        
-        pmeasure <- results$pmeasure
-        
-        pse <- results$pse
-        
-        pinfit <- results$pinfit
-        
-        poutfit <- results$poutfit
-        
-        
-        
-        for (i in 1:nrow(data)) {
-          row <- list()
+        if (self$options$total&& self$results$total$isNotFilled()){
           
           
-          row[["total"]] <- total[i]
+          total <- results$total
           
-          row[["pmeasure"]] <- pmeasure[i]
-          
-          row[["pse"]] <- pse[i]
-          
-          row[["pinfit"]] <- pinfit[i]
-          
-          row[["poutfit"]] <- poutfit[i]
-          
-          table$addRow(rowKey = i, values = row)
+          self$results$total$setRowNums(rownames(data))
+          self$results$total$setValues(total)
           
         }
         
+        if (self$options$pmeasure&& self$results$pmeasure$isNotFilled()){
+          
+          
+          pmeasure <- results$pmeasure
+          
+          self$results$pmeasure$setRowNums(rownames(data))
+          self$results$pmeasure$setValues(pmeasure)
+          
+        }
+        
+        if (self$options$pse&& self$results$pse$isNotFilled()){
+          
+          
+          pse <- results$pse
+          
+          self$results$pse$setRowNums(rownames(data))
+          self$results$pse$setValues(pse)
+          
+        }
+       
+        
+        if (self$options$pinfit&& self$results$pinfit$isNotFilled()){
+          
+          
+          pinfit <- results$pinfit
+          
+          self$results$pinfit$setRowNums(rownames(data))
+          self$results$pinfit$setValues(pinfit)
+          
+        }
+        
+        
+        if (self$options$poutfit&& self$results$poutfit$isNotFilled()){
+          
+          
+          poutfit <- results$poutfit
+          
+          self$results$poutfit$setRowNums(rownames(data))
+          self$results$poutfit$setValues(poutfit)
+          
+        }
+         
+        
       },
       
+      
+      # populate Person analysis table-----   
+      
+      # .populatePersonTable = function(results) {
+      #   
+      #   data <- self$data
+      #   
+      #   table <- self$results$person$persons
+      #   
+      #   
+      #   #result---
+      #   
+      #   total <- results$total
+      #   
+      #   pmeasure <- results$pmeasure
+      #   
+      #   pse <- results$pse
+      #   
+      #   pinfit <- results$pinfit
+      #   
+      #   poutfit <- results$poutfit
+      #   
+      #   
+      #   
+      #   for (i in 1:nrow(data)) {
+      #     row <- list()
+      #     
+      #     
+      #     row[["total"]] <- total[i]
+      #     
+      #     row[["pmeasure"]] <- pmeasure[i]
+      #     
+      #     row[["pse"]] <- pse[i]
+      #     
+      #     row[["pinfit"]] <- pinfit[i]
+      #     
+      #     row[["poutfit"]] <- poutfit[i]
+      #     
+      #     table$addRow(rowKey = i, values = row)
+      #     
+      #   }
+      #   
+      # },
+      # 
+      # 
       
       ### wrightmap Plot functions -----------
       
@@ -314,7 +381,7 @@ raschClass <- if (requireNamespace('jmvcore'))
         
         # get variables--------
         
-       # data <- self$data
+        # data <- self$data
         
         step <- self$options$step
         
@@ -337,7 +404,7 @@ raschClass <- if (requireNamespace('jmvcore'))
         
         image <- self$results$plot
         
-        vars <- length(self$options$vars)
+       # vars <- length(self$options$vars)
         
         # width <- 300 + vars * 30
         # 
@@ -352,7 +419,7 @@ raschClass <- if (requireNamespace('jmvcore'))
       
       # wright map plot--------------
       
-      .plot = function(image,ggtheme, theme, ...) {
+      .plot = function(image,...) {
         
         wrightmap <- self$options$wrightmap
         
@@ -364,7 +431,7 @@ raschClass <- if (requireNamespace('jmvcore'))
         
 
         plot<- ShinyItemAnalysis::ggWrightMap(pmeasure, imeasure,
-                                              color = "sky blue")
+                                              color = "deepskyblue")
         
         print(plot)
         TRUE

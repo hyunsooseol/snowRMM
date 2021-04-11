@@ -81,35 +81,29 @@ options:
       type: Bool
       default: FALSE
 
-    - name: total
-      title: Total score
-      type: Bool
-      default: FALSE
-
-    - name: pmeasure
-      title: Measure
-      type: Bool
-      default: FALSE
-
-    - name: pse
-      title: S.E. measure
-      type: Bool
-      default: FALSE
-
-    - name: pinfit
-      title: Infit
-      type: Bool
-      default: FALSE
-
-    - name: poutfit
-      title: Outfit
-      type: Bool
-      default: FALSE
-      
     - name: wrightmap
       title: Wright Map
       type: Bool
       default: FALSE
 
+    - name: total
+      title: Total score
+      type: Output
+
+    - name: pmeasure
+      title: Person measure
+      type: Output
+  
+    - name: pse
+      title: Std.error of person
+      type: Output
+
+    - name: pinfit
+      title: Perosn infit
+      type: Output
+
+    - name: poutfit
+      title: Person outfit
+      type: Output
 
 ...

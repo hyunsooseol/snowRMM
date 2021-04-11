@@ -18,11 +18,6 @@ rasch(
   infit = FALSE,
   outfit = FALSE,
   pbis = FALSE,
-  total = FALSE,
-  pmeasure = FALSE,
-  pse = FALSE,
-  pinfit = FALSE,
-  poutfit = FALSE,
   wrightmap = FALSE
 )
 }
@@ -53,16 +48,6 @@ rasch(
 
 \item{pbis}{.}
 
-\item{total}{.}
-
-\item{pmeasure}{.}
-
-\item{pse}{.}
-
-\item{pinfit}{.}
-
-\item{poutfit}{.}
-
 \item{wrightmap}{.}
 }
 \value{
@@ -71,8 +56,12 @@ A results object containing:
   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
   \code{results$item$model} \tab \tab \tab \tab \tab a table \cr
   \code{results$item$items} \tab \tab \tab \tab \tab a table \cr
-  \code{results$person$persons} \tab \tab \tab \tab \tab a table \cr
   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
+  \code{results$total} \tab \tab \tab \tab \tab an output \cr
+  \code{results$pmeasure} \tab \tab \tab \tab \tab an output \cr
+  \code{results$pse} \tab \tab \tab \tab \tab an output \cr
+  \code{results$pinfit} \tab \tab \tab \tab \tab an output \cr
+  \code{results$poutfit} \tab \tab \tab \tab \tab an output \cr
 }
 }
 \description{
