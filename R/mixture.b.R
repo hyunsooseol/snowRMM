@@ -37,8 +37,8 @@ mixtureClass <- if (requireNamespace('jmvcore'))
     
     private = list(
  
-      .dataProcessed = NULL,
-      .dataRowNums = NULL,
+      # .dataProcessed = NULL,
+      # .dataRowNums = NULL,
       
       #####################
       
