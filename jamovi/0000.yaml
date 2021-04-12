@@ -49,6 +49,6 @@ datasets:
       - Rasch
       - Mixture
 usesNative: true
-minApp: 1.0.8
+minApp: 1.8.0
 
 ...
