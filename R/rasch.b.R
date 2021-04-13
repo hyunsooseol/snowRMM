@@ -96,7 +96,7 @@ raschClass <- if (requireNamespace('jmvcore'))
           
           # populate output variables-----
           
-          private$.populateOutputs(results)
+          private$.populateOutputs(data)
           
           
           # prepare wrightmap plot-----
@@ -110,7 +110,6 @@ raschClass <- if (requireNamespace('jmvcore'))
         
         # get variables--------
         
-        # data <- self$data
         
         vars <- self$options$vars
         
@@ -158,16 +157,16 @@ raschClass <- if (requireNamespace('jmvcore'))
         
         # person statistics---------
         
-        total <- res$person.par$r
-        
-        pmeasure <- res$person.par$theta
-        
-        pse <- res$person.par$SE.theta
-        
-        pinfit <- res$person.par$infit
-        
-        poutfit <- res$person.par$outfit
-        
+        # total <- res$person.par$r
+        # 
+        # pmeasure <- res$person.par$theta
+        # 
+        # pse <- res$person.par$SE.theta
+        # 
+        # pinfit <- res$person.par$infit
+        # 
+        # poutfit <- res$person.par$outfit
+        # 
         
         results <-
           list(
@@ -180,12 +179,12 @@ raschClass <- if (requireNamespace('jmvcore'))
             'infit' = infit,
             'outfit' = outfit,
             'pbis' = pbis,
-            'class' = class,
-            'total' = total,
-            'pmeasure' = pmeasure,
-            'pse' = pse,
-            'pinfit' = pinfit,
-            'poutfit' = poutfit
+            'class' = class
+            # 'total' = total,
+            # 'pmeasure' = pmeasure,
+            # 'pse' = pse,
+            # 'pinfit' = pinfit,
+            # 'poutfit' = poutfit
             
           )
         
@@ -271,12 +270,23 @@ raschClass <- if (requireNamespace('jmvcore'))
       
       ##### person statistics for output variable-------------------
       
-      .populateOutputs= function(results) {
+      .populateOutputs= function(data) {
         
         if (self$options$total&& self$results$total$isNotFilled()){
           
+          step <- self$options$step
           
-          total <- results$total
+          type <- self$options$type
+          
+          res <-
+            mixRasch::mixRasch(
+              data = data,
+              steps = step,
+              model = type,
+              n.c = 1
+            )
+         
+          total <- res$person.par$r
           
           self$results$total$setRowNums(rownames(data))
           self$results$total$setValues(total)
@@ -285,8 +295,19 @@ raschClass <- if (requireNamespace('jmvcore'))
         
         if (self$options$pmeasure&& self$results$pmeasure$isNotFilled()){
           
+          step <- self$options$step
           
-          pmeasure <- results$pmeasure
+          type <- self$options$type
+          
+          res <-
+            mixRasch::mixRasch(
+              data = data,
+              steps = step,
+              model = type,
+              n.c = 1
+            )
+          
+          pmeasure <- res$person.par$theta
           
           self$results$pmeasure$setRowNums(rownames(data))
           self$results$pmeasure$setValues(pmeasure)
@@ -295,8 +316,19 @@ raschClass <- if (requireNamespace('jmvcore'))
         
         if (self$options$pse&& self$results$pse$isNotFilled()){
           
+          step <- self$options$step
           
-          pse <- results$pse
+          type <- self$options$type
+          
+          res <-
+            mixRasch::mixRasch(
+              data = data,
+              steps = step,
+              model = type,
+              n.c = 1
+            )
+        
+          pse <- res$person.par$SE.theta
           
           self$results$pse$setRowNums(rownames(data))
           self$results$pse$setValues(pse)
@@ -306,8 +338,19 @@ raschClass <- if (requireNamespace('jmvcore'))
         
         if (self$options$pinfit&& self$results$pinfit$isNotFilled()){
           
+          step <- self$options$step
           
-          pinfit <- results$pinfit
+          type <- self$options$type
+          
+          res <-
+            mixRasch::mixRasch(
+              data = data,
+              steps = step,
+              model = type,
+              n.c = 1
+            )
+         
+          pinfit <- res$person.par$infit
           
           self$results$pinfit$setRowNums(rownames(data))
           self$results$pinfit$setValues(pinfit)
@@ -317,8 +360,19 @@ raschClass <- if (requireNamespace('jmvcore'))
         
         if (self$options$poutfit&& self$results$poutfit$isNotFilled()){
           
+          step <- self$options$step
           
-          poutfit <- results$poutfit
+          type <- self$options$type
+          
+          res <-
+            mixRasch::mixRasch(
+              data = data,
+              steps = step,
+              model = type,
+              n.c = 1
+            )
+         
+          poutfit <- res$person.par$outfit
           
           self$results$poutfit$setRowNums(rownames(data))
           self$results$poutfit$setValues(poutfit)
