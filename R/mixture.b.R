@@ -24,22 +24,9 @@ mixtureClass <- if (requireNamespace('jmvcore'))
     "mixtureClass",
     inherit = mixtureBase,
     
-    # #### Active bindings ----
-    # active = list(
-    #   dataProcessed = function() {
-    #     if (is.null(private$.dataProcessed))
-    #       private$.dataProcessed <- private$.cleanData()
-    #     
-    #     return(private$.dataProcessed)
-    #   }
-    # 
-    # ),
-    
+   
     private = list(
  
-      # .dataProcessed = NULL,
-      # .dataRowNums = NULL,
-      
       #####################
       
            .init = function() {
@@ -79,12 +66,12 @@ mixtureClass <- if (requireNamespace('jmvcore'))
       
       .run = function() {
         
-        # get variables-------
-        
-        data <- self$data
-        
-        vars <- self$options$vars
-        
+        # # get variables-------
+        # 
+        # data <- self$data
+        # 
+        # vars <- self$options$vars
+        # 
         
         # Ready--------
         
@@ -122,7 +109,7 @@ mixtureClass <- if (requireNamespace('jmvcore'))
           
         #  private$.populatePersonTable(results)
           
-          private$.populateOutputs(results)
+          private$.populateOutputs(data)
           
           
           # prepare plot-----
@@ -210,7 +197,7 @@ mixtureClass <- if (requireNamespace('jmvcore'))
         
         # person class
         
-        pclass <- res1$class
+        # pclass <- res1$class
         
         
         results <-
@@ -225,8 +212,8 @@ mixtureClass <- if (requireNamespace('jmvcore'))
             'imean' = imean,
             'pbis'=pbis,
             'class' = class,
-            'average' = average,
-            'pclass' = pclass
+            'average' = average
+            # 'pclass' = pclass
           )
         
         
@@ -549,10 +536,30 @@ mixtureClass <- if (requireNamespace('jmvcore'))
       ##### Output variables for Person membership----------------
       
       
-      .populateOutputs = function(results) {
+      .populateOutputs = function(data) {
+        
         
         if (self$options$pclass
             && self$results$pclass$isNotFilled()) {
+        
+          
+          nc <- self$options$nc
+          
+          step <- self$options$step
+          
+          type <- self$options$type
+          
+          # computing mixRasch-----------
+          
+          res1 <-
+            mixRasch::mixRasch(
+              data = data,
+              steps = step,
+              model = type,
+              n.c = nc
+            )
+          
+          pclass <- res1$class
           
           
           keys <- 1:self$options$nc
@@ -569,7 +576,7 @@ mixtureClass <- if (requireNamespace('jmvcore'))
           
           self$results$pclass$setRowNums(rownames(data))
           
-          pclass <- results$pclass
+        #  pclass <- results$pclass
           pclass <- as.data.frame(pclass)
          
           for (i in 1:self$options$nc) {
