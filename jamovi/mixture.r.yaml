@@ -210,10 +210,11 @@ items:
       title: 'Wright Map'
       refs: WrightMap
       type: Image
-      visible: (plot)
+      visible: (wrightmap)
       width: 500
       height: 500
       renderFun: .plot
+      requiresData: TRUE
       clearWith:
             - vars
             - nc

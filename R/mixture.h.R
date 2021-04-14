@@ -409,10 +409,11 @@ mixtureResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 name="plot",
                 title="Wright Map",
                 refs="WrightMap",
-                visible="(plot)",
+                visible="(wrightmap)",
                 width=500,
                 height=500,
                 renderFun=".plot",
+                requiresData=TRUE,
                 clearWith=list(
                     "vars",
                     "nc",

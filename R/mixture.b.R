@@ -576,7 +576,7 @@ mixtureClass <- if (requireNamespace('jmvcore'))
           
           self$results$pclass$setRowNums(rownames(data))
           
-        #  pclass <- results$pclass
+        
           pclass <- as.data.frame(pclass)
          
           for (i in 1:self$options$nc) {
