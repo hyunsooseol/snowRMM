@@ -91,19 +91,19 @@ options:
       type: Output
 
     - name: pmeasure
-      title: Person measure
+      title: Measure
       type: Output
   
     - name: pse
-      title: Std.error of person
+      title: S.E. measure
       type: Output
 
     - name: pinfit
-      title: Perosn infit
+      title: Infit
       type: Output
 
     - name: poutfit
-      title: Person outfit
+      title: Outfit
       type: Output
 
 ...
