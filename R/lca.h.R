@@ -33,24 +33,24 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "fit",
                 fit,
                 default=TRUE)
-            private$..class <- jmvcore::OptionOutput$new(
-                "class")
+            private$..cm <- jmvcore::OptionOutput$new(
+                "cm")
 
             self$.addOption(private$..vars)
             self$.addOption(private$..nc)
             self$.addOption(private$..fit)
-            self$.addOption(private$..class)
+            self$.addOption(private$..cm)
         }),
     active = list(
         vars = function() private$..vars$value,
         nc = function() private$..nc$value,
         fit = function() private$..fit$value,
-        class = function() private$..class$value),
+        cm = function() private$..cm$value),
     private = list(
         ..vars = NA,
         ..nc = NA,
         ..fit = NA,
-        ..class = NA)
+        ..cm = NA)
 )
 
 lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -59,7 +59,7 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     active = list(
         instructions = function() private$.items[["instructions"]],
         fit = function() private$.items[["fit"]],
-        class = function() private$.items[["class"]]),
+        cm = function() private$.items[["cm"]]),
     private = list(),
     public=list(
         initialize=function(options) {
@@ -89,6 +89,9 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         `type`="text", 
                         `content`="Fit"),
                     list(
+                        `name`="Class", 
+                        `type`="number"),
+                    list(
                         `name`="AIC", 
                         `type`="number"),
                     list(
@@ -102,7 +105,7 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         `type`="number"))))
             self$add(jmvcore::Output$new(
                 options=options,
-                name="class",
+                name="cm",
                 title="Class membership",
                 varTitle="Membership",
                 measureType="continuous",
@@ -141,7 +144,7 @@ lcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
 #'   \code{results$fit} \tab \tab \tab \tab \tab a table \cr
-#'   \code{results$class} \tab \tab \tab \tab \tab an output \cr
+#'   \code{results$cm} \tab \tab \tab \tab \tab an output \cr
 #' }
 #'
 #' Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:

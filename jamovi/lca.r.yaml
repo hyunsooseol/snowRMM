@@ -23,6 +23,8 @@ items:
           title: ''
           type: 'text'
           content: Fit
+        - name: Class
+          type: number
         - name: AIC
           type: number
         - name: BIC
@@ -32,7 +34,7 @@ items:
         - name: Chisq
           type: number
   
-    - name: class
+    - name: cm
       title: Class membership
       type: Output
       varTitle: Membership

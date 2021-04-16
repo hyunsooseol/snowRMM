@@ -128,6 +128,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                        
                        table <- self$results$fit
                        
+                       nc <- self$options$nc
                        aic <- results$aic
                        bic <- results$bic
                        Gsq <- results$Gsq
@@ -137,6 +138,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                        
                        row <- list()
                        
+                       row[['Class']] <- nc
                        row[['AIC']] <- aic
                        row[['BIC']] <- bic
                        row[['Gsq']] <- Gsq
@@ -164,15 +166,15 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             
             res<- poLCA::poLCA(formula,data,nclass=nc,calc.se = FALSE)
             
-            class <- res$predclass
+            cm <- res$predclass
             
-            if (self$options$class
-                && self$results$class$isNotFilled()) {
+            if (self$options$cm
+                && self$results$cm$isNotFilled()) {
 
                 
-                self$results$class$setValues(class)
+                self$results$cm$setValues(cm)
                 
-                self$results$class$setRowNums(rownames(data))
+                self$results$cm$setRowNums(rownames(data))
         
             }
             },

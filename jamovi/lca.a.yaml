@@ -23,7 +23,7 @@ options:
         - factor
 
     - name: nc
-      title: Class(es)
+      title: Class
       type: Integer
       min: 1
       default: 2
@@ -33,7 +33,7 @@ options:
       type: Bool
       default: True
 
-    - name: class
+    - name: cm
       title: Class membership
       type: Output   
 

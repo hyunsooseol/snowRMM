@@ -27,7 +27,7 @@ children:
             children:
               - name: nc
                 type: TextBox
-                label: class(es)
+                label: Class
                 format: number
               - type: CheckBox
                 name: fit
@@ -42,7 +42,7 @@ children:
         margin: large
         children:
           - type: Output
-            name: class
+            name: cm
 
 
  
