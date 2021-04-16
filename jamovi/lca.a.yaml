@@ -17,9 +17,10 @@ options:
       title: Variables
       type: Variables
       suggested:
-         - continuous
+         - nominal
+         - ordinal
       permitted:
-        - numeric
+        - factor
 
     - name: nc
       title: Class(es)

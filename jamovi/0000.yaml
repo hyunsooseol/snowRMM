@@ -9,8 +9,9 @@ maintainer: Hyunsoo Seol <snow@cau.ac.kr>
 date: 2021-4-10
 type: R
 description: >-
-  This module allows users to conduct Rasch mixture model including model
-  information,fit statistics,and bootstrap fit based on JMLE.
+  This module allows users to conduct Laten class analysis, Rasch model, and
+  Rasch mixture model including model information,fit statistics,and bootstrap
+  fit based on JMLE.
 analyses:
   - title: Rasch Model
     name: rasch
@@ -57,6 +58,11 @@ datasets:
   - name: lca
     path: lca.omv
     description: Dichotomous ratings by seven pathologists(A through G)
+    tags:
+      - LCA
+  - name: election
+    path: election.omv
+    description: A data frame with 1785 observations on 17 survey variables.
     tags:
       - LCA
 usesNative: true
