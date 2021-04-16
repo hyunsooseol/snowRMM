@@ -1,0 +1,39 @@
+---
+name:  lca
+title: Latent Class Analysis
+menuGroup: snowRMM
+menuSubgroup: LCA
+version: '1.0.0'
+jas: '1.2'
+
+options:
+    - name: data
+      type: Data
+      description:
+          R: >
+            The data as a data frame.
+
+    - name: vars
+      title: Variables
+      type: Variables
+      suggested:
+         - continuous
+      permitted:
+        - numeric
+
+    - name: nc
+      title: Class(es)
+      type: Integer
+      min: 1
+      default: 2
+ 
+    - name: fit
+      title: Model fit
+      type: Bool
+      default: True
+
+    - name: class
+      title: Class membership
+      type: Output   
+
+...

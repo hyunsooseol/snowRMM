@@ -20,6 +20,8 @@ Imports:
     ShinyItemAnalysis,
     boot,
     ggplot2,
+    MASS,
+    poLCA,
     tidyr
    
     

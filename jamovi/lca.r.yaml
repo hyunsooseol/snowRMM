@@ -1,0 +1,46 @@
+---
+name:  lca
+title: Latent Class Analysis
+jrs:   '1.1'
+refs: snowRMM
+items:
+    - name: instructions
+      title: 'Instructions'
+      type: Html
+      visible: True
+      
+    - name: fit
+      title: 'Model fit'
+      type: Table
+      rows: 1
+      clearWith:
+        - vars
+        - nc
+      refs: poLCA 
+
+      columns:
+        - name: name
+          title: ''
+          type: 'text'
+          content: Fit
+        - name: AIC
+          type: number
+        - name: BIC
+          type: number
+        - name: Gsq
+          type: number
+        - name: Chisq
+          type: number
+  
+    - name: class
+      title: Class membership
+      type: Output
+      varTitle: Membership
+      measureType: continuous
+      clearWith:
+        - vars
+        - nc
+     
+      
+      
+...

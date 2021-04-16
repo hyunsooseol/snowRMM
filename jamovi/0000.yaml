@@ -30,6 +30,12 @@ analyses:
     menuGroup: snowRMM
     menuTitle: Bootstrap Item Fit
     menuSubgroup: Rasch
+  - title: Latent Class Analysis
+    name: lca
+    ns: snowRMM
+    menuGroup: snowRMM
+    menuTitle: Latent Class Analysis
+    menuSubgroup: LCA
 datasets:
   - name: mixture
     path: mix.omv
@@ -48,6 +54,11 @@ datasets:
     tags:
       - Rasch
       - Mixture
+  - name: lca
+    path: lca.omv
+    description: Dichotomous ratings by seven pathologists(A through G)
+    tags:
+      - LCA
 usesNative: true
 minApp: 1.8.0
 

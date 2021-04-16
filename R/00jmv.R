@@ -37,4 +37,10 @@
         `author`="Martinkova, P., & Drabinova, A.", 
         `year`=2018, 
         `title`="ShinyItemAnalysis: for teaching psychometrics and to enforce routine analysis of educational tests", 
-        `publisher`="[R package]. Retrieved from https://CRAN.R-project.org/package=ShinyItemAnalysis"))
+        `publisher`="[R package]. Retrieved from https://CRAN.R-project.org/package=ShinyItemAnalysis"), 
+    `poLCA`=list(
+        `type`="software", 
+        `author`="Linzer,D., & Lewis, J.", 
+        `year`=2021, 
+        `title`="poLCA: An R Package for Polytomous Variable Latent Class Analysis", 
+        `publisher`="[R package]. Retrieved from https://CRAN.R-project.org/package=poLCA"))
