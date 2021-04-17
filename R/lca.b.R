@@ -7,6 +7,7 @@
 #' @importFrom poLCA poLCA
 #' @importFrom poLCA poLCA.entropy
 #' @import MASS
+#' @import scatterplot3d
 #' @export
 
 
@@ -79,6 +80,11 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                        # populate output variables-----
                        
                        private$.populateOutputs(data)
+                       
+                       # prepare plot-----
+                       
+                       private$.preparePlot(data)
+                       
                        
                    }
                },
@@ -183,7 +189,94 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             }
             },
         
-                   ### Helper functions =================================     
+        .preparePlot = function(data) {
+            
+            nc<- self$options$nc
+            
+            data<- as.data.frame(data)
+            
+            vars <- colnames(data)
+            vars <- vapply(vars, function(x) jmvcore::composeTerm(x), '')
+            vars <- paste0(vars, collapse=',')
+            formula <- as.formula(paste0('cbind(', vars, ')~1'))
+            
+            
+            # estimate ------------
+            
+            x <- poLCA::poLCA(formula,data,nclass=nc, calc.se = FALSE)
+            
+            ### plot function-----
+            
+            poLCA.makeplot.dich <-
+                function(probs,P,y,ti) {
+                    R <- nrow(probs[[1]])
+                    pi.class <- matrix(NA,nrow=length(probs),ncol=R)
+                    for (j in 1:length(probs)) {
+                        pi.class[j,] <- probs[[j]][,2]
+                    }
+                    dimnames(pi.class) <- list(names(y),round(P,4))
+                    ds.plot <- data.frame(Classes=as.vector(col(pi.class)),Manifest.variables=as.vector(row(pi.class)),value=as.vector(pi.class))
+                    vis <- scatterplot3d(ds.plot,type="h",lwd=5,pch=" ",x.ticklabs=colnames(pi.class),y.ticklabs=colnames(y),z.ticklabs=" ",
+                                         xlab="Classes; population share",ylab="Manifest variables",zlab="Pr(outcome)",color=2,main=ti,y.margin.add=0.2,
+                                         mar=c(6,3,3,3),lab=c(R-1,ncol(y)-1),zlim=c(0,1),box=FALSE,cex.main=1,angle=83)
+                }
+            
+            poLCA.makeplot.poly <-
+                function(probs,r,y,K.j,ti) {
+                    pi.class <- matrix(NA,nrow=length(probs),ncol=max(K.j))
+                    for (j in 1:length(probs)) {
+                        pi.class[j,1:K.j[j]] <- probs[[j]][r,]
+                    }
+                    dimnames(pi.class) <- list(as.character(c(1:ncol(y))),as.character(c(1:max(K.j))))
+                    ds.plot <- data.frame(Manifest.variables=as.vector(row(pi.class)),Outcomes=as.vector(col(pi.class)),value=as.vector(pi.class))
+                    vis <- scatterplot3d(ds.plot,type="h",lwd=5,pch=" ",x.ticklabs=colnames(y),y.ticklabs=colnames(pi.class),z.ticklabs=" ",
+                                         xlab="Manifest variables",zlab="Pr(outcome)",main=ti,cex.main=1.5,color=2,lab=c(ncol(y)-1,max(K.j)-1),zlim=c(0,1),box=FALSE,
+                                         angle=75,mar=c(3,3,2,3))
+                }
+            
+            plot.poLCA <-
+                function(x, ...) {
+                    K.j <- sapply(x$probs,ncol)
+                    R <- length(x$P)
+                    if (max(K.j)==2) {
+                        poLCA.makeplot.dich(x$probs,x$P,x$y,NULL)
+                    } else {
+                        layout(matrix(seq(1,(R+1)),R+1,1),heights=c(rep(5,R),1))
+                        for (r in 1:R) {
+                            poLCA.makeplot.poly(x$probs,r,x$y,K.j,paste("Class ",r,": population share = ",round(x$P[r],3),sep=""))
+                        }
+                    }
+                    par(mfrow=c(1,1),mar=c(5,4,4,2)+0.1)
+                }
+            
+            x <- plot.poLCA(x)
+            
+            # plot----------
+            
+            image <- self$results$plot
+            image$setState(x)
+            
+            
+        },
+        
+        .plot = function(image,...) {
+            
+            if (is.null(self$options$vars))
+                return()
+            
+            
+            x <- image$state
+            
+            plot<- plot.poLCA(x)
+            
+            print(plot)
+            TRUE
+            
+            
+        },
+        
+        
+        ### Helper functions =================================     
                    
                    .cleanData = function() {
                        

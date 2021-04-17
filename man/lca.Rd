@@ -4,7 +4,7 @@
 \alias{lca}
 \title{Latent Class Analysis}
 \usage{
-lca(data, vars, nc = 2, fit = TRUE)
+lca(data, vars, nc = 2, fit = TRUE, plot = FALSE)
 }
 \arguments{
 \item{data}{The data as a data frame.}
@@ -14,6 +14,8 @@ lca(data, vars, nc = 2, fit = TRUE)
 \item{nc}{.}
 
 \item{fit}{.}
+
+\item{plot}{.}
 }
 \value{
 A results object containing:
@@ -21,6 +23,7 @@ A results object containing:
   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
   \code{results$fit} \tab \tab \tab \tab \tab a table \cr
   \code{results$cm} \tab \tab \tab \tab \tab an output \cr
+  \code{results$plot} \tab \tab \tab \tab \tab an image \cr
 }
 
 Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:

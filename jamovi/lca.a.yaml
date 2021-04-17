@@ -37,4 +37,8 @@ options:
       title: Class membership
       type: Output   
 
+    - name: plot
+      title: Class Plot
+      type: Bool
+      default: FALSE
 ...

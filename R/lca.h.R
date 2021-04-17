@@ -8,7 +8,8 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         initialize = function(
             vars = NULL,
             nc = 2,
-            fit = TRUE, ...) {
+            fit = TRUE,
+            plot = FALSE, ...) {
 
             super$initialize(
                 package="snowRMM",
@@ -35,22 +36,29 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 default=TRUE)
             private$..cm <- jmvcore::OptionOutput$new(
                 "cm")
+            private$..plot <- jmvcore::OptionBool$new(
+                "plot",
+                plot,
+                default=FALSE)
 
             self$.addOption(private$..vars)
             self$.addOption(private$..nc)
             self$.addOption(private$..fit)
             self$.addOption(private$..cm)
+            self$.addOption(private$..plot)
         }),
     active = list(
         vars = function() private$..vars$value,
         nc = function() private$..nc$value,
         fit = function() private$..fit$value,
-        cm = function() private$..cm$value),
+        cm = function() private$..cm$value,
+        plot = function() private$..plot$value),
     private = list(
         ..vars = NA,
         ..nc = NA,
         ..fit = NA,
-        ..cm = NA)
+        ..cm = NA,
+        ..plot = NA)
 )
 
 lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -59,7 +67,8 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     active = list(
         instructions = function() private$.items[["instructions"]],
         fit = function() private$.items[["fit"]],
-        cm = function() private$.items[["cm"]]),
+        cm = function() private$.items[["cm"]],
+        plot = function() private$.items[["plot"]]),
     private = list(),
     public=list(
         initialize=function(options) {
@@ -109,6 +118,17 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 measureType="continuous",
                 clearWith=list(
                     "vars",
+                    "nc")))
+            self$add(jmvcore::Image$new(
+                options=options,
+                name="plot",
+                title="Class model",
+                visible="(plot)",
+                width=600,
+                height=450,
+                renderFun=".Plot",
+                clearWith=list(
+                    "vars",
                     "nc")))}))
 
 lcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -138,11 +158,13 @@ lcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param vars .
 #' @param nc .
 #' @param fit .
+#' @param plot .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
 #'   \code{results$fit} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$cm} \tab \tab \tab \tab \tab an output \cr
+#'   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
 #' }
 #'
 #' Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
@@ -156,7 +178,8 @@ lca <- function(
     data,
     vars,
     nc = 2,
-    fit = TRUE) {
+    fit = TRUE,
+    plot = FALSE) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("lca requires jmvcore to be installed (restart may be required)")
@@ -172,7 +195,8 @@ lca <- function(
     options <- lcaOptions$new(
         vars = vars,
         nc = nc,
-        fit = fit)
+        fit = fit,
+        plot = plot)
 
     analysis <- lcaClass$new(
         options = options,

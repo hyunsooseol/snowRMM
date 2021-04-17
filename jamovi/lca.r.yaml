@@ -41,6 +41,15 @@ items:
         - vars
         - nc
      
-      
+    - name: plot
+      title: 'Class model'
+      type: Image
+      visible: (plot)
+      width: 600
+      height: 450
+      renderFun: .Plot
+      clearWith:
+            - vars
+            - nc          
       
 ...
