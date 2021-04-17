@@ -19,15 +19,13 @@ items:
       refs: poLCA 
 
       columns:
-        - name: name
-          title: ''
-          type: 'text'
-          content: Fit
         - name: Class
           type: number
         - name: AIC
           type: number
         - name: BIC
+          type: number
+        - name: Entropy
           type: number
         - name: Gsq
           type: number

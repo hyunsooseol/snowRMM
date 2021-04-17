@@ -84,11 +84,6 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 refs="poLCA",
                 columns=list(
                     list(
-                        `name`="name", 
-                        `title`="", 
-                        `type`="text", 
-                        `content`="Fit"),
-                    list(
                         `name`="Class", 
                         `type`="number"),
                     list(
@@ -96,6 +91,9 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         `type`="number"),
                     list(
                         `name`="BIC", 
+                        `type`="number"),
+                    list(
+                        `name`="Entropy", 
                         `type`="number"),
                     list(
                         `name`="Gsq", 

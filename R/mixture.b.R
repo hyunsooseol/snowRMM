@@ -667,7 +667,7 @@ mixtureClass <- if (requireNamespace('jmvcore'))
         
         # get variables------
         
-        data <- self$data
+       # data <- self$data
         
         vars <- self$options$vars
         

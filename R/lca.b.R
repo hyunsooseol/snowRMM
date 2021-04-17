@@ -5,6 +5,7 @@
 #' @import jmvcore
 #' @import poLCA
 #' @importFrom poLCA poLCA
+#' @importFrom poLCA poLCA.entropy
 #' @import MASS
 #' @export
 
@@ -46,8 +47,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             if (self$options$fit)
                 self$results$fit$setNote(
                     "Note",
-                    "Gsq:Likelihood ratio/deviance statistic.
-                    Chisq: Pearson Chi-square goodness of fit statistic."
+                    "Gsq=the likelihood-ratio statistic; Chisq=Pearson Chi-square goodness of fit statistic."
                 )
             
             if (length(self$options$vars) <= 1)
@@ -101,22 +101,25 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                        
                       res<- poLCA::poLCA(formula,data,nclass=nc,calc.se = FALSE)
                        
+                      
+                      entro<- poLCA::poLCA.entropy(res)
+                      
                       # result-----------
                       
                       aic<- res$aic 
                       bic<- res$bic 
-                      Gsq<- res$Gsq
                       Chisq<- res$Chisq 
-                     # class <- res$predclass
+                      Gsq <- res$Gsq
                       
                       
                        results <-
                            list(
                                'aic' = aic,
                                'bic' = bic,
-                               'Gsq' = Gsq,
-                               'Chisq'=Chisq
-                             #  'class'=class
+                               'Chisq'=Chisq,
+                               'Gsq'=Gsq,
+                               'entro'=entro
+                             
                                
                            )
                        
@@ -131,9 +134,9 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                        nc <- self$options$nc
                        aic <- results$aic
                        bic <- results$bic
+                       entro <- results$entro
                        Gsq <- results$Gsq
                        Chisq <- results$Chisq
-                       
                        
                        
                        row <- list()
@@ -141,6 +144,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                        row[['Class']] <- nc
                        row[['AIC']] <- aic
                        row[['BIC']] <- bic
+                       row[['Entropy']] <- entro
                        row[['Gsq']] <- Gsq
                        row[['Chisq']] <- Chisq
                       
