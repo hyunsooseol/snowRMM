@@ -42,7 +42,7 @@ items:
         - nc
      
     - name: plot
-      title: 'Class model'
+      title: 'Class Plot'
       type: Image
       visible: (plot)
       width: 600
