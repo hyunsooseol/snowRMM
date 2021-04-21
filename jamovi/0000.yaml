@@ -9,7 +9,7 @@ maintainer: Hyunsoo Seol <snow@cau.ac.kr>
 date: 2021-4-17
 type: R
 description: >-
-  This module allows users to conduct Laten class analysis, Rasch model, and
+  This module allows users to conduct Latent class analysis, Rasch model, and
   Rasch mixture model including model information,fit statistics,and bootstrap
   fit based on JMLE.
 analyses:
