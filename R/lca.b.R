@@ -205,6 +205,22 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             
             x <- poLCA::poLCA(formula,data,nclass=nc, calc.se = FALSE)
             
+            
+            # plot----------
+            
+            image <- self$results$plot
+            image$setState(x)
+            
+            
+        },
+        
+        .plot = function(image,...) {
+            
+            if (is.null(self$options$vars))
+                return()
+            
+            x <- image$state
+            
             ### plot function-----
             
             poLCA.makeplot.dich <-
@@ -249,25 +265,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                     par(mfrow=c(1,1),mar=c(5,4,4,2)+0.1)
                 }
             
-            x <- plot.poLCA(x)
-            
-            # plot----------
-            
-            image <- self$results$plot
-            image$setState(x)
-            
-            
-        },
-        
-        .plot = function(image,...) {
-            
-            if (is.null(self$options$vars))
-                return()
-            
-            
-            x <- image$state
-            
-            plot<- plot.poLCA(x)
+          plot<-  plot.poLCA(x)
             
             print(plot)
             TRUE

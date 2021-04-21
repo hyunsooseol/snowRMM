@@ -28,7 +28,7 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             private$..nc <- jmvcore::OptionInteger$new(
                 "nc",
                 nc,
-                min=1,
+                min=2,
                 default=2)
             private$..fit <- jmvcore::OptionBool$new(
                 "fit",
@@ -122,11 +122,11 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot",
-                title="Class model",
+                title="LCA Plot",
                 visible="(plot)",
                 width=600,
                 height=450,
-                renderFun=".Plot",
+                renderFun=".plot",
                 clearWith=list(
                     "vars",
                     "nc")))}))
