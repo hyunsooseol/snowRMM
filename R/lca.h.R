@@ -115,7 +115,7 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 name="cm",
                 title="Class membership",
                 varTitle="Membership",
-                measureType="continuous",
+                measureType="nominal",
                 clearWith=list(
                     "vars",
                     "nc")))

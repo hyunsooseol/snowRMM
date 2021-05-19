@@ -36,7 +36,7 @@ items:
       title: Class membership
       type: Output
       varTitle: Membership
-      measureType: continuous
+      measureType: nominal
       clearWith:
         - vars
         - nc
