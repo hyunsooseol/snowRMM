@@ -4,7 +4,7 @@
 \alias{lca}
 \title{Latent Class Analysis}
 \usage{
-lca(data, vars, nc = 2, fit = TRUE, cp = TRUE, ip = FALSE, plot = FALSE)
+lca(data, vars, nc = 2, fit = TRUE, cp = FALSE, ip = FALSE, plot = FALSE)
 }
 \arguments{
 \item{data}{The data as a data frame.}
