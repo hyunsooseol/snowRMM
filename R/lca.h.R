@@ -9,6 +9,8 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             vars = NULL,
             nc = 2,
             fit = TRUE,
+            cp = FALSE,
+            ip = FALSE,
             plot = FALSE, ...) {
 
             super$initialize(
@@ -34,6 +36,14 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "fit",
                 fit,
                 default=TRUE)
+            private$..cp <- jmvcore::OptionBool$new(
+                "cp",
+                cp,
+                default=FALSE)
+            private$..ip <- jmvcore::OptionBool$new(
+                "ip",
+                ip,
+                default=FALSE)
             private$..cm <- jmvcore::OptionOutput$new(
                 "cm")
             private$..plot <- jmvcore::OptionBool$new(
@@ -44,6 +54,8 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..vars)
             self$.addOption(private$..nc)
             self$.addOption(private$..fit)
+            self$.addOption(private$..cp)
+            self$.addOption(private$..ip)
             self$.addOption(private$..cm)
             self$.addOption(private$..plot)
         }),
@@ -51,12 +63,16 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         vars = function() private$..vars$value,
         nc = function() private$..nc$value,
         fit = function() private$..fit$value,
+        cp = function() private$..cp$value,
+        ip = function() private$..ip$value,
         cm = function() private$..cm$value,
         plot = function() private$..plot$value),
     private = list(
         ..vars = NA,
         ..nc = NA,
         ..fit = NA,
+        ..cp = NA,
+        ..ip = NA,
         ..cm = NA,
         ..plot = NA)
 )
@@ -67,6 +83,8 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     active = list(
         instructions = function() private$.items[["instructions"]],
         fit = function() private$.items[["fit"]],
+        cp = function() private$.items[["cp"]],
+        ip = function() private$.items[["ip"]],
         cm = function() private$.items[["cm"]],
         plot = function() private$.items[["plot"]]),
     private = list(),
@@ -110,6 +128,31 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     list(
                         `name`="Chisq", 
                         `type`="number"))))
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="cp",
+                title="Class Probability",
+                visible="(cp)",
+                clearWith=list(
+                    "vars",
+                    "nc"),
+                columns=list(
+                    list(
+                        `name`="name", 
+                        `title`="Class", 
+                        `type`="text", 
+                        `content`="($key)"),
+                    list(
+                        `name`="value", 
+                        `title`="Probability"))))
+            self$add(jmvcore::Preformatted$new(
+                options=options,
+                name="ip",
+                title="Item probability",
+                visible="(ip)",
+                clearWith=list(
+                    "vars",
+                    "nc")))
             self$add(jmvcore::Output$new(
                 options=options,
                 name="cm",
@@ -158,11 +201,15 @@ lcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param vars .
 #' @param nc .
 #' @param fit .
+#' @param cp .
+#' @param ip .
 #' @param plot .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
 #'   \code{results$fit} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$cp} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$ip} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$cm} \tab \tab \tab \tab \tab an output \cr
 #'   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
 #' }
@@ -179,6 +226,8 @@ lca <- function(
     vars,
     nc = 2,
     fit = TRUE,
+    cp = FALSE,
+    ip = FALSE,
     plot = FALSE) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
@@ -196,6 +245,8 @@ lca <- function(
         vars = vars,
         nc = nc,
         fit = fit,
+        cp = cp,
+        ip = ip,
         plot = plot)
 
     analysis <- lcaClass$new(

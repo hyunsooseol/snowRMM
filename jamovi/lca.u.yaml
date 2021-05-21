@@ -32,6 +32,10 @@ children:
                 format: number
               - type: CheckBox
                 name: fit
+              - type: CheckBox
+                name: cp  
+              - type: CheckBox
+                name: ip  
       - type: LayoutBox
         stretchFactor: 1
         margin: large

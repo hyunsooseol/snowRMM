@@ -73,6 +73,14 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                        
                        results <- private$.compute(data)               
                    
+                       # populate class probability table-----
+                       
+                       private$.populateClassTable(results)
+                       
+                       # populate item probability table-------
+                       
+                     #   private$.populateItemTable(results)
+                       
                        # Populate Model table-----
                        
                        private$.populateFitTable(results)
@@ -97,6 +105,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                        
                       data<- as.data.frame(data)
                       
+                     
                       vars <- colnames(data)
                       vars <- vapply(vars, function(x) jmvcore::composeTerm(x), '')
                       vars <- paste0(vars, collapse=',')
@@ -110,7 +119,14 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                       
                       entro<- poLCA::poLCA.entropy(res)
                       
+                     
                       # result-----------
+                      
+                      classprob<- res$P
+                      
+                      
+                      self$results$ip$setContent(res$probs)
+                      # itemprob<- res$probs
                       
                       aic<- res$aic 
                       bic<- res$bic 
@@ -120,6 +136,8 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                       
                        results <-
                            list(
+                               'classprob'=classprob,
+                               # 'itemprob'=itemprob,
                                'aic' = aic,
                                'bic' = bic,
                                'Chisq'=Chisq,
@@ -131,6 +149,37 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                        
                    },   
                    
+        
+         # populate class probability table---------------
+        
+        .populateClassTable= function(results){
+            
+            classprob <- results$classprob
+            
+            classprob<- as.data.frame(classprob)
+            
+            names<- dimnames(classprob)[[1]]
+            
+            #creating table--------
+            
+            table <- self$results$cp
+            
+            for (name in names) {
+                
+                row <- list()
+                
+                row[['value']] <- classprob[name,1]
+                
+                table$addRow(rowKey=name, values=row)
+                
+            }
+            
+         
+        },
+        
+        
+        
+        
                    # populate Model table-----
                    
                    .populateFitTable = function(results) {

@@ -32,6 +32,31 @@ items:
         - name: Chisq
           type: number
   
+    - name: cp
+      title: 'Class Probability'
+      type: Table
+      visible: (cp)
+      clearWith:
+        - vars
+        - nc
+      
+      columns:
+        - name: name
+          title: 'Class'
+          type: 'text'
+          content: ($key)
+
+        - name: value
+          title: 'Probability'
+
+    - name:  ip
+      title: 'Item probability'
+      type:  Preformatted
+      visible: (ip)
+      clearWith:
+        - vars
+        - nc
+
     - name: cm
       title: Class membership
       type: Output

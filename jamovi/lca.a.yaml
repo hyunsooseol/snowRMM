@@ -33,6 +33,16 @@ options:
       type: Bool
       default: True
 
+    - name: cp
+      title: Class probability
+      type: Bool 
+      default: FALSE
+
+    - name: ip
+      title: Item probability
+      type: Bool
+      default: FALSE
+ 
     - name: cm
       title: Class membership
       type: Output   
