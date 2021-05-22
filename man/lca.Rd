@@ -27,7 +27,7 @@ A results object containing:
   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
   \code{results$fit} \tab \tab \tab \tab \tab a table \cr
   \code{results$cp} \tab \tab \tab \tab \tab a table \cr
-  \code{results$ip} \tab \tab \tab \tab \tab a preformatted \cr
+  \code{results$ip} \tab \tab \tab \tab \tab a table \cr
   \code{results$cm} \tab \tab \tab \tab \tab an output \cr
   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
 }

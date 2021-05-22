@@ -79,7 +79,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                        
                        # populate item probability table-------
                        
-                     #   private$.populateItemTable(results)
+                        private$.populateItemTable(results)
                        
                        # Populate Model table-----
                        
@@ -125,8 +125,8 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                       classprob<- res$P
                       
                       
-                      self$results$ip$setContent(res$probs)
-                      # itemprob<- res$probs
+                    #  self$results$ip$setContent(res$probs)
+                       itemprob<- res$probs
                       
                       aic<- res$aic 
                       bic<- res$bic 
@@ -137,7 +137,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                        results <-
                            list(
                                'classprob'=classprob,
-                               # 'itemprob'=itemprob,
+                                'itemprob'=itemprob,
                                'aic' = aic,
                                'bic' = bic,
                                'Chisq'=Chisq,
@@ -177,6 +177,50 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
          
         },
         
+        # populate item probability table---------------
+        
+        .populateItemTable= function(results){
+        
+            nc <- self$options$nc
+            
+            itemprob <- results$itemprob
+            
+            itemprob<- as.data.frame(itemprob)
+            itemprob<- t(itemprob)
+            
+            names<- dimnames(itemprob)[[1]]
+            
+            #creating table--------
+            
+            table <- self$results$ip
+            
+            for (i in 1:nc)
+                
+                table$addColumn(
+                    name = paste0("pc", i),
+                    title = as.character(i),
+                    type = 'number',
+                    superTitle = 'Class'
+                )
+            
+            for (name in names) {
+                
+                row <- list()
+                
+                
+                for (j in seq_along(1:nc)) {
+                    row[[paste0("pc", j)]] <- itemprob[name, j]
+                }
+                
+                
+                table$addRow(rowKey=name, values=row)
+                
+            }
+            
+            
+            
+            
+        },
         
         
         

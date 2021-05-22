@@ -33,7 +33,7 @@ items:
           type: number
   
     - name: cp
-      title: 'Class Probability'
+      title: 'Class probability'
       type: Table
       visible: (cp)
       clearWith:
@@ -51,11 +51,21 @@ items:
 
     - name:  ip
       title: 'Item probability'
-      type:  Preformatted
+      type:  Table
       visible: (ip)
       clearWith:
         - vars
         - nc
+
+      columns:
+        - name: name
+          title: ''
+          type: 'text'
+          content: ($key)
+        - name: pc1
+          title: '1'
+          type: number
+          superTitle: 'Class'
 
     - name: cm
       title: Class membership

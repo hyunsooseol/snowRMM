@@ -1,7 +1,7 @@
 ---
 title: Rasch Mixture Model for jamovi
 name: snowRMM
-version: 4.1.2
+version: 4.1.3
 jms: '1.0'
 authors:
   - Hyunsoo Seol
@@ -55,8 +55,8 @@ datasets:
     tags:
       - Rasch
       - Mixture
-  - name: lca
-    path: lca.omv
+  - name: carcinoma
+    path: carcinoma.omv
     description: Dichotomous ratings by seven pathologists(A through G)
     tags:
       - LCA

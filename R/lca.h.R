@@ -131,7 +131,7 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Table$new(
                 options=options,
                 name="cp",
-                title="Class Probability",
+                title="Class probability",
                 visible="(cp)",
                 clearWith=list(
                     "vars",
@@ -145,14 +145,25 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     list(
                         `name`="value", 
                         `title`="Probability"))))
-            self$add(jmvcore::Preformatted$new(
+            self$add(jmvcore::Table$new(
                 options=options,
                 name="ip",
                 title="Item probability",
                 visible="(ip)",
                 clearWith=list(
                     "vars",
-                    "nc")))
+                    "nc"),
+                columns=list(
+                    list(
+                        `name`="name", 
+                        `title`="", 
+                        `type`="text", 
+                        `content`="($key)"),
+                    list(
+                        `name`="pc1", 
+                        `title`="1", 
+                        `type`="number", 
+                        `superTitle`="Class"))))
             self$add(jmvcore::Output$new(
                 options=options,
                 name="cm",
@@ -209,7 +220,7 @@ lcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
 #'   \code{results$fit} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$cp} \tab \tab \tab \tab \tab a table \cr
-#'   \code{results$ip} \tab \tab \tab \tab \tab a preformatted \cr
+#'   \code{results$ip} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$cm} \tab \tab \tab \tab \tab an output \cr
 #'   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
 #' }
