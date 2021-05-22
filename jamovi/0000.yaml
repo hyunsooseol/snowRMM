@@ -65,6 +65,13 @@ datasets:
     description: A data frame with 1785 observations on 17 survey variables.
     tags:
       - LCA
+  - name: alzheimer
+    path: alzheimer.omv
+    description: >-
+      the presence/absence of one of the 6 symptoms. A 2 denotes the presence of
+      a symptom, a 1 the absence.
+    tags:
+      - LCA
 usesNative: true
 minApp: 1.8.0
 
