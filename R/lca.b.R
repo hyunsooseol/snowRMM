@@ -50,7 +50,19 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                     "Note",
                     "Gsq=the likelihood-ratio statistic; Chisq=Pearson Chi-square goodness of fit statistic; Entropy=non-normalized entropy which ranges between 0 and infinity."
                 )
-            
+            # if (self$options$cp)
+            #     self$results$cp$setNote(
+            #         "Note",
+            #         "Sizes of each latent class."
+            #     )
+            # 
+            # if (self$options$ip)
+            #     self$results$ip$setNote(
+            #         "Note",
+            #         "Estimated class-conditional response probabilities."
+            #     )
+            # 
+            # 
             
             if (length(self$options$vars) <= 1)
                 self$setStatus('complete')
@@ -115,7 +127,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                       
                       # estimate ------------
                        
-                      res<- poLCA::poLCA(formula,data,nclass=nc,calc.se = FALSE)
+                      res<- poLCA::poLCA(formula,data,nclass=nc,maxiter = 2000,calc.se = FALSE)
                        
                       
                       entro<- poLCA::poLCA.entropy(res)

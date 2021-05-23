@@ -33,7 +33,7 @@ items:
           type: number
   
     - name: cp
-      title: 'Class probability'
+      title: 'Size of each latent class'
       type: Table
       visible: (cp)
       clearWith:
@@ -42,7 +42,7 @@ items:
       
       columns:
         - name: name
-          title: 'Class'
+          title: ''
           type: 'text'
           content: ($key)
 
@@ -50,7 +50,7 @@ items:
           title: 'Probability'
 
     - name:  ip
-      title: 'Item probability'
+      title: 'Estimated class-conditional response probability'
       type:  Table
       visible: (ip)
       clearWith:
@@ -59,7 +59,7 @@ items:
 
       columns:
         - name: name
-          title: ''
+          title: 'Item(Pr.)'
           type: 'text'
           content: ($key)
         - name: pc1

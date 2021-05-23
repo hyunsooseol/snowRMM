@@ -32,6 +32,14 @@ children:
                 format: number
               - type: CheckBox
                 name: fit
+      - type: LayoutBox
+        stretchFactor: 1
+        margin: large
+        fitToGrid: true
+        children:
+          - type: Label
+            label: 'Probability'
+            children:
               - type: CheckBox
                 name: cp  
               - type: CheckBox

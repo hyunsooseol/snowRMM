@@ -131,7 +131,7 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Table$new(
                 options=options,
                 name="cp",
-                title="Class probability",
+                title="Size of each latent class",
                 visible="(cp)",
                 clearWith=list(
                     "vars",
@@ -139,7 +139,7 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 columns=list(
                     list(
                         `name`="name", 
-                        `title`="Class", 
+                        `title`="", 
                         `type`="text", 
                         `content`="($key)"),
                     list(
@@ -148,7 +148,7 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Table$new(
                 options=options,
                 name="ip",
-                title="Item probability",
+                title="Estimated class-conditional response probability",
                 visible="(ip)",
                 clearWith=list(
                     "vars",
@@ -156,7 +156,7 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 columns=list(
                     list(
                         `name`="name", 
-                        `title`="", 
+                        `title`="Item(Pr.)", 
                         `type`="text", 
                         `content`="($key)"),
                     list(

@@ -34,12 +34,12 @@ options:
       default: True
 
     - name: cp
-      title: Class probability
+      title: Class 
       type: Bool 
       default: FALSE
 
     - name: ip
-      title: Item probability
+      title: Item 
       type: Bool
       default: FALSE
  
