@@ -59,10 +59,10 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             # if (self$options$ip)
             #     self$results$ip$setNote(
             #         "Note",
-            #         "Estimated class-conditional response probabilities."
+            #         "Pr.=Probability."
             #     )
-            # 
-            # 
+
+
             
             if (length(self$options$vars) <= 1)
                 self$setStatus('complete')

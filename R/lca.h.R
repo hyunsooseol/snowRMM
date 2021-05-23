@@ -156,7 +156,7 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 columns=list(
                     list(
                         `name`="name", 
-                        `title`="Item(Pr.)", 
+                        `title`="Variable", 
                         `type`="text", 
                         `content`="($key)"),
                     list(

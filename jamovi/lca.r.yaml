@@ -59,7 +59,7 @@ items:
 
       columns:
         - name: name
-          title: 'Item(Pr.)'
+          title: 'Variable'
           type: 'text'
           content: ($key)
         - name: pc1

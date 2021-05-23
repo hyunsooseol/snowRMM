@@ -39,7 +39,7 @@ options:
       default: FALSE
 
     - name: ip
-      title: Item 
+      title: Variable
       type: Bool
       default: FALSE
  
