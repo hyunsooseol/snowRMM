@@ -60,11 +60,6 @@ datasets:
     description: Dichotomous ratings by seven pathologists(A through G)
     tags:
       - LCA
-  - name: election
-    path: election.omv
-    description: A data frame with 1785 observations on 17 survey variables.
-    tags:
-      - LCA
   - name: alzheimer
     path: alzheimer.omv
     description: >-
