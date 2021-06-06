@@ -4,7 +4,16 @@
 \alias{lca}
 \title{Latent Class Analysis}
 \usage{
-lca(data, vars, nc = 2, fit = TRUE, cp = FALSE, ip = FALSE, plot = FALSE)
+lca(
+  data,
+  vars,
+  nc = 2,
+  fit = TRUE,
+  cp = FALSE,
+  ip = FALSE,
+  cf = FALSE,
+  plot = FALSE
+)
 }
 \arguments{
 \item{data}{The data as a data frame.}
@@ -19,6 +28,8 @@ lca(data, vars, nc = 2, fit = TRUE, cp = FALSE, ip = FALSE, plot = FALSE)
 
 \item{ip}{.}
 
+\item{cf}{.}
+
 \item{plot}{.}
 }
 \value{
@@ -26,9 +37,11 @@ A results object containing:
 \tabular{llllll}{
   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
   \code{results$fit} \tab \tab \tab \tab \tab a table \cr
+  \code{results$cf} \tab \tab \tab \tab \tab a table \cr
   \code{results$cp} \tab \tab \tab \tab \tab a table \cr
   \code{results$ip} \tab \tab \tab \tab \tab a table \cr
   \code{results$cm} \tab \tab \tab \tab \tab an output \cr
+  \code{results$pc} \tab \tab \tab \tab \tab an output \cr
   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
 }
 

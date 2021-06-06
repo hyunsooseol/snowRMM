@@ -43,12 +43,22 @@ options:
       type: Bool
       default: FALSE
  
+    - name: cf
+      title: Predicted cell counts
+      type: Bool 
+      default: FALSE  
+
     - name: cm
       title: Class membership
       type: Output   
 
+    - name: pc
+      title: Predicted cell percentages
+      type: Output  
+     
     - name: plot
       title: LCA Plot
       type: Bool
       default: FALSE
+   
 ...

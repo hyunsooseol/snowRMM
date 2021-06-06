@@ -32,6 +32,8 @@ children:
                 format: number
               - type: CheckBox
                 name: fit
+              - type: CheckBox
+                name: cf
       - type: LayoutBox
         stretchFactor: 1
         margin: large
@@ -68,6 +70,7 @@ children:
         children:
           - type: Output
             name: cm
-
+          - type: Output
+            name: pc
 
  

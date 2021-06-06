@@ -32,6 +32,20 @@ items:
         - name: Chisq
           type: number
   
+    - name: cf
+      title: 'Predicted cell counts from latent class analysis'
+      type: Table
+      visible: (cf)
+      clearWith:
+        - vars
+        - nc
+     
+      columns:
+        - name: name
+          title: ''
+          type: 'text'
+          content: ($key)
+ 
     - name: cp
       title: 'Size of each latent class'
       type: Table
@@ -76,6 +90,15 @@ items:
         - vars
         - nc
      
+    - name: pc
+      title: Predicted cell percentages
+      type: Output
+      varTitle: Predicted cell percentages in a latent class model
+      measureType: continuous
+      clearWith:
+        - vars
+        - nc
+
     - name: plot
       title: 'LCA Plot'
       type: Image

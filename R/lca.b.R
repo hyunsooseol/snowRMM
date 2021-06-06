@@ -98,9 +98,19 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                        
                        private$.populateFitTable(results)
                    
+                       
+                       # populate cell frequencies---------
+                       
+                       
+                       private$.populateCfTable(results)
+                       
                        # populate output variables-----
                        
                        private$.populateOutputs(data)
+                       
+                       # populated cell percentages in a latent class model-----
+                       
+                       private$.populateCellOutputs(data)
                        
                        # prepare plot-----
                        
@@ -146,6 +156,10 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                       Chisq<- res$Chisq 
                       Gsq <- res$Gsq
                       
+                      # cell frequencies-------
+                      
+                      cell<- res$predcell 
+                      
                       
                        results <-
                            list(
@@ -155,7 +169,8 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                                'bic' = bic,
                                'Chisq'=Chisq,
                                'Gsq'=Gsq,
-                               'entro'=entro
+                               'entro'=entro,
+                               'cell'= cell
                              
                                
                            )
@@ -265,7 +280,51 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                   
         
                    },
-                   
+        
+        
+        # populate cell frequencies------------
+        
+        .populateCfTable = function(results) {
+        
+            table <- self$results$cf
+            
+            cell <- results$cell
+            
+            cell<- as.data.frame(cell)
+            
+            names <-  dimnames(cell)[[1]]
+            dims <- dimnames(cell)[[2]]
+            
+            
+            for (dim in dims) {
+                
+                table$addColumn(name = paste0(dim),
+                                type = 'number')
+            }
+            
+            
+            for (name in names) {
+                
+                row <- list()
+                
+                for(j in seq_along(dims)){
+                    
+                    row[[dims[j]]] <- cell[name,j]
+                    
+                }
+                
+                table$addRow(rowKey=name, values=row)
+                
+            }
+            
+            
+            
+        },
+            
+        
+           # populate class membership-------
+        
+        
         .populateOutputs = function(data) {
             
             nc<- self$options$nc
@@ -294,6 +353,40 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
             }
             },
+        
+        # Predicted cell percentages in a latent class model---
+        
+        .populateCellOutputs = function(data) {
+            
+            nc<- self$options$nc
+            
+            data<- as.data.frame(data)
+            
+            vars <- colnames(data)
+            vars <- vapply(vars, function(x) jmvcore::composeTerm(x), '')
+            vars <- paste0(vars, collapse=',')
+            formula <- as.formula(paste0('cbind(', vars, ')~1'))
+            
+            
+            # estimate ------------
+            
+            res<- poLCA::poLCA(formula,data,nclass=nc,calc.se = FALSE)
+            
+           #Predicted cell percentages in a latent class model
+            pc<- poLCA::poLCA.predcell(lc=res,res$y)
+            
+            
+            if (self$options$pc
+                && self$results$pc$isNotFilled()) {
+                
+                
+                self$results$pc$setValues(pc)
+                
+                self$results$pc$setRowNums(rownames(data))
+                
+            }
+        },
+        
         
         .preparePlot = function(data) {
             
