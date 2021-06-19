@@ -6,6 +6,7 @@
 #' @import poLCA
 #' @importFrom poLCA poLCA
 #' @importFrom poLCA poLCA.entropy
+#' @importFrom stats kmeans
 #' @import MASS
 #' @import scatterplot3d
 #' @export
@@ -115,6 +116,11 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                        # prepare plot-----
                        
                        private$.preparePlot(data)
+                       
+                       
+                       # prepare plot1(profile)-----
+                       
+                       private$.preparePlot1(data)
                        
                        
                    }
@@ -472,7 +478,83 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             
         },
         
+       
+        # profile plot1---------------
         
+        .preparePlot1 = function(data) {
+        
+        
+            nc<- self$options$nc
+            
+            data<- as.data.frame(data)
+            
+            vars <- self$options$vars
+             
+            #vars <- colnames(data)
+            # vars <- vapply(vars, function(x) jmvcore::composeTerm(x), '')
+            # vars <- paste0(vars, collapse=',')
+            # formula <- as.formula(paste0('cbind(', vars, ')~1'))
+            # 
+            # 
+            # # estimate ------------
+            # 
+            # x <- poLCA::poLCA(formula,data,nclass=nc, calc.se = FALSE)
+
+            # computing mean-------
+            
+            m<- stats::kmeans(data,nc)
+            ave<- m$centers
+            
+            #--------------
+            
+            vars <- factor(vars, levels = vars)
+            nVars <- length(vars)
+            
+            
+            # plot data function---------
+        
+        plotData <- data.frame(
+            Class = as.factor(rep(1:nc, nVars)),
+            var = rep(vars, each = nc),
+            centers = as.vector(ave)
+        )
+        
+        image <- self$results$plot1
+        image$setState(plotData)
+        
+        },
+        
+        .plot1 = function(image, ggtheme, theme, ...) {
+            
+            #Errors ----
+            
+            if (is.null(self$options$vars))
+                return()
+            
+            
+            plotData <- image$state
+            if (!is.null(plotData))
+            {
+                plot1 <-
+                    ggplot(plotData,
+                           aes(
+                               x = var,
+                               y = centers,
+                               group = Class,
+                               colour = Class
+                           )) +
+                    geom_path(size = 1.2) +
+                    geom_point(size = 4) +
+                    xlab("Variable") +
+                    ylab("Mean value") +
+                    ggtheme
+                
+                print(plot1)
+                TRUE
+            }
+        },
+        
+         
         ### Helper functions =================================     
                    
                    .cleanData = function() {

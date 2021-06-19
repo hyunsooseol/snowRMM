@@ -61,4 +61,9 @@ options:
       type: Bool
       default: FALSE
    
+    - name: plot1
+      title: Profile Plot
+      type: Bool
+      default: FALSE
+
 ...

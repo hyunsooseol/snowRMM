@@ -110,4 +110,16 @@ items:
             - vars
             - nc          
       
+    - name: plot1
+      title: 'Profile Plot'
+      type: Image
+      visible: (plot1)
+      width: 600
+      height: 450
+      renderFun: .plot1
+      clearWith:
+            - vars
+            - nc    
+
+
 ...

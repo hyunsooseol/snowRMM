@@ -12,7 +12,8 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             cp = FALSE,
             ip = FALSE,
             cf = FALSE,
-            plot = FALSE, ...) {
+            plot = FALSE,
+            plot1 = FALSE, ...) {
 
             super$initialize(
                 package="snowRMM",
@@ -57,6 +58,10 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "plot",
                 plot,
                 default=FALSE)
+            private$..plot1 <- jmvcore::OptionBool$new(
+                "plot1",
+                plot1,
+                default=FALSE)
 
             self$.addOption(private$..vars)
             self$.addOption(private$..nc)
@@ -67,6 +72,7 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..cm)
             self$.addOption(private$..pc)
             self$.addOption(private$..plot)
+            self$.addOption(private$..plot1)
         }),
     active = list(
         vars = function() private$..vars$value,
@@ -77,7 +83,8 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         cf = function() private$..cf$value,
         cm = function() private$..cm$value,
         pc = function() private$..pc$value,
-        plot = function() private$..plot$value),
+        plot = function() private$..plot$value,
+        plot1 = function() private$..plot1$value),
     private = list(
         ..vars = NA,
         ..nc = NA,
@@ -87,7 +94,8 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..cf = NA,
         ..cm = NA,
         ..pc = NA,
-        ..plot = NA)
+        ..plot = NA,
+        ..plot1 = NA)
 )
 
 lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -101,7 +109,8 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ip = function() private$.items[["ip"]],
         cm = function() private$.items[["cm"]],
         pc = function() private$.items[["pc"]],
-        plot = function() private$.items[["plot"]]),
+        plot = function() private$.items[["plot"]],
+        plot1 = function() private$.items[["plot1"]]),
     private = list(),
     public=list(
         initialize=function(options) {
@@ -221,6 +230,17 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 renderFun=".plot",
                 clearWith=list(
                     "vars",
+                    "nc")))
+            self$add(jmvcore::Image$new(
+                options=options,
+                name="plot1",
+                title="Profile Plot",
+                visible="(plot1)",
+                width=600,
+                height=450,
+                renderFun=".plot1",
+                clearWith=list(
+                    "vars",
                     "nc")))}))
 
 lcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -254,6 +274,7 @@ lcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param ip .
 #' @param cf .
 #' @param plot .
+#' @param plot1 .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
@@ -264,6 +285,7 @@ lcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$cm} \tab \tab \tab \tab \tab an output \cr
 #'   \code{results$pc} \tab \tab \tab \tab \tab an output \cr
 #'   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
+#'   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
 #' }
 #'
 #' Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
@@ -281,7 +303,8 @@ lca <- function(
     cp = FALSE,
     ip = FALSE,
     cf = FALSE,
-    plot = FALSE) {
+    plot = FALSE,
+    plot1 = FALSE) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("lca requires jmvcore to be installed (restart may be required)")
@@ -301,7 +324,8 @@ lca <- function(
         cp = cp,
         ip = ip,
         cf = cf,
-        plot = plot)
+        plot = plot,
+        plot1 = plot1)
 
     analysis <- lcaClass$new(
         options = options,

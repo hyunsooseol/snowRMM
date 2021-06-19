@@ -59,6 +59,8 @@ children:
             children:
               - type: CheckBox
                 name: plot         
+              - type: CheckBox
+                name: plot1      
   - type: CollapseBox
     label: Save
     margin: normal

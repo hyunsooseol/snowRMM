@@ -1,7 +1,7 @@
 Package: snowRMM
 Type: Package
 Title: Rasch Mixture Model
-Version: 4.1.5
+Version: 4.2.0
 Author: Hyunsoo Seol
 Maintainer: Hyunsoo Seol <snow@cau.ac.kr>
 Description: This module provides Latent Class Analysis, Rasch mixture model including model information,fit statistics,and bootstrap fit based on JMLE.
