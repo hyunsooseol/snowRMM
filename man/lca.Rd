@@ -7,6 +7,7 @@
 lca(
   data,
   vars,
+  group,
   nc = 2,
   fit = TRUE,
   cp = FALSE,
@@ -20,6 +21,8 @@ lca(
 \item{data}{The data as a data frame.}
 
 \item{vars}{.}
+
+\item{group}{.}
 
 \item{nc}{.}
 

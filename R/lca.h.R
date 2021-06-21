@@ -7,6 +7,7 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     public = list(
         initialize = function(
             vars = NULL,
+            group = NULL,
             nc = 2,
             fit = TRUE,
             cp = FALSE,
@@ -24,6 +25,14 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             private$..vars <- jmvcore::OptionVariables$new(
                 "vars",
                 vars,
+                suggested=list(
+                    "nominal",
+                    "ordinal"),
+                permitted=list(
+                    "factor"))
+            private$..group <- jmvcore::OptionVariable$new(
+                "group",
+                group,
                 suggested=list(
                     "nominal",
                     "ordinal"),
@@ -64,6 +73,7 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 default=FALSE)
 
             self$.addOption(private$..vars)
+            self$.addOption(private$..group)
             self$.addOption(private$..nc)
             self$.addOption(private$..fit)
             self$.addOption(private$..cp)
@@ -76,6 +86,7 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         }),
     active = list(
         vars = function() private$..vars$value,
+        group = function() private$..group$value,
         nc = function() private$..nc$value,
         fit = function() private$..fit$value,
         cp = function() private$..cp$value,
@@ -87,6 +98,7 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         plot1 = function() private$..plot1$value),
     private = list(
         ..vars = NA,
+        ..group = NA,
         ..nc = NA,
         ..fit = NA,
         ..cp = NA,
@@ -268,6 +280,7 @@ lcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' 
 #' @param data The data as a data frame.
 #' @param vars .
+#' @param group .
 #' @param nc .
 #' @param fit .
 #' @param cp .
@@ -298,6 +311,7 @@ lcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 lca <- function(
     data,
     vars,
+    group,
     nc = 2,
     fit = TRUE,
     cp = FALSE,
@@ -310,15 +324,19 @@ lca <- function(
         stop("lca requires jmvcore to be installed (restart may be required)")
 
     if ( ! missing(vars)) vars <- jmvcore::resolveQuo(jmvcore::enquo(vars))
+    if ( ! missing(group)) group <- jmvcore::resolveQuo(jmvcore::enquo(group))
     if (missing(data))
         data <- jmvcore::marshalData(
             parent.frame(),
-            `if`( ! missing(vars), vars, NULL))
+            `if`( ! missing(vars), vars, NULL),
+            `if`( ! missing(group), group, NULL))
 
     for (v in vars) if (v %in% names(data)) data[[v]] <- as.factor(data[[v]])
+    for (v in group) if (v %in% names(data)) data[[v]] <- as.factor(data[[v]])
 
     options <- lcaOptions$new(
         vars = vars,
+        group = group,
         nc = nc,
         fit = fit,
         cp = cp,

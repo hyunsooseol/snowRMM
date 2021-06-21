@@ -22,6 +22,15 @@ options:
       permitted:
         - factor
 
+    - name: group
+      title: Class Variable(Optional)
+      type: Variable
+      suggested:
+         - nominal
+         - ordinal
+      permitted:
+        - factor
+ 
     - name: nc
       title: Class
       type: Integer

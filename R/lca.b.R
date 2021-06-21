@@ -6,7 +6,7 @@
 #' @import poLCA
 #' @importFrom poLCA poLCA
 #' @importFrom poLCA poLCA.entropy
-#' @importFrom stats kmeans
+#' @importFrom stats aggregate
 #' @import MASS
 #' @import scatterplot3d
 #' @export
@@ -483,63 +483,66 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         .preparePlot1 = function(data) {
         
-        
+        if(is.null(self$options$group))
+            return()
+            
+            if(!is.null(self$options$group))
+            
+            {
             nc<- self$options$nc
             
-            data<- as.data.frame(data)
+            # data<- as.data.frame(data)
             
             vars <- self$options$vars
-             
-            #vars <- colnames(data)
-            # vars <- vapply(vars, function(x) jmvcore::composeTerm(x), '')
-            # vars <- paste0(vars, collapse=',')
-            # formula <- as.formula(paste0('cbind(', vars, ')~1'))
-            # 
-            # 
-            # # estimate ------------
-            # 
-            # x <- poLCA::poLCA(formula,data,nclass=nc, calc.se = FALSE)
-
-            # computing mean-------
+           
+            #----------------------
             
-            m<- stats::kmeans(data,nc)
-            ave<- m$centers
+            
+            formula <- jmvcore:: constructFormula(self$options$vars, self$options$group)
+            formula <- as.formula(formula)
+            
+            
+            ave <- stats::aggregate(formula, data=self$data, mean)[,-1]
+            
+            ave <- as.matrix(ave)
+            
             
             #--------------
             
-            vars <- factor(vars, levels = vars)
+            # vars <- factor(vars, levels = vars)
             nVars <- length(vars)
             
             
             # plot data function---------
         
-        plotData <- data.frame(
+        plotData1 <- data.frame(
             Class = as.factor(rep(1:nc, nVars)),
             var = rep(vars, each = nc),
-            centers = as.vector(ave)
+            mean = as.vector(ave)
         )
         
         image <- self$results$plot1
-        image$setState(plotData)
+        image$setState(plotData1)
+        
+            }
         
         },
         
         .plot1 = function(image, ggtheme, theme, ...) {
             
-            #Errors ----
             
-            if (is.null(self$options$vars))
+            if(is.null(self$options$group))
                 return()
             
+            plotData1 <- image$state
             
-            plotData <- image$state
-            if (!is.null(plotData))
+            if (!is.null(plotData1))
             {
                 plot1 <-
-                    ggplot(plotData,
+                    ggplot(plotData1,
                            aes(
                                x = var,
-                               y = centers,
+                               y = mean,
                                group = Class,
                                colour = Class
                            )) +
