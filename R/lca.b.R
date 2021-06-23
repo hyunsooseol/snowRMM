@@ -39,7 +39,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             <p> The results of <b> Class membership </b> will be displayed in the datasheet.</p>
             
-            <p> The output variables can’t use an output column as an input to the same analysis.</p>
+            <p> The output columm can NOT be used as an input to the same analysis.</p>
             
             <p> Feature requests and bug reports can be made on my <a href='https://github.com/hyunsooseol/snowRMM/'  target = '_blank'>GitHub.</a></p>
 
@@ -504,8 +504,50 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                     data[[var]] <-as.numeric(as.character(data[[var]])) 
                 }
                 # Using aggregate to calculate mean across class variable-----
-                ave             <-  stats::aggregate(data[,self$options$vars], list(data[,self$options$group]), mean)
+                ave <-  stats::aggregate(data[,self$options$vars], list(data[,self$options$group]), mean)
+                
+               
                 names(ave)[1]   <-  self$options$group
+                
+                self$results$text$setContent(ave)
+                 
+                # The means of class table-------
+               
+                ave1 <- ave[,-1]
+                
+                names<- dimnames(ave1)[[1]]
+                
+                table <- self$results$mc
+                
+                for (i in seq_along(vars)) {
+
+                    var <- vars[[i]]
+
+                    table$addColumn(name = paste0(var),
+                                    type = 'number',
+                                    format = 'zto')
+
+                }
+                
+                for (name in names) {
+                    
+                    row <- list()
+                    
+                    
+                    for(j in seq_along(vars)){
+                        
+                        var <- vars[[j]]
+                        
+                        row[[var]] <- ave1[name, j]
+                        
+                    }
+                    
+                    table$addRow(rowKey=name, values=row)
+                    
+                    
+                }
+                
+                
                 # reshape to long for ggplot
                 plotData1       <-  reshape2::melt(ave, id.vars=self$options$group)
                 names(plotData1)[1]   <-  self$options$group

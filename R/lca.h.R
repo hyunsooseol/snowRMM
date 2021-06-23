@@ -13,6 +13,7 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             cp = FALSE,
             ip = FALSE,
             cf = FALSE,
+            mc = FALSE,
             plot = FALSE,
             plot1 = FALSE, ...) {
 
@@ -24,7 +25,12 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 
             private$..vars <- jmvcore::OptionVariables$new(
                 "vars",
-                vars)
+                vars,
+                suggested=list(
+                    "nominal",
+                    "ordinal"),
+                permitted=list(
+                    "factor"))
             private$..group <- jmvcore::OptionVariable$new(
                 "group",
                 group,
@@ -54,6 +60,10 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "cf",
                 cf,
                 default=FALSE)
+            private$..mc <- jmvcore::OptionBool$new(
+                "mc",
+                mc,
+                default=FALSE)
             private$..cm <- jmvcore::OptionOutput$new(
                 "cm")
             private$..pc <- jmvcore::OptionOutput$new(
@@ -74,6 +84,7 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..cp)
             self$.addOption(private$..ip)
             self$.addOption(private$..cf)
+            self$.addOption(private$..mc)
             self$.addOption(private$..cm)
             self$.addOption(private$..pc)
             self$.addOption(private$..plot)
@@ -87,6 +98,7 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         cp = function() private$..cp$value,
         ip = function() private$..ip$value,
         cf = function() private$..cf$value,
+        mc = function() private$..mc$value,
         cm = function() private$..cm$value,
         pc = function() private$..pc$value,
         plot = function() private$..plot$value,
@@ -99,6 +111,7 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..cp = NA,
         ..ip = NA,
         ..cf = NA,
+        ..mc = NA,
         ..cm = NA,
         ..pc = NA,
         ..plot = NA,
@@ -110,10 +123,12 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     inherit = jmvcore::Group,
     active = list(
         instructions = function() private$.items[["instructions"]],
+        text = function() private$.items[["text"]],
         fit = function() private$.items[["fit"]],
         cf = function() private$.items[["cf"]],
         cp = function() private$.items[["cp"]],
         ip = function() private$.items[["ip"]],
+        mc = function() private$.items[["mc"]],
         cm = function() private$.items[["cm"]],
         pc = function() private$.items[["pc"]],
         plot = function() private$.items[["plot"]],
@@ -131,6 +146,10 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 name="instructions",
                 title="Instructions",
                 visible=TRUE))
+            self$add(jmvcore::Preformatted$new(
+                options=options,
+                name="text",
+                title="Independent Samples T-Test"))
             self$add(jmvcore::Table$new(
                 options=options,
                 name="fit",
@@ -209,6 +228,21 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         `title`="1", 
                         `type`="number", 
                         `superTitle`="Class"))))
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="mc",
+                title="Means of variables across membership",
+                visible="(mc)",
+                clearWith=list(
+                    "vars",
+                    "nc"),
+                refs="snowCluster",
+                columns=list(
+                    list(
+                        `name`=".name[x]", 
+                        `title`="", 
+                        `type`="text", 
+                        `content`="($key)"))))
             self$add(jmvcore::Output$new(
                 options=options,
                 name="cm",
@@ -230,7 +264,7 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot",
-                title="LCA Plot",
+                title="LCA plot",
                 visible="(plot)",
                 width=600,
                 height=450,
@@ -241,7 +275,7 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot1",
-                title="Profile Plot",
+                title="Profile plot",
                 visible="(plot1)",
                 width=600,
                 height=450,
@@ -281,15 +315,18 @@ lcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param cp .
 #' @param ip .
 #' @param cf .
+#' @param mc .
 #' @param plot .
 #' @param plot1 .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
+#'   \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$fit} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$cf} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$cp} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$ip} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$mc} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$cm} \tab \tab \tab \tab \tab an output \cr
 #'   \code{results$pc} \tab \tab \tab \tab \tab an output \cr
 #'   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
@@ -312,6 +349,7 @@ lca <- function(
     cp = FALSE,
     ip = FALSE,
     cf = FALSE,
+    mc = FALSE,
     plot = FALSE,
     plot1 = FALSE) {
 
@@ -326,6 +364,7 @@ lca <- function(
             `if`( ! missing(vars), vars, NULL),
             `if`( ! missing(group), group, NULL))
 
+    for (v in vars) if (v %in% names(data)) data[[v]] <- as.factor(data[[v]])
     for (v in group) if (v %in% names(data)) data[[v]] <- as.factor(data[[v]])
 
     options <- lcaOptions$new(
@@ -336,6 +375,7 @@ lca <- function(
         cp = cp,
         ip = ip,
         cf = cf,
+        mc = mc,
         plot = plot,
         plot1 = plot1)
 

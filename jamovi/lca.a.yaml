@@ -16,6 +16,11 @@ options:
     - name: vars
       title: Variables
       type: Variables
+      suggested:
+         - nominal
+         - ordinal
+      permitted:
+        - factor
 
     - name: group
       title: Class Variable(Optional)
@@ -49,6 +54,11 @@ options:
  
     - name: cf
       title: Predicted cell counts
+      type: Bool 
+      default: FALSE  
+
+    - name: mc
+      title: Means of class table
       type: Bool 
       default: FALSE  
 

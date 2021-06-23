@@ -8,6 +8,9 @@ items:
       title: 'Instructions'
       type: Html
       visible: True
+    - name:  text
+      title: Independent Samples T-Test
+      type:  Preformatted
 
     - name: fit
       title: 'Model fit'
@@ -81,6 +84,21 @@ items:
           type: number
           superTitle: 'Class'
 
+    - name:  mc
+      title: 'Means of variables across membership' 
+      type:  Table
+      visible: (mc)
+      clearWith:
+        - vars
+        - nc
+      refs: snowCluster
+
+      columns:
+          - name: .name[x]
+            title: ""
+            type: 'text'
+            content: ($key)
+
     - name: cm
       title: Class membership
       type: Output
@@ -100,7 +118,7 @@ items:
         - nc
 
     - name: plot
-      title: 'LCA Plot'
+      title: 'LCA plot'
       type: Image
       visible: (plot)
       width: 600
@@ -111,7 +129,7 @@ items:
             - nc          
       
     - name: plot1
-      title: 'Profile Plot'
+      title: 'Profile plot'
       type: Image
       visible: (plot1)
       width: 600

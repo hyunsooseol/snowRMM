@@ -26,32 +26,34 @@ children:
     collapsed: true
     children:
       - type: LayoutBox
-        stretchFactor: 1
         margin: large
+        stretchFactor: 1
         children:
-          - type: Label
-            label: ''
+          - type: LayoutBox
+            margin: large
+            cell:
+              column: 0
+              row: 0
+            stretchFactor: 1
             children:
-              - name: nc
-                type: TextBox
-                label: Class
-                format: number
-              - type: CheckBox
-                name: fit
-              - type: CheckBox
-                name: cf
-      - type: LayoutBox
-        stretchFactor: 1
-        margin: large
-        fitToGrid: true
-        children:
+              - type: Label
+                label: ''
+                children:
+                  - name: nc
+                    type: TextBox
+                    label: Class
+                    format: number
+                  - type: CheckBox
+                    name: fit
+                  - type: CheckBox
+                    name: cf
           - type: Label
             label: 'Probability'
             children:
               - type: CheckBox
-                name: cp  
+                name: cp
               - type: CheckBox
-                name: ip  
+                name: ip
       - type: LayoutBox
         stretchFactor: 1
         margin: large
@@ -61,14 +63,19 @@ children:
         fitToGrid: true
         children:
           - type: Label
-            label: Plot
+            label: 'Plot'
             children:
               - type: CheckBox
-                name: plot         
+                name: plot
+          - type: Label
+            label: 'Profile analysis'
+            children:
               - type: CheckBox
-                name: plot1      
+                name: mc
+              - type: CheckBox
+                name: plot1
   - type: CollapseBox
-    label: Save
+    label: 'Save'
     margin: normal
     collapsed: true
     children:
@@ -80,5 +87,3 @@ children:
             name: cm
           - type: Output
             name: pc
-
- 

@@ -13,6 +13,7 @@ lca(
   cp = FALSE,
   ip = FALSE,
   cf = FALSE,
+  mc = FALSE,
   plot = FALSE,
   plot1 = FALSE
 )
@@ -34,6 +35,8 @@ lca(
 
 \item{cf}{.}
 
+\item{mc}{.}
+
 \item{plot}{.}
 
 \item{plot1}{.}
@@ -47,6 +50,7 @@ A results object containing:
   \code{results$cf} \tab \tab \tab \tab \tab a table \cr
   \code{results$cp} \tab \tab \tab \tab \tab a table \cr
   \code{results$ip} \tab \tab \tab \tab \tab a table \cr
+  \code{results$mc} \tab \tab \tab \tab \tab a table \cr
   \code{results$cm} \tab \tab \tab \tab \tab an output \cr
   \code{results$pc} \tab \tab \tab \tab \tab an output \cr
   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
