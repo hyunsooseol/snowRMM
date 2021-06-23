@@ -24,12 +24,7 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 
             private$..vars <- jmvcore::OptionVariables$new(
                 "vars",
-                vars,
-                suggested=list(
-                    "nominal",
-                    "ordinal"),
-                permitted=list(
-                    "factor"))
+                vars)
             private$..group <- jmvcore::OptionVariable$new(
                 "group",
                 group,
@@ -115,6 +110,7 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     inherit = jmvcore::Group,
     active = list(
         instructions = function() private$.items[["instructions"]],
+        text = function() private$.items[["text"]],
         fit = function() private$.items[["fit"]],
         cf = function() private$.items[["cf"]],
         cp = function() private$.items[["cp"]],
@@ -136,6 +132,10 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 name="instructions",
                 title="Instructions",
                 visible=TRUE))
+            self$add(jmvcore::Preformatted$new(
+                options=options,
+                name="text",
+                title="Independent Samples T-Test"))
             self$add(jmvcore::Table$new(
                 options=options,
                 name="fit",
@@ -291,6 +291,7 @@ lcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
+#'   \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$fit} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$cf} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$cp} \tab \tab \tab \tab \tab a table \cr
@@ -331,7 +332,6 @@ lca <- function(
             `if`( ! missing(vars), vars, NULL),
             `if`( ! missing(group), group, NULL))
 
-    for (v in vars) if (v %in% names(data)) data[[v]] <- as.factor(data[[v]])
     for (v in group) if (v %in% names(data)) data[[v]] <- as.factor(data[[v]])
 
     options <- lcaOptions$new(

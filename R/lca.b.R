@@ -83,6 +83,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                        ready <- FALSE
                    
                    if (ready) {
+                       
                        data <- private$.cleanData()
                        
                        results <- private$.compute(data)               
@@ -120,7 +121,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                        
                        # prepare plot1(profile)-----
                        
-                       private$.preparePlot1(data)
+                       private$.preparePlot1()
                        
                        
                    }
@@ -481,7 +482,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
        
         # profile plot1---------------
         
-        .preparePlot1 = function(data) {
+        .preparePlot1 = function() {
         
         if(is.null(self$options$group))
             return()
@@ -489,41 +490,109 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             if(!is.null(self$options$group))
             
             {
-            nc<- self$options$nc
+                data <- self$data
+                data <- as.data.frame(data)
+                
+                nc<- self$options$nc
+                vars <- self$options$vars
+                nVars <- length(vars)
+                
+                group <- self$options$group
+                
+                for (i in seq_along(vars))
+                    data[[i]] <- jmvcore::toNumeric(data[[i]])
+
+                dat <- jmvcore::naOmit(data)
+                
+               
+                formula <- jmvcore::constructFormula(self$options$vars,
+                                                     self$options$group)
+                formula <- as.formula(formula)
+                
+                # Using aggregate to calculate mean across class variable-----
+                ave <- stats::aggregate(formula, data=dat, mean)[,-1]
+                
+               
+                ave <- as.matrix(ave)
+                
+                self$results$text$setContent(ave)
+                
+                # plot data function---------
+                
+                plotData1 <- data.frame(
+                    Class = as.factor(rep(1:nc, nVars)),
+                    var = rep(vars, each = nc),
+                    m = as.vector(ave)
+                ) 
+                
+                image <- self$results$plot1
+                image$setState(plotData1)
+                
+                
+            # data <- self$data   
+            # 
+            # # convert to appropriate data types
+            # 
+            # for (i in seq_along(vars))
+            #     data[[i]] <- jmvcore::toNumeric(data[[i]])
+            # 
+            # 
+            # for (fac in facs)
+            #     data[[fac]] <- as.factor(data[[fac]])
+            # 
+            # # data is now all of the appropriate type we can begin!
+            # 
+            # data <- na.omit(data)
+            # 
             
-            # data<- as.data.frame(data)
+            #-------------------------
             
-            vars <- self$options$vars
-           
-            #----------------------
+            # 
+            #  vars  <- self$options$vars
+            # # 
+            # # vars <- jmvcore::toNumeric(data[[vars]])
+            # # 
+             
+            # 
+            # group <- data[[group]]
+            # 
+            # for (i in seq_along(vars))
+            #     data[[i]] <- jmvcore::toNumeric(data[[i]])
+            # 
             
-            
-            formula <- jmvcore:: constructFormula(self$options$vars, self$options$group)
-            formula <- as.formula(formula)
-            
-            
-            ave <- stats::aggregate(formula, data=self$data, mean)[,-1]
-            
-            ave <- as.matrix(ave)
-            
-            
-            #--------------
-            
-            # vars <- factor(vars, levels = vars)
-            nVars <- length(vars)
+             # mydata <- data.frame(vars = vars,
+             #                       group = group)
+
             
             
-            # plot data function---------
-        
-        plotData1 <- data.frame(
-            Class = as.factor(rep(1:nc, nVars)),
-            var = rep(vars, each = nc),
-            mean = as.vector(ave)
-        )
-        
-        image <- self$results$plot1
-        image$setState(plotData1)
-        
+            # 
+            # dat<- jmvcore::select(self$data,self$options$vars)
+
+        #     formula <- jmvcore::constructFormula(self$options$vars,
+        #                                           self$options$group)
+        #     formula <- as.formula(formula)
+        # 
+        #     
+        #     ave <- stats::aggregate(formula, data=data, mean)[,-1]
+        #     
+        #     ave <- as.matrix(ave)
+        #     
+        #     
+        #     # vars <- factor(vars, levels = vars)
+        #     
+        #      nVars <- length(vars)
+        #     
+        #     # plot data function---------
+        # 
+        # plotData1 <- data.frame(
+        #     Class = as.factor(rep(1:nc, nVars)),
+        #     var = rep(vars, each = nc),
+        #     mean = as.vector(ave)
+        # )
+        # 
+        # image <- self$results$plot1
+        # image$setState(plotData1)
+        # 
             }
         
         },
@@ -542,7 +611,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                     ggplot(plotData1,
                            aes(
                                x = var,
-                               y = mean,
+                               y = m,
                                group = Class,
                                colour = Class
                            )) +
@@ -561,22 +630,23 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         ### Helper functions =================================     
                    
                    .cleanData = function() {
-                       
+
                        items <- self$options$vars
-                       
+
                        data <- list()
-                       
+
                        for (item in items)
                            data[[item]] <-
                            jmvcore::toNumeric(self$data[[item]])
-                       
+
                        attr(data, 'row.names') <- seq_len(length(data[[1]]))
                        attr(data, 'class') <- 'data.frame'
+
                        data <- jmvcore::naOmit(data)
-                       
+
                        return(data)
                    }
-                   
+
                    
     )
 )
