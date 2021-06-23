@@ -9,10 +9,6 @@ items:
       type: Html
       visible: True
 
-    - name:  text
-      title: Profile
-      type:  Preformatted   
-
     - name: fit
       title: 'Model fit'
       type: Table

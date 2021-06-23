@@ -39,6 +39,8 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             <p> The results of <b> Class membership </b> will be displayed in the datasheet.</p>
             
+            <p> The output variables can’t use an output column as an input to the same analysis.</p>
+            
             <p> Feature requests and bug reports can be made on my <a href='https://github.com/hyunsooseol/snowRMM/'  target = '_blank'>GitHub.</a></p>
 
             </div>
@@ -507,7 +509,8 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 # reshape to long for ggplot
                 plotData1       <-  reshape2::melt(ave, id.vars=self$options$group)
                 names(plotData1)[1]   <-  self$options$group
-                self$results$text$setContent(plotData1)
+                
+                # self$results$text$setContent(plotData1)
                 
                 # plot data function---------
                 
