@@ -135,7 +135,7 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Preformatted$new(
                 options=options,
                 name="text",
-                title="Independent Samples T-Test"))
+                title="Profile"))
             self$add(jmvcore::Table$new(
                 options=options,
                 name="fit",
