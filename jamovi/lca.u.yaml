@@ -21,7 +21,7 @@ children:
             isTarget: true
             maxItemCount: 1
   - type: CollapseBox
-    label: Analysis
+    label: 'Analysis'
     margin: normal
     collapsed: true
     children:
@@ -67,13 +67,6 @@ children:
             children:
               - type: CheckBox
                 name: plot
-          - type: Label
-            label: 'Profile analysis'
-            children:
-              - type: CheckBox
-                name: mc
-              - type: CheckBox
-                name: plot1
   - type: CollapseBox
     label: 'Save'
     margin: normal
@@ -87,3 +80,16 @@ children:
             name: cm
           - type: Output
             name: pc
+  - type: CollapseBox
+    label: 'Profile'
+    margin: normal
+    collapsed: true
+    children:
+      - type: LayoutBox
+        stretchFactor: 1
+        margin: large
+        children:
+          - type: CheckBox
+            name: mc
+          - type: CheckBox
+            name: plot1

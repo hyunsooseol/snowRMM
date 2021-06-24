@@ -58,7 +58,7 @@ options:
       default: FALSE  
 
     - name: mc
-      title: Means of class table
+      title: Variable means
       type: Bool 
       default: FALSE  
 

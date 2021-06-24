@@ -8,10 +8,6 @@ items:
       title: 'Instructions'
       type: Html
       visible: True
-    - name:  text
-      title: Independent Samples T-Test
-      type:  Preformatted
-
     - name: fit
       title: 'Model fit'
       type: Table
@@ -85,7 +81,7 @@ items:
           superTitle: 'Class'
 
     - name:  mc
-      title: 'Means of variables across membership' 
+      title: 'Variable means across membership' 
       type:  Table
       visible: (mc)
       clearWith:

@@ -41,6 +41,8 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             
             <p> The output columm can NOT be used as an input to the same analysis.</p>
             
+            <P> To analyze 'Profile' analysis, click the LCA analysis again.</p>
+            
             <p> Feature requests and bug reports can be made on my <a href='https://github.com/hyunsooseol/snowRMM/'  target = '_blank'>GitHub.</a></p>
 
             </div>
@@ -258,8 +260,6 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             
             
         },
-        
-        
         
                    # populate Model table-----
                    
@@ -509,7 +509,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                
                 names(ave)[1]   <-  self$options$group
                 
-                self$results$text$setContent(ave)
+                # self$results$text$setContent(ave)
                  
                 # The means of class table-------
                
@@ -549,6 +549,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 
                 
                 # reshape to long for ggplot
+                
                 plotData1       <-  reshape2::melt(ave, id.vars=self$options$group)
                 names(plotData1)[1]   <-  self$options$group
                 
