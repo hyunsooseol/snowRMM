@@ -71,12 +71,12 @@ options:
       type: Output  
      
     - name: plot
-      title: LCA Plot
+      title: LCA plot
       type: Bool
       default: FALSE
    
     - name: plot1
-      title: Profile Plot
+      title: Profile plot
       type: Bool
       default: FALSE
 
