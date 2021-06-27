@@ -20,7 +20,7 @@ mixture(
   outfit = FALSE,
   pbis = FALSE,
   average = FALSE,
-  iplot = TRUE,
+  iplot = FALSE,
   wrightmap = FALSE
 )
 }
