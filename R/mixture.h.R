@@ -20,7 +20,7 @@ mixtureOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             outfit = FALSE,
             pbis = FALSE,
             average = FALSE,
-            iplot = TRUE,
+            iplot = FALSE,
             wrightmap = FALSE, ...) {
 
             super$initialize(
@@ -96,7 +96,7 @@ mixtureOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             private$..iplot <- jmvcore::OptionBool$new(
                 "iplot",
                 iplot,
-                default=TRUE)
+                default=FALSE)
             private$..wrightmap <- jmvcore::OptionBool$new(
                 "wrightmap",
                 wrightmap,
@@ -502,7 +502,7 @@ mixture <- function(
     outfit = FALSE,
     pbis = FALSE,
     average = FALSE,
-    iplot = TRUE,
+    iplot = FALSE,
     wrightmap = FALSE) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))

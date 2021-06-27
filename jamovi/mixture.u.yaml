@@ -78,6 +78,11 @@ children:
                 name: bic
               - type: CheckBox
                 name: caic
+          - type: Label
+            label: Plot
+            children:
+              - type: CheckBox
+                name: iplot
   - type: CollapseBox
     label: Person Analysis
     margin: normal
@@ -105,10 +110,8 @@ children:
         fitToGrid: true
         children:
           - type: Label
-            label: Plots
+            label: Plot
             children:
-              - type: CheckBox
-                name: iplot
               - type: CheckBox
                 name: wrightmap
   - type: CollapseBox
