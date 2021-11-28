@@ -5,7 +5,6 @@
 #' @import jmvcore
 #' @import poLCA
 #' @importFrom poLCA poLCA
-#' @importFrom poLCA poLCA.entropy
 #' @importFrom stats aggregate
 #' @import MASS
 #' @import scatterplot3d
@@ -151,7 +150,16 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                       res<- poLCA::poLCA(formula,data,nclass=nc,maxiter = 2000,calc.se = FALSE)
                        
                       
-                      entro<- poLCA::poLCA.entropy(res)
+                      poLCA.entropy <-
+                          function(lc) {
+                              K.j <- sapply(lc$probs,ncol)
+                              fullcell <- expand.grid(lapply(K.j,seq,from=1))
+                              P.c <- poLCA.predcell(lc,fullcell)
+                              return(-sum(P.c * log(P.c),na.rm=TRUE))
+                          }
+                      
+                      
+                      entro<- poLCA.entropy(res)
                       
                      
                       # result-----------
