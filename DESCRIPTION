@@ -8,7 +8,7 @@ Description: This module provides Latent Class Analysis, Rasch mixture model inc
 License: GPL3
 LazyData: TRUE
 Encoding: UTF-8
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
 Imports:
     jmvcore (>= 0.8.5), 
     R6,
@@ -24,5 +24,3 @@ Imports:
     poLCA,
     scatterplot3d,
     tidyr
-   
-    
