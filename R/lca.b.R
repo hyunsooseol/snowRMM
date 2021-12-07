@@ -52,7 +52,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             if (self$options$fit)
                 self$results$fit$setNote(
                     "Note",
-                    "G²=the likelihood-ratio statistic; χ²=Pearson Chi-square goodness of fit statistic; Entropy=non-normalized entropy which ranges between 0 and infinity."
+                    "G²=Likelihood ratio statistic; χ²=Pearson Chi-square goodness of fit statistic; Entropy=non-normalized entropy which ranges between 0 and infinity."
                 )
             # if (self$options$cp)
             #     self$results$cp$setNote(
