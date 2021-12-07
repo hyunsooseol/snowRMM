@@ -26,10 +26,16 @@ items:
           type: number
         - name: Entropy
           type: number
-        - name: Gsq
+        - name: G²
           type: number
-        - name: Chisq
+        - name: G² p
           type: number
+          format: zto,pvalue
+        - name: χ²
+          type: number
+        - name: χ² p
+          type: number
+          format: zto,pvalue
   
     - name: cf
       title: 'Predicted cell counts from latent class analysis'

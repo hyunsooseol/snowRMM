@@ -52,7 +52,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             if (self$options$fit)
                 self$results$fit$setNote(
                     "Note",
-                    "Gsq=the likelihood-ratio statistic; Chisq=Pearson Chi-square goodness of fit statistic; Entropy=non-normalized entropy which ranges between 0 and infinity."
+                    "G²=the likelihood-ratio statistic; χ²=Pearson Chi-square goodness of fit statistic; Entropy=non-normalized entropy which ranges between 0 and infinity."
                 )
             # if (self$options$cp)
             #     self$results$cp$setNote(
@@ -150,6 +150,29 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                       res<- poLCA::poLCA(formula,data,nclass=nc,maxiter = 2000,calc.se = FALSE)
                        
                       
+                     # Caculating Chi and Gsp p values----------
+                      
+                      y <- res$y
+                      K.j <- t(matrix(apply(y,2,max)))
+                      C <- max(K.j)
+                      J <- ncol(y)
+                      I <- J # number of items
+                      
+                      df <- C^I - res$npar - 1 # Degrees of freedom
+                      cp <- 1-pchisq(res$Chisq,df)
+                      gp <- 1-pchisq(res$Gsq,df)
+                     
+                      
+                      # pvalue-----
+                      
+                      # C <- max(K.j) # number of categories
+                      # I <- J # number of items
+                      # df <- C^I - ret$npar - 1 # Degrees of freedom
+                      # Chisq.pvalue <- 1-pchisq(ret$Chisq,df)
+                      # Gsq.pvalue <- 1-pchisq(ret$Gsq,df)
+
+                      # entropy-------------
+                      
                       poLCA.entropy <-
                           function(lc) {
                               K.j <- sapply(lc$probs,ncol)
@@ -189,8 +212,9 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                                'Chisq'=Chisq,
                                'Gsq'=Gsq,
                                'entro'=entro,
-                               'cell'= cell
-                             
+                               'cell'= cell,
+                             'cp'=cp,
+                             'gp'=gp
                                
                            )
                        
@@ -280,7 +304,9 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                        bic <- results$bic
                        entro <- results$entro
                        Gsq <- results$Gsq
+                       gp <- results$gp
                        Chisq <- results$Chisq
+                       cp <- results$cp
                        
                        
                        row <- list()
@@ -289,8 +315,10 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                        row[['AIC']] <- aic
                        row[['BIC']] <- bic
                        row[['Entropy']] <- entro
-                       row[['Gsq']] <- Gsq
-                       row[['Chisq']] <- Chisq
+                       row[['G²']] <- Gsq
+                       row[['G² p']] <- gp
+                       row[['χ²']] <- Chisq
+                       row[['χ² p']] <- cp
                       
                        table$setRow(rowNo = 1, values = row)
                   

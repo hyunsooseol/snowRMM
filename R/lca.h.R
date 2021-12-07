@@ -168,11 +168,19 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         `name`="Entropy", 
                         `type`="number"),
                     list(
-                        `name`="Gsq", 
+                        `name`="G\u00B2", 
                         `type`="number"),
                     list(
-                        `name`="Chisq", 
-                        `type`="number"))))
+                        `name`="G\u00B2 p", 
+                        `type`="number", 
+                        `format`="zto,pvalue"),
+                    list(
+                        `name`="\u03C7\u00B2", 
+                        `type`="number"),
+                    list(
+                        `name`="\u03C7\u00B2 p", 
+                        `type`="number", 
+                        `format`="zto,pvalue"))))
             self$add(jmvcore::Table$new(
                 options=options,
                 name="cf",

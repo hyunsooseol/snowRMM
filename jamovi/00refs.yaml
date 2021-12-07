@@ -2,7 +2,7 @@ refs:
    snowRMM:
        type: 'software'
        author: Seol, H.
-       year: 2020
+       year: 2021
        title: "snowRMM:Rasch Mixture Model for jamovi"
        publisher: '[jamovi module]. Retrieved from https://github.com/hyunsooseol/snowRMM'
       
