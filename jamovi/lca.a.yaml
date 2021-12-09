@@ -73,7 +73,7 @@ options:
     - name: plot
       title: LCA plot
       type: Bool
-      default: FALSE
+      default: TRUE
    
     - name: plot1
       title: Profile plot

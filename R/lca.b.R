@@ -202,10 +202,15 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                           )
                       
                       
-                      entro<- poLCA.entropy(res)
+                        entro<- poLCA.entropy(res)
                       
-                     
-                      # result-----------
+                     if(is.na(entro)){
+                         
+                         entro <- NaN
+                     }
+                      
+                        
+                        # result-----------
                       
                       classprob<- res$P
                       

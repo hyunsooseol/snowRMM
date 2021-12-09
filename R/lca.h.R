@@ -14,7 +14,7 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             ip = FALSE,
             cf = FALSE,
             mc = FALSE,
-            plot = FALSE,
+            plot = TRUE,
             plot1 = FALSE, ...) {
 
             super$initialize(
@@ -71,7 +71,7 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             private$..plot <- jmvcore::OptionBool$new(
                 "plot",
                 plot,
-                default=FALSE)
+                default=TRUE)
             private$..plot1 <- jmvcore::OptionBool$new(
                 "plot1",
                 plot1,
@@ -352,7 +352,7 @@ lca <- function(
     ip = FALSE,
     cf = FALSE,
     mc = FALSE,
-    plot = FALSE,
+    plot = TRUE,
     plot1 = FALSE) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
