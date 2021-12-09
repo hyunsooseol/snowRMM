@@ -14,7 +14,7 @@ lca(
   ip = FALSE,
   cf = FALSE,
   mc = FALSE,
-  plot = FALSE,
+  plot = TRUE,
   plot1 = FALSE
 )
 }
