@@ -66,7 +66,6 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             #         "Pr.=Probability."
             #     )
 
-
             
             if (length(self$options$vars) <= 1)
                 self$setStatus('complete')
@@ -173,13 +172,34 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
                       # entropy-------------
                       
+                      # poLCA.entropy <-
+                      #     function(lc) {
+                      #         K.j <- sapply(lc$probs,ncol)
+                      #         fullcell <- expand.grid(lapply(K.j,seq,from=1))
+                      #         P.c <- poLCA.predcell(lc,fullcell)
+                      #         return(-sum(P.c * log(P.c),na.rm=TRUE))
+                      #     }
+                      
+                      
                       poLCA.entropy <-
                           function(lc) {
                               K.j <- sapply(lc$probs,ncol)
-                              fullcell <- expand.grid(lapply(K.j,seq,from=1))
-                              P.c <- poLCA.predcell(lc,fullcell)
-                              return(-sum(P.c * log(P.c),na.rm=TRUE))
+                              lap <- lapply(K.j,seq,from=1)
+                              obs <- prod(lengths(list(lap)[[1L]]))
+                              
+                              if ( obs > 2.05E+07L ) {
+                                  return(NA)
+                              }
+                              
+                              P.c <- poLCA.predcell(lc, expand.grid(lap))
+                              return(-sum(P.c * log(P.c), na.rm=TRUE))
                           }
+                      
+                      if( is.na(entro <- poLCA.entropy(res)) ) 
+                          self$results$fit$setNote(
+                              'Note', 
+                              'There are not enough memory resources to calculate entropy.'
+                          )
                       
                       
                       entro<- poLCA.entropy(res)
