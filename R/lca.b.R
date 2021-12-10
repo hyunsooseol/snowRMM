@@ -188,25 +188,39 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                               obs <- prod(lengths(list(lap)[[1L]]))
                               
                               if ( obs > 2.05E+07L ) {
-                                  return(NA)
+                                  
+                                   return(NA)
+                                  # return(NaN)
                               }
                               
                               P.c <- poLCA.predcell(lc, expand.grid(lap))
                               return(-sum(P.c * log(P.c), na.rm=TRUE))
                           }
                       
-                      if( is.na(entro <- poLCA.entropy(res)) ) 
+                      
+                     
+                      # if( is.na(entro <- poLCA.entropy(res)) ) 
+                      #  
+                      #     entro <- 'NaN <sup>a</sup>'
+                      # self$results$fit$setNote(
+                      #     'Note', 
+                      #     '<sup>a</sup> There are not enough memory resources to calculate entropy.'
+                      # )
+                      
+                      
+                      
+                      if( is.na(entro <- poLCA.entropy(res)) )
                           self$results$fit$setNote(
-                              'Note', 
-                              'There are not enough memory resources to calculate entropy.'
+                              'Note',
+                              '<sup>a</sup> There are not enough memory resources to calculate entropy.'
                           )
-                      
-                      
+
+
                         entro<- poLCA.entropy(res)
-                      
+
                      if(is.na(entro)){
-                         
-                         entro <- NaN
+
+                         entro <- 'NaN <sup>a</sup>'
                      }
                       
                         
