@@ -5,7 +5,7 @@
     `snowRMM`=list(
         `type`="software", 
         `author`="Seol, H.", 
-        `year`=2021, 
+        `year`=2022, 
         `title`="snowRMM: Rasch Mixture Model for jamovi", 
         `publisher`="[jamovi module]. Retrieved from https://github.com/hyunsooseol/snowRMM"), 
     `mixRasch`=list(
