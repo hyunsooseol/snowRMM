@@ -354,9 +354,9 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                        row[['AIC']] <- aic
                        row[['BIC']] <- bic
                        row[['Entropy']] <- entro
-                       row[['G²']] <- Gsq
+                       row[['G\u00B2']] <- Gsq
                        row[['G\u00B2 p']] <- gp
-                       row[['χ²']] <- Chisq
+                       row[['\u03C7\u00B2']] <- Chisq
                        row[['\u03C7\u00B2 p']] <- cp
                       
                        table$setRow(rowNo = 1, values = row)
