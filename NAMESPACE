@@ -2,6 +2,7 @@
 
 export(bfit)
 export(bfitClass)
+export(equating)
 export(lca)
 export(lcaClass)
 export(mixture)

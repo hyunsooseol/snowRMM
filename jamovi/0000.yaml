@@ -1,17 +1,17 @@
 ---
 title: Rasch Mixture Model for jamovi
 name: snowRMM
-version: 4.4.1
+version: 4.5.0
 jms: '1.0'
 authors:
   - Hyunsoo Seol
 maintainer: Hyunsoo Seol <snow@cau.ac.kr>
-date: '2022-01-09'
+date: '2022-02-04'
 type: R
 description: >-
-  This module allows users to conduct Latent class analysis, Rasch model, and
-  Rasch mixture model including model information,fit statistics,and bootstrap
-  fit based on JMLE.
+  This module allows users to conduct Latent class analysis, Rasch model,Linear
+  and Equipercentile Equating, and Rasch mixture model including model
+  information,fit statistics,and bootstrap fit based on JMLE.
 analyses:
   - title: Rasch Model
     name: rasch
@@ -37,6 +37,12 @@ analyses:
     menuGroup: snowRMM
     menuTitle: Latent Class Analysis
     menuSubgroup: LCA
+  - title: Linear Equating
+    name: equating
+    ns: snowRMM
+    menuGroup: snowRMM
+    menuTitle: Linear Equating
+    menuSubgroup: Test Equating
 datasets:
   - name: mixture
     path: mix.omv

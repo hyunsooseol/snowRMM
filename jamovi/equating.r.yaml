@@ -1,0 +1,11 @@
+---
+name:  equating
+title: Linear Equating
+jrs:   '1.1'
+
+items:
+    - name:  text
+      title: Linear Equating
+      type:  Preformatted
+
+...
