@@ -8,9 +8,9 @@ equating(
   data,
   ind,
   dep,
-  contabx = TRUE,
+  contabx = FALSE,
   contabxy = FALSE,
-  lineq = FALSE,
+  lineq = TRUE,
   cdfplot = FALSE,
   escore = FALSE
 )
@@ -36,7 +36,14 @@ equating(
 A results object containing:
 \tabular{llllll}{
   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
+  \code{results$lineq} \tab \tab \tab \tab \tab a table \cr
 }
+
+Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
+
+\code{results$lineq$asDF}
+
+\code{as.data.frame(results$lineq)}
 }
 \description{
 Linear Equating

@@ -8,5 +8,21 @@ items:
       title: 'Instructions'
       type: Html
       visible: True
+    - name: lineq
+      title: 'Linear equation'
+      type: Table
+      rows: 1
+      clearWith:
+        - vars
+      refs: equi 
 
+      columns:
+        - name: name
+          title: ''
+          type: 'text'
+          content: ''
+        - name: intercept
+          type: number
+        - name: slope
+          type: number
 ...

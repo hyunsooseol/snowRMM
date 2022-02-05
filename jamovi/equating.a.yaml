@@ -42,7 +42,7 @@ options:
       default: TRUE
 
     - name: cdfplot
-      title: Cumalative plot 
+      title: Cumulative plot 
       type: Bool
       default: FALSE  
     

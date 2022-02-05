@@ -85,7 +85,8 @@ equatingResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "equatingResults",
     inherit = jmvcore::Group,
     active = list(
-        instructions = function() private$.items[["instructions"]]),
+        instructions = function() private$.items[["instructions"]],
+        lineq = function() private$.items[["lineq"]]),
     private = list(),
     public=list(
         initialize=function(options) {
@@ -98,7 +99,27 @@ equatingResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 options=options,
                 name="instructions",
                 title="Instructions",
-                visible=TRUE))}))
+                visible=TRUE))
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="lineq",
+                title="Linear equation",
+                rows=1,
+                clearWith=list(
+                    "vars"),
+                refs="equi",
+                columns=list(
+                    list(
+                        `name`="name", 
+                        `title`="", 
+                        `type`="text", 
+                        `content`=""),
+                    list(
+                        `name`="intercept", 
+                        `type`="number"),
+                    list(
+                        `name`="slope", 
+                        `type`="number"))))}))
 
 equatingBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "equatingBase",
@@ -134,7 +155,14 @@ equatingBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
+#'   \code{results$lineq} \tab \tab \tab \tab \tab a table \cr
 #' }
+#'
+#' Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
+#'
+#' \code{results$lineq$asDF}
+#'
+#' \code{as.data.frame(results$lineq)}
 #'
 #' @export
 equating <- function(
