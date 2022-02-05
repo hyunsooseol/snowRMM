@@ -6,10 +6,13 @@ equatingOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     inherit = jmvcore::Options,
     public = list(
         initialize = function(
+            ind = NULL,
             dep = NULL,
-            group = NULL,
-            alt = "notequal",
-            varEq = TRUE, ...) {
+            contabx = FALSE,
+            contabxy = FALSE,
+            lineq = TRUE,
+            cdfplot = FALSE,
+            escore = FALSE, ...) {
 
             super$initialize(
                 package="snowRMM",
@@ -17,58 +20,85 @@ equatingOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 requiresData=TRUE,
                 ...)
 
+            private$..ind <- jmvcore::OptionVariable$new(
+                "ind",
+                ind,
+                suggested=list(
+                    "continuous"),
+                permitted=list(
+                    "numeric"))
             private$..dep <- jmvcore::OptionVariable$new(
                 "dep",
-                dep)
-            private$..group <- jmvcore::OptionVariable$new(
-                "group",
-                group)
-            private$..alt <- jmvcore::OptionList$new(
-                "alt",
-                alt,
-                options=list(
-                    "notequal",
-                    "onegreater",
-                    "twogreater"),
-                default="notequal")
-            private$..varEq <- jmvcore::OptionBool$new(
-                "varEq",
-                varEq,
+                dep,
+                suggested=list(
+                    "continuous"),
+                permitted=list(
+                    "numeric"))
+            private$..contabx <- jmvcore::OptionBool$new(
+                "contabx",
+                contabx,
+                default=FALSE)
+            private$..contabxy <- jmvcore::OptionBool$new(
+                "contabxy",
+                contabxy,
+                default=FALSE)
+            private$..lineq <- jmvcore::OptionBool$new(
+                "lineq",
+                lineq,
                 default=TRUE)
+            private$..cdfplot <- jmvcore::OptionBool$new(
+                "cdfplot",
+                cdfplot,
+                default=FALSE)
+            private$..escore <- jmvcore::OptionBool$new(
+                "escore",
+                escore,
+                default=FALSE)
 
+            self$.addOption(private$..ind)
             self$.addOption(private$..dep)
-            self$.addOption(private$..group)
-            self$.addOption(private$..alt)
-            self$.addOption(private$..varEq)
+            self$.addOption(private$..contabx)
+            self$.addOption(private$..contabxy)
+            self$.addOption(private$..lineq)
+            self$.addOption(private$..cdfplot)
+            self$.addOption(private$..escore)
         }),
     active = list(
+        ind = function() private$..ind$value,
         dep = function() private$..dep$value,
-        group = function() private$..group$value,
-        alt = function() private$..alt$value,
-        varEq = function() private$..varEq$value),
+        contabx = function() private$..contabx$value,
+        contabxy = function() private$..contabxy$value,
+        lineq = function() private$..lineq$value,
+        cdfplot = function() private$..cdfplot$value,
+        escore = function() private$..escore$value),
     private = list(
+        ..ind = NA,
         ..dep = NA,
-        ..group = NA,
-        ..alt = NA,
-        ..varEq = NA)
+        ..contabx = NA,
+        ..contabxy = NA,
+        ..lineq = NA,
+        ..cdfplot = NA,
+        ..escore = NA)
 )
 
 equatingResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "equatingResults",
     inherit = jmvcore::Group,
     active = list(
-        text = function() private$.items[["text"]]),
+        instructions = function() private$.items[["instructions"]]),
     private = list(),
     public=list(
         initialize=function(options) {
             super$initialize(
                 options=options,
                 name="",
-                title="Linear Equating")
-            self$add(jmvcore::Preformatted$new(
+                title="Linear Equating",
+                refs="snowRMM")
+            self$add(jmvcore::Html$new(
                 options=options,
-                name="text",
-                title="Linear Equating"))}))
+                name="instructions",
+                title="Instructions",
+                visible=TRUE))}))
 
 equatingBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "equatingBase",
@@ -94,40 +124,49 @@ equatingBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'
 #' 
 #' @param data .
+#' @param ind .
 #' @param dep .
-#' @param group .
-#' @param alt .
-#' @param varEq .
+#' @param contabx .
+#' @param contabxy .
+#' @param lineq .
+#' @param cdfplot .
+#' @param escore .
 #' @return A results object containing:
 #' \tabular{llllll}{
-#'   \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
+#'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
 #' }
 #'
 #' @export
 equating <- function(
     data,
+    ind,
     dep,
-    group,
-    alt = "notequal",
-    varEq = TRUE) {
+    contabx = FALSE,
+    contabxy = FALSE,
+    lineq = TRUE,
+    cdfplot = FALSE,
+    escore = FALSE) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("equating requires jmvcore to be installed (restart may be required)")
 
+    if ( ! missing(ind)) ind <- jmvcore::resolveQuo(jmvcore::enquo(ind))
     if ( ! missing(dep)) dep <- jmvcore::resolveQuo(jmvcore::enquo(dep))
-    if ( ! missing(group)) group <- jmvcore::resolveQuo(jmvcore::enquo(group))
     if (missing(data))
         data <- jmvcore::marshalData(
             parent.frame(),
-            `if`( ! missing(dep), dep, NULL),
-            `if`( ! missing(group), group, NULL))
+            `if`( ! missing(ind), ind, NULL),
+            `if`( ! missing(dep), dep, NULL))
 
 
     options <- equatingOptions$new(
+        ind = ind,
         dep = dep,
-        group = group,
-        alt = alt,
-        varEq = varEq)
+        contabx = contabx,
+        contabxy = contabxy,
+        lineq = lineq,
+        cdfplot = cdfplot,
+        escore = escore)
 
     analysis <- equatingClass$new(
         options = options,

@@ -4,23 +4,38 @@
 \alias{equating}
 \title{Linear Equating}
 \usage{
-equating(data, dep, group, alt = "notequal", varEq = TRUE)
+equating(
+  data,
+  ind,
+  dep,
+  contabx = TRUE,
+  contabxy = FALSE,
+  lineq = FALSE,
+  cdfplot = FALSE,
+  escore = FALSE
+)
 }
 \arguments{
 \item{data}{.}
 
+\item{ind}{.}
+
 \item{dep}{.}
 
-\item{group}{.}
+\item{contabx}{.}
 
-\item{alt}{.}
+\item{contabxy}{.}
 
-\item{varEq}{.}
+\item{lineq}{.}
+
+\item{cdfplot}{.}
+
+\item{escore}{.}
 }
 \value{
 A results object containing:
 \tabular{llllll}{
-  \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
+  \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
 }
 }
 \description{

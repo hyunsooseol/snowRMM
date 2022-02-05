@@ -2,10 +2,11 @@
 name:  equating
 title: Linear Equating
 jrs:   '1.1'
-
+refs: snowRMM
 items:
-    - name:  text
-      title: Linear Equating
-      type:  Preformatted
+    - name: instructions
+      title: 'Instructions'
+      type: Html
+      visible: True
 
 ...

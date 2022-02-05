@@ -10,28 +10,44 @@ options:
     - name: data
       type: Data
 
+    - name: ind
+      title: Form x
+      type: Variable
+      suggested:
+         - continuous
+      permitted:
+        - numeric
+
     - name: dep
-      title: Dependent Variable
+      title: Form y
       type: Variable
-
-    - name: group
-      title: Grouping Variable
-      type: Variable
-
-    - name: alt
-      title: Alternative hypothesis
-      type: List
-      options:
-        - title: Not equal
-          name:  notequal
-        - title: One greater
-          name:  onegreater
-        - title: Two greater
-          name:  twogreater
-      default: notequal
-
-    - name: varEq
-      title: Assume equal variances
+      suggested:
+         - continuous
+      permitted:
+        - numeric
+        
+    - name: contabx
       type: Bool
-      default: true
+      title: Contingency of Form x
+      default: FALSE
+      
+    - name: contabxy
+      title: Contingency of Form x and y 
+      type: Bool
+      default: FALSE
+      
+    - name: lineq
+      title: Linear equation 
+      type: Bool
+      default: TRUE
+
+    - name: cdfplot
+      title: Cumalative plot 
+      type: Bool
+      default: FALSE  
+    
+    - name: escore
+      title: Equating score 
+      type: Bool
+      default: FALSE  
 ...

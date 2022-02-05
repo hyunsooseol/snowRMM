@@ -2,33 +2,69 @@ title: Linear Equating
 name: equating
 jus: '3.0'
 stage: 0
-compilerMode: aggressive
+compilerMode: tame
 children:
   - type: VariableSupplier
     persistentItems: false
     stretchFactor: 1
     children:
       - type: TargetLayoutBox
-        label: Dependent Variable
+        label: Form x
+        children:
+          - type: VariablesListBox
+            name: ind
+            maxItemCount: 1
+            isTarget: true
+      - type: TargetLayoutBox
+        label: Form y
         children:
           - type: VariablesListBox
             name: dep
             maxItemCount: 1
             isTarget: true
-      - type: TargetLayoutBox
-        label: Grouping Variable
+  - type: CollapseBox
+    label: Analysis
+    margin: normal
+    collapsed: true
+    children:
+      - type: LayoutBox
+        stretchFactor: 1
+        margin: large
         children:
-          - type: VariablesListBox
-            name: group
-            maxItemCount: 1
-            isTarget: true
-  - type: LayoutBox
-    margin: large
+          - type: Label
+            label: Linear equation
+            fitToGrid: true
+            cell:
+              column: 0
+              row: 0
+            children:
+              - type: CheckBox
+                name: lineq
+      - type: LayoutBox
+        stretchFactor: 1
+        margin: large
+        cell:
+          column: 1
+          row: 0
+        fitToGrid: true
+        children:
+          - type: Label
+            label: Additional Statistics
+            children:
+              - type: CheckBox
+                name: contabx
+              - type: CheckBox
+                name: contabxy
+              - type: CheckBox
+                name: cdfplot
+  - type: CollapseBox
+    label: Save
+    margin: normal
+    collapsed: true
     children:
-      - type: ComboBox
-        name: alt
-  - type: LayoutBox
-    margin: large
-    children:
-      - type: CheckBox
-        name: varEq
+      - type: LayoutBox
+        stretchFactor: 1
+        margin: large
+        children:
+          - type: CheckBox
+            name: escore
