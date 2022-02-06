@@ -28,7 +28,7 @@
         `publisher`="[R package]. Retrieved from  https://CRAN.R-project.org/package=boot"), 
     `WrightMap`=list(
         `type`="software", 
-        `author`="Irribarra,T., & Freund, R.", 
+        `author`="Irribarra, T., & Freund, R.", 
         `year`=2020, 
         `title`="Wright Map: IRT item-person map with ConQuest integration", 
         `publisher`="[R package]. Retrieved from https://CRAN.R-project.org/package=WrightMap"), 
@@ -40,7 +40,13 @@
         `publisher`="[R package]. Retrieved from https://CRAN.R-project.org/package=ShinyItemAnalysis"), 
     `poLCA`=list(
         `type`="software", 
-        `author`="Linzer,D., & Lewis, J.", 
+        `author`="Linzer, D., & Lewis, J.", 
         `year`=2021, 
         `title`="poLCA: An R Package for Polytomous Variable Latent Class Analysis", 
-        `publisher`="[R package]. Retrieved from https://CRAN.R-project.org/package=poLCA"))
+        `publisher`="[R package]. Retrieved from https://CRAN.R-project.org/package=poLCA"), 
+    `equi`=list(
+        `type`="software", 
+        `author`="Wolodzko, T.", 
+        `year`=2020, 
+        `title`="equi: Equipercentile Equating", 
+        `publisher`="[R package]. Retrieved from https://github.com/twolodzko/equi/"))

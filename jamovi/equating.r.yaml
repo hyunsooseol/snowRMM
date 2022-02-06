@@ -25,4 +25,69 @@ items:
           type: number
         - name: slope
           type: number
+     
+    - name: contabx
+      title: 'Contingency table of form x'
+      type: Table
+      visible: (contabx)
+      clearWith:
+        - vars
+      refs: equi 
+
+      columns:
+        - name: score
+          type: integer
+        - name: frequency
+          type: integer       
+
+    - name: contaby
+      title: 'Contingency table of form y'
+      type: Table
+      visible: (contaby)
+      clearWith:
+        - vars
+      refs: equi 
+
+      columns:
+        - name: score
+          type: integer
+        - name: frequency
+          type: integer   
+
+    - name: contabxy
+      title: 'Contingency table of form x and y'
+      type: Table
+      visible: (contabxy)
+      clearWith:
+        - vars
+      refs: equi 
+
+      columns:
+        - name: score_x
+          type: integer
+        - name: score_y
+          type: integer  
+        - name: frequency
+          type: integer             
+
+    - name:  plot
+      title: Cumulative distribution plot
+      type:  Image
+      requiresData: true
+      refs: equi
+      visible: (plot)
+      width: 500
+      height: 500
+      renderFun: .plot
+      clearWith:
+        - vars
+
+    - name: escore
+      title: Equating score
+      type: Output
+      varTitle: xz
+      measureType: nominal
+      clearWith:
+        - vars
+
 ...

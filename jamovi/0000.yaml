@@ -73,6 +73,11 @@ datasets:
       a symptom, a 1 the absence.
     tags:
       - LCA
+  - name: linear
+    path: lin.omv
+    description: Linear Equating
+    tags:
+      - Linear Equating
 usesNative: true
 minApp: 1.8.0
 

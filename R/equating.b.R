@@ -5,6 +5,7 @@
 #' @import jmvcore
 #' @import equi
 #' @importFrom equi lin
+#' @importFrom equi cdfplot
 #' @export
 
 equatingClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
@@ -26,9 +27,13 @@ equatingClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             </head>
             <body>
             <div class='instructions'>
-            <p> The rationale of test equating is described in the <a href='https://r-bloggers.com/2020/01/concordance-correlation-coefficient/?fbclid=IwAR2Txi_QrFTuDB9jH8NiJW8dEde_lw2Td08XqxNzoWqut9m8E-bE5RHUDiI' target = '_blank'>page.</a></p>
-            <p> Feature requests and bug reports can be made on the <a href='https://github.com/hyunsooseol/snowRMM/'  target = '_blank'>GitHub.</a></p>
-
+            
+            <p><b>Instructions</b></p>
+            <p> - The Form x will be equated to the Form y with single group design.
+            <p> - The R package <b>equi</b>(Wolodzko, 2020) is described in the <a href='https://rdrr.io/github/twolodzko/equi/man/equi.html' target = '_blank'>page.</a></p>
+            <p> - Feature requests and bug reports can be made on the <a href='https://github.com/hyunsooseol/snowRMM/issues'  target = '_blank'>GitHub.</a></p>
+            <p> - This project has been supported by G-TELP Korea. </p>
+            
             </div>
             </body>
             </html>"
@@ -70,7 +75,7 @@ equatingClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             # Computing linear equation
             
             leq <- equi::lin(data[[ind]], data[[dep]])
-            
+            #-------------------------
             
             table<- self$results$lineq
             
@@ -84,9 +89,129 @@ equatingClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
            
             table$setRow(rowNo = 1, values = row)
             
+            # Contingency table of form x-----------
+            
+            conx <- equi::conttab(data[[ind]])
+            
+            table<- self$results$contabx
+            
+            tab <- data.frame(conx)
+            
+            
+             for (i in 1:nrow(tab)) {
+            
+            row <- list()
+            
+            row[['score']] <- tab[i,1]
+            row[['frequency']] <- tab[i,2]
+            
+            table$addRow(rowKey = i, values = row)
+            
+             }
+            
+            # Contingency table of form y-----------
+            
+            cony <- equi::conttab(data[[dep]])
+            
+            table<- self$results$contaby
+            
+            taby <- data.frame(cony)
+            
+            
+            for (i in 1:nrow(taby)) {
+                
+                row <- list()
+                
+                row[['score']] <- taby[i,1]
+                row[['frequency']] <- taby[i,2]
+                
+                table$addRow(rowKey = i, values = row)
+                
+            }
+            
+            
+            # Contingency table of form x and y -----------
+            
+            conxy <- equi::conttab(data[[ind]], data[[dep]])
+            
+            #---------------
+            
+            table <- self$results$contabxy
+            
+            tabxy <- data.frame(conxy)
+            
+            
+            for (i in 1:nrow(tabxy)) {
+                
+                row <- list()
+                
+                row[['score_x']] <- tabxy[i,1]
+                row[['score_y']] <- tabxy[i,2]
+                row[['frequency']] <- tabxy[i,3]
+                
+                table$addRow(rowKey = i, values = row)
+                
+            }
+        
+        # Equating score-------------
+            
+            table <- self$results$escore
+            
+            # leq <- equi::lin(data[[ind]], data[[dep]])
+            
+            es <- equi::lin(data[[ind]], leq)
+           
+            self$results$escore$setRowNums(rownames(data))
+            self$results$escore$setValues(es)
+            
+            
+            # for (i in 1:nrow(es)) {
+            #     
+            #     row <- list()
+            #     
+            #     row[['xz']] <- es1[i]
+            #    
+            #     table$addRow(rowKey = i, values = row)
+            #     
+            # }
+            
+            
+            
+            ## Plot==================================================
+            
+            
+            image <- self$results$plot
+            image$setState(leq)
+            
+        },
+        
+        .plot = function(image,...) {
+            
+            # if (length(self$options$vars) < 1)
+            #     return()
+            
+            # get the data--------
+            
+            data <- self$data
+            data <- jmvcore::naOmit(data)
+            
+            ind <- self$options$ind
+            
+            dep <- self$options$dep
+            
+            
+            
+            leq <- image$state
+            
+            plot <- equi::cdfplot(data[[ind]], xlab='Score')
+            plot1 <- equi::cdfplot(data[[dep]], add=TRUE)
+            
+            # plot1 <- plot1+ggtheme
+            print(plot1)
+            TRUE
+            
         }
-        
-        
+         
     )
 )
         

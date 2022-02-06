@@ -26,28 +26,33 @@ options:
       permitted:
         - numeric
         
-    - name: contabx
-      type: Bool
-      title: Contingency of Form x
-      default: FALSE
-      
-    - name: contabxy
-      title: Contingency of Form x and y 
-      type: Bool
-      default: FALSE
-      
     - name: lineq
       title: Linear equation 
       type: Bool
       default: TRUE
 
-    - name: cdfplot
+    - name: contabx
+      type: Bool
+      title: Form x
+      default: FALSE
+     
+    - name: contaby
+      type: Bool
+      title: Form y
+      default: FALSE  
+    
+    - name: contabxy
+      title: Form x and y 
+      type: Bool
+      default: FALSE
+      
+    - name: plot
       title: Cumulative plot 
       type: Bool
       default: FALSE  
     
     - name: escore
       title: Equating score 
-      type: Bool
-      default: FALSE  
+      type: Output
+      
 ...
