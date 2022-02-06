@@ -32,8 +32,7 @@ items:
       visible: (contabx)
       clearWith:
         - vars
-      refs: equi 
-
+      
       columns:
         - name: score
           type: integer
@@ -46,8 +45,7 @@ items:
       visible: (contaby)
       clearWith:
         - vars
-      refs: equi 
-
+      
       columns:
         - name: score
           type: integer
@@ -60,8 +58,7 @@ items:
       visible: (contabxy)
       clearWith:
         - vars
-      refs: equi 
-
+      
       columns:
         - name: score_x
           type: integer
@@ -74,7 +71,7 @@ items:
       title: Cumulative distribution plot
       type:  Image
       requiresData: true
-      refs: equi
+      refs: snowRMM
       visible: (plot)
       width: 500
       height: 500

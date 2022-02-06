@@ -137,7 +137,6 @@ equatingResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 visible="(contabx)",
                 clearWith=list(
                     "vars"),
-                refs="equi",
                 columns=list(
                     list(
                         `name`="score", 
@@ -152,7 +151,6 @@ equatingResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 visible="(contaby)",
                 clearWith=list(
                     "vars"),
-                refs="equi",
                 columns=list(
                     list(
                         `name`="score", 
@@ -167,7 +165,6 @@ equatingResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 visible="(contabxy)",
                 clearWith=list(
                     "vars"),
-                refs="equi",
                 columns=list(
                     list(
                         `name`="score_x", 
@@ -183,7 +180,7 @@ equatingResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 name="plot",
                 title="Cumulative distribution plot",
                 requiresData=TRUE,
-                refs="equi",
+                refs="snowRMM",
                 visible="(plot)",
                 width=500,
                 height=500,

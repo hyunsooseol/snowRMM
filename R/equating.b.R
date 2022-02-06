@@ -6,6 +6,7 @@
 #' @import equi
 #' @importFrom equi lin
 #' @importFrom equi cdfplot
+#' @import ggplot2
 #' @export
 
 equatingClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
@@ -185,7 +186,7 @@ equatingClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             
         },
         
-        .plot = function(image,...) {
+        .plot = function(image, ggtheme, theme, ...) {
             
             # if (length(self$options$vars) < 1)
             #     return()
@@ -199,15 +200,17 @@ equatingClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             
             dep <- self$options$dep
             
-            
-            
             leq <- image$state
+            ecdf1 <- ecdf(data[[ind]])
+            ecdf2 <- ecdf(data[[dep]])
             
-            plot <- equi::cdfplot(data[[ind]], xlab='Score')
-            plot1 <- equi::cdfplot(data[[dep]], add=TRUE)
-            
-            # plot1 <- plot1+ggtheme
-            print(plot1)
+            plot(ecdf1, verticals=TRUE, do.points=FALSE, xlab='Score', main='Empirical cumulative distribution ')
+            plot(ecdf2, verticals=TRUE, do.points=FALSE, add=TRUE, col='red')            
+           
+             # plot <- equi::cdfplot(data[[ind]], xlab='Score')
+             # plot <- equi::cdfplot(data[[dep]], add=TRUE)
+             # 
+            print(plot)
             TRUE
             
         }
