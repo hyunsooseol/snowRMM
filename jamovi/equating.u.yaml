@@ -59,15 +59,13 @@ children:
         fitToGrid: true
         children:
           - type: Label
-            label: Continguency table
+            label: Contingency table
             children:
               - type: CheckBox
                 name: contabx
               - type: CheckBox
                 name: contaby
-              - type: CheckBox
-                name: contabxy
-             
+              
   - type: CollapseBox
     label: Save
     margin: normal

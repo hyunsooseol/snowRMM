@@ -11,7 +11,6 @@ equating(
   lineq = TRUE,
   contabx = FALSE,
   contaby = FALSE,
-  contabxy = FALSE,
   plot = FALSE
 )
 }
@@ -28,8 +27,6 @@ equating(
 
 \item{contaby}{.}
 
-\item{contabxy}{.}
-
 \item{plot}{.}
 }
 \value{
@@ -39,7 +36,6 @@ A results object containing:
   \code{results$lineq} \tab \tab \tab \tab \tab a table \cr
   \code{results$contabx} \tab \tab \tab \tab \tab a table \cr
   \code{results$contaby} \tab \tab \tab \tab \tab a table \cr
-  \code{results$contabxy} \tab \tab \tab \tab \tab a table \cr
   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
   \code{results$escore} \tab \tab \tab \tab \tab an output \cr
 }

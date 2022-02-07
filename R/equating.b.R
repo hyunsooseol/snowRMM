@@ -30,15 +30,24 @@ equatingClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             <div class='instructions'>
             
             <p><b>Instructions</b></p>
+            <p>____________________________________________________________________________________</p>
             <p> - The Form x will be equated to the Form y with single group design.
             <p> - The R package <b>equi</b>(Wolodzko, 2020) is described in the <a href='https://rdrr.io/github/twolodzko/equi/man/equi.html' target = '_blank'>page.</a></p>
             <p> - Feature requests and bug reports can be made on the <a href='https://github.com/hyunsooseol/snowRMM/issues'  target = '_blank'>GitHub.</a></p>
             <p> - This project has been supported by G-TELP Korea. </p>
+            <p>____________________________________________________________________________________</p>
             
             </div>
             </body>
             </html>"
             )
+
+              if(self$options$lineq)
+                self$results$lineq$setNote(
+                    "Note",
+                    " y = \u2026 + \u2026 x "
+                )
+            
             
         },
         
@@ -90,6 +99,19 @@ equatingClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
            
             table$setRow(rowNo = 1, values = row)
             
+            ## Note equation-------
+            
+            inter<- format(round(inter, 3), nsmall = 3)
+            sl <- format(round(sl, 3), nsmall = 3)
+            
+            if(self$options$lineq)
+            self$results$lineq$setNote(
+                "Note",
+                 paste('y =', inter, '+', sl,'x') 
+            )
+            
+            
+            
             # Contingency table of form x-----------
             
             conx <- equi::conttab(data[[ind]])
@@ -133,27 +155,27 @@ equatingClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             
             # Contingency table of form x and y -----------
             
-            conxy <- equi::conttab(data[[ind]], data[[dep]])
-            
-            #---------------
-            
-            table <- self$results$contabxy
-            
-            tabxy <- data.frame(conxy)
-            
-            
-            for (i in 1:nrow(tabxy)) {
-                
-                row <- list()
-                
-                row[['score_x']] <- tabxy[i,1]
-                row[['score_y']] <- tabxy[i,2]
-                row[['frequency']] <- tabxy[i,3]
-                
-                table$addRow(rowKey = i, values = row)
-                
-            }
-        
+            # conxy <- equi::conttab(data[[ind]], data[[dep]])
+            # 
+            # #---------------
+            # 
+            # table <- self$results$contabxy
+            # 
+            # tabxy <- data.frame(conxy)
+            # 
+            # 
+            # for (i in 1:nrow(tabxy)) {
+            # 
+            #     row <- list()
+            # 
+            #     row[['score_x']] <- tabxy[i,1]
+            #     row[['score_y']] <- tabxy[i,2]
+            #     row[['frequency']] <- tabxy[i,3]
+            # 
+            #     table$addRow(rowKey = i, values = row)
+            # 
+            # }
+
         # Equating score-------------
             
             table <- self$results$escore

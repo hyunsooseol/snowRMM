@@ -52,21 +52,6 @@ items:
         - name: frequency
           type: integer   
 
-    - name: contabxy
-      title: 'Contingency table of form x and y'
-      type: Table
-      visible: (contabxy)
-      clearWith:
-        - vars
-      
-      columns:
-        - name: score_x
-          type: integer
-        - name: score_y
-          type: integer  
-        - name: frequency
-          type: integer             
-
     - name:  plot
       title: Cumulative distribution plot
       type:  Image

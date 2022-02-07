@@ -11,7 +11,6 @@ equatingOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             lineq = TRUE,
             contabx = FALSE,
             contaby = FALSE,
-            contabxy = FALSE,
             plot = FALSE, ...) {
 
             super$initialize(
@@ -46,10 +45,6 @@ equatingOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "contaby",
                 contaby,
                 default=FALSE)
-            private$..contabxy <- jmvcore::OptionBool$new(
-                "contabxy",
-                contabxy,
-                default=FALSE)
             private$..plot <- jmvcore::OptionBool$new(
                 "plot",
                 plot,
@@ -62,7 +57,6 @@ equatingOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..lineq)
             self$.addOption(private$..contabx)
             self$.addOption(private$..contaby)
-            self$.addOption(private$..contabxy)
             self$.addOption(private$..plot)
             self$.addOption(private$..escore)
         }),
@@ -72,7 +66,6 @@ equatingOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         lineq = function() private$..lineq$value,
         contabx = function() private$..contabx$value,
         contaby = function() private$..contaby$value,
-        contabxy = function() private$..contabxy$value,
         plot = function() private$..plot$value,
         escore = function() private$..escore$value),
     private = list(
@@ -81,7 +74,6 @@ equatingOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..lineq = NA,
         ..contabx = NA,
         ..contaby = NA,
-        ..contabxy = NA,
         ..plot = NA,
         ..escore = NA)
 )
@@ -94,7 +86,6 @@ equatingResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         lineq = function() private$.items[["lineq"]],
         contabx = function() private$.items[["contabx"]],
         contaby = function() private$.items[["contaby"]],
-        contabxy = function() private$.items[["contabxy"]],
         plot = function() private$.items[["plot"]],
         escore = function() private$.items[["escore"]]),
     private = list(),
@@ -158,23 +149,6 @@ equatingResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     list(
                         `name`="frequency", 
                         `type`="integer"))))
-            self$add(jmvcore::Table$new(
-                options=options,
-                name="contabxy",
-                title="Contingency table of form x and y",
-                visible="(contabxy)",
-                clearWith=list(
-                    "vars"),
-                columns=list(
-                    list(
-                        `name`="score_x", 
-                        `type`="integer"),
-                    list(
-                        `name`="score_y", 
-                        `type`="integer"),
-                    list(
-                        `name`="frequency", 
-                        `type`="integer"))))
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot",
@@ -225,7 +199,6 @@ equatingBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param lineq .
 #' @param contabx .
 #' @param contaby .
-#' @param contabxy .
 #' @param plot .
 #' @return A results object containing:
 #' \tabular{llllll}{
@@ -233,7 +206,6 @@ equatingBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$lineq} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$contabx} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$contaby} \tab \tab \tab \tab \tab a table \cr
-#'   \code{results$contabxy} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$escore} \tab \tab \tab \tab \tab an output \cr
 #' }
@@ -252,7 +224,6 @@ equating <- function(
     lineq = TRUE,
     contabx = FALSE,
     contaby = FALSE,
-    contabxy = FALSE,
     plot = FALSE) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
@@ -273,7 +244,6 @@ equating <- function(
         lineq = lineq,
         contabx = contabx,
         contaby = contaby,
-        contabxy = contabxy,
         plot = plot)
 
     analysis <- equatingClass$new(

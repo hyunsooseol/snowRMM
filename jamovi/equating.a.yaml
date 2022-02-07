@@ -41,11 +41,6 @@ options:
       title: Form y
       default: FALSE  
     
-    - name: contabxy
-      title: Form x and y 
-      type: Bool
-      default: FALSE
-      
     - name: plot
       title: Cumulative plot 
       type: Bool

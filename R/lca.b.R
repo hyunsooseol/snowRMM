@@ -31,7 +31,8 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             <div class='instructions'>
            
             <p><b>To get started:</b></p>
-
+            <p>____________________________________________________________________________________</p>
+            
             <p> jamovi treats all variables as qualitative/categorical/nominal.</p>
 
             <p> Variables must contain only integer values, and must be coded with consecutive values from 1 to the maximum number. </p>
@@ -43,7 +44,8 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             <P> To analyze 'Profile' analysis, click the LCA analysis again.</p>
             
             <p> Feature requests and bug reports can be made on my <a href='https://github.com/hyunsooseol/snowRMM/'  target = '_blank'>GitHub.</a></p>
-
+            <p>____________________________________________________________________________________</p>
+            
             </div>
             </body>
             </html>"
