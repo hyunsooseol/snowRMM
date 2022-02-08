@@ -6,7 +6,6 @@
 #' @import equi
 #' @importFrom equi lin
 #' @importFrom equi cdfplot
-#' @import ggplot2
 #' @export
 
 equatingClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
@@ -31,7 +30,7 @@ equatingClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             
             <p><b>Instructions</b></p>
             <p>____________________________________________________________________________________</p>
-            <p> - The Form x will be equated to the Form y with single group design.
+            <p> - The Form x is equated to the Form y with single group design.
             <p> - The R package <b>equi</b>(Wolodzko, 2020) is described in the <a href='https://rdrr.io/github/twolodzko/equi/man/equi.html' target = '_blank'>page.</a></p>
             <p> - Feature requests and bug reports can be made on the <a href='https://github.com/hyunsooseol/snowRMM/issues'  target = '_blank'>GitHub.</a></p>
             <p> - This project has been supported by G-TELP Korea. </p>

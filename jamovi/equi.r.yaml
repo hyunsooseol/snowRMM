@@ -1,0 +1,25 @@
+---
+name:  equi
+title: Equipercentile Equating
+jrs:   '1.1'
+
+items:
+    - name: instructions
+      title: 'Instructions'
+      type: Html
+      visible: True
+    
+    - name: con
+      title: 'Concordance table'
+      type: Table
+      clearWith:
+        - vars
+      
+      columns:
+        - name: x
+          type: integer
+        - name: yx
+          type: number 
+
+
+...

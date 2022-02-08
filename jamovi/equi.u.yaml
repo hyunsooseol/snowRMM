@@ -1,0 +1,82 @@
+title: Equipercentile Equating
+name: equi
+jus: '3.0'
+stage: 0
+compilerMode: tame
+children:
+  - type: VariableSupplier
+    persistentItems: false
+    stretchFactor: 1
+    children:
+      - type: TargetLayoutBox
+        label: Form x
+        children:
+          - type: VariablesListBox
+            name: ind
+            maxItemCount: 1
+            isTarget: true
+      - type: TargetLayoutBox
+        label: Form y
+        children:
+          - type: VariablesListBox
+            name: dep
+            maxItemCount: 1
+            isTarget: true
+      - type: TargetLayoutBox
+        label: Equivalent group
+        children:
+          - type: VariablesListBox
+            name: group
+            maxItemCount: 1
+            isTarget: true
+
+  - type: CollapseBox
+    label: Analysis
+    margin: normal
+    collapsed: true
+    children:
+      - type: LayoutBox
+        stretchFactor: 1
+        margin: large
+        children:
+          - type: Label
+            label: Equating Table
+            fitToGrid: true
+            cell:
+              column: 0
+              row: 0
+            children:
+              - type: ComboBox
+                name: design
+              - type: CheckBox
+                name: con
+          - type: Label
+            label: Plot
+            fitToGrid: true
+            cell:
+              column: 0
+              row: 1
+            children: []
+      - type: LayoutBox
+        stretchFactor: 1
+        margin: large
+        cell:
+          column: 1
+          row: 0
+        fitToGrid: true
+        children:
+          - type: Label
+            label: Contingency table
+            children: []
+
+  - type: CollapseBox
+    label: Save
+    margin: normal
+    collapsed: true
+    children:
+      - type: LayoutBox
+        stretchFactor: 1
+        margin: large
+        children:
+          - type: Output
+            name: escore

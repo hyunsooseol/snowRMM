@@ -43,6 +43,12 @@ analyses:
     menuGroup: snowRMM
     menuTitle: Linear Equating
     menuSubgroup: Test Equating
+  - title: Equipercentile Equating
+    name: equi
+    ns: snowRMM
+    menuGroup: snowRMM
+    menuTitle: Equipercentile Equating
+    menuSubgroup: Test Equating
 datasets:
   - name: mixture
     path: mix.omv

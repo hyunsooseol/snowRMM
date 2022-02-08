@@ -1,0 +1,55 @@
+---
+name:  equi
+title: Equipercentile Equating
+menuGroup: snowRMM
+menuSubgroup: Test Equating
+version: '1.0.0'
+jas: '1.2'
+
+options:
+    - name: data
+      type: Data
+
+    - name: ind
+      title: Form x
+      type: Variable
+      suggested:
+         - continuous
+      permitted:
+        - numeric
+
+    - name: dep
+      title: Form y
+      type: Variable
+      suggested:
+         - continuous
+      permitted:
+        - numeric
+
+    - name: group
+      title: Equivalent group
+      type: Variable
+      suggested:
+         - nominal
+      permitted:
+        - factor
+        
+    - name: design
+      title: Design
+      type: List
+      options:
+        - title: Single
+          name:  single
+        - title: Equivalent
+          name:  equivalent
+
+    - name: con
+      title: Concordance
+      type: Bool
+      default: TRUE
+
+    - name: escore
+      title: Equating score 
+      type: Output
+      
+...
