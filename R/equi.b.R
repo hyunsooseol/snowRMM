@@ -33,7 +33,8 @@ equiClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             
             <p><b>Instructions</b></p>
             <p>____________________________________________________________________________________</p>
-            <p> - The Form x is equated to the Form y with single or equivalent group design.
+            <p> - The Form x is equated to the Form y.
+            <p> - If an error message such as 'could not find function ns', please chang Form x and Form y variables.
             <p> - The R package <b>equi</b>(Wolodzko, 2020) is described in the <a href='https://rdrr.io/github/twolodzko/equi/man/equi.html' target = '_blank'>page.</a></p>
             <p> - Feature requests and bug reports can be made on the <a href='https://github.com/hyunsooseol/snowRMM/issues'  target = '_blank'>GitHub.</a></p>
             <p> - This project has been supported by G-TELP Korea. </p>
@@ -64,8 +65,6 @@ equiClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             
             dep <- self$options$dep
             
-            group <- self$options$group
-            
             design <- self$options$design
             
             # get the data
@@ -83,15 +82,13 @@ equiClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             
             # Computing equipercentile equating--------
             
-            #providing single group design------
+            # providing group design------
             
             if(self$options$design == 'single'){
             
             eq <- equi::equi(smoothtab(data[[ind]],  data[[dep]], presmoothing=TRUE))
            
             } else{
-                 # data[[ind]] <- data[data[[group]], data[[ind]]]
-                 # data[[dep]] <- data[data[[group]], data[[dep]]]
                 
                 eq <- equi::equi(smoothtab(data[[ind]]), smoothtab(data[[dep]]))
                 
@@ -115,8 +112,45 @@ equiClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 
             }
            
-           
+            # Equating score-------------
             
+            table <- self$results$escore
+            
+           
+            es <- equi::equi(data[[ind]], eq)
+            
+            self$results$escore$setRowNums(rownames(data))
+            self$results$escore$setValues(es)
+        
+            ## Plot==================================================
+            
+            
+            image <- self$results$plot
+            image$setState(eq)
+            
+        },
+        
+        .plot = function(image, ggtheme, theme, ...) {
+            
+           
+            # get the data--------
+            
+            data <- self$data
+            data <- jmvcore::naOmit(data)
+            
+            ind <- self$options$ind
+            
+            dep <- self$options$dep
+            
+            eq <- image$state
+            
+            st <- smoothtab(data[[ind]],data[[dep]],presmoothing=TRUE, postsmoothing=TRUE)
+            plot<- plot(st)
+            
+            print(plot)
+            TRUE
+            
+        
         }
         
         )

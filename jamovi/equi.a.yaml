@@ -26,14 +26,6 @@ options:
       permitted:
         - numeric
 
-    - name: group
-      title: Equivalent group
-      type: Variable
-      suggested:
-         - nominal
-      permitted:
-        - factor
-        
     - name: design
       title: Design
       type: List
@@ -51,5 +43,9 @@ options:
     - name: escore
       title: Equating score 
       type: Output
-      
+
+    - name: plot
+      title: Smoothing plot 
+      type: Bool
+      default: FALSE        
 ...

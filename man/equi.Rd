@@ -4,7 +4,7 @@
 \alias{equi}
 \title{Equipercentile Equating}
 \usage{
-equi(data, ind, dep, group, design, con = TRUE)
+equi(data, ind, dep, design, con = TRUE, plot = FALSE)
 }
 \arguments{
 \item{data}{.}
@@ -13,17 +13,19 @@ equi(data, ind, dep, group, design, con = TRUE)
 
 \item{dep}{.}
 
-\item{group}{.}
-
 \item{design}{.}
 
 \item{con}{.}
+
+\item{plot}{.}
 }
 \value{
 A results object containing:
 \tabular{llllll}{
   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
   \code{results$con} \tab \tab \tab \tab \tab a table \cr
+  \code{results$escore} \tab \tab \tab \tab \tab an output \cr
+  \code{results$plot} \tab \tab \tab \tab \tab an image \cr
 }
 
 Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:

@@ -81,9 +81,14 @@ datasets:
       - LCA
   - name: linear
     path: lin.omv
-    description: Linear Equating
+    description: Linear equating
     tags:
       - Linear Equating
+  - name: equipercentile
+    path: percent.omv
+    description: Equipercentile equating
+    tags:
+      - Equipercentile equating
 usesNative: true
 minApp: 1.8.0
 

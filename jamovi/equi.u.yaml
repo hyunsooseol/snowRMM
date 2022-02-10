@@ -22,14 +22,6 @@ children:
             name: dep
             maxItemCount: 1
             isTarget: true
-      - type: TargetLayoutBox
-        label: Equivalent group
-        children:
-          - type: VariablesListBox
-            name: group
-            maxItemCount: 1
-            isTarget: true
-
   - type: CollapseBox
     label: Analysis
     margin: normal
@@ -50,13 +42,6 @@ children:
                 name: design
               - type: CheckBox
                 name: con
-          - type: Label
-            label: Plot
-            fitToGrid: true
-            cell:
-              column: 0
-              row: 1
-            children: []
       - type: LayoutBox
         stretchFactor: 1
         margin: large
@@ -66,9 +51,14 @@ children:
         fitToGrid: true
         children:
           - type: Label
-            label: Contingency table
-            children: []
-
+            label: Plot
+            fitToGrid: true
+            cell:
+              column: 0
+              row: 1
+            children:
+              - type: CheckBox
+                name: plot
   - type: CollapseBox
     label: Save
     margin: normal

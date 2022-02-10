@@ -8,9 +8,9 @@ equiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         initialize = function(
             ind = NULL,
             dep = NULL,
-            group = NULL,
             design = NULL,
-            con = TRUE, ...) {
+            con = TRUE,
+            plot = FALSE, ...) {
 
             super$initialize(
                 package="snowRMM",
@@ -32,13 +32,6 @@ equiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "continuous"),
                 permitted=list(
                     "numeric"))
-            private$..group <- jmvcore::OptionVariable$new(
-                "group",
-                group,
-                suggested=list(
-                    "nominal"),
-                permitted=list(
-                    "factor"))
             private$..design <- jmvcore::OptionList$new(
                 "design",
                 design,
@@ -51,28 +44,32 @@ equiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 default=TRUE)
             private$..escore <- jmvcore::OptionOutput$new(
                 "escore")
+            private$..plot <- jmvcore::OptionBool$new(
+                "plot",
+                plot,
+                default=FALSE)
 
             self$.addOption(private$..ind)
             self$.addOption(private$..dep)
-            self$.addOption(private$..group)
             self$.addOption(private$..design)
             self$.addOption(private$..con)
             self$.addOption(private$..escore)
+            self$.addOption(private$..plot)
         }),
     active = list(
         ind = function() private$..ind$value,
         dep = function() private$..dep$value,
-        group = function() private$..group$value,
         design = function() private$..design$value,
         con = function() private$..con$value,
-        escore = function() private$..escore$value),
+        escore = function() private$..escore$value,
+        plot = function() private$..plot$value),
     private = list(
         ..ind = NA,
         ..dep = NA,
-        ..group = NA,
         ..design = NA,
         ..con = NA,
-        ..escore = NA)
+        ..escore = NA,
+        ..plot = NA)
 )
 
 equiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -80,7 +77,9 @@ equiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     inherit = jmvcore::Group,
     active = list(
         instructions = function() private$.items[["instructions"]],
-        con = function() private$.items[["con"]]),
+        con = function() private$.items[["con"]],
+        escore = function() private$.items[["escore"]],
+        plot = function() private$.items[["plot"]]),
     private = list(),
     public=list(
         initialize=function(options) {
@@ -105,7 +104,26 @@ equiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         `type`="integer"),
                     list(
                         `name`="yx", 
-                        `type`="number"))))}))
+                        `type`="number"))))
+            self$add(jmvcore::Output$new(
+                options=options,
+                name="escore",
+                title="Equating score",
+                varTitle="yx",
+                measureType="nominal",
+                clearWith=list(
+                    "vars")))
+            self$add(jmvcore::Image$new(
+                options=options,
+                name="plot",
+                title="Presmoothing and postsmoothing of empirical distribution",
+                requiresData=TRUE,
+                visible="(plot)",
+                width=500,
+                height=500,
+                renderFun=".plot",
+                clearWith=list(
+                    "vars")))}))
 
 equiBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "equiBase",
@@ -133,13 +151,15 @@ equiBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param data .
 #' @param ind .
 #' @param dep .
-#' @param group .
 #' @param design .
 #' @param con .
+#' @param plot .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
 #'   \code{results$con} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$escore} \tab \tab \tab \tab \tab an output \cr
+#'   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
 #' }
 #'
 #' Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
@@ -153,31 +173,28 @@ equi <- function(
     data,
     ind,
     dep,
-    group,
     design,
-    con = TRUE) {
+    con = TRUE,
+    plot = FALSE) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("equi requires jmvcore to be installed (restart may be required)")
 
     if ( ! missing(ind)) ind <- jmvcore::resolveQuo(jmvcore::enquo(ind))
     if ( ! missing(dep)) dep <- jmvcore::resolveQuo(jmvcore::enquo(dep))
-    if ( ! missing(group)) group <- jmvcore::resolveQuo(jmvcore::enquo(group))
     if (missing(data))
         data <- jmvcore::marshalData(
             parent.frame(),
             `if`( ! missing(ind), ind, NULL),
-            `if`( ! missing(dep), dep, NULL),
-            `if`( ! missing(group), group, NULL))
+            `if`( ! missing(dep), dep, NULL))
 
-    for (v in group) if (v %in% names(data)) data[[v]] <- as.factor(data[[v]])
 
     options <- equiOptions$new(
         ind = ind,
         dep = dep,
-        group = group,
         design = design,
-        con = con)
+        con = con,
+        plot = plot)
 
     analysis <- equiClass$new(
         options = options,
