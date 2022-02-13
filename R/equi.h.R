@@ -10,6 +10,8 @@ equiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             dep = NULL,
             design = NULL,
             con = TRUE,
+            contabx = FALSE,
+            contaby = FALSE,
             plot = FALSE, ...) {
 
             super$initialize(
@@ -42,6 +44,14 @@ equiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "con",
                 con,
                 default=TRUE)
+            private$..contabx <- jmvcore::OptionBool$new(
+                "contabx",
+                contabx,
+                default=FALSE)
+            private$..contaby <- jmvcore::OptionBool$new(
+                "contaby",
+                contaby,
+                default=FALSE)
             private$..escore <- jmvcore::OptionOutput$new(
                 "escore")
             private$..plot <- jmvcore::OptionBool$new(
@@ -53,6 +63,8 @@ equiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..dep)
             self$.addOption(private$..design)
             self$.addOption(private$..con)
+            self$.addOption(private$..contabx)
+            self$.addOption(private$..contaby)
             self$.addOption(private$..escore)
             self$.addOption(private$..plot)
         }),
@@ -61,6 +73,8 @@ equiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         dep = function() private$..dep$value,
         design = function() private$..design$value,
         con = function() private$..con$value,
+        contabx = function() private$..contabx$value,
+        contaby = function() private$..contaby$value,
         escore = function() private$..escore$value,
         plot = function() private$..plot$value),
     private = list(
@@ -68,6 +82,8 @@ equiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..dep = NA,
         ..design = NA,
         ..con = NA,
+        ..contabx = NA,
+        ..contaby = NA,
         ..escore = NA,
         ..plot = NA)
 )
@@ -78,6 +94,8 @@ equiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     active = list(
         instructions = function() private$.items[["instructions"]],
         con = function() private$.items[["con"]],
+        contabx = function() private$.items[["contabx"]],
+        contaby = function() private$.items[["contaby"]],
         escore = function() private$.items[["escore"]],
         plot = function() private$.items[["plot"]]),
     private = list(),
@@ -105,6 +123,34 @@ equiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     list(
                         `name`="yx", 
                         `type`="number"))))
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="contabx",
+                title="Contingency table of form x",
+                visible="(contabx)",
+                clearWith=list(
+                    "vars"),
+                columns=list(
+                    list(
+                        `name`="score", 
+                        `type`="integer"),
+                    list(
+                        `name`="frequency", 
+                        `type`="integer"))))
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="contaby",
+                title="Contingency table of form y",
+                visible="(contaby)",
+                clearWith=list(
+                    "vars"),
+                columns=list(
+                    list(
+                        `name`="score", 
+                        `type`="integer"),
+                    list(
+                        `name`="frequency", 
+                        `type`="integer"))))
             self$add(jmvcore::Output$new(
                 options=options,
                 name="escore",
@@ -153,11 +199,15 @@ equiBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param dep .
 #' @param design .
 #' @param con .
+#' @param contabx .
+#' @param contaby .
 #' @param plot .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
 #'   \code{results$con} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$contabx} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$contaby} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$escore} \tab \tab \tab \tab \tab an output \cr
 #'   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
 #' }
@@ -175,6 +225,8 @@ equi <- function(
     dep,
     design,
     con = TRUE,
+    contabx = FALSE,
+    contaby = FALSE,
     plot = FALSE) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
@@ -194,6 +246,8 @@ equi <- function(
         dep = dep,
         design = design,
         con = con,
+        contabx = contabx,
+        contaby = contaby,
         plot = plot)
 
     analysis <- equiClass$new(

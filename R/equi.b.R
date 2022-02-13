@@ -6,6 +6,7 @@
 #' @import jmvcore
 #' @import equi
 #' @importFrom equi equi
+#' @importFrom equi conttab
 #' @importFrom equi smoothtab
 #' @export
 
@@ -112,6 +113,52 @@ equiClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 
             }
            
+            # Contingency table of form x-----------
+            
+            conx <- equi::conttab(data[[ind]])
+            
+            table<- self$results$contabx
+            
+            tab <- data.frame(conx)
+            
+            
+            for (i in 1:nrow(tab)) {
+                
+                row <- list()
+                
+                row[['score']] <- tab[i,1]
+                row[['frequency']] <- tab[i,2]
+                
+                table$addRow(rowKey = i, values = row)
+                
+            }
+            
+            # Contingency table of form y-----------
+            
+            cony <- equi::conttab(data[[dep]])
+            
+            table<- self$results$contaby
+            
+            taby <- data.frame(cony)
+            
+            
+            for (i in 1:nrow(taby)) {
+                
+                row <- list()
+                
+                row[['score']] <- taby[i,1]
+                row[['frequency']] <- taby[i,2]
+                
+                table$addRow(rowKey = i, values = row)
+                
+            }
+            
+            
+            
+            
+            
+            
+            
             # Equating score-------------
             
             table <- self$results$escore

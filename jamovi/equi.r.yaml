@@ -20,7 +20,33 @@ items:
           type: integer
         - name: yx
           type: number
-          
+
+    - name: contabx
+      title: 'Contingency table of form x'
+      type: Table
+      visible: (contabx)
+      clearWith:
+        - vars
+      
+      columns:
+        - name: score
+          type: integer
+        - name: frequency
+          type: integer       
+
+    - name: contaby
+      title: 'Contingency table of form y'
+      type: Table
+      visible: (contaby)
+      clearWith:
+        - vars
+      
+      columns:
+        - name: score
+          type: integer
+        - name: frequency
+          type: integer   
+
     - name: escore
       title: Equating score
       type: Output

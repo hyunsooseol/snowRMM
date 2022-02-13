@@ -32,7 +32,7 @@ children:
         margin: large
         children:
           - type: Label
-            label: Equating Table
+            label: Table
             fitToGrid: true
             cell:
               column: 0
@@ -42,14 +42,6 @@ children:
                 name: design
               - type: CheckBox
                 name: con
-      - type: LayoutBox
-        stretchFactor: 1
-        margin: large
-        cell:
-          column: 1
-          row: 0
-        fitToGrid: true
-        children:
           - type: Label
             label: Plot
             fitToGrid: true
@@ -59,6 +51,22 @@ children:
             children:
               - type: CheckBox
                 name: plot
+      - type: LayoutBox
+        stretchFactor: 1
+        margin: large
+        cell:
+          column: 1
+          row: 0
+        fitToGrid: true
+        children:
+          - type: Label
+            label: Contingency table
+            children:
+              - type: CheckBox
+                name: contabx
+              - type: CheckBox
+                name: contaby
+
   - type: CollapseBox
     label: Save
     margin: normal

@@ -40,6 +40,16 @@ options:
       type: Bool
       default: TRUE
 
+    - name: contabx
+      type: Bool
+      title: Form x
+      default: FALSE
+     
+    - name: contaby
+      type: Bool
+      title: Form y
+      default: FALSE  
+
     - name: escore
       title: Equating score 
       type: Output
