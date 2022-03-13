@@ -113,7 +113,15 @@ items:
     - name: pc
       title: Predicted cell percentages
       type: Output
-      varTitle: Predicted cell percentages in a latent class model
+      varTitle: Cell percentages
+      measureType: continuous
+      clearWith:
+        - vars
+        - nc
+
+    - name: post
+      title: Posterior probabilities
+      type: Output
       measureType: continuous
       clearWith:
         - vars

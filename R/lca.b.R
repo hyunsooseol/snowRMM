@@ -118,6 +118,11 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                        
                        private$.populateCellOutputs(data)
                        
+                       # populated posterior probabilities--
+                       
+                       private$.populatePosteriorOutputs(data)
+                       
+                       
                        # prepare plot-----
                        
                        private$.preparePlot(data)
@@ -470,6 +475,58 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 
                 self$results$pc$setRowNums(rownames(data))
                 
+            }
+        },
+        
+        # Posterior probabilities---------
+        
+        
+        .populatePosteriorOutputs= function(data) {
+            
+            nc<- self$options$nc
+            
+            data<- as.data.frame(data)
+            
+            vars <- colnames(data)
+            vars <- vapply(vars, function(x) jmvcore::composeTerm(x), '')
+            vars <- paste0(vars, collapse=',')
+            formula <- as.formula(paste0('cbind(', vars, ')~1'))
+            
+            
+            # estimate ------------
+            
+            res<- poLCA::poLCA(formula,data,nclass=nc,calc.se = FALSE)
+            
+            
+            # Posterior probabilities---------------
+            
+            post <- res$posterior
+            
+            
+            if (self$options$post
+                && self$results$post$isNotFilled()) {
+                
+                keys <- 1:self$options$nc
+                measureTypes <- rep("continuous", self$options$nc)
+                
+                titles <- paste(.("Class"), keys)
+                descriptions <- paste(.("Class"), keys)
+                
+                self$results$post$set(
+                    keys=keys,
+                    titles=titles,
+                    descriptions=descriptions,
+                    measureTypes=measureTypes
+                )                
+                
+                self$results$post$setRowNums(rownames(data))
+                
+                for (i in 1:self$options$nc) {
+                    scores <- as.numeric(post[, i])
+                    self$results$post$setValues(index=i, scores)
+                }
+                
+               
             }
         },
         

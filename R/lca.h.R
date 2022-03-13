@@ -68,6 +68,8 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "cm")
             private$..pc <- jmvcore::OptionOutput$new(
                 "pc")
+            private$..post <- jmvcore::OptionOutput$new(
+                "post")
             private$..plot <- jmvcore::OptionBool$new(
                 "plot",
                 plot,
@@ -87,6 +89,7 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..mc)
             self$.addOption(private$..cm)
             self$.addOption(private$..pc)
+            self$.addOption(private$..post)
             self$.addOption(private$..plot)
             self$.addOption(private$..plot1)
         }),
@@ -101,6 +104,7 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         mc = function() private$..mc$value,
         cm = function() private$..cm$value,
         pc = function() private$..pc$value,
+        post = function() private$..post$value,
         plot = function() private$..plot$value,
         plot1 = function() private$..plot1$value),
     private = list(
@@ -114,6 +118,7 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..mc = NA,
         ..cm = NA,
         ..pc = NA,
+        ..post = NA,
         ..plot = NA,
         ..plot1 = NA)
 )
@@ -130,6 +135,7 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         mc = function() private$.items[["mc"]],
         cm = function() private$.items[["cm"]],
         pc = function() private$.items[["pc"]],
+        post = function() private$.items[["post"]],
         plot = function() private$.items[["plot"]],
         plot1 = function() private$.items[["plot1"]]),
     private = list(),
@@ -259,7 +265,15 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 options=options,
                 name="pc",
                 title="Predicted cell percentages",
-                varTitle="Predicted cell percentages in a latent class model",
+                varTitle="Cell percentages",
+                measureType="continuous",
+                clearWith=list(
+                    "vars",
+                    "nc")))
+            self$add(jmvcore::Output$new(
+                options=options,
+                name="post",
+                title="Posterior probabilities",
                 measureType="continuous",
                 clearWith=list(
                     "vars",
@@ -331,6 +345,7 @@ lcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$mc} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$cm} \tab \tab \tab \tab \tab an output \cr
 #'   \code{results$pc} \tab \tab \tab \tab \tab an output \cr
+#'   \code{results$post} \tab \tab \tab \tab \tab an output \cr
 #'   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
 #' }

@@ -80,6 +80,8 @@ children:
             name: cm
           - type: Output
             name: pc
+          - type: Output
+            name: post  
   - type: CollapseBox
     label: 'Profile'
     margin: normal
