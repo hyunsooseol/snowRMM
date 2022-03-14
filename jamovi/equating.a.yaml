@@ -47,7 +47,7 @@ options:
       default: FALSE  
     
     - name: escore
-      title: Equating score 
+      title: Equating scores 
       type: Output
       
 ...

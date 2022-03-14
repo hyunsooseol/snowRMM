@@ -36,12 +36,12 @@ bfitClass <- if (requireNamespace('jmvcore'))
             <div class='instructions'>
 
             <p><b>Instructions</b></p>
-            <p>____________________________________________________________________________________</p>
+            <p>_____________________________________________________________________________________________</p>
             <p> The traditional Rasch model is performed by mixRasch R package using Jonint Maximum Liklihood(JML).</p>
             <p> Specify <b>'Step'(number of category-1) and 'Bootstrap N'</b> in the 'Analysis option'.</p>
             <p> Please, be patient. The bootstrapped confidence interval is <b>quite time-consuming !</b></p>
-            <p> Feature requests and bug reports can be made on my <a href='https://github.com/hyunsooseol/snowRMM/'  target = '_blank'>GitHub</a></p>
-            <p>____________________________________________________________________________________</p>
+            <p> Feature requests and bug reports can be made on my <a href='https://github.com/hyunsooseol/snowRMM/issues'  target = '_blank'>GitHub</a></p>
+            <p>_____________________________________________________________________________________________</p>
             
             </div>
             </body>
