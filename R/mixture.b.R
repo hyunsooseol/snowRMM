@@ -45,11 +45,11 @@ mixtureClass <- if (requireNamespace('jmvcore'))
            
             <p><b>To get started:</b></p>
             <p>_____________________________________________________________________________________________</p>
-            <p> First, specify the number of <b>'Class', Step', and 'Type'</b> in the 'Analysis option'.</p>
-            <p> Second, highlight the variables and click the arrow to move it across into the 'Variables' box.</p>
-            <p> The results of <b> Save </b> will be displayed in the datasheet.</p>
-            <p> Rasch mixture model is estimated by Jonint Maximum Liklihood(JML).</p>
-            <p> Feature requests and bug reports can be made on my <a href='https://github.com/hyunsooseol/snowRMM/issues'  target = '_blank'>GitHub.</a></p>
+            <p>1. First, specify the number of <b>'Class', Step', and 'Type'</b> in the 'Analysis option'.</p>
+            <p>2. Second, highlight the variables and click the arrow to move it across into the 'Variables' box.</p>
+            <p>3. The results of <b> Save </b> will be displayed in the datasheet.</p>
+            <p>4. Rasch mixture model is estimated by Jonint Maximum Liklihood(JML).</p>
+            <p>5. Feature requests and bug reports can be made on my <a href='https://github.com/hyunsooseol/snowRMM/issues'  target = '_blank'>GitHub.</a></p>
             <p>_____________________________________________________________________________________________</p>
             
             </div>

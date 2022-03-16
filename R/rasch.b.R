@@ -35,11 +35,11 @@ raschClass <- if (requireNamespace('jmvcore'))
             
             <p><b>Instructions</b></p>
             <p>_____________________________________________________________________________________________</p>
-            <p> The standard Rasch model is performed by Jonint Maximum Liklihood(JML).</p>
-            <p> Specify </b> the number of 'Step' and model 'Type'</b> in the 'Analysis option'.</p>
-            <P> Step is defined as number of category-1. </p>
-            <p> The results of <b> Save </b> will be displayed in the datasheet.</p>
-            <p> Feature requests and bug reports can be made on my <a href='https://github.com/hyunsooseol/snowRMM/issues'  target = '_blank'>GitHub</a></p>
+            <p>1. The standard Rasch model is performed by Jonint Maximum Liklihood(JML).</p>
+            <p>2. Specify </b> the number of 'Step' and model 'Type'</b> in the 'Analysis option'.</p>
+            <P>3. Step is defined as number of <b>category-1</b>. </p>
+            <p>4. The results of <b> Save </b> will be displayed in the datasheet.</p>
+            <p>5. Feature requests and bug reports can be made on my <a href='https://github.com/hyunsooseol/snowRMM/issues'  target = '_blank'>GitHub</a></p>
             <p>_____________________________________________________________________________________________</p>
             
             </div>

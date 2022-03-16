@@ -34,11 +34,11 @@ equiClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             
             <p><b>Instructions</b></p>
             <p>_____________________________________________________________________________________________</p>
-            <p> - The Form x is equated to the Form y.
-            <p> - If an error message such as 'could not find function ns', please chang Form x and Form y variables.
-            <p> - The R package <b>equi</b>(Wolodzko, 2020) is described in the <a href='https://rdrr.io/github/twolodzko/equi/man/equi.html' target = '_blank'>page.</a></p>
-            <p> - Feature requests and bug reports can be made on the <a href='https://github.com/hyunsooseol/snowRMM/issues'  target = '_blank'>GitHub.</a></p>
-            <p> - This project has been supported by G-TELP Korea. </p>
+            <p>1. The Form x is equated to the Form y.
+            <p>2. If an error message such as 'could not find function ns', please chang Form x and Form y variables.
+            <p>3. The R package <b>equi</b>(Wolodzko, 2020) is described in the <a href='https://rdrr.io/github/twolodzko/equi/man/equi.html' target = '_blank'>page.</a></p>
+            <p>4. Feature requests and bug reports can be made on the <a href='https://github.com/hyunsooseol/snowRMM/issues'  target = '_blank'>GitHub.</a></p>
+            <p>5. This project has been supported by G-TELP Korea. </p>
             <p>_____________________________________________________________________________________________</p>
             
             </div>
