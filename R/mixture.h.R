@@ -20,6 +20,7 @@ mixtureOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             outfit = FALSE,
             pbis = FALSE,
             average = FALSE,
+            angle = 0,
             iplot = FALSE,
             wrightmap = FALSE, ...) {
 
@@ -93,6 +94,12 @@ mixtureOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "average",
                 average,
                 default=FALSE)
+            private$..angle <- jmvcore::OptionNumber$new(
+                "angle",
+                angle,
+                min=0,
+                max=45,
+                default=0)
             private$..iplot <- jmvcore::OptionBool$new(
                 "iplot",
                 iplot,
@@ -118,6 +125,7 @@ mixtureOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..outfit)
             self$.addOption(private$..pbis)
             self$.addOption(private$..average)
+            self$.addOption(private$..angle)
             self$.addOption(private$..iplot)
             self$.addOption(private$..wrightmap)
             self$.addOption(private$..pclass)
@@ -137,6 +145,7 @@ mixtureOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         outfit = function() private$..outfit$value,
         pbis = function() private$..pbis$value,
         average = function() private$..average$value,
+        angle = function() private$..angle$value,
         iplot = function() private$..iplot$value,
         wrightmap = function() private$..wrightmap$value,
         pclass = function() private$..pclass$value),
@@ -155,6 +164,7 @@ mixtureOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..outfit = NA,
         ..pbis = NA,
         ..average = NA,
+        ..angle = NA,
         ..iplot = NA,
         ..wrightmap = NA,
         ..pclass = NA)
@@ -403,7 +413,8 @@ mixtureResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "vars",
                     "nc",
                     "step",
-                    "type")))
+                    "type",
+                    "angle")))
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot",
@@ -467,6 +478,8 @@ mixtureBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param outfit .
 #' @param pbis .
 #' @param average .
+#' @param angle a number from 0 to 45 defining the angle of the x-axis labels,
+#'   where 0 degrees represents completely horizontal labels.
 #' @param iplot .
 #' @param wrightmap .
 #' @return A results object containing:
@@ -502,6 +515,7 @@ mixture <- function(
     outfit = FALSE,
     pbis = FALSE,
     average = FALSE,
+    angle = 0,
     iplot = FALSE,
     wrightmap = FALSE) {
 
@@ -530,6 +544,7 @@ mixture <- function(
         outfit = outfit,
         pbis = pbis,
         average = average,
+        angle = angle,
         iplot = iplot,
         wrightmap = wrightmap)
 

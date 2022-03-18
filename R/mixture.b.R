@@ -650,6 +650,14 @@ mixtureClass <- if (requireNamespace('jmvcore'))
                x ="Item number", y = "Measure", color='Class')+
           ggtheme
         
+        if (self$options$angle > 0) {
+          plot <- plot + ggplot2::theme(
+            axis.text.x = ggplot2::element_text(
+              angle = self$options$angle, hjust = 1
+            )
+          )
+        }
+        
         
         print(plot)
         TRUE

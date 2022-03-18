@@ -147,7 +147,8 @@ items:
       renderFun: .plot1
       clearWith:
             - vars
-            - nc    
+            - nc 
+            - angle
 
 
 ...

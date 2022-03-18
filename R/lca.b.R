@@ -712,9 +712,17 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                            )) +
                     geom_path(size = 1.2) +
                     geom_point(size = 4) +
-                    xlab("Variable") +
+                    xlab("") +
                     ylab("Mean value") +
                     ggtheme
+                
+                if (self$options$angle > 0) {
+                    plot1 <- plot1 + ggplot2::theme(
+                        axis.text.x = ggplot2::element_text(
+                            angle = self$options$angle, hjust = 1
+                        )
+                    )
+                }
                 
                 print(plot1)
                 TRUE

@@ -81,6 +81,12 @@ children:
           - type: Label
             label: Plot
             children:
+              - type: TextBox
+                name: angle
+                format: number
+                suggestedValues:
+                  - value: 0
+                  - value: 45
               - type: CheckBox
                 name: iplot
   - type: CollapseBox

@@ -15,6 +15,7 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             cf = FALSE,
             mc = FALSE,
             plot = FALSE,
+            angle = 0,
             plot1 = FALSE, ...) {
 
             super$initialize(
@@ -74,6 +75,12 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "plot",
                 plot,
                 default=FALSE)
+            private$..angle <- jmvcore::OptionNumber$new(
+                "angle",
+                angle,
+                min=0,
+                max=45,
+                default=0)
             private$..plot1 <- jmvcore::OptionBool$new(
                 "plot1",
                 plot1,
@@ -91,6 +98,7 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..pc)
             self$.addOption(private$..post)
             self$.addOption(private$..plot)
+            self$.addOption(private$..angle)
             self$.addOption(private$..plot1)
         }),
     active = list(
@@ -106,6 +114,7 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         pc = function() private$..pc$value,
         post = function() private$..post$value,
         plot = function() private$..plot$value,
+        angle = function() private$..angle$value,
         plot1 = function() private$..plot1$value),
     private = list(
         ..vars = NA,
@@ -120,6 +129,7 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..pc = NA,
         ..post = NA,
         ..plot = NA,
+        ..angle = NA,
         ..plot1 = NA)
 )
 
@@ -299,7 +309,8 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 renderFun=".plot1",
                 clearWith=list(
                     "vars",
-                    "nc")))}))
+                    "nc",
+                    "angle")))}))
 
 lcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "lcaBase",
@@ -334,6 +345,8 @@ lcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param cf .
 #' @param mc .
 #' @param plot .
+#' @param angle a number from 0 to 45 defining the angle of the x-axis labels,
+#'   where 0 degrees represents completely horizontal labels.
 #' @param plot1 .
 #' @return A results object containing:
 #' \tabular{llllll}{
@@ -368,6 +381,7 @@ lca <- function(
     cf = FALSE,
     mc = FALSE,
     plot = FALSE,
+    angle = 0,
     plot1 = FALSE) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
@@ -394,6 +408,7 @@ lca <- function(
         cf = cf,
         mc = mc,
         plot = plot,
+        angle = angle,
         plot1 = plot1)
 
     analysis <- lcaClass$new(

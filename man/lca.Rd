@@ -15,6 +15,7 @@ lca(
   cf = FALSE,
   mc = FALSE,
   plot = FALSE,
+  angle = 0,
   plot1 = FALSE
 )
 }
@@ -38,6 +39,9 @@ lca(
 \item{mc}{.}
 
 \item{plot}{.}
+
+\item{angle}{a number from 0 to 45 defining the angle of the x-axis labels,
+where 0 degrees represents completely horizontal labels.}
 
 \item{plot1}{.}
 }

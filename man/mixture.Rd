@@ -20,6 +20,7 @@ mixture(
   outfit = FALSE,
   pbis = FALSE,
   average = FALSE,
+  angle = 0,
   iplot = FALSE,
   wrightmap = FALSE
 )
@@ -54,6 +55,9 @@ mixture(
 \item{pbis}{.}
 
 \item{average}{.}
+
+\item{angle}{a number from 0 to 45 defining the angle of the x-axis labels,
+where 0 degrees represents completely horizontal labels.}
 
 \item{iplot}{.}
 
