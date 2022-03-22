@@ -1,0 +1,43 @@
+---
+name:  linking
+title: Composite Linking
+menuGroup: snowRMM
+version: '1.0.0'
+jas: '1.2'
+
+options:
+    - name: data
+      type: Data
+
+    - name: ind
+      title: Form x
+      type: Variable
+      suggested:
+         - continuous
+      permitted:
+        - numeric
+
+    - name: dep
+      title: Form y
+      type: Variable
+      suggested:
+         - continuous
+      permitted:
+        - numeric
+        
+    - name: method
+      title: Equating method
+      type: List
+      options:
+        - title: linear
+          name:  linear
+        - title: equipercentile
+          name:  equipercentile
+      default: linear    
+
+    - name: plot
+      title: Equating plot 
+      type: Bool
+      default: FALSE 
+
+...

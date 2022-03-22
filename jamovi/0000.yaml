@@ -1,12 +1,12 @@
 ---
 title: Rasch Mixture Model for jamovi
 name: snowRMM
-version: 4.5.1
+version: 4.5.2
 jms: '1.0'
 authors:
   - Hyunsoo Seol
 maintainer: Hyunsoo Seol <snow@cau.ac.kr>
-date: '2022-03-12'
+date: '2022-03-22'
 type: R
 description: >-
   This module allows users to conduct Latent class analysis, Rasch model,Linear
@@ -49,6 +49,11 @@ analyses:
     menuGroup: snowRMM
     menuTitle: Equipercentile Equating
     menuSubgroup: Test Equating
+  - title: Composite Linking
+    name: linking
+    ns: snowRMM
+    menuGroup: snowRMM
+    menuTitle: Composite Linking
 datasets:
   - name: mixture
     path: mix.omv

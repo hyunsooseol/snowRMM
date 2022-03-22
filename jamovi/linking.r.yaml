@@ -1,0 +1,39 @@
+---
+name:  linking
+title: Composite Linking
+jrs:   '1.1'
+
+items:
+    - name: instructions
+      title: 'Instructions'
+      type: Html
+      visible: True
+    
+    - name: con
+      title: 'Concordance table'
+      type: Table
+      clearWith:
+        - vars
+        - method
+      
+      columns:
+        - name: x
+          type: integer
+        - name: yx
+          type: number
+
+    - name:  plot
+      title: Equating Plot
+      type:  Image
+      requiresData: true
+      visible: (plot)
+      width: 500
+      height: 500
+      renderFun: .plot
+      clearWith:
+        - vars
+        - method
+
+
+
+...
