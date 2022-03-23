@@ -6,7 +6,7 @@ jms: '1.0'
 authors:
   - Hyunsoo Seol
 maintainer: Hyunsoo Seol <snow@cau.ac.kr>
-date: '2022-03-22'
+date: '2022-03-23'
 type: R
 description: >-
   This module allows users to conduct Latent class analysis, Rasch model,Linear

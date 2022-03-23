@@ -148,7 +148,7 @@ linkingClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             eq <- image$state[[2]]
             
             
-            plot <- plot(lin,eq,addident = FALSE) 
+            plot <- plot(lin,eq,lwd=2,addident = FALSE) 
                     
             
             print(plot)
