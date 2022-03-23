@@ -57,4 +57,11 @@
         `year`=2020, 
         `title`="equi: Equipercentile Equating", 
         `publisher`="[R package]. Retrieved from https://github.com/twolodzko/equi/", 
-        `url`="https://github.com/twolodzko/equi/"))
+        `url`="https://github.com/twolodzko/equi/"), 
+    `equate`=list(
+        `type`="software", 
+        `author`="Albano, A.", 
+        `year`=2018, 
+        `title`="equate: Observed-Score Linking and Equating", 
+        `publisher`="[R package]. Retrieved from https://CRAN.R-project.org/package=equate", 
+        `url`="https://CRAN.R-project.org/package=equate"))

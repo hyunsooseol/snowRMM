@@ -2,7 +2,7 @@
 name:  linking
 title: Composite Linking
 jrs:   '1.1'
-
+refs: snowRMM
 items:
     - name: instructions
       title: 'Instructions'
@@ -12,6 +12,7 @@ items:
     - name: con
       title: 'Concordance table'
       type: Table
+      refs: equate
       clearWith:
         - vars
         - method
@@ -25,11 +26,11 @@ items:
     - name:  plot
       title: Equating Plot
       type:  Image
-      requiresData: true
       visible: (plot)
       width: 500
       height: 500
       renderFun: .plot
+      refs: equate
       clearWith:
         - vars
         - method

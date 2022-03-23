@@ -73,7 +73,8 @@ linkingResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             super$initialize(
                 options=options,
                 name="",
-                title="Composite Linking")
+                title="Composite Linking",
+                refs="snowRMM")
             self$add(jmvcore::Html$new(
                 options=options,
                 name="instructions",
@@ -83,6 +84,7 @@ linkingResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 options=options,
                 name="con",
                 title="Concordance table",
+                refs="equate",
                 clearWith=list(
                     "vars",
                     "method"),
@@ -97,11 +99,11 @@ linkingResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 options=options,
                 name="plot",
                 title="Equating Plot",
-                requiresData=TRUE,
                 visible="(plot)",
                 width=500,
                 height=500,
                 renderFun=".plot",
+                refs="equate",
                 clearWith=list(
                     "vars",
                     "method")))}))

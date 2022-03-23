@@ -77,19 +77,21 @@ linkingClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                     y<- equate::freqtab(data[[dep]])
                     
                     
-                    # computing equating---------------
+                    lin <- equate::equate(x, y, type = 'l')
                     
+                    eq <- equate::equate(x, y, type = 'e')
                     
-                    res <- equate::equate(x, y, type = method)
-                    
-                    concord<- res$concordance
-                    
+                   
+                    lincon<- lin$concordance
+                    eqcon <- eq$concordance
                    
                     # making concordance table-------
                     
                     table<- self$results$con
                     
-                    tab <- as.data.frame(concord)
+                    if(method=="linear"){
+                    
+                    tab <- as.data.frame(lincon)
                     
                     
                     for (i in 1:nrow(tab)) {
@@ -103,51 +105,50 @@ linkingClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                         
                     }
                     
+                    } 
+                    
+                    if(method=="equipercentile"){
+                        
+                        
+                        tab <- as.data.frame(eqcon)
+                        
+                        
+                        for (i in 1:nrow(tab)) {
+                            
+                            row <- list()
+                            
+                            row[['x']] <- tab[i,1]
+                            row[['yx']] <- tab[i,2]
+                            
+                            table$addRow(rowKey = i, values = row)  
+                        
+                        }
+                        
+                    }
+                    
+                    
+                    
                     ## Plot==================================================
                     
                     
                     image <- self$results$plot
-                    image$setState(res)
+                    image$setState(list(lin, eq))
                     
                 },
         
-        .plot = function(image, ggtheme, theme, ...) {
+        .plot = function(image,...) {
             
-                    
-            # res <- image$state
+             
+            if (length(self$options$ind)<1) return()
             
-            data <- self$data
-
-            ind <- self$options$ind
-
-            dep <- self$options$dep
-
-            method <- self$options$method
-
-            # convert to appropriate data types
-
-            data[[ind]] <- jmvcore::toNumeric(data[[ind]])
-
-            data[[dep]] <- jmvcore::toNumeric(data[[dep]])
-
-
-            data <- na.omit(data)
-
-            # Computing  frequency table--------
-
-            x<- equate::freqtab(data[[ind]])
-            y<- equate::freqtab(data[[dep]])
-
-            # 
-            # computing equating---------------
+            if (length(self$options$dep)<1) return()
             
             
-            lin <- equate::equate(x, y, type = "l")
+            lin <- image$state[[1]]
+            eq <- image$state[[2]]
             
-            equ <- equate::equate(x, y, type = "e")
             
-            
-            plot <- plot(lin,equ,addident = FALSE) 
+            plot <- plot(lin,eq,addident = FALSE) 
                     
             
             print(plot)

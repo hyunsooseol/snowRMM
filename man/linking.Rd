@@ -4,7 +4,7 @@
 \alias{linking}
 \title{Composite Linking}
 \usage{
-linking(data, ind, dep, method = "linear", plot = TRUE)
+linking(data, ind, dep, method = "linear", plot = FALSE)
 }
 \arguments{
 \item{data}{.}

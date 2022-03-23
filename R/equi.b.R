@@ -8,6 +8,7 @@
 #' @importFrom equi equi
 #' @importFrom equi conttab
 #' @importFrom equi smoothtab
+#' @import ggplot2
 #' @export
 
 
