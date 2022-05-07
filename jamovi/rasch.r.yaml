@@ -84,6 +84,32 @@ items:
         - step
         - type
  
+    - name: inplot
+      title: 'Item Infit plot'
+      type: Image
+      width:  500
+      height: 500
+      visible: (inplot)
+      renderFun: .inPlot
+      clearWith:
+        - vars
+        - step
+        - type
+        - angle
+
+    - name: outplot
+      title: 'Item Outfit plot'
+      type: Image
+      width:  500
+      height: 500
+      visible: (outplot)
+      renderFun: .outPlot
+      clearWith:
+        - vars
+        - step
+        - type
+        - angle
+
     - name: total
       title: Total
       type: Output
@@ -133,5 +159,5 @@ items:
         - vars
         - step
         - type 
-     
+
 ...

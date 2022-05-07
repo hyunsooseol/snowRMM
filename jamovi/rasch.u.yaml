@@ -43,7 +43,7 @@ children:
         margin: large
         children:
           - type: Label
-            label: Item Statistics
+            label: Statistics
             children:
               - type: CheckBox
                 name: imean
@@ -74,13 +74,8 @@ children:
                 name: bic
               - type: CheckBox
                 name: caic
-          - type: Label
-            label: Plot
-            children:
-              - type: CheckBox
-                name: wrightmap
   - type: CollapseBox
-    label: Save
+    label: Plots
     margin: normal
     collapsed: true
     children:
@@ -89,7 +84,32 @@ children:
         margin: large
         children:
           - type: Label
-            label: Person Statistics
+            label: ''
+            fitToGrid: true
+            children:
+              - type: CheckBox
+                name: wrightmap
+              - type: CheckBox
+                name: inplot
+              - type: CheckBox
+                name: outplot
+              - type: TextBox
+                name: angle
+                format: number
+                suggestedValues:
+                  - value: 0
+                  - value: 45     
+  - type: CollapseBox
+    label: Person Analysis
+    margin: normal
+    collapsed: true
+    children:
+      - type: LayoutBox
+        stretchFactor: 1
+        margin: large
+        children:
+          - type: Label
+            label: Statistics
             fitToGrid: true
             cell:
               column: 0
@@ -110,19 +130,10 @@ children:
         fitToGrid: true
         children:
           - type: Label
-            label: Person Fit
+            label: Fit Measure
             children:
               - type: Output
                 name: pinfit
               - type: Output
                 name: poutfit
-
-
-
-
-
-
-
-
-
-
+ 

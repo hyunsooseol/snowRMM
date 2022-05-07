@@ -38,8 +38,8 @@ raschClass <- if (requireNamespace('jmvcore'))
             <p>1. The standard Rasch model is performed by Jonint Maximum Liklihood(JML).</p>
             <p>2. Specify </b> the number of 'Step' and model 'Type'</b> in the 'Analysis option'.</p>
             <P>3. Step is defined as number of <b>category-1</b>. </p>
-            <p>4. The results of <b> Save </b> will be displayed in the datasheet.</p>
-            <p>5. Feature requests and bug reports can be made on my <a href='https://github.com/hyunsooseol/snowRMM/issues'  target = '_blank'>GitHub</a></p>
+            <p>4. The results of <b>Person Analysis</b> will be displayed in the datasheet.</p>
+            <p>5. Feature requests and bug reports can be made on my <a href='https://github.com/hyunsooseol/snowRMM/issues'  target = '_blank'>GitHub</a>.</p>
             <p>_____________________________________________________________________________________________</p>
             
             </div>
@@ -102,6 +102,12 @@ raschClass <- if (requireNamespace('jmvcore'))
           
           private$.prepareWrightmapPlot(data)
           
+          # prepare item fit plot-------
+          
+          private$.prepareInfitPlot(data)
+          
+          private$.prepareOutfitPlot(data)
+          
         }
       },
       
@@ -154,19 +160,7 @@ raschClass <- if (requireNamespace('jmvcore'))
         res0 <- mixRasch::getEstDetails(res)
         class <- res0$nC
         
-        # person statistics---------
-        
-        # total <- res$person.par$r
-        # 
-        # pmeasure <- res$person.par$theta
-        # 
-        # pse <- res$person.par$SE.theta
-        # 
-        # pinfit <- res$person.par$infit
-        # 
-        # poutfit <- res$person.par$outfit
-        # 
-        
+       
         results <-
           list(
             'aic' = aic,
@@ -179,11 +173,6 @@ raschClass <- if (requireNamespace('jmvcore'))
             'outfit' = outfit,
             'pbis' = pbis,
             'class' = class
-            # 'total' = total,
-            # 'pmeasure' = pmeasure,
-            # 'pse' = pse,
-            # 'pinfit' = pinfit,
-            # 'poutfit' = poutfit
             
           )
         
@@ -382,50 +371,6 @@ raschClass <- if (requireNamespace('jmvcore'))
       },
       
       
-      # populate Person analysis table-----   
-      
-      # .populatePersonTable = function(results) {
-      #   
-      #   data <- self$data
-      #   
-      #   table <- self$results$person$persons
-      #   
-      #   
-      #   #result---
-      #   
-      #   total <- results$total
-      #   
-      #   pmeasure <- results$pmeasure
-      #   
-      #   pse <- results$pse
-      #   
-      #   pinfit <- results$pinfit
-      #   
-      #   poutfit <- results$poutfit
-      #   
-      #   
-      #   
-      #   for (i in 1:nrow(data)) {
-      #     row <- list()
-      #     
-      #     
-      #     row[["total"]] <- total[i]
-      #     
-      #     row[["pmeasure"]] <- pmeasure[i]
-      #     
-      #     row[["pse"]] <- pse[i]
-      #     
-      #     row[["pinfit"]] <- pinfit[i]
-      #     
-      #     row[["poutfit"]] <- poutfit[i]
-      #     
-      #     table$addRow(rowKey = i, values = row)
-      #     
-      #   }
-      #   
-      # },
-      # 
-      # 
       
       ### wrightmap Plot functions -----------
       
@@ -491,7 +436,164 @@ raschClass <- if (requireNamespace('jmvcore'))
         
       },
       
+      .prepareInfitPlot=function(data){
+        
+        
+        # data <- self$data
+        
+        step <- self$options$step
+        
+        type <- self$options$type
+        
+        
+        #compute wright---
+        
+        res <-  mixRasch::mixRasch(
+          data = data,
+          steps = step,
+          model = type,
+          n.c = 1
+        )
+        
+        infit <- res$item.par$in.out[,1]
+        
+        item <- self$options$vars
+        nitems <- length(item)
+        
+        
+        infit <- NA
+        
+        for(i in 1:nitems){
+          
+          infit[i] <- res$item.par$in.out[,1][i]
+          
+        }
+        
+        infit1<- data.frame(item,infit)
+        
+        #self$results$text$setContent(infit1)
+        
+        
+        image <- self$results$inplot
+        image$setState(infit1)
+        
+        
+      }, 
       
+      .inPlot = function(image, ggtheme, theme,...) {
+        
+        
+        inplot <- self$options$inplot
+        
+        if (!inplot)
+          return()
+        
+        infit1 <- image$state
+        
+        
+        plot <- ggplot(infit1, aes(x = item, y=infit)) + 
+          geom_point(shape = 21, color = 'skyblue', 
+                     fill = 'white', size = 3, stroke = 2) +
+          geom_hline(yintercept = 1.5) +
+          geom_hline(yintercept = 0.5) +
+          ggtitle("Item Infit")
+        
+        plot <- plot+ggtheme
+        
+        if (self$options$angle > 0) {
+          plot <- plot + ggplot2::theme(
+            axis.text.x = ggplot2::element_text(
+              angle = self$options$angle, hjust = 1
+            )
+          )
+        }
+        
+        
+        print(plot)
+        TRUE
+        
+      }, 
+      
+      .prepareOutfitPlot=function(data){
+        
+        
+        # data <- self$data
+        
+        step <- self$options$step
+        
+        type <- self$options$type
+        
+        
+        #compute wright---
+        
+        res <-  mixRasch::mixRasch(
+          data = data,
+          steps = step,
+          model = type,
+          n.c = 1
+        )
+        
+        outfit <- res$item.par$in.out[,3]
+        
+        item <- self$options$vars
+        nitems <- length(item)
+        
+        
+        outfit <- NA
+        
+        for(i in 1:nitems){
+          
+          outfit[i] <- res$item.par$in.out[,3][i]
+          
+        }
+        
+        outfit1<- data.frame(item,outfit)
+        
+        #self$results$text$setContent(infit1)
+        
+        
+        image <- self$results$outplot
+        image$setState(outfit1)
+        
+        
+      },     
+      
+  
+      .outPlot = function(image, ggtheme, theme,...) {
+        
+        outplot <- self$options$outplot
+        
+        if (!outplot)
+          return()
+        
+        outfit1 <- image$state
+        
+        
+        plot <- ggplot(outfit1, aes(x = item, y=outfit)) + 
+          geom_point(shape = 21, color = 'skyblue', 
+                     fill = 'white', size = 3, stroke = 2) +
+          geom_hline(yintercept = 1.5) +
+          geom_hline(yintercept = 0.5) +
+          ggtitle("Item Outfit")
+        
+        plot <- plot+ggtheme
+        
+        if (self$options$angle > 0) {
+          plot <- plot + ggplot2::theme(
+            axis.text.x = ggplot2::element_text(
+              angle = self$options$angle, hjust = 1
+            )
+          )
+        }
+        
+        
+        
+        print(plot)
+        TRUE
+        
+      },    
+      
+    
       #### Helper functions =================================
       
       .cleanData = function() {

@@ -18,7 +18,10 @@ rasch(
   infit = FALSE,
   outfit = FALSE,
   pbis = FALSE,
-  wrightmap = FALSE
+  wrightmap = FALSE,
+  inplot = FALSE,
+  outplot = FALSE,
+  angle = 0
 )
 }
 \arguments{
@@ -49,6 +52,13 @@ rasch(
 \item{pbis}{.}
 
 \item{wrightmap}{.}
+
+\item{inplot}{.}
+
+\item{outplot}{.}
+
+\item{angle}{a number from 0 to 45 defining the angle of the x-axis labels,
+where 0 degrees represents completely horizontal labels.}
 }
 \value{
 A results object containing:
@@ -57,6 +67,8 @@ A results object containing:
   \code{results$item$model} \tab \tab \tab \tab \tab a table \cr
   \code{results$item$items} \tab \tab \tab \tab \tab a table \cr
   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
+  \code{results$inplot} \tab \tab \tab \tab \tab an image \cr
+  \code{results$outplot} \tab \tab \tab \tab \tab an image \cr
   \code{results$total} \tab \tab \tab \tab \tab an output \cr
   \code{results$pmeasure} \tab \tab \tab \tab \tab an output \cr
   \code{results$pse} \tab \tab \tab \tab \tab an output \cr
