@@ -27,6 +27,9 @@ items:
               title: ''
               type: 'text'
               content: ($key)
+            - name: infit
+              title: Infit
+              type: number
             - name: infitlow
               title: 'Lower'
               type: number
@@ -50,6 +53,9 @@ items:
               title: ''
               type: 'text'
               content: ($key)
+            - name: outfit
+              title: Outfit
+              type: number
             - name: outfitlow
               title: 'Lower'
               type: number
@@ -58,6 +64,31 @@ items:
               title: 'Upper'
               type: number
               superTitle: '95% CI'
-  
-    
+
+    - name: inplot
+      title: 'Confidence interval for infit'
+      type: Image
+      width:  500
+      height: 500
+      visible: (inplot)
+      renderFun: .inPlot
+      clearWith:
+            - vars
+            - step
+            - bn
+            - angle
+
+    - name: outplot
+      title: 'Confidence interval for outfit'
+      type: Image
+      width:  500
+      height: 500
+      visible: (outplot)
+      renderFun: .outPlot
+      clearWith:
+            - vars
+            - step
+            - bn 
+            - angle
+
 ...

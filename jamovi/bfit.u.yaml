@@ -30,18 +30,18 @@ children:
           - name: bn
             type: TextBox
             label: Bootstrap N
-            format: number   
+            format: number
   - type: CollapseBox
-    label: Bootstrap Analysis
+    label: Analysis
     margin: normal
     collapsed: true
-    children:            
+    children:
       - type: LayoutBox
         stretchFactor: 1
         margin: large
         children:
           - type: Label
-            label: ""
+            label: Fit Measure
             fitToGrid: true
             cell:
               column: 0
@@ -51,8 +51,27 @@ children:
                 name: binfit
               - type: CheckBox
                 name: boutfit
-  
-            
-            
+      - type: LayoutBox
+        stretchFactor: 1
+        margin: large
+        cell:
+          column: 1
+          row: 0
+        fitToGrid: true
+        children:
+          - type: Label
+            label: Plots
+            children:
+              - type: CheckBox
+                name: inplot
+              - type: CheckBox
+                name: outplot
+              - type: TextBox
+                name: angle
+                format: number
+                suggestedValues:
+                  - value: 0
+                  - value: 45  
 
- 
+
+  

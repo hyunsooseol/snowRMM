@@ -149,9 +149,9 @@ raschClass <- if (requireNamespace('jmvcore'))
         
         ise <- res$item.par$SE.delta.i
         
-        infit <- res$item.par$in.out
+        infit <- res$item.par$in.out[,1]
         
-        outfit <- res$item.par$in.out
+        outfit <- res$item.par$in.out[,3]
         
         pbis <- res$item.par$itemDescriptives
         
@@ -236,6 +236,7 @@ raschClass <- if (requireNamespace('jmvcore'))
         
         
         for (i in seq_along(vars)) {
+          
           row <- list()
           
           
@@ -245,9 +246,9 @@ raschClass <- if (requireNamespace('jmvcore'))
           
           row[["ise"]] <- ise[i]
           
-          row[["infit"]] <- infit[i, 1]
+          row[["infit"]] <- infit[i]
           
-          row[["outfit"]] <- outfit[i, 3]
+          row[["outfit"]] <- outfit[i]
           
           row[["pbis"]] <- pbis[i, 2]
           

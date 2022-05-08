@@ -33,13 +33,33 @@ options:
       default: 100
 
     - name: binfit
-      title: Item infit
+      title: Infit
       type: Bool
       default: TRUE
       
     - name: boutfit
-      title: Item outfit
+      title: Outfit
       type: Bool
-      default: TRUE
+      default: FALSE
       
- 
+    - name: inplot
+      title: Infit CI
+      type: Bool
+      default: false
+
+    - name: outplot
+      title: Outfit CI
+      type: Bool
+      default: false 
+
+    - name: angle
+      title: Angle of x-axis labels
+      type: Number
+      min: 0
+      max: 45
+      default: 0
+      description:
+          R: >
+            a number from 0 to 45 defining the angle of the x-axis labels, 
+            where 0 degrees represents completely horizontal labels.
+      

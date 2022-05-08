@@ -4,7 +4,17 @@
 \alias{bfit}
 \title{Bootstrap Item Fit}
 \usage{
-bfit(data, vars, step = 1, bn = 100, binfit = TRUE, boutfit = TRUE)
+bfit(
+  data,
+  vars,
+  step = 1,
+  bn = 100,
+  binfit = TRUE,
+  boutfit = FALSE,
+  inplot = FALSE,
+  outplot = FALSE,
+  angle = 0
+)
 }
 \arguments{
 \item{data}{The data as a data frame.}
@@ -18,6 +28,13 @@ bfit(data, vars, step = 1, bn = 100, binfit = TRUE, boutfit = TRUE)
 \item{binfit}{.}
 
 \item{boutfit}{.}
+
+\item{inplot}{.}
+
+\item{outplot}{.}
+
+\item{angle}{a number from 0 to 45 defining the angle of the x-axis labels,
+where 0 degrees represents completely horizontal labels.}
 }
 \value{
 A results object containing:
@@ -25,6 +42,8 @@ A results object containing:
   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
   \code{results$item$binfit} \tab \tab \tab \tab \tab a table \cr
   \code{results$item$boutfit} \tab \tab \tab \tab \tab a table \cr
+  \code{results$inplot} \tab \tab \tab \tab \tab an image \cr
+  \code{results$outplot} \tab \tab \tab \tab \tab an image \cr
 }
 }
 \description{

@@ -7,6 +7,7 @@
 #' @import boot
 #' @import stats
 #' @import mixRasch
+#' @import ggplot2
 #' @importFrom mixRasch mixRasch
 #' @importFrom boot boot
 #' @importFrom boot boot.ci
@@ -37,10 +38,10 @@ bfitClass <- if (requireNamespace('jmvcore'))
 
             <p><b>Instructions</b></p>
             <p>_____________________________________________________________________________________________</p>
-            <p>1. The traditional Rasch model is performed by mixRasch R package using Jonint Maximum Liklihood(JML).</p>
+            <p>1. The traditional Rasch model is performed by <b>mixRasch</b> R package using Jonint Maximum Liklihood(JML).</p>
             <p>2. Specify <b>'Step'(number of category-1) and 'Bootstrap N'</b> in the 'Analysis option'.</p>
             <p>3. Please, be patient. The bootstrapped confidence interval is <b>quite time-consuming !</b></p>
-            <p>4. Feature requests and bug reports can be made on my <a href='https://github.com/hyunsooseol/snowRMM/issues'  target = '_blank'>GitHub</a></p>
+            <p>4. Feature requests and bug reports can be made on my <a href='https://github.com/hyunsooseol/snowRMM/issues'  target = '_blank'>GitHub</a>.</p>
             <p>_____________________________________________________________________________________________</p>
             
             </div>
@@ -74,6 +75,7 @@ bfitClass <- if (requireNamespace('jmvcore'))
                ready <- FALSE
             
             if (ready) {
+               
                data <- private$.cleanData()
                
                results <- private$.compute(data)
@@ -85,6 +87,11 @@ bfitClass <- if (requireNamespace('jmvcore'))
                
                private$.populateOutTable(results)
                
+               # plot------
+               
+               private$.prepareInPlot(results)
+               
+               private$.prepareOutPlot(results)
             }
          },
          
@@ -100,8 +107,7 @@ bfitClass <- if (requireNamespace('jmvcore'))
             
             bn <- self$options$bn
             
-           
-            
+          
             # Computing boot infit-------------
             
             boot.infit <- function(data, indices) {
@@ -124,12 +130,24 @@ bfitClass <- if (requireNamespace('jmvcore'))
                
             }
             
+            # bootstrap for infit-----------------------
+            
             boot.in <-
                boot::boot(data = data,
                           statistic = boot.infit,
                           R = bn)
             
+          
+            # original statistics for infit--------
+            
+            infit.raw <- boot.in$t0
+            
+       #   self$results$text1$setContent(infit.raw) 
+            
+            # confidence interval for infit---------
+            
             infit <- boot.in$t
+            
             
             infitlow = NA
             
@@ -139,12 +157,13 @@ bfitClass <- if (requireNamespace('jmvcore'))
                
             }
             
-            #infit lower--
+            
+            #infit lower----------
             
             infitlow <- infitlow
             
-            
-            #infit high-
+       
+            #infit high--------------------
             
             infithigh = NA
             
@@ -156,10 +175,12 @@ bfitClass <- if (requireNamespace('jmvcore'))
             
             infithigh <- infithigh
             
-           
+      
+            
             ############ computing boot outfit------
             
             boot.outfit <- function(data, indices) {
+               
                d = data[indices,]
                
                # estimate Rasch model
@@ -171,7 +192,6 @@ bfitClass <- if (requireNamespace('jmvcore'))
                      n.c = 1
                   )
                
-               
                # item outfit-------
                
                outfit <- res1$item.par$in.out[, 3]
@@ -179,10 +199,23 @@ bfitClass <- if (requireNamespace('jmvcore'))
                return(outfit)
             }
             
+            
+            # bootstrap outfit-------------------------
+            
             boot.out <-
                boot::boot(data = data,
                           statistic = boot.outfit,
                           R = bn)
+            #-----------------------------------
+            
+            
+            # original statistics for outfit--------
+            
+            outfit.raw <- boot.out$t0
+            
+            
+            # confidence interval for outfit----------
+            
             
             outfit <- boot.out$t
             
@@ -215,26 +248,31 @@ bfitClass <- if (requireNamespace('jmvcore'))
             
             results <-
                list(
+                  'infit'=infit.raw,
+                  'outfit'=outfit.raw,
                   'infitlow' = infitlow,
                   'infithigh' = infithigh,
                   'outfitlow' = outfitlow,
                   'outfithigh' = outfithigh
                )
             
-            
-            
+         
          },
          
      
          # Populate boot table------------
          
          .populateInTable = function(results) {
+            
             table <- self$results$item$binfit
             
             vars <- self$options$vars
             
-            # results------
+            bn <- self$options$bn
             
+            # results------
+           
+            infit <- results$infit
             infitlow <- results$infitlow
             infithigh <- results$infithigh
             
@@ -242,7 +280,7 @@ bfitClass <- if (requireNamespace('jmvcore'))
             for (i in seq_along(vars)) {
                row <- list()
                
-               
+               row[["infit"]] <- infit[i]
                row[["infitlow"]] <- infitlow[i]
                row[["infithigh"]] <- infithigh[i]
                
@@ -255,10 +293,12 @@ bfitClass <- if (requireNamespace('jmvcore'))
          
          
          .populateOutTable = function(results) {
+            
             table <- self$results$item$boutfit
             
             vars <- self$options$vars
             
+            outfit <- results$outfit
             outfitlow <- results$outfitlow
             outfithigh <- results$outfithigh
             
@@ -266,6 +306,7 @@ bfitClass <- if (requireNamespace('jmvcore'))
             for (i in seq_along(vars)) {
                row <- list()
                
+               row[["outfit"]] <- outfit[i]
                row[['outfitlow']] <- outfitlow[i]
                row[['outfithigh']] <- outfithigh[i]
                
@@ -276,7 +317,115 @@ bfitClass <- if (requireNamespace('jmvcore'))
          },
          
          
-         #### Helper functions =================================
+ # prepare confidence interval plot-----------
+
+ .prepareInPlot = function(results) {
+
+    inplot <- self$results$inplot
+
+    item <- self$options$vars
+    
+    infit <- results$infit
+    infitlow <- results$infitlow
+    infithigh <- results$infithigh
+
+    infit1 <- data.frame(item,infit, infitlow, infithigh)
+
+  
+   #  self$results$text1$setContent(infit1) 
+    
+   
+    image <- self$results$inplot
+    image$setState(infit1)
+   
+   
+    },
+
+.inPlot = function(image, ggtheme, theme,...) {
+   
+   
+   inplot <- self$options$inplot
+   
+   if (!inplot)
+      return()
+   
+   infit1 <- image$state
+   
+   plot <- ggplot(infit1, aes(item, infit)) +        
+      geom_point() +
+      geom_errorbar(aes(ymin = infitlow, ymax = infithigh))
+   
+    
+   plot<- plot+ggtheme
+   
+   if (self$options$angle > 0) {
+      plot <- plot + ggplot2::theme(
+         axis.text.x = ggplot2::element_text(
+            angle = self$options$angle, hjust = 1
+         )
+      )
+   }
+   
+   
+   print(plot)
+   TRUE
+   
+},
+         
+.prepareOutPlot = function(results) {
+   
+   outplot <- self$results$outplot
+   
+   item <- self$options$vars
+   
+   outfit <- results$outfit
+   outfitlow <- results$outfitlow
+   outfithigh <- results$outfithigh
+   
+   outfit1 <- data.frame(item, outfit, outfitlow, outfithigh)
+   
+   
+  # self$results$text1$setContent(infit1) 
+   
+   
+   image <- self$results$outplot
+   image$setState(outfit1)
+   
+   
+},
+
+.outPlot = function(image, ggtheme, theme,...) {
+   
+   
+   outplot <- self$options$outplot
+   
+   if (!outplot)
+      return()
+   
+   outfit1 <- image$state
+   
+   plot <- ggplot(outfit1, aes(item, outfit)) +        
+      geom_point() +
+      geom_errorbar(aes(ymin = outfitlow, ymax = outfithigh))
+   
+   
+   plot<- plot+ggtheme
+   
+   if (self$options$angle > 0) {
+      plot <- plot + ggplot2::theme(
+         axis.text.x = ggplot2::element_text(
+            angle = self$options$angle, hjust = 1
+         )
+      )
+   }
+   
+   print(plot)
+   TRUE
+   
+},
+
+
+#### Helper functions =================================
          
          .cleanData = function() {
             items <- self$options$vars

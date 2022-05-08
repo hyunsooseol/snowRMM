@@ -72,6 +72,7 @@ datasets:
     tags:
       - Rasch
       - Mixture
+      - Bootstrap
   - name: carcinoma
     path: carcinoma.omv
     description: Dichotomous ratings by seven pathologists(A through G)
