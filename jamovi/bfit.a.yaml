@@ -43,12 +43,12 @@ options:
       default: FALSE
       
     - name: inplot
-      title: Infit CI
+      title: CI for Infit
       type: Bool
       default: false
 
     - name: outplot
-      title: Outfit CI
+      title: CI for Outfit
       type: Bool
       default: false 
 
