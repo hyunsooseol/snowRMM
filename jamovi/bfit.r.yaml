@@ -14,7 +14,7 @@ items:
       type: Group
       items:
         - name: binfit
-          title: 'Bootstraped item infit'
+          title: 'Bootstrap item infit'
           type: Table
           visible: (binfit)
           rows: (vars)
@@ -40,7 +40,7 @@ items:
               superTitle: '95% CI'
     
         - name: boutfit
-          title: 'Bootstraped item outfit'
+          title: 'Bootstrap item outfit'
           type: Table
           visible: (boutfit)
           rows: (vars)

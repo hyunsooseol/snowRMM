@@ -126,7 +126,7 @@ bfitResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         self$add(jmvcore::Table$new(
                             options=options,
                             name="binfit",
-                            title="Bootstraped item infit",
+                            title="Bootstrap item infit",
                             visible="(binfit)",
                             rows="(vars)",
                             clearWith=list(
@@ -156,7 +156,7 @@ bfitResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         self$add(jmvcore::Table$new(
                             options=options,
                             name="boutfit",
-                            title="Bootstraped item outfit",
+                            title="Bootstrap item outfit",
                             visible="(boutfit)",
                             rows="(vars)",
                             clearWith=list(
