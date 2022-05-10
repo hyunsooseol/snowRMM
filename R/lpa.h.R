@@ -34,6 +34,8 @@ lpaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "fit",
                 fit,
                 default=TRUE)
+            private$..pc <- jmvcore::OptionOutput$new(
+                "pc")
             private$..plot <- jmvcore::OptionBool$new(
                 "plot",
                 plot,
@@ -46,6 +48,7 @@ lpaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..vars)
             self$.addOption(private$..nc)
             self$.addOption(private$..fit)
+            self$.addOption(private$..pc)
             self$.addOption(private$..plot)
             self$.addOption(private$..plot1)
         }),
@@ -53,12 +56,14 @@ lpaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         vars = function() private$..vars$value,
         nc = function() private$..nc$value,
         fit = function() private$..fit$value,
+        pc = function() private$..pc$value,
         plot = function() private$..plot$value,
         plot1 = function() private$..plot1$value),
     private = list(
         ..vars = NA,
         ..nc = NA,
         ..fit = NA,
+        ..pc = NA,
         ..plot = NA,
         ..plot1 = NA)
 )
@@ -69,6 +74,7 @@ lpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     active = list(
         instructions = function() private$.items[["instructions"]],
         text = function() private$.items[["text"]],
+        pc = function() private$.items[["pc"]],
         plot = function() private$.items[["plot"]],
         plot1 = function() private$.items[["plot1"]]),
     private = list(),
@@ -88,6 +94,15 @@ lpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 options=options,
                 name="text",
                 title="Model fit"))
+            self$add(jmvcore::Output$new(
+                options=options,
+                name="pc",
+                title="Person class",
+                varTitle="Class",
+                measureType="nominal",
+                clearWith=list(
+                    "vars",
+                    "nc")))
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot",
@@ -145,6 +160,7 @@ lpaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
 #'   \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
+#'   \code{results$pc} \tab \tab \tab \tab \tab an output \cr
 #'   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
 #' }

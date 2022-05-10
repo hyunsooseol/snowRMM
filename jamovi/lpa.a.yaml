@@ -27,8 +27,12 @@ options:
     - name: fit
       title: Model fit
       type: Bool
-      default: True      
+      default: TRUE
 
+    - name: pc
+      title: Person class
+      type: Output
+      
     - name: plot
       title: 'Correlation'
       type: Bool

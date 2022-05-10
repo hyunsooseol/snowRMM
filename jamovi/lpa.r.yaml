@@ -14,6 +14,15 @@ items:
       title: Model fit
       type:  Preformatted
 
+    - name: pc
+      title: Person class
+      type: Output
+      varTitle: Class
+      measureType: nominal
+      clearWith:
+        - vars
+        - nc
+
     - name: plot
       title: 'Correlation plot for a mixture model'
       type: Image
@@ -22,8 +31,8 @@ items:
       height: 600
       renderFun: .plot
       clearWith:
-            - vars
-            - nc
+        - vars
+        - nc
             
     - name: plot1
       title: 'Latent profile plot'
@@ -34,8 +43,8 @@ items:
       refs: tidyLPA
       renderFun: .plot1
       clearWith:
-            - vars
-            - nc            
+        - vars
+        - nc            
             
             
 ...

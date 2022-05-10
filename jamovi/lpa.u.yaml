@@ -24,7 +24,7 @@ children:
         margin: large
         children:
           - type: Label
-            label: "Table"
+            label: Table
             fitToGrid: true
             cell:
               column: 0
@@ -33,9 +33,13 @@ children:
               - type: TextBox
                 name: nc
                 format: number
+          - type: LayoutBox
+            margin: large
+            children:
               - type: CheckBox
                 name: fit
- 
+              - type: Output
+                name: pc
       - type: LayoutBox
         stretchFactor: 1
         margin: large
@@ -45,11 +49,11 @@ children:
         fitToGrid: true
         children:
           - type: Label
-            label: 'Plots'
+            label: Plots
             fitToGrid: true
             cell:
               column: 1
-              row: 0          
+              row: 0
             children:
               - type: CheckBox
                 name: plot

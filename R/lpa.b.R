@@ -10,6 +10,7 @@
 #' @importFrom tidyLPA get_fit
 #' @importFrom tidyLPA plot_profiles
 #' @importFrom tidyLPA plot_bivariate
+#' @importFrom tidyLPA get_data
 #' @export
 
 
@@ -36,7 +37,8 @@ lpaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             <p><b>Instructions</b></p>
             <p>_____________________________________________________________________________________________</p>
             <p>1. The R package <b>tidyLPA</b> is described in the <a href='https://cran.r-project.org/web/packages/tidyLPA/vignettes/Introduction_to_tidyLPA.html' target = '_blank'>page</a>.</p>
-            <p>2. Feature requests and bug reports can be made on the <a href='https://github.com/hyunsooseol/snowRMM/issues'  target = '_blank'>GitHub</a>.</p>
+            <p>3. The result of <b>Person class</b> will be displayed in the datasheet.</p>
+            <p>3. Feature requests and bug reports can be made on the <a href='https://github.com/hyunsooseol/snowRMM/issues'  target = '_blank'>GitHub</a>.</p>
             <p>_____________________________________________________________________________________________</p>
             
             </div>
@@ -90,6 +92,27 @@ lpaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             self$results$text$setContent(res)
 
+            
+        # person class---------
+            
+            pc<- tidyLPA:: get_data(res)
+            pc<- pc$Class
+            
+            
+            if (self$options$pc
+                && self$results$pc$isNotFilled()) {
+                
+                
+                self$results$pc$setValues(pc)
+                
+                self$results$pc$setRowNums(rownames(data))
+                
+            }
+            
+            
+            
+            
+            
             
             # plot----------
             
