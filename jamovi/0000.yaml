@@ -9,9 +9,10 @@ maintainer: Hyunsoo Seol <snow@cau.ac.kr>
 date: '2022-05-09'
 type: R
 description: >-
-  This module allows users to conduct Latent class analysis, Rasch model,Linear
-  and Equipercentile Equating, and Rasch mixture model including model
-  information,fit statistics,and bootstrap fit based on JMLE.
+  This module allows users to conduct Latent class analysis, Latent Profile
+  Analysis, Rasch model, Linear and Equipercentile Equating, and Rasch mixture
+  model including model information,fit statistics,and bootstrap fit based on
+  JMLE.
 analyses:
   - title: Rasch Model
     name: rasch
