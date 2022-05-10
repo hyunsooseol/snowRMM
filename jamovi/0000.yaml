@@ -1,12 +1,12 @@
 ---
 title: Rasch Mixture Model for jamovi
 name: snowRMM
-version: 4.6.0
+version: 4.7.0
 jms: '1.0'
 authors:
   - Hyunsoo Seol
 maintainer: Hyunsoo Seol <snow@cau.ac.kr>
-date: '2022-05-07'
+date: '2022-05-09'
 type: R
 description: >-
   This module allows users to conduct Latent class analysis, Rasch model,Linear
@@ -54,6 +54,12 @@ analyses:
     ns: snowRMM
     menuGroup: snowRMM
     menuTitle: Composite Linking
+  - title: Latent Profile Analysis
+    name: lpa
+    ns: snowRMM
+    menuGroup: snowRMM
+    menuTitle: Latent Profile Analysis
+    menuSubgroup: LCA
 datasets:
   - name: mixture
     path: mix.omv
@@ -85,6 +91,11 @@ datasets:
       a symptom, a 1 the absence.
     tags:
       - LCA
+  - name: iris
+    path: iris.omv
+    description: Latent profile analysis
+    tags:
+      - Latent Profile
   - name: linear
     path: lin.omv
     description: Linear equating

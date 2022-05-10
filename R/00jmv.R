@@ -64,4 +64,11 @@
         `year`=2018, 
         `title`="equate: Observed-Score Linking and Equating", 
         `publisher`="[R package]. Retrieved from https://CRAN.R-project.org/package=equate", 
-        `url`="https://CRAN.R-project.org/package=equate"))
+        `url`="https://CRAN.R-project.org/package=equate"), 
+    `tidyLPA`=list(
+        `type`="software", 
+        `author`="Rosenberg J., Beymer P., Anderson D., Van Lissa C., & Schmidt J.", 
+        `year`=2021, 
+        `title`="Easily Carry Out Latent Profile Analysis (LPA) Using Open-Source or Commercial Software", 
+        `publisher`="[R package]. Retrieved from https://CRAN.R-project.org/package=tidyLPA", 
+        `url`="https://CRAN.R-project.org/package=tidyLPA"))

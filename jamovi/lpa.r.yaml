@@ -1,0 +1,41 @@
+---
+name:  lpa
+title: Latent Profile Analysis
+refs: snowRMM
+jrs:   '1.1'
+
+items:
+    - name: instructions
+      title: 'Instructions'
+      type: Html
+      visible: True
+      
+    - name:  text
+      title: Model fit
+      type:  Preformatted
+
+    - name: plot
+      title: 'Correlation plot for a mixture model'
+      type: Image
+      visible: (plot)
+      width: 600
+      height: 600
+      renderFun: .plot
+      clearWith:
+            - vars
+            - nc
+            
+    - name: plot1
+      title: 'Latent profile plot'
+      type: Image
+      visible: (plot1)
+      width: 600
+      height: 600
+      refs: tidyLPA
+      renderFun: .plot1
+      clearWith:
+            - vars
+            - nc            
+            
+            
+...

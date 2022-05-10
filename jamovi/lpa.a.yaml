@@ -1,0 +1,41 @@
+---
+name:  lpa
+title: Latent Profile Analysis
+menuGroup: snowRMM
+menuSubgroup: LCA
+version: '1.0.0'
+jas: '1.2'
+
+options:
+    - name: data
+      type: Data
+
+    - name: vars
+      title: Variables
+      type: Variables
+      suggested:
+         - continuous
+      permitted:
+        - numeric  
+        
+    - name: nc
+      title: Class
+      type: Integer
+      min: 2
+      default: 2       
+      
+    - name: fit
+      title: Model fit
+      type: Bool
+      default: True      
+
+    - name: plot
+      title: 'Correlation'
+      type: Bool
+      default: FALSE  
+      
+    - name: plot1
+      title: 'Latent profile'
+      type: Bool
+      default: FALSE        
+...
