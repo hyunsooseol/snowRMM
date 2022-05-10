@@ -33,11 +33,11 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             <p><b>To get started:</b></p>
             <p>_____________________________________________________________________________________________</p>
             <p>1. jamovi treats all variables as qualitative/categorical/nominal.</p>
-            <p>2. Variables must contain only integer values, and must be coded with consecutive values from 1 to the maximum number. </p>
+            <p>2. Variables must contain only integer values, and must be coded with consecutive values from 1 to the maximum number.</p>
             <p>3. The results of <b> Class membership </b> will be displayed in the datasheet.</p>
             <p>4. The output columm can NOT be used as an input to the same analysis.</p>
             <P>5. To analyze 'Profile' analysis, click the LCA analysis again.</p>
-            <p>6. Feature requests and bug reports can be made on my <a href='https://github.com/hyunsooseol/snowRMM/issues'  target = '_blank'>GitHub.</a></p>
+            <p>6. Feature requests and bug reports can be made on my <a href='https://github.com/hyunsooseol/snowRMM/issues'  target = '_blank'>GitHub</a>.</p>
             <p>_____________________________________________________________________________________________</p>
             
             </div>
