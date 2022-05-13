@@ -1,0 +1,67 @@
+---
+name:  pfit
+title: Bootstrap item fit with P values
+jrs:   '1.1'
+
+items:
+    - name:  text
+      title: Bootstrap item fit 
+      type:  Preformatted
+
+    - name: outfit
+      title: Bootstrap Outfit Statistics
+      type: Table
+      visible: (outfit)
+      rows: (vars)
+      clearWith:
+        - vars
+        - type
+        - bn
+      refs: iarm
+        
+      columns:
+        - name: name
+          title: ''
+          type: 'text'
+          content: ($key)
+
+        - name: fit
+          title: Outfit
+        
+        - name: p
+          title: p
+          format: zto,pvalue
+          
+        - name: adp
+          title: Adj.p
+          format: zto,pvalue
+         
+    - name: infit
+      title: Bootstrap Infit Statistics
+      type: Table
+      visible: (infit)
+      rows: (vars)
+      clearWith:
+        - vars
+        - type
+        - bn
+      refs: iarm
+        
+      columns:
+        - name: name
+          title: ''
+          type: 'text'
+          content: ($key)
+
+        - name: fit
+          title: Infit
+        
+        - name: p
+          title: p
+          format: zto,pvalue
+          
+        - name: adp
+          title: Adj.p
+          format: zto,pvalue
+
+...

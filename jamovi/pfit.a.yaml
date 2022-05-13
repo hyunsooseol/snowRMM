@@ -1,0 +1,49 @@
+---
+name:  pfit
+title: Bootstrap item fit with P values
+menuGroup: snowRMM
+version: '1.0.0'
+jas: '1.2'
+
+options:
+    - name: data
+      type: Data
+      description:
+          R: >
+            The data as a data frame.
+
+    - name: vars
+      title: Variables
+      type: Variables
+      suggested:
+         - continuous
+      permitted:
+        - numeric
+
+    - name: type
+      title: Type
+      type: List
+      options:
+      - name: bi
+        title: 'Binary'
+      - name: ra
+        title: 'Rating'
+      default: bi
+
+    - name: bn
+      title: Bootstrap N
+      type: Integer
+      min: 2
+      default: 100
+
+    - name: outfit 
+      title: Outfit
+      type: Bool
+      default: True
+
+    - name: infit
+      title: Infit
+      type: Bool
+      default: false
+
+...
