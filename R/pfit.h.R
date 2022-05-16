@@ -8,6 +8,7 @@ pfitOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         initialize = function(
             vars = NULL,
             type = "bi",
+            adj = "BH",
             bn = 100,
             outfit = TRUE,
             infit = FALSE, ...) {
@@ -32,6 +33,17 @@ pfitOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "bi",
                     "ra"),
                 default="bi")
+            private$..adj <- jmvcore::OptionList$new(
+                "adj",
+                adj,
+                options=list(
+                    "BH",
+                    "holm",
+                    "hochberg",
+                    "hommel",
+                    "bonferroni",
+                    "BY"),
+                default="BH")
             private$..bn <- jmvcore::OptionInteger$new(
                 "bn",
                 bn,
@@ -48,6 +60,7 @@ pfitOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 
             self$.addOption(private$..vars)
             self$.addOption(private$..type)
+            self$.addOption(private$..adj)
             self$.addOption(private$..bn)
             self$.addOption(private$..outfit)
             self$.addOption(private$..infit)
@@ -55,12 +68,14 @@ pfitOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     active = list(
         vars = function() private$..vars$value,
         type = function() private$..type$value,
+        adj = function() private$..adj$value,
         bn = function() private$..bn$value,
         outfit = function() private$..outfit$value,
         infit = function() private$..infit$value),
     private = list(
         ..vars = NA,
         ..type = NA,
+        ..adj = NA,
         ..bn = NA,
         ..outfit = NA,
         ..infit = NA)
@@ -93,7 +108,8 @@ pfitResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 clearWith=list(
                     "vars",
                     "type",
-                    "bn"),
+                    "bn",
+                    "adj"),
                 refs="iarm",
                 columns=list(
                     list(
@@ -121,7 +137,8 @@ pfitResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 clearWith=list(
                     "vars",
                     "type",
-                    "bn"),
+                    "bn",
+                    "adj"),
                 refs="iarm",
                 columns=list(
                     list(
@@ -167,6 +184,7 @@ pfitBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param data The data as a data frame.
 #' @param vars .
 #' @param type .
+#' @param adj .
 #' @param bn .
 #' @param outfit .
 #' @param infit .
@@ -188,6 +206,7 @@ pfit <- function(
     data,
     vars,
     type = "bi",
+    adj = "BH",
     bn = 100,
     outfit = TRUE,
     infit = FALSE) {
@@ -205,6 +224,7 @@ pfit <- function(
     options <- pfitOptions$new(
         vars = vars,
         type = type,
+        adj = adj,
         bn = bn,
         outfit = outfit,
         infit = infit)

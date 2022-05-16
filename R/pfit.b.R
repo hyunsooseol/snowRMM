@@ -25,19 +25,21 @@ pfitClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             
             type <- self$options$type
             
+            adj <- self$options$adj
+            
             # boot fit------
            
             if(self$options$type=='bi'){ 
             
                 obj<- eRm::RM(data)
                 
-                fit<- iarm::boot_fit(obj,B=bn)
+                fit<- iarm::boot_fit(obj,B=bn, p.adj=adj)
                 
             }else{
                 
                 obj<- eRm::PCM(data)
                 
-                fit<- iarm::boot_fit(obj,B=bn)
+                fit<- iarm::boot_fit(obj,B=bn,p.adj=adj)
             }
             
             # cREATING TABLE------------

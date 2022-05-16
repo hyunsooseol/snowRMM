@@ -17,6 +17,7 @@ items:
         - vars
         - type
         - bn
+        - adj
       refs: iarm
         
       columns:
@@ -45,6 +46,7 @@ items:
         - vars
         - type
         - bn
+        - adj
       refs: iarm
         
       columns:

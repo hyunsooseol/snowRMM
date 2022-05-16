@@ -45,8 +45,10 @@ children:
           - type: Label
             label: Statistics
             children:
+              - type: ComboBox
+                name: adj
               - type: CheckBox
                 name: outfit
               - type: CheckBox
                 name: infit
-  
+ 
