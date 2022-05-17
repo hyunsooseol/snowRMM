@@ -42,7 +42,21 @@ pfitClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             </body>
             </html>"
             )
+          
+            if (self$options$outfit)
+                self$results$outfit$setNote(
+                    "Note",
+                    "Adj.p= Adjusted p-values for Multiple Comparisons."
+                )
+
+            if (self$options$infit)
+                self$results$infit$setNote(
+                    "Note",
+                    "Adj.p= Adjusted p-values for Multiple Comparisons."
+                )
             
+            
+              
         },
         
    .run = function() {
