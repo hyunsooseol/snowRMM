@@ -1,12 +1,14 @@
 ---
 name:  pfit
 title: Bootstrap item fit with P values
+refs: snowRMM
 jrs:   '1.1'
 
 items:
-    - name:  text
-      title: Bootstrap item fit 
-      type:  Preformatted
+    - name: instructions
+      title: 'Instructions'
+      type: Html
+      visible: True
 
     - name: outfit
       title: Bootstrap Outfit Statistics

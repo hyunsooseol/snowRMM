@@ -71,4 +71,11 @@
         `year`=2021, 
         `title`="Easily Carry Out Latent Profile Analysis (LPA) Using Open-Source or Commercial Software", 
         `publisher`="[R package]. Retrieved from https://CRAN.R-project.org/package=tidyLPA", 
-        `url`="https://CRAN.R-project.org/package=tidyLPA"))
+        `url`="https://CRAN.R-project.org/package=tidyLPA"), 
+    `iarm`=list(
+        `type`="software", 
+        `author`="Mueller, M., Santiago, P.", 
+        `year`=2020, 
+        `title`="Item Analysis in Rasch Models", 
+        `publisher`="[R package]. Retrieved from https://CRAN.R-project.org/package=iarm", 
+        `url`="https://CRAN.R-project.org/package=iarm"))

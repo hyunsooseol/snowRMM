@@ -65,6 +65,7 @@ analyses:
     ns: snowRMM
     menuGroup: snowRMM
     menuTitle: Bootstrap item fit with P values
+    menuSubgroup: Rasch
 datasets:
   - name: mixture
     path: mix.omv
@@ -77,6 +78,12 @@ datasets:
     tags:
       - Rasch
       - Bootstrap
+  - name: pcm
+    path: rating.omv
+    description: Bootstrap Item Fit with P values
+    tags:
+      - Rasch
+      - Bootstrap P values
   - name: rating
     path: sim.omv
     description: Likert-type simulation data

@@ -8,7 +8,7 @@ Description: This module provides Latent Class Analysis, Latent Profile Analysis
 License: GPL3
 LazyData: TRUE
 Encoding: UTF-8
-RoxygenNote: 7.2.0
+RoxygenNote: 7.1.2
 Imports:
     jmvcore (>= 0.8.5), 
     R6,
@@ -28,4 +28,4 @@ Imports:
     equate,
     eRm,
     iarm,
-Remotes: twolodzko/equi
+Remotes:twolodzko/equi

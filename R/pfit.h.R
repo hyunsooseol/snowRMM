@@ -85,7 +85,7 @@ pfitResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "pfitResults",
     inherit = jmvcore::Group,
     active = list(
-        text = function() private$.items[["text"]],
+        instructions = function() private$.items[["instructions"]],
         outfit = function() private$.items[["outfit"]],
         infit = function() private$.items[["infit"]]),
     private = list(),
@@ -94,11 +94,13 @@ pfitResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             super$initialize(
                 options=options,
                 name="",
-                title="Bootstrap item fit with P values")
-            self$add(jmvcore::Preformatted$new(
+                title="Bootstrap item fit with P values",
+                refs="snowRMM")
+            self$add(jmvcore::Html$new(
                 options=options,
-                name="text",
-                title="Bootstrap item fit"))
+                name="instructions",
+                title="Instructions",
+                visible=TRUE))
             self$add(jmvcore::Table$new(
                 options=options,
                 name="outfit",
@@ -190,7 +192,7 @@ pfitBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param infit .
 #' @return A results object containing:
 #' \tabular{llllll}{
-#'   \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
+#'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
 #'   \code{results$outfit} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$infit} \tab \tab \tab \tab \tab a table \cr
 #' }

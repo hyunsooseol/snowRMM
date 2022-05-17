@@ -2,6 +2,7 @@
 name:  pfit
 title: Bootstrap item fit with P values
 menuGroup: snowRMM
+menuSubgroup: Rasch
 version: '1.0.0'
 jas: '1.2'
 
@@ -47,7 +48,7 @@ options:
         - title: BY
           name:  BY 
       default: BH
-
+ 
     - name: bn
       title: Bootstrap N
       type: Integer

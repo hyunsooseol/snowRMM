@@ -14,8 +14,44 @@ pfitClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
     "pfitClass",
     inherit = pfitBase,
     private = list(
-        .run = function() {
 
+        ###### .init function--------
+        
+        .init = function() {
+            if (is.null(self$data) | is.null(self$options$vars)) {
+                self$results$instructions$setVisible(visible = TRUE)
+                
+            }
+            
+            self$results$instructions$setContent(
+                "<html>
+            <head>
+            </head>
+            <body>
+            <div class='instructions'>
+
+            <p><b>Instructions</b></p>
+            <p>_____________________________________________________________________________________________</p>
+            <p>1. This analysis computes Bootstrapping P Values for Outfit and Infit Statistics.</p>
+            <p>2. Specify <b>Type and Bootstrap N</b> in the Analysis option.</p>
+            <p>3. A fitted Rasch model or Partial Credit Model in R package <b>eRm</b> is used to compute bootstrap fit statistics.</p>
+            <p>4. Feature requests and bug reports can be made on my <a href='https://github.com/hyunsooseol/snowRMM/issues'  target = '_blank'>GitHub</a>.</p>
+            <p>_____________________________________________________________________________________________</p>
+            
+            </div>
+            </body>
+            </html>"
+            )
+            
+        },
+        
+   .run = function() {
+
+       if (is.null(self$options$vars) |
+           length(self$options$vars) < 2) return()
+       
+       
+       
             data <- self$data
             data <- na.omit(data)
             
@@ -27,13 +63,13 @@ pfitClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             
             adj <- self$options$adj
             
-            # boot fit------
+            # boot fit with RM an PCM ------
            
             if(self$options$type=='bi'){ 
             
                 obj<- eRm::RM(data)
                 
-                fit<- iarm::boot_fit(obj,B=bn, p.adj=adj)
+                fit<- iarm::boot_fit(obj,B=bn,p.adj=adj)
                 
             }else{
                 
@@ -99,8 +135,6 @@ pfitClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 
                 
            
-                
-            
             # self$results$text$setContent(fit) 
             
             
