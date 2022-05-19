@@ -108,6 +108,11 @@ datasets:
     description: Latent profile analysis
     tags:
       - Latent Profile
+  - name: WHR2021
+    path: WHR2021.omv
+    description: World Happiness Report 2021
+    tags:
+      - Latent Profile
   - name: linear
     path: lin.omv
     description: Linear equating
