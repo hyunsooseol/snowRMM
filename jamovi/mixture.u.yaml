@@ -73,11 +73,9 @@ children:
             label: Model Fit
             children:
               - type: CheckBox
-                name: aic
+                name: fit
               - type: CheckBox
-                name: bic
-              - type: CheckBox
-                name: caic
+                name: plot1
           - type: Label
             label: Plot
             children:

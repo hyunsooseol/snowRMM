@@ -1,12 +1,12 @@
 ---
 title: Rasch Mixture Model for jamovi
 name: snowRMM
-version: 4.8.0
+version: 4.8.2
 jms: '1.0'
 authors:
   - Hyunsoo Seol
 maintainer: Hyunsoo Seol <snow@cau.ac.kr>
-date: '2022-05-13'
+date: '2022-06-25'
 type: R
 description: >-
   This module allows users to conduct Latent class analysis, Latent Profile

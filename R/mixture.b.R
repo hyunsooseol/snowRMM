@@ -14,6 +14,7 @@
 #' @importFrom ggplot2 geom_point
 #' @importFrom ggplot2 labs
 #' @importFrom ggplot2 aes
+#' @importFrom tidyr pivot_longer
 #' @importFrom WrightMap wrightMap
 #' @importFrom tidyr gather
 #' @export
@@ -63,12 +64,6 @@ mixtureClass <- if (requireNamespace('jmvcore'))
       
       .run = function() {
         
-        # # get variables-------
-        # 
-        # data <- self$data
-        # 
-        # vars <- self$options$vars
-        # 
         
         # Ready--------
         
@@ -113,7 +108,12 @@ mixtureClass <- if (requireNamespace('jmvcore'))
           
           private$.prepareWrightmapPlot(data)
           
-         
+         # prepare model plot--------
+          
+       #   private$.prepareModelPlot(results)
+          
+          
+          
         }
       },
       
@@ -173,14 +173,40 @@ mixtureClass <- if (requireNamespace('jmvcore'))
         pbis <- as.data.frame(pbis)
         
         
-        # model information------
+        # model fit information------
         
-        aic <- res1$info.fit$AIC
+        # aic <- res1$info.fit$AIC
+        # 
+        # bic <- res1$info.fit$BIC
+        # 
+        # caic <- res1$info.fit$CAIC
         
-        bic <- res1$info.fit$BIC
+        out <- NULL
         
-        caic <- res1$info.fit$CAIC
+        for (i in 1:nc) {
+          
+          res1 <-
+            mixRasch::mixRasch(
+              data = data,
+              steps = step,
+              model = type,
+              n.c = nc
+            )
+          
+          model <- res1$info.fit
+          
+          df <- data.frame(model)
+          
+          if (is.null(out)) {
+            out <- df
+          } else {
+            out <- rbind(out, df)
+          }
+        }
         
+        out <- out
+        
+     #   self$results$text$setContent(out)
         
         # number of class
         
@@ -199,9 +225,10 @@ mixtureClass <- if (requireNamespace('jmvcore'))
         
         results <-
           list(
-            'aic' = aic,
-            'bic' = bic,
-            'caic' = caic,
+            # 'aic' = aic,
+            # 'bic' = bic,
+            # 'caic' = caic,
+            'out'= out,
             'imeasure' = imeasure,
             'ise' = ise,
             'infit' = infit,
@@ -219,31 +246,105 @@ mixtureClass <- if (requireNamespace('jmvcore'))
       # populate Model information table-----
       
       .populateModelTable = function(results) {
-        table <- self$results$item$model
-        nc <- self$options$nc
+        
+        table <- self$results$item$fit
+        
+         nc <- self$options$nc
+        
+        out <- results$out
         
         
-        #results---------
+        fit<- data.frame(out)
         
-        class <- results$class
-        aic <- results$aic
-        bic <- results$bic
-        caic <- results$caic
+       # self$results$text$setContent(fit)
         
         
-        for (i in seq_len(nc)) {
+        
+        names <- dimnames(fit)[[1]]
+        
+        
+        for (name in names) {
+          
           row <- list()
           
-          row[["class"]] <- class
-          row[["aic"]] <- aic
-          row[["bic"]] <- bic
-          row[["caic"]] <- caic
+          row[["aic"]]   <-  fit[name, 1]
+          row[["bic"]] <-  fit[name, 2]
+          row[["caic"]] <-  fit[name, 3]
+          row[["loglik"]] <-  fit[name, 4]
+          row[["parm"]] <-  fit[name, 5]
+          row[["person"]] <-  fit[name, 6]
           
-          table$setRow(rowNo = 1, values = row)
+          table$addRow(rowKey=name, values=row)
           
         }
         
-      },
+        # Prepare Model Plot -------
+        
+        
+          nc<- self$options$nc
+
+          out <- results$out
+
+          df<- out[,1:3]
+          df$Class <- 1:nc
+
+
+          pd<- tidyr::pivot_longer(df,col=c("AIC","BIC","CAIC"),
+                                   names_to = "Fit",
+                                   values_to = "Value")
+
+          pd <- as.data.frame(pd)
+
+          self$results$text$setContent(pd) #it's OK !!!
+
+
+          image1 <- self$results$plot1
+          image1$setState(pd)
+
+         },
+        
+        
+        
+      #   dims <- dimnames(fit)[[2]]
+      #   
+      #   for (dim in dims) {
+      #     
+      #     table$addColumn(name = paste0(dim),
+      #                     type = 'number')
+      #   }
+      #   
+      #   
+      #   for (name in names) {
+      #     row <- list()
+      #     
+      #     for(j in seq_along(dims)){       
+      #       row[[dims[j]]] <- fit[name,j]
+      #     }
+      #     
+      #     table$addRow(rowKey=name, values=row)
+      #   }
+      # },
+        
+        #results---------
+        
+        # class <- results$class
+        # aic <- results$aic
+        # bic <- results$bic
+        # caic <- results$caic
+        # 
+        # 
+        # for (i in seq_len(nc)) {
+        #   row <- list()
+        #   
+        #   row[["class"]] <- class
+        #   row[["aic"]] <- aic
+        #   row[["bic"]] <- bic
+        #   row[["caic"]] <- caic
+        #   
+        #   table$setRow(rowNo = 1, values = row)
+        #   
+        # }
+        # 
       
       
       # populate Item Statistics table-----
@@ -743,18 +844,65 @@ mixtureClass <- if (requireNamespace('jmvcore'))
                                      
       },                             
       
+
+     # .prepareModelPlot = function(results){
+     #   
+     #   nc<- self$options$nc
+     #   
+     #   out <- results$out
+     #   
+     #   df<- out[,1:3]
+     #   df$Class <- 1:nc
+     #   
+     #   
+     #   pd<- tidyr::pivot_longer(df,col=c("AIC","BIC","CAIC"), 
+     #                            names_to = "Fit",
+     #                            values_to = "Value")
+     #   
+     #   pd <- as.data.frame(pd)
+     #   
+     #   self$results$text$setContent(pd) #it's OK !!!
+     #   
+     #   
+     #   image <- self$results$mplot
+     #   image$setState(pd)
+     #   
+     #   
+     # },
+     # 
+     # 
+     
+    .plot1 = function(image1, ggtheme, theme,...) {
       
       
-      #### Helper functions =================================
+      if (is.null(image1$state))
+        return(FALSE)
       
-      # .getDataRowNums = function() {
-      #   if (is.null(private$.dataRowNums))
-      #     private$.dataRowNums <- rownames(self$dataProcessed)
-      #   
-      #   return(private$.dataRowNums)
-      # },
-      # 
+      plot1 <- self$options$plot1
       
+       data <- image1$state
+       
+      
+       plot1<- ggplot2::ggplot(data=data, aes(x=as.factor(Class),
+                           y=Value,
+                           group=Fit
+                           ))+
+         geom_line(aes(color=Fit))+
+         geom_point(aes(color=Fit))+
+         labs(title=" Fit measure",
+              x ="Class", y = "Measure", color='Fit')+
+         ggtheme        
+       
+        #plot1 <- plot1 + ggtheme            
+                       
+       
+       print(plot1)
+       TRUE
+     
+     },
+     
+   #--------------------------    
+   
       .cleanData = function() {
         items <- self$options$vars
         

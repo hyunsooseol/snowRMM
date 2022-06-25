@@ -32,7 +32,7 @@ pfit(
 \value{
 A results object containing:
 \tabular{llllll}{
-  \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
+  \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
   \code{results$outfit} \tab \tab \tab \tab \tab a table \cr
   \code{results$infit} \tab \tab \tab \tab \tab a table \cr
 }

@@ -10,10 +10,8 @@ mixtureOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             nc = 2,
             step = 1,
             type = "RSM",
-            aic = TRUE,
-            bic = TRUE,
-            caic = TRUE,
-            imean = FALSE,
+            fit = TRUE,
+            imean = TRUE,
             imeasure = FALSE,
             ise = FALSE,
             infit = FALSE,
@@ -22,7 +20,8 @@ mixtureOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             average = FALSE,
             angle = 0,
             iplot = FALSE,
-            wrightmap = FALSE, ...) {
+            wrightmap = FALSE,
+            plot1 = FALSE, ...) {
 
             super$initialize(
                 package="snowRMM",
@@ -54,22 +53,14 @@ mixtureOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "RSM",
                     "PCM"),
                 default="RSM")
-            private$..aic <- jmvcore::OptionBool$new(
-                "aic",
-                aic,
-                default=TRUE)
-            private$..bic <- jmvcore::OptionBool$new(
-                "bic",
-                bic,
-                default=TRUE)
-            private$..caic <- jmvcore::OptionBool$new(
-                "caic",
-                caic,
+            private$..fit <- jmvcore::OptionBool$new(
+                "fit",
+                fit,
                 default=TRUE)
             private$..imean <- jmvcore::OptionBool$new(
                 "imean",
                 imean,
-                default=FALSE)
+                default=TRUE)
             private$..imeasure <- jmvcore::OptionBool$new(
                 "imeasure",
                 imeasure,
@@ -110,14 +101,16 @@ mixtureOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 default=FALSE)
             private$..pclass <- jmvcore::OptionOutput$new(
                 "pclass")
+            private$..plot1 <- jmvcore::OptionBool$new(
+                "plot1",
+                plot1,
+                default=FALSE)
 
             self$.addOption(private$..vars)
             self$.addOption(private$..nc)
             self$.addOption(private$..step)
             self$.addOption(private$..type)
-            self$.addOption(private$..aic)
-            self$.addOption(private$..bic)
-            self$.addOption(private$..caic)
+            self$.addOption(private$..fit)
             self$.addOption(private$..imean)
             self$.addOption(private$..imeasure)
             self$.addOption(private$..ise)
@@ -129,15 +122,14 @@ mixtureOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..iplot)
             self$.addOption(private$..wrightmap)
             self$.addOption(private$..pclass)
+            self$.addOption(private$..plot1)
         }),
     active = list(
         vars = function() private$..vars$value,
         nc = function() private$..nc$value,
         step = function() private$..step$value,
         type = function() private$..type$value,
-        aic = function() private$..aic$value,
-        bic = function() private$..bic$value,
-        caic = function() private$..caic$value,
+        fit = function() private$..fit$value,
         imean = function() private$..imean$value,
         imeasure = function() private$..imeasure$value,
         ise = function() private$..ise$value,
@@ -148,15 +140,14 @@ mixtureOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         angle = function() private$..angle$value,
         iplot = function() private$..iplot$value,
         wrightmap = function() private$..wrightmap$value,
-        pclass = function() private$..pclass$value),
+        pclass = function() private$..pclass$value,
+        plot1 = function() private$..plot1$value),
     private = list(
         ..vars = NA,
         ..nc = NA,
         ..step = NA,
         ..type = NA,
-        ..aic = NA,
-        ..bic = NA,
-        ..caic = NA,
+        ..fit = NA,
         ..imean = NA,
         ..imeasure = NA,
         ..ise = NA,
@@ -167,7 +158,8 @@ mixtureOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..angle = NA,
         ..iplot = NA,
         ..wrightmap = NA,
-        ..pclass = NA)
+        ..pclass = NA,
+        ..plot1 = NA)
 )
 
 mixtureResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -175,11 +167,13 @@ mixtureResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     inherit = jmvcore::Group,
     active = list(
         instructions = function() private$.items[["instructions"]],
+        text = function() private$.items[["text"]],
         item = function() private$.items[["item"]],
         person = function() private$.items[["person"]],
         iplot = function() private$.items[["iplot"]],
         plot = function() private$.items[["plot"]],
-        pclass = function() private$.items[["pclass"]]),
+        pclass = function() private$.items[["pclass"]],
+        plot1 = function() private$.items[["plot1"]]),
     private = list(),
     public=list(
         initialize=function(options) {
@@ -193,10 +187,14 @@ mixtureResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 name="instructions",
                 title="Instructions",
                 visible=TRUE))
+            self$add(jmvcore::Preformatted$new(
+                options=options,
+                name="text",
+                title="test"))
             self$add(R6::R6Class(
                 inherit = jmvcore::Group,
                 active = list(
-                    model = function() private$.items[["model"]],
+                    fit = function() private$.items[["fit"]],
                     imean = function() private$.items[["imean"]],
                     imeasure = function() private$.items[["imeasure"]],
                     ise = function() private$.items[["ise"]],
@@ -212,9 +210,9 @@ mixtureResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                             title="Item Analysis")
                         self$add(jmvcore::Table$new(
                             options=options,
-                            name="model",
-                            title="Model Information",
-                            rows=1,
+                            name="fit",
+                            title="Model FIt Information",
+                            visible="(fit)",
                             clearWith=list(
                                 "vars",
                                 "nc",
@@ -223,21 +221,34 @@ mixtureResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                             refs="mixRasch",
                             columns=list(
                                 list(
-                                    `name`="class", 
+                                    `name`="name", 
                                     `title`="Class", 
-                                    `visible`="(class)"),
+                                    `type`="text", 
+                                    `content`="($key)"),
                                 list(
                                     `name`="aic", 
                                     `title`="AIC", 
-                                    `visible`="(aic)"),
+                                    `type`="number"),
                                 list(
                                     `name`="bic", 
                                     `title`="BIC", 
-                                    `visible`="(bic)"),
+                                    `type`="number"),
                                 list(
                                     `name`="caic", 
                                     `title`="CAIC", 
-                                    `visible`="(caic)"))))
+                                    `type`="number"),
+                                list(
+                                    `name`="loglik", 
+                                    `title`="loglik", 
+                                    `type`="number"),
+                                list(
+                                    `name`="parm", 
+                                    `title`="Parameters", 
+                                    `type`="integer"),
+                                list(
+                                    `name`="person", 
+                                    `title`="Persons", 
+                                    `type`="integer"))))
                         self$add(jmvcore::Table$new(
                             options=options,
                             name="imean",
@@ -438,6 +449,19 @@ mixtureResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "vars",
                     "nc",
                     "step",
+                    "type")))
+            self$add(jmvcore::Image$new(
+                options=options,
+                name="plot1",
+                title="Model plot",
+                visible="(plot1)",
+                width=500,
+                height=500,
+                renderFun=".plot1",
+                clearWith=list(
+                    "vars",
+                    "nc",
+                    "step",
                     "type")))}))
 
 mixtureBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -468,9 +492,7 @@ mixtureBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param nc .
 #' @param step .
 #' @param type .
-#' @param aic .
-#' @param bic .
-#' @param caic .
+#' @param fit .
 #' @param imean .
 #' @param imeasure .
 #' @param ise .
@@ -482,10 +504,12 @@ mixtureBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   where 0 degrees represents completely horizontal labels.
 #' @param iplot .
 #' @param wrightmap .
+#' @param plot1 .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
-#'   \code{results$item$model} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
+#'   \code{results$item$fit} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$item$imean} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$item$imeasure} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$item$ise} \tab \tab \tab \tab \tab a table \cr
@@ -496,6 +520,7 @@ mixtureBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$iplot} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$pclass} \tab \tab \tab \tab \tab an output \cr
+#'   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
 #' }
 #'
 #' @export
@@ -505,10 +530,8 @@ mixture <- function(
     nc = 2,
     step = 1,
     type = "RSM",
-    aic = TRUE,
-    bic = TRUE,
-    caic = TRUE,
-    imean = FALSE,
+    fit = TRUE,
+    imean = TRUE,
     imeasure = FALSE,
     ise = FALSE,
     infit = FALSE,
@@ -517,7 +540,8 @@ mixture <- function(
     average = FALSE,
     angle = 0,
     iplot = FALSE,
-    wrightmap = FALSE) {
+    wrightmap = FALSE,
+    plot1 = FALSE) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("mixture requires jmvcore to be installed (restart may be required)")
@@ -534,9 +558,7 @@ mixture <- function(
         nc = nc,
         step = step,
         type = type,
-        aic = aic,
-        bic = bic,
-        caic = caic,
+        fit = fit,
         imean = imean,
         imeasure = imeasure,
         ise = ise,
@@ -546,7 +568,8 @@ mixture <- function(
         average = average,
         angle = angle,
         iplot = iplot,
-        wrightmap = wrightmap)
+        wrightmap = wrightmap,
+        plot1 = plot1)
 
     analysis <- mixtureClass$new(
         options = options,

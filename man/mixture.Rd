@@ -10,10 +10,8 @@ mixture(
   nc = 2,
   step = 1,
   type = "RSM",
-  aic = TRUE,
-  bic = TRUE,
-  caic = TRUE,
-  imean = FALSE,
+  fit = TRUE,
+  imean = TRUE,
   imeasure = FALSE,
   ise = FALSE,
   infit = FALSE,
@@ -22,7 +20,8 @@ mixture(
   average = FALSE,
   angle = 0,
   iplot = FALSE,
-  wrightmap = FALSE
+  wrightmap = FALSE,
+  plot1 = FALSE
 )
 }
 \arguments{
@@ -36,11 +35,7 @@ mixture(
 
 \item{type}{.}
 
-\item{aic}{.}
-
-\item{bic}{.}
-
-\item{caic}{.}
+\item{fit}{.}
 
 \item{imean}{.}
 
@@ -62,12 +57,15 @@ where 0 degrees represents completely horizontal labels.}
 \item{iplot}{.}
 
 \item{wrightmap}{.}
+
+\item{plot1}{.}
 }
 \value{
 A results object containing:
 \tabular{llllll}{
   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
-  \code{results$item$model} \tab \tab \tab \tab \tab a table \cr
+  \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
+  \code{results$item$fit} \tab \tab \tab \tab \tab a table \cr
   \code{results$item$imean} \tab \tab \tab \tab \tab a table \cr
   \code{results$item$imeasure} \tab \tab \tab \tab \tab a table \cr
   \code{results$item$ise} \tab \tab \tab \tab \tab a table \cr
@@ -78,6 +76,7 @@ A results object containing:
   \code{results$iplot} \tab \tab \tab \tab \tab an image \cr
   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
   \code{results$pclass} \tab \tab \tab \tab \tab an output \cr
+  \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
 }
 }
 \description{

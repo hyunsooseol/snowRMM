@@ -43,25 +43,15 @@ options:
         title: 'Partial credit'
       default: RSM
 
-    - name: aic
-      title: AIC
-      type: Bool
-      default: True
-
-    - name: bic
-      title: BIC
-      type: Bool
-      default: TRUE
-
-    - name: caic
-      title: CAIC
+    - name: fit
+      title: Model fit
       type: Bool
       default: TRUE
 
     - name: imean
       title: Item mean
       type: Bool
-      default: FALSE
+      default: TRUE
 
     - name: imeasure
       title: Measure
@@ -117,5 +107,10 @@ options:
     - name: pclass
       title: Person Membership
       type: Output    
+
+    - name: plot1
+      title: Model plot
+      type: Bool
+      default: FALSE
 
 ...
