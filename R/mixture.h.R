@@ -20,8 +20,7 @@ mixtureOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             average = FALSE,
             angle = 0,
             iplot = FALSE,
-            wrightmap = FALSE,
-            plot1 = FALSE, ...) {
+            wrightmap = FALSE, ...) {
 
             super$initialize(
                 package="snowRMM",
@@ -101,10 +100,6 @@ mixtureOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 default=FALSE)
             private$..pclass <- jmvcore::OptionOutput$new(
                 "pclass")
-            private$..plot1 <- jmvcore::OptionBool$new(
-                "plot1",
-                plot1,
-                default=FALSE)
 
             self$.addOption(private$..vars)
             self$.addOption(private$..nc)
@@ -122,7 +117,6 @@ mixtureOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..iplot)
             self$.addOption(private$..wrightmap)
             self$.addOption(private$..pclass)
-            self$.addOption(private$..plot1)
         }),
     active = list(
         vars = function() private$..vars$value,
@@ -140,8 +134,7 @@ mixtureOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         angle = function() private$..angle$value,
         iplot = function() private$..iplot$value,
         wrightmap = function() private$..wrightmap$value,
-        pclass = function() private$..pclass$value,
-        plot1 = function() private$..plot1$value),
+        pclass = function() private$..pclass$value),
     private = list(
         ..vars = NA,
         ..nc = NA,
@@ -158,8 +151,7 @@ mixtureOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..angle = NA,
         ..iplot = NA,
         ..wrightmap = NA,
-        ..pclass = NA,
-        ..plot1 = NA)
+        ..pclass = NA)
 )
 
 mixtureResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -167,13 +159,11 @@ mixtureResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     inherit = jmvcore::Group,
     active = list(
         instructions = function() private$.items[["instructions"]],
-        text = function() private$.items[["text"]],
         item = function() private$.items[["item"]],
         person = function() private$.items[["person"]],
         iplot = function() private$.items[["iplot"]],
         plot = function() private$.items[["plot"]],
-        pclass = function() private$.items[["pclass"]],
-        plot1 = function() private$.items[["plot1"]]),
+        pclass = function() private$.items[["pclass"]]),
     private = list(),
     public=list(
         initialize=function(options) {
@@ -187,10 +177,6 @@ mixtureResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 name="instructions",
                 title="Instructions",
                 visible=TRUE))
-            self$add(jmvcore::Preformatted$new(
-                options=options,
-                name="text",
-                title="test"))
             self$add(R6::R6Class(
                 inherit = jmvcore::Group,
                 active = list(
@@ -239,7 +225,7 @@ mixtureResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                     `type`="number"),
                                 list(
                                     `name`="loglik", 
-                                    `title`="loglik", 
+                                    `title`="Log-likelihood", 
                                     `type`="number"),
                                 list(
                                     `name`="parm", 
@@ -449,19 +435,6 @@ mixtureResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "vars",
                     "nc",
                     "step",
-                    "type")))
-            self$add(jmvcore::Image$new(
-                options=options,
-                name="plot1",
-                title="Model plot",
-                visible="(plot1)",
-                width=500,
-                height=500,
-                renderFun=".plot1",
-                clearWith=list(
-                    "vars",
-                    "nc",
-                    "step",
                     "type")))}))
 
 mixtureBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -504,11 +477,9 @@ mixtureBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   where 0 degrees represents completely horizontal labels.
 #' @param iplot .
 #' @param wrightmap .
-#' @param plot1 .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
-#'   \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$item$fit} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$item$imean} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$item$imeasure} \tab \tab \tab \tab \tab a table \cr
@@ -520,7 +491,6 @@ mixtureBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$iplot} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$pclass} \tab \tab \tab \tab \tab an output \cr
-#'   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
 #' }
 #'
 #' @export
@@ -540,8 +510,7 @@ mixture <- function(
     average = FALSE,
     angle = 0,
     iplot = FALSE,
-    wrightmap = FALSE,
-    plot1 = FALSE) {
+    wrightmap = FALSE) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("mixture requires jmvcore to be installed (restart may be required)")
@@ -568,8 +537,7 @@ mixture <- function(
         average = average,
         angle = angle,
         iplot = iplot,
-        wrightmap = wrightmap,
-        plot1 = plot1)
+        wrightmap = wrightmap)
 
     analysis <- mixtureClass$new(
         options = options,

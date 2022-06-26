@@ -14,7 +14,6 @@
 #' @importFrom ggplot2 geom_point
 #' @importFrom ggplot2 labs
 #' @importFrom ggplot2 aes
-#' @importFrom tidyr pivot_longer
 #' @importFrom WrightMap wrightMap
 #' @importFrom tidyr gather
 #' @export
@@ -108,11 +107,7 @@ mixtureClass <- if (requireNamespace('jmvcore'))
           
           private$.prepareWrightmapPlot(data)
           
-         # prepare model plot--------
-          
-       #   private$.prepareModelPlot(results)
-          
-          
+        
           
         }
       },
@@ -206,7 +201,7 @@ mixtureClass <- if (requireNamespace('jmvcore'))
         
         out <- out
         
-     #   self$results$text$setContent(out)
+     # self$results$text$setContent(out)
         
         # number of class
         
@@ -258,8 +253,6 @@ mixtureClass <- if (requireNamespace('jmvcore'))
         
        # self$results$text$setContent(fit)
         
-        
-        
         names <- dimnames(fit)[[1]]
         
         
@@ -275,33 +268,34 @@ mixtureClass <- if (requireNamespace('jmvcore'))
           row[["person"]] <-  fit[name, 6]
           
           table$addRow(rowKey=name, values=row)
-          
-        }
+         
+        } 
+        },
         
-        # Prepare Model Plot -------
-        
-        
-          nc<- self$options$nc
-
-          out <- results$out
-
-          df<- out[,1:3]
-          df$Class <- 1:nc
-
-
-          pd<- tidyr::pivot_longer(df,col=c("AIC","BIC","CAIC"),
-                                   names_to = "Fit",
-                                   values_to = "Value")
-
-          pd <- as.data.frame(pd)
-
-          self$results$text$setContent(pd) #it's OK !!!
-
-
-          image1 <- self$results$plot1
-          image1$setState(pd)
-
-         },
+        # # Prepare Model Plot -------
+        # 
+        # 
+        #   nc<- self$options$nc
+        # 
+        #   out <- results$out
+        # 
+        #   df<- out[,1:3]
+        #   df$Class <- 1:nc
+        # 
+        # 
+        #   pd<- tidyr::pivot_longer(df,col=c("AIC","BIC","CAIC"),
+        #                            names_to = "Fit",
+        #                            values_to = "Value")
+        # 
+        #   pd <- as.data.frame(pd)
+        # 
+        #   self$results$text$setContent(pd) #it's OK !!!
+        # 
+        # 
+        #   image1 <- self$results$plot1
+        #   image1$setState(pd)
+        # 
+        #  },
         
         
         
@@ -872,35 +866,35 @@ mixtureClass <- if (requireNamespace('jmvcore'))
      # 
      # 
      
-    .plot1 = function(image1, ggtheme, theme,...) {
-      
-      
-      if (is.null(image1$state))
-        return(FALSE)
-      
-      plot1 <- self$options$plot1
-      
-       data <- image1$state
-       
-      
-       plot1<- ggplot2::ggplot(data=data, aes(x=as.factor(Class),
-                           y=Value,
-                           group=Fit
-                           ))+
-         geom_line(aes(color=Fit))+
-         geom_point(aes(color=Fit))+
-         labs(title=" Fit measure",
-              x ="Class", y = "Measure", color='Fit')+
-         ggtheme        
-       
-        #plot1 <- plot1 + ggtheme            
-                       
-       
-       print(plot1)
-       TRUE
-     
-     },
-     
+    # .plot1 = function(image1, ggtheme, theme,...) {
+    #   
+    #   
+    #   if (is.null(image1$state))
+    #     return(FALSE)
+    #   
+    #   plot1 <- self$options$plot1
+    #   
+    #    data <- image1$state
+    #    
+    #   
+    #    plot1<- ggplot2::ggplot(data=data, aes(x=as.factor(Class),
+    #                        y=Value,
+    #                        group=Fit
+    #                        ))+
+    #      geom_line(aes(color=Fit))+
+    #      geom_point(aes(color=Fit))+
+    #      labs(title=" Fit measure",
+    #           x ="Class", y = "Measure", color='Fit')+
+    #      ggtheme        
+    #    
+    #     #plot1 <- plot1 + ggtheme            
+    #                    
+    #    
+    #    print(plot1)
+    #    TRUE
+    #  
+    #  },
+    #  
    #--------------------------    
    
       .cleanData = function() {

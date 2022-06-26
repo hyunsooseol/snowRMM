@@ -74,8 +74,6 @@ children:
             children:
               - type: CheckBox
                 name: fit
-              - type: CheckBox
-                name: plot1
           - type: Label
             label: Plot
             children:

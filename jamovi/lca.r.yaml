@@ -4,10 +4,15 @@ title: Latent Class Analysis
 jrs:   '1.1'
 refs: snowRMM
 items:
+    - name:  text
+      title: test
+      type:  Preformatted
+      
     - name: instructions
       title: 'Instructions'
       type: Html
       visible: True
+
     - name: fit
       title: 'Model fit'
       type: Table
@@ -37,6 +42,36 @@ items:
           type: number
           format: zto,pvalue
   
+    - name: comp
+      title: 'Model comparison'
+      type: Table
+      visible: (comp)
+      clearWith:
+        - vars
+        - nc
+      refs: poLCA 
+
+      columns:
+        - name: name
+          title: 'Class'
+          type: 'text'
+          content: ($key)        
+        - name: aic
+          title: AIC
+          type: number
+        - name: bic
+          title: BIC      
+          type: number
+        - name: loglik
+          title: Log-likelihood      
+          type: number          
+        - name: Chisq
+          title: χ²
+          type: number
+        - name: Gsq
+          title:  G² 
+          type: number          
+
     - name: cf
       title: 'Predicted cell counts from latent class analysis'
       type: Table

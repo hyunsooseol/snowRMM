@@ -44,7 +44,7 @@ options:
       default: RSM
 
     - name: fit
-      title: Model fit
+      title: Fit measures
       type: Bool
       default: TRUE
 
@@ -107,10 +107,5 @@ options:
     - name: pclass
       title: Person Membership
       type: Output    
-
-    - name: plot1
-      title: Model plot
-      type: Bool
-      default: FALSE
 
 ...

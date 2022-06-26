@@ -38,7 +38,12 @@ options:
       default: 2
  
     - name: fit
-      title: Model fit
+      title: Fit measures
+      type: Bool
+      default: True
+
+    - name: comp
+      title: Model comparison
       type: Bool
       default: True
 

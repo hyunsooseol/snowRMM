@@ -9,10 +9,6 @@ items:
       type: Html
       visible: True
 
-    - name:  text
-      title: test
-      type:  Preformatted
-      
     - name: item
       title: Item Analysis
       type: Group
@@ -43,7 +39,7 @@ items:
               title: CAIC 
               type: number
             - name: loglik
-              title: loglik  
+              title: Log-likelihood  
               type: number
             - name: parm
               title: Parameters
@@ -244,19 +240,6 @@ items:
         - nc
         - step
         - type        
-
-    - name: plot1
-      title: 'Model plot'
-      type: Image
-      visible: (plot1)
-      width: 500
-      height: 500
-      renderFun: .plot1
-      clearWith:
-        - vars
-        - nc
-        - step
-        - type
 
 ...
 

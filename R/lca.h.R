@@ -10,6 +10,7 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             group = NULL,
             nc = 2,
             fit = TRUE,
+            comp = TRUE,
             cp = FALSE,
             ip = FALSE,
             cf = FALSE,
@@ -48,6 +49,10 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             private$..fit <- jmvcore::OptionBool$new(
                 "fit",
                 fit,
+                default=TRUE)
+            private$..comp <- jmvcore::OptionBool$new(
+                "comp",
+                comp,
                 default=TRUE)
             private$..cp <- jmvcore::OptionBool$new(
                 "cp",
@@ -90,6 +95,7 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..group)
             self$.addOption(private$..nc)
             self$.addOption(private$..fit)
+            self$.addOption(private$..comp)
             self$.addOption(private$..cp)
             self$.addOption(private$..ip)
             self$.addOption(private$..cf)
@@ -106,6 +112,7 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         group = function() private$..group$value,
         nc = function() private$..nc$value,
         fit = function() private$..fit$value,
+        comp = function() private$..comp$value,
         cp = function() private$..cp$value,
         ip = function() private$..ip$value,
         cf = function() private$..cf$value,
@@ -121,6 +128,7 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..group = NA,
         ..nc = NA,
         ..fit = NA,
+        ..comp = NA,
         ..cp = NA,
         ..ip = NA,
         ..cf = NA,
@@ -137,8 +145,10 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "lcaResults",
     inherit = jmvcore::Group,
     active = list(
+        text = function() private$.items[["text"]],
         instructions = function() private$.items[["instructions"]],
         fit = function() private$.items[["fit"]],
+        comp = function() private$.items[["comp"]],
         cf = function() private$.items[["cf"]],
         cp = function() private$.items[["cp"]],
         ip = function() private$.items[["ip"]],
@@ -156,6 +166,10 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 name="",
                 title="Latent Class Analysis",
                 refs="snowRMM")
+            self$add(jmvcore::Preformatted$new(
+                options=options,
+                name="text",
+                title="test"))
             self$add(jmvcore::Html$new(
                 options=options,
                 name="instructions",
@@ -197,6 +211,41 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         `name`="\u03C7\u00B2 p", 
                         `type`="number", 
                         `format`="zto,pvalue"))))
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="comp",
+                title="Model comparison",
+                visible="(comp)",
+                clearWith=list(
+                    "vars",
+                    "nc"),
+                refs="poLCA",
+                columns=list(
+                    list(
+                        `name`="name", 
+                        `title`="Class", 
+                        `type`="text", 
+                        `content`="($key)"),
+                    list(
+                        `name`="aic", 
+                        `title`="AIC", 
+                        `type`="number"),
+                    list(
+                        `name`="bic", 
+                        `title`="BIC", 
+                        `type`="number"),
+                    list(
+                        `name`="loglik", 
+                        `title`="Log-likelihood", 
+                        `type`="number"),
+                    list(
+                        `name`="Chisq", 
+                        `title`="\u03C7\u00B2", 
+                        `type`="number"),
+                    list(
+                        `name`="Gsq", 
+                        `title`="G\u00B2", 
+                        `type`="number"))))
             self$add(jmvcore::Table$new(
                 options=options,
                 name="cf",
@@ -340,6 +389,7 @@ lcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param group .
 #' @param nc .
 #' @param fit .
+#' @param comp .
 #' @param cp .
 #' @param ip .
 #' @param cf .
@@ -350,8 +400,10 @@ lcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param plot1 .
 #' @return A results object containing:
 #' \tabular{llllll}{
+#'   \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
 #'   \code{results$fit} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$comp} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$cf} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$cp} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$ip} \tab \tab \tab \tab \tab a table \cr
@@ -376,6 +428,7 @@ lca <- function(
     group,
     nc = 2,
     fit = TRUE,
+    comp = TRUE,
     cp = FALSE,
     ip = FALSE,
     cf = FALSE,
@@ -403,6 +456,7 @@ lca <- function(
         group = group,
         nc = nc,
         fit = fit,
+        comp = comp,
         cp = cp,
         ip = ip,
         cf = cf,

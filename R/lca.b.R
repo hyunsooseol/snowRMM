@@ -86,6 +86,10 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                        
                        results <- private$.compute(data)               
                    
+                       # populate Model comparison-----------
+                       
+                       private$.populateModelTable(results)
+                       
                        # populate class probability table-----
                        
                        private$.populateClassTable(results)
@@ -145,12 +149,44 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                       formula <- as.formula(paste0('cbind(', vars, ')~1'))
                       
                       
-                      # estimate ------------
+                      ################ Model Estimates############################ 
                        
                       res<- poLCA::poLCA(formula,data,nclass=nc,maxiter = 2000,calc.se = FALSE)
-                       
                       
-                     # Caculating Chi and Gsp p values----------
+                      ############################################################### 
+                      
+                      # Model comparison-------
+                      
+                      out <- NULL
+                      
+                      for (i in 1:self$options$nc) {
+                          
+                          res<- poLCA::poLCA(formula,data,nclass=nc,maxiter = 2000,calc.se = FALSE) 
+                          
+                          aic<- res$aic 
+                          bic<- res$bic 
+                          loglik <- res$llik
+                          Chisq<- res$Chisq 
+                          Gsq <- res$Gsq
+                          
+                          
+                          df<- data.frame(aic,bic,loglik,Chisq,Gsq)
+                          
+                          
+                          if (is.null(out)) {
+                              out <- df
+                          } else {
+                              out <- rbind(out, df)
+                          }
+                      }
+                      
+                      out <- out
+                      
+                   #   self$results$text$setContent(out)
+                      
+                      
+                      
+                       # Caculating Chi and Gsp p values----------
                       
                       y <- res$y
                       K.j <- t(matrix(apply(y,2,max)))
@@ -225,18 +261,23 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                      }
                       
                         
-                        # result-----------
+                        ####### result###############################
                       
                       classprob<- res$P
                       
                       
                     #  self$results$ip$setContent(res$probs)
-                       itemprob<- res$probs
+                    
+                      itemprob<- res$probs
                       
-                      aic<- res$aic 
-                      bic<- res$bic 
-                      Chisq<- res$Chisq 
+                      # Fit---------
+                      
+                      aic<- res$aic
+                      bic<- res$bic
+                      Chisq<- res$Chisq
                       Gsq <- res$Gsq
+                      
+                      
                       
                       # cell frequencies-------
                       
@@ -247,6 +288,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                            list(
                                'classprob'=classprob,
                                 'itemprob'=itemprob,
+                               'out'=out,
                                'aic' = aic,
                                'bic' = bic,
                                'Chisq'=Chisq,
@@ -260,6 +302,44 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                        
                    },   
                    
+        
+        # Model comparison table----------
+        
+        
+        .populateModelTable = function(results) {
+            
+            table <- self$results$comp
+            
+            nc <- self$options$nc
+            
+            out <- results$out
+            
+            
+            fit<- data.frame(out)
+            
+          # self$results$text$setContent(fit)
+            
+            
+            
+            names <- dimnames(fit)[[1]]
+            
+            
+            for (name in names) {
+                
+                row <- list()
+                
+                row[["aic"]]   <-  fit[name, 1]
+                row[["bic"]] <-  fit[name, 2]
+                row[["loglik"]] <-  fit[name, 3]
+                row[["Chisq"]] <-  fit[name, 4]
+                row[["Gsq"]] <-  fit[name, 5]
+             
+                table$addRow(rowKey=name, values=row)
+              
+            }  
+            },
+            
+        
         
          # populate class probability table---------------
         

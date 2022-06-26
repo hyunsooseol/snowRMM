@@ -10,6 +10,7 @@ lca(
   group,
   nc = 2,
   fit = TRUE,
+  comp = TRUE,
   cp = FALSE,
   ip = FALSE,
   cf = FALSE,
@@ -30,6 +31,8 @@ lca(
 
 \item{fit}{.}
 
+\item{comp}{.}
+
 \item{cp}{.}
 
 \item{ip}{.}
@@ -48,8 +51,10 @@ where 0 degrees represents completely horizontal labels.}
 \value{
 A results object containing:
 \tabular{llllll}{
+  \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
   \code{results$fit} \tab \tab \tab \tab \tab a table \cr
+  \code{results$comp} \tab \tab \tab \tab \tab a table \cr
   \code{results$cf} \tab \tab \tab \tab \tab a table \cr
   \code{results$cp} \tab \tab \tab \tab \tab a table \cr
   \code{results$ip} \tab \tab \tab \tab \tab a table \cr

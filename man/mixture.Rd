@@ -20,8 +20,7 @@ mixture(
   average = FALSE,
   angle = 0,
   iplot = FALSE,
-  wrightmap = FALSE,
-  plot1 = FALSE
+  wrightmap = FALSE
 )
 }
 \arguments{
@@ -57,14 +56,11 @@ where 0 degrees represents completely horizontal labels.}
 \item{iplot}{.}
 
 \item{wrightmap}{.}
-
-\item{plot1}{.}
 }
 \value{
 A results object containing:
 \tabular{llllll}{
   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
-  \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
   \code{results$item$fit} \tab \tab \tab \tab \tab a table \cr
   \code{results$item$imean} \tab \tab \tab \tab \tab a table \cr
   \code{results$item$imeasure} \tab \tab \tab \tab \tab a table \cr
@@ -76,7 +72,6 @@ A results object containing:
   \code{results$iplot} \tab \tab \tab \tab \tab an image \cr
   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
   \code{results$pclass} \tab \tab \tab \tab \tab an output \cr
-  \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
 }
 }
 \description{
