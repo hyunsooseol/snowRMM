@@ -95,11 +95,12 @@ children:
         children:
           - type: CheckBox
             name: mc
+          - type: CheckBox
+            name: plot1
           - type: TextBox
             name: angle
             format: number
             suggestedValues:
               - value: 0
               - value: 45
-          - type: CheckBox
-            name: plot1
+ 
