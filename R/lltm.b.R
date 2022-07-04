@@ -12,7 +12,48 @@ lltmClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
     inherit = lltmBase,
     private = list(
 
+        .init = function() {
+            if (is.null(self$data) | is.null(self$options$vars)) {
+                self$results$instructions$setVisible(visible = TRUE)
+                
+            }
+            
+            self$results$instructions$setContent(
+                "<html>
+            <head>
+            </head>
+            <body>
+            <div class='instructions'>
+            <p><b>Instructions</b></p>
+            <p>____________________________________________________________________________________</p>
+            <p>1. Each variable must be <b>coded as 0 or 1 with the type of numeric-continuous</b> in jamovi.</p>
+            <p>2. The results of <b>Person Analysis</b> will be displayed in the datasheet.</p>
+            <p>3. The result tables are estimated by Marginal Maximum Likelihood estimation(MMLE).</p>
+            <p>4. The rationale of snowIRT module is described in the <a href='https://bookdown.org/dkatz/Rasch_Biome/' target = '_blank'>documentation</a>.</p>
+            <p>5. Feature requests and bug reports can be made on my <a href='https://github.com/hyunsooseol/snowIRT/issues'  target = '_blank'>GitHub</a>.</p>
+            <p>____________________________________________________________________________________</p>
+            </div>
+            </body>
+            </html>"
+            )
+            
+            #  private$.initItemsTable()
+            
+            if (self$options$comp)
+                self$results$comp$setNote(
+                    "Note",
+                    "LLs= Conditional log-likelihoods; npar= Number of parameters; 
+                    LR= Likelihood ratio statistics."
+
+                )
+            
+           
+            
+            if (length(self$options$vars) <= 1)
+                self$setStatus('complete')
+        },
         
+        ###############################################
         
                 .run = function() {
 
@@ -197,6 +238,41 @@ lltmClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 
                 table$addRow(rowKey = vars[i], values = row)
             }
+            
+            
+            # Model comparison------------
+            
+            table <- self$results$comp
+            
+            
+            mod<- stats::anova(rasch, lltm)
+            mod<- as.data.frame(mod$statistics)
+            
+            names<- dimnames(mod)[[1]]
+            # 
+            # ll<- mod$LLs
+            # dev<- mod$dev
+            # npar<- mod$npar
+            # lr<- mod$LR
+            # df<- mod$df
+            # p <- mod$p
+            
+            for (name in names) {
+                
+                row <- list()
+                
+                row[["ll"]] <- mod[name,1]
+                row[["dev"]] <- mod[name,2]
+                row[["npar"]] <- mod[name,3]
+                row[["lr"]] <- mod[name,4]
+                row[["df"]] <- mod[name,5]
+                row[["p"]] <- mod[name,6]
+                
+                
+                table$addRow(rowKey=name, values=row)
+                
+            }
+            
             
             #  plot----------
             

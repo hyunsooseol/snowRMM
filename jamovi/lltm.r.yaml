@@ -4,6 +4,11 @@ title: Linear Logisitic Test Model
 jrs:   '1.1'
 
 items:
+    - name: instructions
+      title: Instructions
+      type: Html
+      visible: True
+
     - name:  text
       title: Linear Logisitic Test Model
       type:  Preformatted
@@ -43,7 +48,7 @@ items:
           superTitle: '95% CI'  
           
     - name: lr
-      title: Andersen’s LR-test
+      title: 'Andersen’s LR test'
       type: Table
       rows: 1
       clearWith:
@@ -56,7 +61,7 @@ items:
         - name: name
           title: ''
           type: 'text'
-          content: Andersen’s LR-test
+          content: Likelihood ratio
         - name: value
           title: 'Value'
           type: number
@@ -137,10 +142,52 @@ items:
           superTitle: '95% CI'  
           
     - name:  plot
-      title: " "
+      title: "Comparison of item easiness parameters "
       type:  Image
       visible: (plot)
       width: 500
       height: 500
-      renderFun: .plot          
+      renderFun: .plot 
+      
+    - name: comp
+      title: 'Analysis of Deviances'
+      type: Table
+      visible: (comp)
+      refs: eRm 
+      clearWith:
+        - vars
+        - mat
+        - col
+      
+      columns:
+        - name: name
+          title: 'Model'
+          type: 'text'
+          content: ($key)
+
+        - name: ll
+          title: 'LLs'
+          type: number
+        
+        - name: dev
+          title: 'Deviance'
+          type: number  
+
+        - name: npar
+          title: 'npar'
+          type: number
+          
+ 
+        - name: lr
+          title: 'LR'
+          type: number
+
+        - name: df
+          title: 'df'
+          type: number          
+                
+        - name: p
+          title: 'p'
+          type: number
+          format: zto, pvalue
 ...

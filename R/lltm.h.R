@@ -13,7 +13,8 @@ lltmOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             lr = FALSE,
             eta = FALSE,
             beta = TRUE,
-            plot = TRUE, ...) {
+            plot = TRUE,
+            comp = TRUE, ...) {
 
             super$initialize(
                 package="snowRMM",
@@ -58,6 +59,10 @@ lltmOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "plot",
                 plot,
                 default=TRUE)
+            private$..comp <- jmvcore::OptionBool$new(
+                "comp",
+                comp,
+                default=TRUE)
 
             self$.addOption(private$..vars)
             self$.addOption(private$..mat)
@@ -67,6 +72,7 @@ lltmOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..eta)
             self$.addOption(private$..beta)
             self$.addOption(private$..plot)
+            self$.addOption(private$..comp)
         }),
     active = list(
         vars = function() private$..vars$value,
@@ -76,7 +82,8 @@ lltmOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         lr = function() private$..lr$value,
         eta = function() private$..eta$value,
         beta = function() private$..beta$value,
-        plot = function() private$..plot$value),
+        plot = function() private$..plot$value,
+        comp = function() private$..comp$value),
     private = list(
         ..vars = NA,
         ..mat = NA,
@@ -85,19 +92,22 @@ lltmOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..lr = NA,
         ..eta = NA,
         ..beta = NA,
-        ..plot = NA)
+        ..plot = NA,
+        ..comp = NA)
 )
 
 lltmResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "lltmResults",
     inherit = jmvcore::Group,
     active = list(
+        instructions = function() private$.items[["instructions"]],
         text = function() private$.items[["text"]],
         items = function() private$.items[["items"]],
         lr = function() private$.items[["lr"]],
         eta = function() private$.items[["eta"]],
         beta = function() private$.items[["beta"]],
-        plot = function() private$.items[["plot"]]),
+        plot = function() private$.items[["plot"]],
+        comp = function() private$.items[["comp"]]),
     private = list(),
     public=list(
         initialize=function(options) {
@@ -105,6 +115,11 @@ lltmResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 options=options,
                 name="",
                 title="Linear Logisitic Test Model")
+            self$add(jmvcore::Html$new(
+                options=options,
+                name="instructions",
+                title="Instructions",
+                visible=TRUE))
             self$add(jmvcore::Preformatted$new(
                 options=options,
                 name="text",
@@ -146,7 +161,7 @@ lltmResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Table$new(
                 options=options,
                 name="lr",
-                title="Andersen\u2019s LR-test",
+                title="Andersen\u2019s LR test",
                 rows=1,
                 clearWith=list(
                     "vars",
@@ -158,7 +173,7 @@ lltmResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         `name`="name", 
                         `title`="", 
                         `type`="text", 
-                        `content`="Andersen\u2019s LR-test"),
+                        `content`="Likelihood ratio"),
                     list(
                         `name`="value", 
                         `title`="Value", 
@@ -243,11 +258,52 @@ lltmResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot",
-                title=" ",
+                title="Comparison of item easiness parameters ",
                 visible="(plot)",
                 width=500,
                 height=500,
-                renderFun=".plot"))}))
+                renderFun=".plot"))
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="comp",
+                title="Analysis of Deviances",
+                visible="(comp)",
+                refs="eRm",
+                clearWith=list(
+                    "vars",
+                    "mat",
+                    "col"),
+                columns=list(
+                    list(
+                        `name`="name", 
+                        `title`="Model", 
+                        `type`="text", 
+                        `content`="($key)"),
+                    list(
+                        `name`="ll", 
+                        `title`="LLs", 
+                        `type`="number"),
+                    list(
+                        `name`="dev", 
+                        `title`="Deviance", 
+                        `type`="number"),
+                    list(
+                        `name`="npar", 
+                        `title`="npar", 
+                        `type`="number"),
+                    list(
+                        `name`="lr", 
+                        `title`="LR", 
+                        `type`="number"),
+                    list(
+                        `name`="df", 
+                        `title`="df", 
+                        `type`="number"),
+                    list(
+                        `name`="p", 
+                        `title`="p", 
+                        `type`="number", 
+                        `format`="zto, pvalue"))))}))
 
 lltmBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "lltmBase",
@@ -281,14 +337,17 @@ lltmBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param eta .
 #' @param beta .
 #' @param plot .
+#' @param comp .
 #' @return A results object containing:
 #' \tabular{llllll}{
+#'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
 #'   \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$items} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$lr} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$eta} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$beta} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
+#'   \code{results$comp} \tab \tab \tab \tab \tab a table \cr
 #' }
 #'
 #' Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
@@ -307,7 +366,8 @@ lltm <- function(
     lr = FALSE,
     eta = FALSE,
     beta = TRUE,
-    plot = TRUE) {
+    plot = TRUE,
+    comp = TRUE) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("lltm requires jmvcore to be installed (restart may be required)")
@@ -327,7 +387,8 @@ lltm <- function(
         lr = lr,
         eta = eta,
         beta = beta,
-        plot = plot)
+        plot = plot,
+        comp = comp)
 
     analysis <- lltmClass$new(
         options = options,

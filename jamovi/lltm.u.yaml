@@ -46,22 +46,46 @@ children:
         margin: large
         children:
           - type: Label
-            label: Table
-            fitToGrid: true
-            cell:
-              column: 0
-              row: 0
-            children: []
-      - type: Label
-        label: 'Table'
+            label: 'Rasch model'
+            children:
+              - type: CheckBox
+                name: items
+              - type: CheckBox
+                name: lr
+      - type: LayoutBox
+        stretchFactor: 1
+        margin: large
+        cell:
+          column: 1
+          row: 0
+        fitToGrid: true
         children:
-          - type: CheckBox
-            name: items
-          - type: CheckBox
-            name: lr
-          - type: CheckBox
-            name: eta
-          - type: CheckBox
-            name: beta
-          - type: CheckBox
-            name: plot              
+          - type: Label
+            label: 'LLTM'
+            children:
+              - type: CheckBox
+                name: eta
+              - type: CheckBox
+                name: beta
+              - type: CheckBox
+                name: comp      
+      - type: LayoutBox
+        stretchFactor: 1
+        margin: large
+        cell:
+          column: 2
+          row: 0
+        fitToGrid: true
+        children:
+          - type: Label
+            label: 'Plot'
+            children:
+              - type: CheckBox
+                name: plot    
+ 
+    
+    
+    
+    
+    
+    

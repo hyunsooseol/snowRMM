@@ -21,39 +21,44 @@ options:
         - numeric
 
     - name: mat
-      title: Vectors
+      title: 'Vectors'
       type: String
       default: '1,0,1,1,1,0,1,0,1,0'
       
     - name: col
-      title: Number of columns
+      title: 'Number of columns'
       type: Integer
       default: 2
       min: 2
       max: 10      
 
     - name: items
-      title: Rasch item easiness
+      title: 'Item easiness'
       type: Bool
       default: True
 
     - name: lr
-      title: Andersen’s LR-test
+      title: 'LR-test'
       type: Bool
       default: false
 
     - name: eta
-      title: Basic parameters(eta)
+      title: 'Eta'
       type: Bool
       default: false
 
     - name: beta
-      title: Item easiness parameters(beta)
+      title: 'Beta'
       type: Bool
       default: True 
 
     - name: plot
-      title: '' 
+      title: 'Easiness comparison' 
       type: Bool
-      default: TRUE      
+      default: TRUE  
+      
+    - name: comp
+      title: 'Model fit'
+      type: Bool
+      default: True       
 ...
