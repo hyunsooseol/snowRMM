@@ -1,0 +1,59 @@
+---
+name:  lltm
+title: Linear Logisitic Test Model
+menuGroup: snowRMM
+version: '1.0.0'
+jas: '1.2'
+
+options:
+    - name: data
+      type: Data
+      description:
+          R: >
+            The data as a data frame.
+
+    - name: vars
+      title: Variables
+      type: Variables
+      suggested:
+         - continuous
+      permitted:
+        - numeric
+
+    - name: mat
+      title: Vectors
+      type: String
+      default: '1,0,1,1,1,0,1,0,1,0'
+      
+    - name: col
+      title: Number of columns
+      type: Integer
+      default: 2
+      min: 2
+      max: 10      
+
+    - name: items
+      title: Rasch item easiness
+      type: Bool
+      default: True
+
+    - name: lr
+      title: Andersen’s LR-test
+      type: Bool
+      default: false
+
+    - name: eta
+      title: Basic parameters(eta)
+      type: Bool
+      default: false
+
+    - name: beta
+      title: Item easiness parameters(beta)
+      type: Bool
+      default: True 
+
+    - name: plot
+      title: '' 
+      type: Bool
+      default: TRUE      
+...

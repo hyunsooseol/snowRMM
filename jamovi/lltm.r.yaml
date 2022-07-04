@@ -1,0 +1,146 @@
+---
+name:  lltm
+title: Linear Logisitic Test Model
+jrs:   '1.1'
+
+items:
+    - name:  text
+      title: Linear Logisitic Test Model
+      type:  Preformatted
+
+    - name: items
+      title: 'Rasch item easiness parameters(beta)'
+      type: Table
+      visible: (items)
+      refs: eRm 
+      clearWith:
+        - vars
+        - mat
+        - col
+      
+      columns:
+        - name: name
+          title: 'Item'
+          type: 'text'
+          content: ($key)
+
+        - name: item
+          title: 'Estimate'
+          type: number
+        
+        - name: se
+          title: 'SE'
+          type: number  
+
+        - name: lower
+          title: Lower
+          type: number
+          superTitle: '95% CI'
+ 
+        - name: upper
+          title: Upper
+          type: number
+          superTitle: '95% CI'  
+          
+    - name: lr
+      title: Andersen’s LR-test
+      type: Table
+      rows: 1
+      clearWith:
+        - vars
+        - mat
+        - col
+      refs: eRm    
+
+      columns:
+        - name: name
+          title: ''
+          type: 'text'
+          content: Andersen’s LR-test
+        - name: value
+          title: 'Value'
+          type: number
+        - name: df
+          title: 'df'
+          type: number
+        - name: p
+          title: 'p'
+          type: number 
+          format: zto,pvalue
+          
+    - name: eta
+      title: 'LLTM Basic item parameters(eta)'
+      type: Table
+      visible: (eta)
+      refs: eRm 
+      clearWith:
+        - vars
+        - mat
+        - col
+      
+      columns:
+        - name: name
+          title: ''
+          type: 'text'
+          content: ($key)
+
+        - name: item
+          title: 'Estimate'
+          type: number
+        
+        - name: se
+          title: 'SE'
+          type: number  
+
+        - name: lower
+          title: Lower
+          type: number
+          superTitle: '95% CI'
+ 
+        - name: upper
+          title: Upper
+          type: number
+          superTitle: '95% CI'  
+          
+    - name: beta
+      title: 'LLTM Item easiness parameters(beta)'
+      type: Table
+      visible: (beta)
+      refs: eRm 
+      clearWith:
+        - vars
+        - mat
+        - col
+      
+      columns:
+        - name: name
+          title: 'Item'
+          type: 'text'
+          content: ($key)
+
+        - name: item
+          title: 'Estimate'
+          type: number
+        
+        - name: se
+          title: 'SE'
+          type: number  
+
+        - name: lower
+          title: Lower
+          type: number
+          superTitle: '95% CI'
+ 
+        - name: upper
+          title: Upper
+          type: number
+          superTitle: '95% CI'  
+          
+    - name:  plot
+      title: " "
+      type:  Image
+      visible: (plot)
+      width: 500
+      height: 500
+      renderFun: .plot          
+...

@@ -1,7 +1,7 @@
 ---
 title: Rasch Mixture Model for jamovi
 name: snowRMM
-version: 4.9.0
+version: 5.0.0
 jms: '1.0'
 authors:
   - Hyunsoo Seol
@@ -66,6 +66,11 @@ analyses:
     menuGroup: snowRMM
     menuTitle: Bootstrap item fit with P values
     menuSubgroup: Rasch
+  - title: Linear Logisitic Test Model
+    name: lltm
+    ns: snowRMM
+    menuGroup: snowRMM
+    menuTitle: Linear Logisitic Test Model
 datasets:
   - name: mixture
     path: mix.omv
