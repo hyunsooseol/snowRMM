@@ -32,14 +32,6 @@ options:
       min: 2
       max: 20      
 
-    - name: split
-      title: Split criterion
-      type: List
-      options:
-        - median
-        - mean
-      default: median
-
     - name: items
       title: 'Item easiness'
       type: Bool
@@ -48,21 +40,18 @@ options:
     - name: lr
       title: 'LR test'
       type: Bool
-      default: false
+      default: TRUE
+
+    - name: ml
+      title: 'Martin-Loef Test'
+      type: Bool
+      default: TRUE
 
     - name: wald
       title: 'Wald test'
       type: Bool
       default: false
 
-    - name: split1
-      title: Split criterion
-      type: List
-      options:
-        - median
-        - mean
-      default: median      
-    
     - name: eta
       title: 'Eta parameter'
       type: Bool

@@ -48,16 +48,16 @@ items:
           superTitle: '95% CI'  
           
     - name: lr
-      title: '`Andersen’s LR test- ${split}`'
+      title: 'Andersen’s LR test'
       type: Table
+      visible: (lr)
       rows: 1
       refs: eRm 
       clearWith:
         - vars
         - mat
         - col
-        - split
-
+        
       columns:
         - name: name
           title: ''
@@ -74,8 +74,35 @@ items:
           type: number 
           format: zto,pvalue
 
+    - name: ml
+      title: 'Martin-Loef test'
+      type: Table
+      visible: (ml)
+      rows: 1
+      refs: eRm 
+      clearWith:
+        - vars
+        - mat
+        - col
+        
+      columns:
+        - name: name
+          title: ''
+          type: 'text'
+          content: Likelihood ratio
+        - name: value
+          title: 'Value'
+          type: number
+        - name: df
+          title: 'df'
+          type: integer
+        - name: p
+          title: 'p'
+          type: number 
+          format: zto,pvalue
+
     - name: wald
-      title: '`Wald test- ${split1}`'
+      title: 'Wald test'
       type: Table
       visible: (wald)
       refs: eRm 
@@ -83,8 +110,7 @@ items:
         - vars
         - mat
         - col
-        - split1
-      
+
       columns:
         - name: name
           title: 'Item'

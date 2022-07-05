@@ -52,16 +52,10 @@ children:
                 name: items
               - type: CheckBox
                 name: lr
-                children:
-                  - type: ComboBox
-                    name: split
-                    enable: (lr)
+              - type: CheckBox
+                name: ml  
               - type: CheckBox
                 name: wald
-                children:
-                  - type: ComboBox
-                    name: split1
-                    enable: (wald)                    
       - type: LayoutBox
         stretchFactor: 1
         margin: large

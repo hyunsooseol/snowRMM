@@ -6,6 +6,7 @@
 #' @importFrom stats confint
 #' @importFrom eRm LRtest
 #' @importFrom  eRm Waldtest
+#' @importFrom  eRm MLoef
 #' @export
 
 
@@ -89,6 +90,8 @@ lltmClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 length(self$options$vars) < 2) return()
             
            
+            if(self$options$items | self$options$lr | self$options$ml | self$options$wald==TRUE){
+            
             #Rasch analysis###############################
             
             rasch <- eRm::RM(data)
@@ -134,7 +137,7 @@ lltmClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             
             # LR test#################
             
-            lr <- eRm::LRtest(rasch, split = self$options$split)
+            lr <- eRm::LRtest(rasch)
             ##############################
 
             value<- lr$LR
@@ -153,6 +156,29 @@ lltmClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             table$setRow(rowNo = 1, values = row)
 
 
+            # Martin-lof test--------------
+            
+            ml<- eRm::MLoef(rasch)
+            #####################
+            
+            value<- ml$LR
+            df<- ml$df
+            p<- ml$p.value
+            
+            table <- self$results$ml
+            
+            
+            row <- list()
+            
+            row[['value']] <- value
+            row[['df']] <- df
+            row[['p']] <- p
+            
+            table$setRow(rowNo = 1, values = row)
+            
+            
+            
+            
             # Wald test----------
             vars <- self$options$vars
             
@@ -160,7 +186,7 @@ lltmClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             
             #######################
             
-            w<- eRm::Waldtest(rasch, splitcr = self$options$split1)
+            w<- eRm::Waldtest(rasch)
             
             ###################
             w<- w$coef.table
@@ -181,6 +207,9 @@ lltmClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 table$addRow(rowKey = vars[i], values = row)
             }
             
+            
+            } 
+            ##########################################################
             
             # Running LLTM-------------------------
         
