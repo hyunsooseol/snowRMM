@@ -7,14 +7,16 @@
 lltm(
   data,
   vars,
-  mat = "1,0,1,1,1,0,1,0,1,0",
-  col = 2,
+  mat = "1,0,1,1,1,0,1,0,1,0,1,1,1,1,1,0,0,0,1,1,0,1,0,1,1,  -0.5, 1,  1, -1,0",
+  col = 3,
   items = TRUE,
-  lr = FALSE,
+  lr = TRUE,
+  ml = TRUE,
+  wald = FALSE,
   eta = FALSE,
-  beta = TRUE,
-  plot = TRUE,
-  comp = TRUE
+  beta = FALSE,
+  plot = FALSE,
+  comp = FALSE
 )
 }
 \arguments{
@@ -30,6 +32,10 @@ lltm(
 
 \item{lr}{.}
 
+\item{ml}{.}
+
+\item{wald}{.}
+
 \item{eta}{.}
 
 \item{beta}{.}
@@ -42,13 +48,14 @@ lltm(
 A results object containing:
 \tabular{llllll}{
   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
-  \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
   \code{results$items} \tab \tab \tab \tab \tab a table \cr
   \code{results$lr} \tab \tab \tab \tab \tab a table \cr
+  \code{results$ml} \tab \tab \tab \tab \tab a table \cr
+  \code{results$wald} \tab \tab \tab \tab \tab a table \cr
   \code{results$eta} \tab \tab \tab \tab \tab a table \cr
   \code{results$beta} \tab \tab \tab \tab \tab a table \cr
-  \code{results$plot} \tab \tab \tab \tab \tab an image \cr
   \code{results$comp} \tab \tab \tab \tab \tab a table \cr
+  \code{results$plot} \tab \tab \tab \tab \tab an image \cr
 }
 
 Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:

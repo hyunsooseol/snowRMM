@@ -9,10 +9,6 @@ items:
       type: Html
       visible: True
 
-    - name:  text
-      title: Linear Logisitic Test Model
-      type:  Preformatted
-
     - name: items
       title: 'Rasch item easiness parameters(beta)'
       type: Table

@@ -117,7 +117,6 @@ lltmResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     inherit = jmvcore::Group,
     active = list(
         instructions = function() private$.items[["instructions"]],
-        text = function() private$.items[["text"]],
         items = function() private$.items[["items"]],
         lr = function() private$.items[["lr"]],
         ml = function() private$.items[["ml"]],
@@ -139,10 +138,6 @@ lltmResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 name="instructions",
                 title="Instructions",
                 visible=TRUE))
-            self$add(jmvcore::Preformatted$new(
-                options=options,
-                name="text",
-                title="Linear Logisitic Test Model"))
             self$add(jmvcore::Table$new(
                 options=options,
                 name="items",
@@ -422,7 +417,6 @@ lltmBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
-#'   \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$items} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$lr} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$ml} \tab \tab \tab \tab \tab a table \cr
