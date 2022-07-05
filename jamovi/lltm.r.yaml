@@ -2,7 +2,7 @@
 name:  lltm
 title: Linear Logisitic Test Model
 jrs:   '1.1'
-
+refs: snowRMM
 items:
     - name: instructions
       title: Instructions
@@ -48,14 +48,15 @@ items:
           superTitle: '95% CI'  
           
     - name: lr
-      title: 'Andersen’s LR test'
+      title: '`Andersen’s LR test- ${split}`'
       type: Table
       rows: 1
+      refs: eRm 
       clearWith:
         - vars
         - mat
         - col
-      refs: eRm    
+        - split
 
       columns:
         - name: name
@@ -72,9 +73,35 @@ items:
           title: 'p'
           type: number 
           format: zto,pvalue
-          
+
+    - name: wald
+      title: '`Wald test- ${split1}`'
+      type: Table
+      visible: (wald)
+      refs: eRm 
+      clearWith:
+        - vars
+        - mat
+        - col
+        - split1
+      
+      columns:
+        - name: name
+          title: 'Item'
+          type: 'text'
+          content: ($key)
+
+        - name: item
+          title: 'Z statistic'
+          type: number
+        
+        - name: p
+          title: 'p'
+          type: number  
+          format: zto, number
+
     - name: eta
-      title: 'LLTM Basic item parameters(eta)'
+      title: 'LLTM Basic item easiness parameters(eta)'
       type: Table
       visible: (eta)
       refs: eRm 
@@ -140,15 +167,7 @@ items:
           title: Upper
           type: number
           superTitle: '95% CI'  
-          
-    - name:  plot
-      title: "Comparison of item easiness parameters "
-      type:  Image
-      visible: (plot)
-      width: 500
-      height: 500
-      renderFun: .plot 
-      
+ 
     - name: comp
       title: 'Analysis of Deviances'
       type: Table
@@ -176,8 +195,7 @@ items:
         - name: npar
           title: 'npar'
           type: number
-          
- 
+
         - name: lr
           title: 'LR'
           type: number
@@ -190,4 +208,16 @@ items:
           title: 'p'
           type: number
           format: zto, pvalue
+          
+    - name:  plot
+      title: "Comparison of item easiness parameters "
+      type:  Image
+      visible: (plot)
+      width: 500
+      height: 500
+      renderFun: .plot 
+      clearWith:
+        - vars
+        - mat
+        - col          
 ...

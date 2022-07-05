@@ -1,9 +1,11 @@
 #' @importFrom R6 R6Class
 #' @import jmvcore
 #' @import eRm
+#' @import ggplot
 #' @importFrom eRm LLTM
 #' @importFrom stats confint
 #' @importFrom eRm LRtest
+#' @importFrom  eRm Waldtest
 #' @export
 
 
@@ -26,18 +28,24 @@ lltmClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             <div class='instructions'>
             <p><b>Instructions</b></p>
             <p>____________________________________________________________________________________</p>
-            <p>1. Each variable must be <b>coded as 0 or 1 with the type of numeric-continuous</b> in jamovi.</p>
-            <p>2. The results of <b>Person Analysis</b> will be displayed in the datasheet.</p>
-            <p>3. The result tables are estimated by Marginal Maximum Likelihood estimation(MMLE).</p>
-            <p>4. The rationale of snowIRT module is described in the <a href='https://bookdown.org/dkatz/Rasch_Biome/' target = '_blank'>documentation</a>.</p>
-            <p>5. Feature requests and bug reports can be made on my <a href='https://github.com/hyunsooseol/snowIRT/issues'  target = '_blank'>GitHub</a>.</p>
+            <p>1. Performs Linear Logistic Test Model (LLTM) for binary item responses by using CML estimation.</p>
+            <p>2. Design matrix(W matrix) for the LLTM will be computed by specifying <b>Vectors and Number of columns</b>.</p>
+            <p>3. A description of the LLTM is described in the <a href='https://scholarworks.umass.edu/cgi/viewcontent.cgi?article=1248&context=pare' target = '_blank'>paper</a>.</p>
+            <p>4. Feature requests and bug reports can be made on my <a href='https://github.com/hyunsooseol/snowRMM/issues'  target = '_blank'>GitHub</a>.</p>
             <p>____________________________________________________________________________________</p>
             </div>
             </body>
             </html>"
             )
             
-            #  private$.initItemsTable()
+            if (self$options$items)
+                self$results$items$setNote(
+                    "Note",
+                    "Easiness parameters have opposite signs to difficulty parameters."
+                    
+                )
+            
+            
             
             if (self$options$comp)
                 self$results$comp$setNote(
@@ -126,7 +134,7 @@ lltmClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             
             # LR test#################
             
-            lr <- eRm::LRtest(rasch, split = "mean")
+            lr <- eRm::LRtest(rasch, split = self$options$split)
             ##############################
 
             value<- lr$LR
@@ -145,6 +153,35 @@ lltmClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             table$setRow(rowNo = 1, values = row)
 
 
+            # Wald test----------
+            vars <- self$options$vars
+            
+            table <- self$results$wald
+            
+            #######################
+            
+            w<- eRm::Waldtest(rasch, splitcr = self$options$split1)
+            
+            ###################
+            w<- w$coef.table
+            
+            w <- as.data.frame(w)
+            
+            
+            # Wald test table----------------------
+            
+            
+            for (i in seq_along(vars)) {
+                row <- list()
+                
+                
+                row[["item"]] <- w[[1]][i]
+                row[["p"]] <- w[[2]][i]
+               
+                table$addRow(rowKey = vars[i], values = row)
+            }
+            
+            
             # Running LLTM-------------------------
         
             #Converting vectors into matrix------------
@@ -302,14 +339,18 @@ lltmClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             plot <- 
                 
                 ggplot(data = NULL, aes(x=rm, y = lltm))+
-               # geom_abline(slope = 1, intercept = 0)+
+                geom_abline(slope = 1, intercept = 0)+
                 geom_smooth(method = "lm")+
                 geom_point()+
+                
+                scale_x_continuous(limits = c(-4, 4)) +
+                scale_y_continuous(limits = c(-4, 4)) +
+                
                 labs(x = "Item Easiness Parameter-RM", 
                      y = "Item Easiness Parameter-LLTM")+
                 theme_bw()
             
-            
+            plot <- plot + ggtheme
             print(plot)
             TRUE
         }

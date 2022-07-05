@@ -23,14 +23,22 @@ options:
     - name: mat
       title: 'Vectors'
       type: String
-      default: '1,0,1,1,1,0,1,0,1,0'
+      default: '1,0,1,1,1,0,1,0,1,0,1,1,1,1,1,0,0,0,1,1,0,1,0,1,1,  -0.5, 1,  1, -1,0'
       
     - name: col
       title: 'Number of columns'
       type: Integer
-      default: 2
+      default: 3
       min: 2
-      max: 10      
+      max: 20      
+
+    - name: split
+      title: Split criterion
+      type: List
+      options:
+        - median
+        - mean
+      default: median
 
     - name: items
       title: 'Item easiness'
@@ -38,27 +46,40 @@ options:
       default: True
 
     - name: lr
-      title: 'LR-test'
+      title: 'LR test'
       type: Bool
       default: false
 
+    - name: wald
+      title: 'Wald test'
+      type: Bool
+      default: false
+
+    - name: split1
+      title: Split criterion
+      type: List
+      options:
+        - median
+        - mean
+      default: median      
+    
     - name: eta
-      title: 'Eta'
+      title: 'Eta parameter'
       type: Bool
       default: false
 
     - name: beta
-      title: 'Beta'
+      title: 'Beta parameter'
       type: Bool
-      default: True 
+      default: false 
 
     - name: plot
-      title: 'Easiness comparison' 
+      title: 'Paired comparison' 
       type: Bool
-      default: TRUE  
+      default: false 
       
     - name: comp
       title: 'Model fit'
       type: Bool
-      default: True       
+      default: false      
 ...

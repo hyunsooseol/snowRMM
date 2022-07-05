@@ -7,14 +7,17 @@ lltmOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     public = list(
         initialize = function(
             vars = NULL,
-            mat = "1,0,1,1,1,0,1,0,1,0",
-            col = 2,
+            mat = "1,0,1,1,1,0,1,0,1,0,1,1,1,1,1,0,0,0,1,1,0,1,0,1,1,  -0.5, 1,  1, -1,0",
+            col = 3,
+            split = "median",
             items = TRUE,
             lr = FALSE,
+            wald = FALSE,
+            split1 = "median",
             eta = FALSE,
-            beta = TRUE,
-            plot = TRUE,
-            comp = TRUE, ...) {
+            beta = FALSE,
+            plot = FALSE,
+            comp = FALSE, ...) {
 
             super$initialize(
                 package="snowRMM",
@@ -32,13 +35,20 @@ lltmOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             private$..mat <- jmvcore::OptionString$new(
                 "mat",
                 mat,
-                default="1,0,1,1,1,0,1,0,1,0")
+                default="1,0,1,1,1,0,1,0,1,0,1,1,1,1,1,0,0,0,1,1,0,1,0,1,1,  -0.5, 1,  1, -1,0")
             private$..col <- jmvcore::OptionInteger$new(
                 "col",
                 col,
-                default=2,
+                default=3,
                 min=2,
-                max=10)
+                max=20)
+            private$..split <- jmvcore::OptionList$new(
+                "split",
+                split,
+                options=list(
+                    "median",
+                    "mean"),
+                default="median")
             private$..items <- jmvcore::OptionBool$new(
                 "items",
                 items,
@@ -47,6 +57,17 @@ lltmOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "lr",
                 lr,
                 default=FALSE)
+            private$..wald <- jmvcore::OptionBool$new(
+                "wald",
+                wald,
+                default=FALSE)
+            private$..split1 <- jmvcore::OptionList$new(
+                "split1",
+                split1,
+                options=list(
+                    "median",
+                    "mean"),
+                default="median")
             private$..eta <- jmvcore::OptionBool$new(
                 "eta",
                 eta,
@@ -54,21 +75,24 @@ lltmOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             private$..beta <- jmvcore::OptionBool$new(
                 "beta",
                 beta,
-                default=TRUE)
+                default=FALSE)
             private$..plot <- jmvcore::OptionBool$new(
                 "plot",
                 plot,
-                default=TRUE)
+                default=FALSE)
             private$..comp <- jmvcore::OptionBool$new(
                 "comp",
                 comp,
-                default=TRUE)
+                default=FALSE)
 
             self$.addOption(private$..vars)
             self$.addOption(private$..mat)
             self$.addOption(private$..col)
+            self$.addOption(private$..split)
             self$.addOption(private$..items)
             self$.addOption(private$..lr)
+            self$.addOption(private$..wald)
+            self$.addOption(private$..split1)
             self$.addOption(private$..eta)
             self$.addOption(private$..beta)
             self$.addOption(private$..plot)
@@ -78,8 +102,11 @@ lltmOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         vars = function() private$..vars$value,
         mat = function() private$..mat$value,
         col = function() private$..col$value,
+        split = function() private$..split$value,
         items = function() private$..items$value,
         lr = function() private$..lr$value,
+        wald = function() private$..wald$value,
+        split1 = function() private$..split1$value,
         eta = function() private$..eta$value,
         beta = function() private$..beta$value,
         plot = function() private$..plot$value,
@@ -88,8 +115,11 @@ lltmOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..vars = NA,
         ..mat = NA,
         ..col = NA,
+        ..split = NA,
         ..items = NA,
         ..lr = NA,
+        ..wald = NA,
+        ..split1 = NA,
         ..eta = NA,
         ..beta = NA,
         ..plot = NA,
@@ -104,17 +134,19 @@ lltmResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         text = function() private$.items[["text"]],
         items = function() private$.items[["items"]],
         lr = function() private$.items[["lr"]],
+        wald = function() private$.items[["wald"]],
         eta = function() private$.items[["eta"]],
         beta = function() private$.items[["beta"]],
-        plot = function() private$.items[["plot"]],
-        comp = function() private$.items[["comp"]]),
+        comp = function() private$.items[["comp"]],
+        plot = function() private$.items[["plot"]]),
     private = list(),
     public=list(
         initialize=function(options) {
             super$initialize(
                 options=options,
                 name="",
-                title="Linear Logisitic Test Model")
+                title="Linear Logisitic Test Model",
+                refs="snowRMM")
             self$add(jmvcore::Html$new(
                 options=options,
                 name="instructions",
@@ -161,13 +193,14 @@ lltmResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Table$new(
                 options=options,
                 name="lr",
-                title="Andersen\u2019s LR test",
+                title="`Andersen\u2019s LR test- ${split}`",
                 rows=1,
+                refs="eRm",
                 clearWith=list(
                     "vars",
                     "mat",
-                    "col"),
-                refs="eRm",
+                    "col",
+                    "split"),
                 columns=list(
                     list(
                         `name`="name", 
@@ -189,8 +222,34 @@ lltmResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         `format`="zto,pvalue"))))
             self$add(jmvcore::Table$new(
                 options=options,
+                name="wald",
+                title="`Wald test- ${split1}`",
+                visible="(wald)",
+                refs="eRm",
+                clearWith=list(
+                    "vars",
+                    "mat",
+                    "col",
+                    "split1"),
+                columns=list(
+                    list(
+                        `name`="name", 
+                        `title`="Item", 
+                        `type`="text", 
+                        `content`="($key)"),
+                    list(
+                        `name`="item", 
+                        `title`="Z statistic", 
+                        `type`="number"),
+                    list(
+                        `name`="p", 
+                        `title`="p", 
+                        `type`="number", 
+                        `format`="zto, number"))))
+            self$add(jmvcore::Table$new(
+                options=options,
                 name="eta",
-                title="LLTM Basic item parameters(eta)",
+                title="LLTM Basic item easiness parameters(eta)",
                 visible="(eta)",
                 refs="eRm",
                 clearWith=list(
@@ -255,14 +314,6 @@ lltmResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         `title`="Upper", 
                         `type`="number", 
                         `superTitle`="95% CI"))))
-            self$add(jmvcore::Image$new(
-                options=options,
-                name="plot",
-                title="Comparison of item easiness parameters ",
-                visible="(plot)",
-                width=500,
-                height=500,
-                renderFun=".plot"))
             self$add(jmvcore::Table$new(
                 options=options,
                 name="comp",
@@ -303,7 +354,19 @@ lltmResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         `name`="p", 
                         `title`="p", 
                         `type`="number", 
-                        `format`="zto, pvalue"))))}))
+                        `format`="zto, pvalue"))))
+            self$add(jmvcore::Image$new(
+                options=options,
+                name="plot",
+                title="Comparison of item easiness parameters ",
+                visible="(plot)",
+                width=500,
+                height=500,
+                renderFun=".plot",
+                clearWith=list(
+                    "vars",
+                    "mat",
+                    "col")))}))
 
 lltmBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "lltmBase",
@@ -332,8 +395,11 @@ lltmBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param vars .
 #' @param mat .
 #' @param col .
+#' @param split .
 #' @param items .
 #' @param lr .
+#' @param wald .
+#' @param split1 .
 #' @param eta .
 #' @param beta .
 #' @param plot .
@@ -344,10 +410,11 @@ lltmBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$items} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$lr} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$wald} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$eta} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$beta} \tab \tab \tab \tab \tab a table \cr
-#'   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$comp} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
 #' }
 #'
 #' Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
@@ -360,14 +427,17 @@ lltmBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 lltm <- function(
     data,
     vars,
-    mat = "1,0,1,1,1,0,1,0,1,0",
-    col = 2,
+    mat = "1,0,1,1,1,0,1,0,1,0,1,1,1,1,1,0,0,0,1,1,0,1,0,1,1,  -0.5, 1,  1, -1,0",
+    col = 3,
+    split = "median",
     items = TRUE,
     lr = FALSE,
+    wald = FALSE,
+    split1 = "median",
     eta = FALSE,
-    beta = TRUE,
-    plot = TRUE,
-    comp = TRUE) {
+    beta = FALSE,
+    plot = FALSE,
+    comp = FALSE) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("lltm requires jmvcore to be installed (restart may be required)")
@@ -383,8 +453,11 @@ lltm <- function(
         vars = vars,
         mat = mat,
         col = col,
+        split = split,
         items = items,
         lr = lr,
+        wald = wald,
+        split1 = split1,
         eta = eta,
         beta = beta,
         plot = plot,

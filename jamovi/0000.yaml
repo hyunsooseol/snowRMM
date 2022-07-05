@@ -10,8 +10,9 @@ date: '2022-06-25'
 type: R
 description: >-
   This module allows users to conduct Latent class analysis, Latent Profile
-  Analysis, Rasch model, Linear and Equipercentile Equating, and Rasch mixture
-  model including model information,fit statistics,and bootstrap item fit. 
+  Analysis, Rasch model,Linear Logisitic Test Model, Linear and Equipercentile
+  Equating, and Rasch mixture model including model information,fit
+  statistics,and bootstrap item fit. 
 analyses:
   - title: Rasch Model
     name: rasch
@@ -71,6 +72,7 @@ analyses:
     ns: snowRMM
     menuGroup: snowRMM
     menuTitle: Linear Logisitic Test Model
+    menuSubgroup: Mixture
 datasets:
   - name: mixture
     path: mix.omv
