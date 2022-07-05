@@ -31,7 +31,7 @@ lltmClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             <p>____________________________________________________________________________________</p>
             <p>1. Performs Linear Logistic Test Model (LLTM) for binary item responses by using CML estimation.</p>
             <p>2. Design matrix(W matrix) for the LLTM will be computed by specifying <b>Vectors and Number of columns</b>.</p>
-            <p>3. Artificial data set and R codes for creating W matrix can be found in Data Library>snowRMM folder.</p>
+            <p>3. Artificial data matrix and R codes for creating W matrix can be found in Data Library>snowRMM folder.</p>
             <p>4. A description of the LLTM is described in the <a href='https://scholarworks.umass.edu/cgi/viewcontent.cgi?article=1248&context=pare' target = '_blank'>paper</a>.</p>
             <p>5. Feature requests and bug reports can be made on my <a href='https://github.com/hyunsooseol/snowRMM/issues'  target = '_blank'>GitHub</a>.</p>
             <p>____________________________________________________________________________________</p>
