@@ -200,7 +200,6 @@ lltmResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     list(
                         `name`="p", 
                         `title`="p", 
-                        `type`="number", 
                         `format`="zto,pvalue"))))
             self$add(jmvcore::Table$new(
                 options=options,
@@ -230,7 +229,6 @@ lltmResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     list(
                         `name`="p", 
                         `title`="p", 
-                        `type`="number", 
                         `format`="zto,pvalue"))))
             self$add(jmvcore::Table$new(
                 options=options,
@@ -255,7 +253,6 @@ lltmResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     list(
                         `name`="p", 
                         `title`="p", 
-                        `type`="number", 
                         `format`="zto, number"))))
             self$add(jmvcore::Table$new(
                 options=options,
@@ -364,7 +361,6 @@ lltmResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     list(
                         `name`="p", 
                         `title`="p", 
-                        `type`="number", 
                         `format`="zto, pvalue"))))
             self$add(jmvcore::Image$new(
                 options=options,

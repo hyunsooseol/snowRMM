@@ -67,7 +67,6 @@ items:
           type: number
         - name: p
           title: 'p'
-          type: number 
           format: zto,pvalue
 
     - name: ml
@@ -94,7 +93,6 @@ items:
           type: integer
         - name: p
           title: 'p'
-          type: number 
           format: zto,pvalue
 
     - name: wald
@@ -119,7 +117,6 @@ items:
         
         - name: p
           title: 'p'
-          type: number  
           format: zto, number
 
     - name: eta
@@ -228,7 +225,6 @@ items:
                 
         - name: p
           title: 'p'
-          type: number
           format: zto, pvalue
           
     - name:  plot

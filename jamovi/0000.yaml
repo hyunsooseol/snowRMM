@@ -85,12 +85,12 @@ datasets:
     tags:
       - Rasch
       - Bootstrap
-  - name: pcm
+  - name: mix
     path: rating.omv
-    description: Bootstrap Item Fit with P values
+    description: Rasch mixture model
     tags:
       - Rasch
-      - Bootstrap P values
+      - Mixture
   - name: rating
     path: sim.omv
     description: Likert-type simulation data
