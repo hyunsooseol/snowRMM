@@ -7,6 +7,7 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     public = list(
         initialize = function(
             vars = NULL,
+            num = 1,
             step = 1,
             type = "RSM",
             aic = TRUE,
@@ -21,7 +22,8 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             wrightmap = FALSE,
             inplot = FALSE,
             outplot = FALSE,
-            angle = 0, ...) {
+            angle = 0,
+            plot1 = FALSE, ...) {
 
             super$initialize(
                 package="snowRMM",
@@ -36,6 +38,11 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "continuous"),
                 permitted=list(
                     "numeric"))
+            private$..num <- jmvcore::OptionInteger$new(
+                "num",
+                num,
+                default=1,
+                min=1)
             private$..step <- jmvcore::OptionInteger$new(
                 "step",
                 step,
@@ -112,8 +119,13 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 min=0,
                 max=45,
                 default=0)
+            private$..plot1 <- jmvcore::OptionBool$new(
+                "plot1",
+                plot1,
+                default=FALSE)
 
             self$.addOption(private$..vars)
+            self$.addOption(private$..num)
             self$.addOption(private$..step)
             self$.addOption(private$..type)
             self$.addOption(private$..aic)
@@ -134,9 +146,11 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..inplot)
             self$.addOption(private$..outplot)
             self$.addOption(private$..angle)
+            self$.addOption(private$..plot1)
         }),
     active = list(
         vars = function() private$..vars$value,
+        num = function() private$..num$value,
         step = function() private$..step$value,
         type = function() private$..type$value,
         aic = function() private$..aic$value,
@@ -156,9 +170,11 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         poutfit = function() private$..poutfit$value,
         inplot = function() private$..inplot$value,
         outplot = function() private$..outplot$value,
-        angle = function() private$..angle$value),
+        angle = function() private$..angle$value,
+        plot1 = function() private$..plot1$value),
     private = list(
         ..vars = NA,
+        ..num = NA,
         ..step = NA,
         ..type = NA,
         ..aic = NA,
@@ -178,7 +194,8 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..poutfit = NA,
         ..inplot = NA,
         ..outplot = NA,
-        ..angle = NA)
+        ..angle = NA,
+        ..plot1 = NA)
 )
 
 raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -188,6 +205,7 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         instructions = function() private$.items[["instructions"]],
         item = function() private$.items[["item"]],
         plot = function() private$.items[["plot"]],
+        plot1 = function() private$.items[["plot1"]],
         inplot = function() private$.items[["inplot"]],
         outplot = function() private$.items[["outplot"]],
         total = function() private$.items[["total"]],
@@ -304,6 +322,19 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "type")))
             self$add(jmvcore::Image$new(
                 options=options,
+                name="plot1",
+                title="ICC plot for binary items",
+                width=500,
+                height=500,
+                visible="(plot1)",
+                renderFun=".plot1",
+                requiresData=TRUE,
+                refs="eRm",
+                clearWith=list(
+                    "vars",
+                    "num")))
+            self$add(jmvcore::Image$new(
+                options=options,
                 name="inplot",
                 title="Item Infit plot",
                 width=500,
@@ -404,6 +435,7 @@ raschBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' 
 #' @param data The data as a data frame.
 #' @param vars .
+#' @param num .
 #' @param step .
 #' @param type .
 #' @param aic .
@@ -420,12 +452,14 @@ raschBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param outplot .
 #' @param angle a number from 0 to 45 defining the angle of the x-axis labels,
 #'   where 0 degrees represents completely horizontal labels.
+#' @param plot1 .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
 #'   \code{results$item$model} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$item$items} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
+#'   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$inplot} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$outplot} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$total} \tab \tab \tab \tab \tab an output \cr
@@ -439,6 +473,7 @@ raschBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 rasch <- function(
     data,
     vars,
+    num = 1,
     step = 1,
     type = "RSM",
     aic = TRUE,
@@ -453,7 +488,8 @@ rasch <- function(
     wrightmap = FALSE,
     inplot = FALSE,
     outplot = FALSE,
-    angle = 0) {
+    angle = 0,
+    plot1 = FALSE) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("rasch requires jmvcore to be installed (restart may be required)")
@@ -467,6 +503,7 @@ rasch <- function(
 
     options <- raschOptions$new(
         vars = vars,
+        num = num,
         step = step,
         type = type,
         aic = aic,
@@ -481,7 +518,8 @@ rasch <- function(
         wrightmap = wrightmap,
         inplot = inplot,
         outplot = outplot,
-        angle = angle)
+        angle = angle,
+        plot1 = plot1)
 
     analysis <- raschClass$new(
         options = options,

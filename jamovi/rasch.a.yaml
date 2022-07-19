@@ -20,6 +20,12 @@ options:
       permitted:
         - numeric
 
+    - name: num
+      title: Item number
+      default: 1
+      type: Integer
+      min: 1
+
     - name: step
       title: Step(s)
       type: Integer
@@ -127,4 +133,8 @@ options:
             a number from 0 to 45 defining the angle of the x-axis labels, 
             where 0 degrees represents completely horizontal labels.
 
+    - name: plot1
+      title: ICC plot(Only binary)
+      type: Bool
+      default: FALSE
 ...

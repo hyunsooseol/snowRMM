@@ -84,11 +84,27 @@ children:
         margin: large
         children:
           - type: Label
-            label: ''
+            label: 'Map plots'
             fitToGrid: true
             children:
               - type: CheckBox
                 name: wrightmap
+              - type: TextBox
+                name: num
+                format: number   
+              - type: CheckBox
+                name: plot1
+      - type: LayoutBox
+        stretchFactor: 1
+        margin: large
+        cell:
+          column: 1
+          row: 0
+        fitToGrid: true
+        children:
+          - type: Label
+            label: Fit plots
+            children:
               - type: CheckBox
                 name: inplot
               - type: CheckBox
@@ -98,7 +114,7 @@ children:
                 format: number
                 suggestedValues:
                   - value: 0
-                  - value: 45     
+                  - value: 45
   - type: CollapseBox
     label: Person Analysis
     margin: normal
@@ -136,4 +152,3 @@ children:
                 name: pinfit
               - type: Output
                 name: poutfit
- 

@@ -7,6 +7,7 @@
 rasch(
   data,
   vars,
+  num = 1,
   step = 1,
   type = "RSM",
   aic = TRUE,
@@ -21,13 +22,16 @@ rasch(
   wrightmap = FALSE,
   inplot = FALSE,
   outplot = FALSE,
-  angle = 0
+  angle = 0,
+  plot1 = FALSE
 )
 }
 \arguments{
 \item{data}{The data as a data frame.}
 
 \item{vars}{.}
+
+\item{num}{.}
 
 \item{step}{.}
 
@@ -59,6 +63,8 @@ rasch(
 
 \item{angle}{a number from 0 to 45 defining the angle of the x-axis labels,
 where 0 degrees represents completely horizontal labels.}
+
+\item{plot1}{.}
 }
 \value{
 A results object containing:
@@ -67,6 +73,7 @@ A results object containing:
   \code{results$item$model} \tab \tab \tab \tab \tab a table \cr
   \code{results$item$items} \tab \tab \tab \tab \tab a table \cr
   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
+  \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
   \code{results$inplot} \tab \tab \tab \tab \tab an image \cr
   \code{results$outplot} \tab \tab \tab \tab \tab an image \cr
   \code{results$total} \tab \tab \tab \tab \tab an output \cr

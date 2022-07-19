@@ -83,6 +83,19 @@ items:
         - vars
         - step
         - type
+
+    - name: plot1
+      title: 'ICC plot for binary items'
+      type: Image
+      width: 500
+      height: 500
+      visible: (plot1)
+      renderFun: .plot1
+      requiresData: TRUE
+      refs: eRm
+      clearWith:
+        - vars
+        - num
  
     - name: inplot
       title: 'Item Infit plot'

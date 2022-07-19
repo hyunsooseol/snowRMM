@@ -7,6 +7,8 @@
 #' @importFrom mixRasch mixRasch
 #' @importFrom mixRasch getEstDetails
 #' @importFrom ShinyItemAnalysis ggWrightMap
+#' @importFrom eRm plotICC
+#' @importFrom eRm RM
 #' @import RColorBrewer
 #' @import ggplot2
 #' @export
@@ -39,7 +41,8 @@ raschClass <- if (requireNamespace('jmvcore'))
             <p>2. Specify </b> the number of 'Step' and model 'Type'</b> in the 'Analysis option'.</p>
             <P>3. Step is defined as number of <b>category-1</b>. </p>
             <p>4. The results of <b>Person Analysis</b> will be displayed in the datasheet.</p>
-            <p>5. Feature requests and bug reports can be made on my <a href='https://github.com/hyunsooseol/snowRMM/issues'  target = '_blank'>GitHub</a>.</p>
+            <p>5. ICC plot can only be plotted for a dichotomous Rasch model.</p>
+            <p>6. Feature requests and bug reports can be made on my <a href='https://github.com/hyunsooseol/snowRMM/issues'  target = '_blank'>GitHub</a>.</p>
             <p>_____________________________________________________________________________________________</p>
             
             </div>
@@ -107,6 +110,9 @@ raschClass <- if (requireNamespace('jmvcore'))
           private$.prepareInfitPlot(data)
           
           private$.prepareOutfitPlot(data)
+          
+          private$.prepareIccPlot(data)
+          
           
         }
       },
@@ -594,7 +600,51 @@ raschClass <- if (requireNamespace('jmvcore'))
         
       },    
       
-    
+      .prepareIccPlot=function(data){
+        
+        num <- self$options$num
+      
+     #   step <- self$options$step
+        
+        if (self$options$step!=1)
+          return()
+          
+        erm.res <- eRm::RM(data)
+      
+        image <- self$results$plot1
+        image$setState(erm.res)
+        
+      
+      },
+      
+      .plot1 = function(image,...) {
+        
+        num <- self$options$num
+        
+        if (self$options$step!=1)
+          return()
+        
+        # plot1 <- self$options$plot1
+        # 
+        # if (!plot1)
+        #   return()
+      
+        erm.res <- image$state
+        
+        plot1 <- eRm::plotICC(erm.res, 
+                              item.subset= num,
+                              empICC=list("raw",type="b",col="blue",lty="dotted"),
+                              empCI=list())
+        
+        
+        print(plot1)
+        TRUE
+        
+      
+      },
+      
+      
+      
       #### Helper functions =================================
       
       .cleanData = function() {
