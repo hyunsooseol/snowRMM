@@ -10,9 +10,7 @@ rasch(
   num = 1,
   step = 1,
   type = "RSM",
-  aic = TRUE,
-  bic = TRUE,
-  caic = TRUE,
+  fit = TRUE,
   imean = FALSE,
   imeasure = FALSE,
   ise = FALSE,
@@ -37,11 +35,7 @@ rasch(
 
 \item{type}{.}
 
-\item{aic}{.}
-
-\item{bic}{.}
-
-\item{caic}{.}
+\item{fit}{.}
 
 \item{imean}{.}
 

@@ -42,18 +42,8 @@ options:
         title: 'Partial credit'
       default: RSM
 
-    - name: aic
-      title: AIC
-      type: Bool
-      default: True
-
-    - name: bic
-      title: BIC
-      type: Bool
-      default: True
-
-    - name: caic
-      title: CAIC
+    - name: fit
+      title: Fit measures
       type: Bool
       default: True
 
@@ -134,7 +124,7 @@ options:
             where 0 degrees represents completely horizontal labels.
 
     - name: plot1
-      title: ICC plot(Only binary)
+      title: ICC plot(for binary items)
       type: Bool
       default: FALSE
 ...

@@ -12,30 +12,37 @@ items:
     - name: item
       title: Item Analysis
       type: Group
-      items:
+      items:   
         - name: model
-          title: 'Model Information'
+          title: 'Model FIt Information' 
           type: Table
           rows: 1
+          visible: (fit)
           clearWith:
             - vars
             - step
             - type
           refs: mixRasch
+  
           columns:
-            - name: class
-              title: 'Class'
-              visible: (class)
             - name: aic
-              title: 'AIC'
-              visible: (aic)
+              title: AIC
+              type: number
             - name: bic
-              title: 'BIC'
-              visible: (bic)
+              title: BIC            
+              type: number
             - name: caic
-              title: 'CAIC'
-              visible: (caic)
-
+              title: CAIC 
+              type: number
+            - name: loglik
+              title: Log-likelihood  
+              type: number
+            - name: parm
+              title: Parameters
+              type: integer
+            - name: person
+              title: Persons
+              type: integer               
         - name: items
           title: 'Item Statistics'
           type: Table

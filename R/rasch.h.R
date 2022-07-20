@@ -10,9 +10,7 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             num = 1,
             step = 1,
             type = "RSM",
-            aic = TRUE,
-            bic = TRUE,
-            caic = TRUE,
+            fit = TRUE,
             imean = FALSE,
             imeasure = FALSE,
             ise = FALSE,
@@ -55,17 +53,9 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "RSM",
                     "PCM"),
                 default="RSM")
-            private$..aic <- jmvcore::OptionBool$new(
-                "aic",
-                aic,
-                default=TRUE)
-            private$..bic <- jmvcore::OptionBool$new(
-                "bic",
-                bic,
-                default=TRUE)
-            private$..caic <- jmvcore::OptionBool$new(
-                "caic",
-                caic,
+            private$..fit <- jmvcore::OptionBool$new(
+                "fit",
+                fit,
                 default=TRUE)
             private$..imean <- jmvcore::OptionBool$new(
                 "imean",
@@ -128,9 +118,7 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..num)
             self$.addOption(private$..step)
             self$.addOption(private$..type)
-            self$.addOption(private$..aic)
-            self$.addOption(private$..bic)
-            self$.addOption(private$..caic)
+            self$.addOption(private$..fit)
             self$.addOption(private$..imean)
             self$.addOption(private$..imeasure)
             self$.addOption(private$..ise)
@@ -153,9 +141,7 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         num = function() private$..num$value,
         step = function() private$..step$value,
         type = function() private$..type$value,
-        aic = function() private$..aic$value,
-        bic = function() private$..bic$value,
-        caic = function() private$..caic$value,
+        fit = function() private$..fit$value,
         imean = function() private$..imean$value,
         imeasure = function() private$..imeasure$value,
         ise = function() private$..ise$value,
@@ -177,9 +163,7 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..num = NA,
         ..step = NA,
         ..type = NA,
-        ..aic = NA,
-        ..bic = NA,
-        ..caic = NA,
+        ..fit = NA,
         ..imean = NA,
         ..imeasure = NA,
         ..ise = NA,
@@ -241,8 +225,9 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         self$add(jmvcore::Table$new(
                             options=options,
                             name="model",
-                            title="Model Information",
+                            title="Model FIt Information",
                             rows=1,
+                            visible="(fit)",
                             clearWith=list(
                                 "vars",
                                 "step",
@@ -250,21 +235,29 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                             refs="mixRasch",
                             columns=list(
                                 list(
-                                    `name`="class", 
-                                    `title`="Class", 
-                                    `visible`="(class)"),
-                                list(
                                     `name`="aic", 
                                     `title`="AIC", 
-                                    `visible`="(aic)"),
+                                    `type`="number"),
                                 list(
                                     `name`="bic", 
                                     `title`="BIC", 
-                                    `visible`="(bic)"),
+                                    `type`="number"),
                                 list(
                                     `name`="caic", 
                                     `title`="CAIC", 
-                                    `visible`="(caic)"))))
+                                    `type`="number"),
+                                list(
+                                    `name`="loglik", 
+                                    `title`="Log-likelihood", 
+                                    `type`="number"),
+                                list(
+                                    `name`="parm", 
+                                    `title`="Parameters", 
+                                    `type`="integer"),
+                                list(
+                                    `name`="person", 
+                                    `title`="Persons", 
+                                    `type`="integer"))))
                         self$add(jmvcore::Table$new(
                             options=options,
                             name="items",
@@ -438,9 +431,7 @@ raschBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param num .
 #' @param step .
 #' @param type .
-#' @param aic .
-#' @param bic .
-#' @param caic .
+#' @param fit .
 #' @param imean .
 #' @param imeasure .
 #' @param ise .
@@ -476,9 +467,7 @@ rasch <- function(
     num = 1,
     step = 1,
     type = "RSM",
-    aic = TRUE,
-    bic = TRUE,
-    caic = TRUE,
+    fit = TRUE,
     imean = FALSE,
     imeasure = FALSE,
     ise = FALSE,
@@ -506,9 +495,7 @@ rasch <- function(
         num = num,
         step = step,
         type = type,
-        aic = aic,
-        bic = bic,
-        caic = caic,
+        fit = fit,
         imean = imean,
         imeasure = imeasure,
         ise = ise,

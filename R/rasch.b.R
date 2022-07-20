@@ -147,6 +147,10 @@ raschClass <- if (requireNamespace('jmvcore'))
         
         caic <- res$info.fit$CAIC
         
+        loglik <- res$info.fit$loglik
+        parm <- res$info.fit$N.parms
+        person <- res$info.fit$N.persons
+        
         # item statistics---------
         
         imean <- res$item.par$itemDescriptives
@@ -172,6 +176,9 @@ raschClass <- if (requireNamespace('jmvcore'))
             'aic' = aic,
             'bic' = bic,
             'caic' = caic,
+            'loglik'=loglik,
+            'parm'=parm,
+            'person'=person,
             'imean' = imean,
             'imeasure' = imeasure,
             'ise' = ise,
@@ -203,6 +210,10 @@ raschClass <- if (requireNamespace('jmvcore'))
         
         caic <- results$caic
         
+        loglik <- results$loglik
+        parm <- results$parm
+        person <- results$person
+        
         
         row <- list()
         
@@ -210,6 +221,9 @@ raschClass <- if (requireNamespace('jmvcore'))
         row[["aic"]] <- aic
         row[["bic"]] <- bic
         row[["caic"]] <- caic
+        row[["loglik"]] <- loglik
+        row[["parm"]] <- parm
+        row[["person"]] <- person
         
         table$setRow(rowNo = 1, values = row)
         

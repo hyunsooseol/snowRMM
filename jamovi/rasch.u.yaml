@@ -51,6 +51,13 @@ children:
                 name: imeasure
               - type: CheckBox
                 name: ise
+      - type: LayoutBox
+        stretchFactor: 1
+        margin: large
+        children:
+          - type: Label
+            label: Item Fit
+            children:                
               - type: CheckBox
                 name: infit
               - type: CheckBox
@@ -69,11 +76,7 @@ children:
             label: Model Fit
             children:
               - type: CheckBox
-                name: aic
-              - type: CheckBox
-                name: bic
-              - type: CheckBox
-                name: caic
+                name: fit
   - type: CollapseBox
     label: Plots
     margin: normal
@@ -146,7 +149,7 @@ children:
         fitToGrid: true
         children:
           - type: Label
-            label: Fit Measure
+            label: Person Fit
             children:
               - type: Output
                 name: pinfit
