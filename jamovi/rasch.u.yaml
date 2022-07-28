@@ -23,7 +23,7 @@ children:
     style: inline
     children:
       - type: Label
-        label: Analysis option
+        label: Analysis options
         margin: large
         style: list-inline
         children:
@@ -52,7 +52,7 @@ children:
               - type: CheckBox
                 name: ise
           - type: Label
-            label: 'Thresholds'
+            label: 'Thresholds(Step>1)'
             children:
               - type: CheckBox
                 name: rsm

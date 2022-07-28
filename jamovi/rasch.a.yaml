@@ -134,17 +134,17 @@ options:
             where 0 degrees represents completely horizontal labels.
 
     - name: plot1
-      title: ICC(for dichotomous items)
+      title: 'ICC(Step=1)'
       type: Bool
       default: FALSE
       
     - name: plot2
-      title: Category for rating scale model
+      title: Category(rating scale) 
       type: Bool
       default: FALSE    
       
     - name: plot3
-      title: Category for partial credit model
+      title: Category(partial credit) 
       type: Bool
       default: FALSE          
 ...

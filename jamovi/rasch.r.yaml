@@ -9,10 +9,6 @@ items:
       type: Html
       visible: True
 
-    - name:  text
-      title: TEST
-      type:  Preformatted
-      
     - name: item
       title: Item Analysis
       type: Group
@@ -88,6 +84,8 @@ items:
       rows: (vars)
       visible: (rsm)
       refs: eRm    
+      clearWith:
+        - vars
       columns:
         - name: name
           title: ''
@@ -100,6 +98,8 @@ items:
       rows: (vars)
       visible: (pcm)
       refs: eRm    
+      clearWith:
+        - vars
       columns:
         - name: name
           title: ''

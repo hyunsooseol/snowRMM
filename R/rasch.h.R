@@ -219,7 +219,6 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     inherit = jmvcore::Group,
     active = list(
         instructions = function() private$.items[["instructions"]],
-        text = function() private$.items[["text"]],
         item = function() private$.items[["item"]],
         rsm = function() private$.items[["rsm"]],
         pcm = function() private$.items[["pcm"]],
@@ -247,10 +246,6 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 name="instructions",
                 title="Instructions",
                 visible=TRUE))
-            self$add(jmvcore::Preformatted$new(
-                options=options,
-                name="text",
-                title="TEST"))
             self$add(R6::R6Class(
                 inherit = jmvcore::Group,
                 active = list(
@@ -347,6 +342,8 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 rows="(vars)",
                 visible="(rsm)",
                 refs="eRm",
+                clearWith=list(
+                    "vars"),
                 columns=list(
                     list(
                         `name`="name", 
@@ -360,6 +357,8 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 rows="(vars)",
                 visible="(pcm)",
                 refs="eRm",
+                clearWith=list(
+                    "vars"),
                 columns=list(
                     list(
                         `name`="name", 
@@ -544,7 +543,6 @@ raschBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
-#'   \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$item$model} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$item$items} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$rsm} \tab \tab \tab \tab \tab a table \cr
