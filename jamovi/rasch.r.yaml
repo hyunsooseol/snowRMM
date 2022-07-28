@@ -8,6 +8,10 @@ items:
       title: 'Instructions'
       type: Html
       visible: True
+
+    - name:  text
+      title: TEST
+      type:  Preformatted
       
     - name: item
       title: Item Analysis
@@ -43,6 +47,7 @@ items:
             - name: person
               title: Persons
               type: integer               
+
         - name: items
           title: 'Item Statistics'
           type: Table
@@ -77,6 +82,30 @@ items:
               title: Point biserial
               visible: (pbis)
 
+    - name: rsm
+      title: Thresholds of the rating scale model
+      type: Table
+      rows: (vars)
+      visible: (rsm)
+      refs: eRm    
+      columns:
+        - name: name
+          title: ''
+          type: 'number'
+          content: ($key)
+
+    - name: pcm
+      title: Thresholds of the partial credit model
+      type: Table
+      rows: (vars)
+      visible: (pcm)
+      refs: eRm    
+      columns:
+        - name: name
+          title: ''
+          type: 'number'
+          content: ($key)
+ 
     - name: plot
       title: 'Wright Map'
       type: Image
@@ -98,6 +127,33 @@ items:
       height: 500
       visible: (plot1)
       renderFun: .plot1
+      requiresData: TRUE
+      refs: eRm
+      clearWith:
+        - vars
+        - num
+ 
+    - name: plot2
+      title: 'Category for rating scale model'
+      type: Image
+      width: 500
+      height: 500
+      visible: (plot2)
+      renderFun: .plot2
+      requiresData: TRUE
+      refs: eRm
+      clearWith:
+        - vars
+        - num
+ 
+ 
+    - name: plot3
+      title: 'Category for partial credit model'
+      type: Image
+      width: 500
+      height: 500
+      visible: (plot3)
+      renderFun: .plot3
       requiresData: TRUE
       refs: eRm
       clearWith:

@@ -9,6 +9,9 @@
 #' @importFrom ShinyItemAnalysis ggWrightMap
 #' @importFrom eRm plotICC
 #' @importFrom eRm RM
+#' @importFrom eRm RSM
+#' @importFrom eRm thresholds
+#' @importFrom eRm PCM
 #' @import RColorBrewer
 #' @import ggplot2
 #' @export
@@ -41,14 +44,28 @@ raschClass <- if (requireNamespace('jmvcore'))
             <p>2. Specify </b> the number of 'Step' and model 'Type'</b> in the 'Analysis option'.</p>
             <P>3. Step is defined as number of <b>category-1</b>. </p>
             <p>4. The results of <b>Person Analysis</b> will be displayed in the datasheet.</p>
-            <p>5. ICC plot can only be plotted for a dichotomous Rasch model.</p>
-            <p>6. Feature requests and bug reports can be made on my <a href='https://github.com/hyunsooseol/snowRMM/issues'  target = '_blank'>GitHub</a>.</p>
+            <p>5. Feature requests and bug reports can be made on my <a href='https://github.com/hyunsooseol/snowRMM/issues'  target = '_blank'>GitHub</a>.</p>
             <p>_____________________________________________________________________________________________</p>
             
             </div>
             </body>
             </html>"
         )
+        
+        if (self$options$rsm)
+          self$results$rsm$setNote(
+            "Note",
+            "For calculating thresholds, the <b>eRm</b> R package is used."
+            
+          )
+        
+        if (self$options$pcm)
+          self$results$pcm$setNote(
+            "Note",
+            "For calculating thresholds, the <b>eRm</b> R package is used."
+            
+          )
+        
         
       },
       
@@ -83,6 +100,12 @@ raschClass <- if (requireNamespace('jmvcore'))
           
           results <- private$.compute(data)
           
+          #  populate RSM thresholds table-----
+          
+          private$.populateRsmTable(results)
+          
+          private$.populatePcmTable(results)
+          
           #  populate Model information table-----
           
           private$.populateModelTable(results)
@@ -111,7 +134,13 @@ raschClass <- if (requireNamespace('jmvcore'))
           
           private$.prepareOutfitPlot(data)
           
+          # ICC PLOT-------------------
+          
           private$.prepareIccPlot(data)
+          
+          private$.prepareRsmPlot(data)
+          
+          private$.preparePcmPlot(data)
           
           
         }
@@ -170,7 +199,30 @@ raschClass <- if (requireNamespace('jmvcore'))
         res0 <- mixRasch::getEstDetails(res)
         class <- res0$nC
         
-       
+       ########################################
+        
+        rsm.res <- eRm::RSM(data)
+        tab<- thresholds(rsm.res)
+        tab<- tab$threshtable
+        rsm<- data.frame(Reduce(rbind, tab))
+        rsm<- rsm[,-1]
+        
+       # rm<- rsm[,1] 
+        
+        
+        pcm.res <- eRm::PCM(data)
+        tab1<- thresholds(pcm.res)
+        tab1<- tab1$threshtable
+        pcm<- data.frame(Reduce(rbind, tab1))
+        pcm<- pcm[,-1]
+      #  pm<- pm[,1]
+       # self$results$text$setContent(pcm)
+        
+        # number of category---------
+        
+        nc <- ncol(rsm)
+        
+        ############################################
         results <-
           list(
             'aic' = aic,
@@ -185,14 +237,116 @@ raschClass <- if (requireNamespace('jmvcore'))
             'infit' = infit,
             'outfit' = outfit,
             'pbis' = pbis,
-            'class' = class
+            'class' = class,
+            'rsm'=rsm,
+            'pcm'=pcm,
+            'nc'=nc
+            # 'rm'=rm,
+            # 'pm'=pm
             
           )
         
         
       },
       
+     # populate RSM thresholds table----------
      
+     .populateRsmTable = function(results) {
+       
+       if(self$options$step==1)
+       return()
+       
+       table <- self$results$rsm
+       
+       rsm <- results$rsm
+      
+     #  rm <- results$rm
+       
+       nCategory <- results$nc
+       
+       vars <- self$options$vars
+       
+       
+       if (nCategory > 1) {
+         for (i in 1:nCategory)
+           
+           table$addColumn(
+             name = paste0("name", i),
+             title = as.character(i),
+             superTitle = 'Thresholds',
+             type = 'number'
+           )
+       }
+       
+       
+       for (i in seq_along(vars)) {
+         
+         row <- list()
+         
+         
+         for (j in 1:nCategory) {
+           
+           row[[paste0("name", j)]] <- rsm[i, j]
+           
+           
+         }
+         
+      #   row[["rm"]] <- rm[i]
+         
+         table$setRow(rowNo = i, values = row)
+       }
+     },
+     
+     # populate PCM thresholds table----------
+     
+     .populatePcmTable = function(results) {
+       
+       if(self$options$step==1)
+         return()
+       
+       table <- self$results$pcm
+       
+       pcm <- results$pcm
+       
+     #  pm <- results$pm
+       
+       nCategory <- results$nc
+       
+       vars <- self$options$vars
+       
+       
+       if (nCategory > 1) {
+         for (i in 1:nCategory)
+           
+           table$addColumn(
+             name = paste0("name", i),
+             title = as.character(i),
+             superTitle = 'Thresholds',
+             type = 'number'
+           )
+       }
+       
+       
+       for (i in seq_along(vars)) {
+         
+         row <- list()
+         
+         
+         for (j in 1:nCategory) {
+           
+           row[[paste0("name", j)]] <- pcm[i, j]
+           
+           
+         }
+         
+       #  row[["pm"]] <- pm[i]
+         
+         table$setRow(rowNo = i, values = row)
+       }
+     },
+     
+      
+      
       # populate Model information table-----
       
       .populateModelTable = function(results) {
@@ -657,7 +811,87 @@ raschClass <- if (requireNamespace('jmvcore'))
       
       },
       
+     .prepareRsmPlot=function(data){
+       
+       num <- self$options$num
+       
+       
+       if (self$options$step==1)
+         return()
+       
+       rsm.res <- eRm::RSM(data)
+       
+     #  rsm.res<- eRm::thresholds(rsm.res)
+       
+       image <- self$results$plot2
+       image$setState(rsm.res)
+       
+       
+     },
+     
+     .plot2 = function(image,...) {
+       
+       num <- self$options$num
+       
+       if (self$options$step==1)
+         return()
+       
       
+       rsm.res <- image$state
+       
+       plot2 <- eRm::plotICC(rsm.res,
+                             legpos="top",
+                             item.subset= num)
+                            
+       
+       
+       print(plot2)
+       TRUE
+       
+       
+     },
+     
+     .preparePcmPlot=function(data){
+       
+       num <- self$options$num
+       
+       #   step <- self$options$step
+       
+       if (self$options$step==1)
+         return()
+       
+       pcm.res <- eRm::PCM(data)
+       
+       #  rsm.res<- eRm::thresholds(rsm.res)
+       
+       image <- self$results$plot3
+       image$setState(pcm.res)
+       
+       
+     },
+     
+     .plot3 = function(image,...) {
+       
+       num <- self$options$num
+       
+       if (self$options$step==1)
+         return()
+       
+       
+       pcm.res <- image$state
+       
+       plot3 <- eRm::plotICC(pcm.res, 
+                             legpos="top",
+                             item.subset= num)
+       
+       
+       
+       print(plot3)
+       TRUE
+       
+       
+     },
+     
       
       #### Helper functions =================================
       

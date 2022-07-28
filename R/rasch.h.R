@@ -17,11 +17,15 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             infit = FALSE,
             outfit = FALSE,
             pbis = FALSE,
+            rsm = FALSE,
+            pcm = FALSE,
             wrightmap = FALSE,
             inplot = FALSE,
             outplot = FALSE,
             angle = 0,
-            plot1 = FALSE, ...) {
+            plot1 = FALSE,
+            plot2 = FALSE,
+            plot3 = FALSE, ...) {
 
             super$initialize(
                 package="snowRMM",
@@ -81,6 +85,14 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "pbis",
                 pbis,
                 default=FALSE)
+            private$..rsm <- jmvcore::OptionBool$new(
+                "rsm",
+                rsm,
+                default=FALSE)
+            private$..pcm <- jmvcore::OptionBool$new(
+                "pcm",
+                pcm,
+                default=FALSE)
             private$..wrightmap <- jmvcore::OptionBool$new(
                 "wrightmap",
                 wrightmap,
@@ -113,6 +125,14 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "plot1",
                 plot1,
                 default=FALSE)
+            private$..plot2 <- jmvcore::OptionBool$new(
+                "plot2",
+                plot2,
+                default=FALSE)
+            private$..plot3 <- jmvcore::OptionBool$new(
+                "plot3",
+                plot3,
+                default=FALSE)
 
             self$.addOption(private$..vars)
             self$.addOption(private$..num)
@@ -125,6 +145,8 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..infit)
             self$.addOption(private$..outfit)
             self$.addOption(private$..pbis)
+            self$.addOption(private$..rsm)
+            self$.addOption(private$..pcm)
             self$.addOption(private$..wrightmap)
             self$.addOption(private$..total)
             self$.addOption(private$..pmeasure)
@@ -135,6 +157,8 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..outplot)
             self$.addOption(private$..angle)
             self$.addOption(private$..plot1)
+            self$.addOption(private$..plot2)
+            self$.addOption(private$..plot3)
         }),
     active = list(
         vars = function() private$..vars$value,
@@ -148,6 +172,8 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         infit = function() private$..infit$value,
         outfit = function() private$..outfit$value,
         pbis = function() private$..pbis$value,
+        rsm = function() private$..rsm$value,
+        pcm = function() private$..pcm$value,
         wrightmap = function() private$..wrightmap$value,
         total = function() private$..total$value,
         pmeasure = function() private$..pmeasure$value,
@@ -157,7 +183,9 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         inplot = function() private$..inplot$value,
         outplot = function() private$..outplot$value,
         angle = function() private$..angle$value,
-        plot1 = function() private$..plot1$value),
+        plot1 = function() private$..plot1$value,
+        plot2 = function() private$..plot2$value,
+        plot3 = function() private$..plot3$value),
     private = list(
         ..vars = NA,
         ..num = NA,
@@ -170,6 +198,8 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..infit = NA,
         ..outfit = NA,
         ..pbis = NA,
+        ..rsm = NA,
+        ..pcm = NA,
         ..wrightmap = NA,
         ..total = NA,
         ..pmeasure = NA,
@@ -179,7 +209,9 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..inplot = NA,
         ..outplot = NA,
         ..angle = NA,
-        ..plot1 = NA)
+        ..plot1 = NA,
+        ..plot2 = NA,
+        ..plot3 = NA)
 )
 
 raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -187,9 +219,14 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     inherit = jmvcore::Group,
     active = list(
         instructions = function() private$.items[["instructions"]],
+        text = function() private$.items[["text"]],
         item = function() private$.items[["item"]],
+        rsm = function() private$.items[["rsm"]],
+        pcm = function() private$.items[["pcm"]],
         plot = function() private$.items[["plot"]],
         plot1 = function() private$.items[["plot1"]],
+        plot2 = function() private$.items[["plot2"]],
+        plot3 = function() private$.items[["plot3"]],
         inplot = function() private$.items[["inplot"]],
         outplot = function() private$.items[["outplot"]],
         total = function() private$.items[["total"]],
@@ -210,6 +247,10 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 name="instructions",
                 title="Instructions",
                 visible=TRUE))
+            self$add(jmvcore::Preformatted$new(
+                options=options,
+                name="text",
+                title="TEST"))
             self$add(R6::R6Class(
                 inherit = jmvcore::Group,
                 active = list(
@@ -299,6 +340,32 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                     `name`="pbis", 
                                     `title`="Point biserial", 
                                     `visible`="(pbis)"))))}))$new(options=options))
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="rsm",
+                title="Thresholds of the rating scale model",
+                rows="(vars)",
+                visible="(rsm)",
+                refs="eRm",
+                columns=list(
+                    list(
+                        `name`="name", 
+                        `title`="", 
+                        `type`="number", 
+                        `content`="($key)"))))
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="pcm",
+                title="Thresholds of the partial credit model",
+                rows="(vars)",
+                visible="(pcm)",
+                refs="eRm",
+                columns=list(
+                    list(
+                        `name`="name", 
+                        `title`="", 
+                        `type`="number", 
+                        `content`="($key)"))))
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot",
@@ -321,6 +388,32 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 height=500,
                 visible="(plot1)",
                 renderFun=".plot1",
+                requiresData=TRUE,
+                refs="eRm",
+                clearWith=list(
+                    "vars",
+                    "num")))
+            self$add(jmvcore::Image$new(
+                options=options,
+                name="plot2",
+                title="Category for rating scale model",
+                width=500,
+                height=500,
+                visible="(plot2)",
+                renderFun=".plot2",
+                requiresData=TRUE,
+                refs="eRm",
+                clearWith=list(
+                    "vars",
+                    "num")))
+            self$add(jmvcore::Image$new(
+                options=options,
+                name="plot3",
+                title="Category for partial credit model",
+                width=500,
+                height=500,
+                visible="(plot3)",
+                renderFun=".plot3",
                 requiresData=TRUE,
                 refs="eRm",
                 clearWith=list(
@@ -438,19 +531,28 @@ raschBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param infit .
 #' @param outfit .
 #' @param pbis .
+#' @param rsm .
+#' @param pcm .
 #' @param wrightmap .
 #' @param inplot .
 #' @param outplot .
 #' @param angle a number from 0 to 45 defining the angle of the x-axis labels,
 #'   where 0 degrees represents completely horizontal labels.
 #' @param plot1 .
+#' @param plot2 .
+#' @param plot3 .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
+#'   \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$item$model} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$item$items} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$rsm} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$pcm} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
+#'   \code{results$plot2} \tab \tab \tab \tab \tab an image \cr
+#'   \code{results$plot3} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$inplot} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$outplot} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$total} \tab \tab \tab \tab \tab an output \cr
@@ -459,6 +561,12 @@ raschBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$pinfit} \tab \tab \tab \tab \tab an output \cr
 #'   \code{results$poutfit} \tab \tab \tab \tab \tab an output \cr
 #' }
+#'
+#' Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
+#'
+#' \code{results$rsm$asDF}
+#'
+#' \code{as.data.frame(results$rsm)}
 #'
 #' @export
 rasch <- function(
@@ -474,11 +582,15 @@ rasch <- function(
     infit = FALSE,
     outfit = FALSE,
     pbis = FALSE,
+    rsm = FALSE,
+    pcm = FALSE,
     wrightmap = FALSE,
     inplot = FALSE,
     outplot = FALSE,
     angle = 0,
-    plot1 = FALSE) {
+    plot1 = FALSE,
+    plot2 = FALSE,
+    plot3 = FALSE) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("rasch requires jmvcore to be installed (restart may be required)")
@@ -502,11 +614,15 @@ rasch <- function(
         infit = infit,
         outfit = outfit,
         pbis = pbis,
+        rsm = rsm,
+        pcm = pcm,
         wrightmap = wrightmap,
         inplot = inplot,
         outplot = outplot,
         angle = angle,
-        plot1 = plot1)
+        plot1 = plot1,
+        plot2 = plot2,
+        plot3 = plot3)
 
     analysis <- raschClass$new(
         options = options,

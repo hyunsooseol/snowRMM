@@ -43,7 +43,7 @@ children:
         margin: large
         children:
           - type: Label
-            label: Statistics
+            label: 'Item measures'
             children:
               - type: CheckBox
                 name: imean
@@ -51,19 +51,13 @@ children:
                 name: imeasure
               - type: CheckBox
                 name: ise
-      - type: LayoutBox
-        stretchFactor: 1
-        margin: large
-        children:
           - type: Label
-            label: Item Fit
-            children:                
+            label: 'Thresholds'
+            children:
               - type: CheckBox
-                name: infit
+                name: rsm
               - type: CheckBox
-                name: outfit
-              - type: CheckBox
-                name: pbis
+                name: pcm                
       - type: LayoutBox
         stretchFactor: 1
         margin: large
@@ -73,10 +67,19 @@ children:
         fitToGrid: true
         children:
           - type: Label
-            label: Model Fit
+            label: 'Model fit'
             children:
               - type: CheckBox
                 name: fit
+          - type: Label
+            label: 'Item fit'
+            children:                
+              - type: CheckBox
+                name: infit
+              - type: CheckBox
+                name: outfit
+              - type: CheckBox
+                name: pbis
   - type: CollapseBox
     label: Plots
     margin: normal
@@ -87,16 +90,24 @@ children:
         margin: large
         children:
           - type: Label
-            label: 'Map plots'
+            label: ''
             fitToGrid: true
             children:
               - type: CheckBox
                 name: wrightmap
+          - type: Label
+            label: 'ICC plots'
+            fitToGrid: true
+            children:
               - type: TextBox
                 name: num
                 format: number   
               - type: CheckBox
                 name: plot1
+              - type: CheckBox
+                name: plot2 
+              - type: CheckBox
+                name: plot3                 
       - type: LayoutBox
         stretchFactor: 1
         margin: large
@@ -128,7 +139,7 @@ children:
         margin: large
         children:
           - type: Label
-            label: Statistics
+            label: 'Person measures'
             fitToGrid: true
             cell:
               column: 0
@@ -149,7 +160,7 @@ children:
         fitToGrid: true
         children:
           - type: Label
-            label: Person Fit
+            label: Person fit
             children:
               - type: Output
                 name: pinfit

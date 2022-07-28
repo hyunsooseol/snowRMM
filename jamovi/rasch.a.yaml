@@ -77,6 +77,16 @@ options:
       type: Bool
       default: FALSE
 
+    - name: rsm
+      title: Rating scale
+      type: Bool
+      default: FALSE
+
+    - name: pcm
+      title: Partial credit
+      type: Bool
+      default: FALSE
+
     - name: wrightmap
       title: Wright Map
       type: Bool
@@ -124,7 +134,17 @@ options:
             where 0 degrees represents completely horizontal labels.
 
     - name: plot1
-      title: ICC plot(for binary items)
+      title: ICC(for dichotomous items)
       type: Bool
       default: FALSE
+      
+    - name: plot2
+      title: Category for rating scale model
+      type: Bool
+      default: FALSE    
+      
+    - name: plot3
+      title: Category for partial credit model
+      type: Bool
+      default: FALSE          
 ...
