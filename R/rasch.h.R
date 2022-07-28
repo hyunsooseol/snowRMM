@@ -382,7 +382,7 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot1",
-                title="ICC plot for binary items",
+                title="Item Characteristic Curve(ICC) for dichotomous items",
                 width=500,
                 height=500,
                 visible="(plot1)",

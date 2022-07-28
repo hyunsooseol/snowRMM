@@ -88,7 +88,7 @@ options:
       default: FALSE
 
     - name: wrightmap
-      title: Wright Map
+      title: Wright map
       type: Bool
       default: FALSE
 
@@ -113,12 +113,12 @@ options:
       type: Output
 
     - name: inplot
-      title: Infit plot 
+      title: Infit 
       type: Bool
       default: false
       
     - name: outplot
-      title: Outfit plot
+      title: Outfit 
       type: Bool
       default: false
 
@@ -139,12 +139,12 @@ options:
       default: FALSE
       
     - name: plot2
-      title: Category(rating scale) 
+      title: 'Rating scale' 
       type: Bool
       default: FALSE    
       
     - name: plot3
-      title: Category(partial credit) 
+      title: 'Partial credit' 
       type: Bool
       default: FALSE          
 ...

@@ -121,7 +121,7 @@ items:
         - type
 
     - name: plot1
-      title: 'ICC plot for binary items'
+      title: 'Item Characteristic Curve(ICC) for dichotomous items'
       type: Image
       width: 500
       height: 500

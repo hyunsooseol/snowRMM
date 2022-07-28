@@ -93,17 +93,19 @@ children:
             label: ''
             fitToGrid: true
             children:
-              - type: CheckBox
-                name: wrightmap
-          - type: Label
-            label: 'ICC plots'
-            fitToGrid: true
-            children:
               - type: TextBox
                 name: num
-                format: number   
+                format: number 
+          - type: Label
+            label: 'Item characteristic curve'
+            fitToGrid: true
+            children:  
               - type: CheckBox
                 name: plot1
+          - type: Label
+            label: 'Category(Step>1)'
+            fitToGrid: true
+            children:          
               - type: CheckBox
                 name: plot2 
               - type: CheckBox
@@ -117,7 +119,7 @@ children:
         fitToGrid: true
         children:
           - type: Label
-            label: Fit plots
+            label: 'Fit'
             children:
               - type: CheckBox
                 name: inplot
@@ -129,6 +131,8 @@ children:
                 suggestedValues:
                   - value: 0
                   - value: 45
+              - type: CheckBox
+                name: wrightmap
   - type: CollapseBox
     label: Person Analysis
     margin: normal
