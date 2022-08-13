@@ -11,21 +11,22 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             step = 1,
             type = "RSM",
             fit = TRUE,
-            imean = FALSE,
-            imeasure = FALSE,
+            imean = TRUE,
+            imeasure = TRUE,
             ise = FALSE,
             infit = FALSE,
             outfit = FALSE,
             pbis = FALSE,
             rsm = FALSE,
             pcm = FALSE,
-            wrightmap = FALSE,
+            wrightmap = TRUE,
             inplot = FALSE,
             outplot = FALSE,
             angle = 0,
             plot1 = FALSE,
             plot2 = FALSE,
-            plot3 = FALSE, ...) {
+            plot3 = FALSE,
+            piplot = FALSE, ...) {
 
             super$initialize(
                 package="snowRMM",
@@ -64,11 +65,11 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             private$..imean <- jmvcore::OptionBool$new(
                 "imean",
                 imean,
-                default=FALSE)
+                default=TRUE)
             private$..imeasure <- jmvcore::OptionBool$new(
                 "imeasure",
                 imeasure,
-                default=FALSE)
+                default=TRUE)
             private$..ise <- jmvcore::OptionBool$new(
                 "ise",
                 ise,
@@ -96,7 +97,7 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             private$..wrightmap <- jmvcore::OptionBool$new(
                 "wrightmap",
                 wrightmap,
-                default=FALSE)
+                default=TRUE)
             private$..total <- jmvcore::OptionOutput$new(
                 "total")
             private$..pmeasure <- jmvcore::OptionOutput$new(
@@ -133,6 +134,10 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "plot3",
                 plot3,
                 default=FALSE)
+            private$..piplot <- jmvcore::OptionBool$new(
+                "piplot",
+                piplot,
+                default=FALSE)
 
             self$.addOption(private$..vars)
             self$.addOption(private$..num)
@@ -159,6 +164,7 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..plot1)
             self$.addOption(private$..plot2)
             self$.addOption(private$..plot3)
+            self$.addOption(private$..piplot)
         }),
     active = list(
         vars = function() private$..vars$value,
@@ -185,7 +191,8 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         angle = function() private$..angle$value,
         plot1 = function() private$..plot1$value,
         plot2 = function() private$..plot2$value,
-        plot3 = function() private$..plot3$value),
+        plot3 = function() private$..plot3$value,
+        piplot = function() private$..piplot$value),
     private = list(
         ..vars = NA,
         ..num = NA,
@@ -211,7 +218,8 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..angle = NA,
         ..plot1 = NA,
         ..plot2 = NA,
-        ..plot3 = NA)
+        ..plot3 = NA,
+        ..piplot = NA)
 )
 
 raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -223,6 +231,7 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         rsm = function() private$.items[["rsm"]],
         pcm = function() private$.items[["pcm"]],
         plot = function() private$.items[["plot"]],
+        piplot = function() private$.items[["piplot"]],
         plot1 = function() private$.items[["plot1"]],
         plot2 = function() private$.items[["plot2"]],
         plot3 = function() private$.items[["plot3"]],
@@ -375,6 +384,19 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 renderFun=".plot",
                 requiresData=TRUE,
                 refs="ShinyItemAnalysis",
+                clearWith=list(
+                    "vars",
+                    "step",
+                    "type")))
+            self$add(jmvcore::Image$new(
+                options=options,
+                name="piplot",
+                title="Person-item map for PCM ",
+                width=500,
+                height=500,
+                visible="(piplot)",
+                renderFun=".piPlot",
+                refs="eRm",
                 clearWith=list(
                     "vars",
                     "step",
@@ -540,6 +562,7 @@ raschBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param plot1 .
 #' @param plot2 .
 #' @param plot3 .
+#' @param piplot .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
@@ -548,6 +571,7 @@ raschBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$rsm} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$pcm} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
+#'   \code{results$piplot} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$plot2} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$plot3} \tab \tab \tab \tab \tab an image \cr
@@ -574,21 +598,22 @@ rasch <- function(
     step = 1,
     type = "RSM",
     fit = TRUE,
-    imean = FALSE,
-    imeasure = FALSE,
+    imean = TRUE,
+    imeasure = TRUE,
     ise = FALSE,
     infit = FALSE,
     outfit = FALSE,
     pbis = FALSE,
     rsm = FALSE,
     pcm = FALSE,
-    wrightmap = FALSE,
+    wrightmap = TRUE,
     inplot = FALSE,
     outplot = FALSE,
     angle = 0,
     plot1 = FALSE,
     plot2 = FALSE,
-    plot3 = FALSE) {
+    plot3 = FALSE,
+    piplot = FALSE) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("rasch requires jmvcore to be installed (restart may be required)")
@@ -620,7 +645,8 @@ rasch <- function(
         angle = angle,
         plot1 = plot1,
         plot2 = plot2,
-        plot3 = plot3)
+        plot3 = plot3,
+        piplot = piplot)
 
     analysis <- raschClass$new(
         options = options,

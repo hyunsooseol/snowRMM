@@ -12,6 +12,7 @@
 #' @importFrom eRm RSM
 #' @importFrom eRm thresholds
 #' @importFrom eRm PCM
+#' @importFrom eRm plotPImap
 #' @import RColorBrewer
 #' @import ggplot2
 #' @export
@@ -44,7 +45,8 @@ raschClass <- if (requireNamespace('jmvcore'))
             <p>2. Specify </b> the number of 'Step' and model 'Type'</b> in the 'Analysis option'.</p>
             <P>3. Step is defined as number of <b>category-1</b>. </p>
             <p>4. <b>Person Analysis</b> will be displayed in the datasheet.</p>
-            <p>5. Feature requests and bug reports can be made on my <a href='https://github.com/hyunsooseol/snowRMM/issues'  target = '_blank'>GitHub</a>.</p>
+            <p>5. The <b>eRm</b> R package was used for the person-item map for PCM.</p>
+            <p>6. Feature requests and bug reports can be made on my <a href='https://github.com/hyunsooseol/snowRMM/issues'  target = '_blank'>GitHub</a>.</p>
             <p>_____________________________________________________________________________________________</p>
             
             </div>
@@ -66,6 +68,9 @@ raschClass <- if (requireNamespace('jmvcore'))
             
           )
         
+        if (length(self$options$vars) <= 1)
+          self$setStatus('complete')
+        
         
       },
       
@@ -73,24 +78,24 @@ raschClass <- if (requireNamespace('jmvcore'))
       .run = function() {
         
         # get variables-------
-        
+
         data <- self$data
-        
+
         vars <- self$options$vars
-        
+
         #Removing perfect score items before estimation (for example all 1 or 0)-------
-        
+
         for (varName in self$options$vars) {
           var <- self$data[[varName]]
           if (length(unique(var)) < 2)
           stop(paste("Variable '", varName, "' contains all the same value and should be removed in the variable box."))
         }
-        
+
         # Ready--------
         
         ready <- TRUE
         
-        if (is.null(self$options$vars) |
+        if (is.null(self$options$vars) ||
             length(self$options$vars) < 2)
           
           ready <- FALSE
@@ -129,6 +134,9 @@ raschClass <- if (requireNamespace('jmvcore'))
           # prepare wrightmap plot-----
           
           private$.prepareWrightmapPlot(data)
+          
+          # prepare person-item map
+          private$.preparepiPlot(data)
           
           # prepare item fit plot-------
           
@@ -700,6 +708,42 @@ raschClass <- if (requireNamespace('jmvcore'))
         
       },
       
+     # PREPARE PERSON-ITEM PLOT FOR PCM-------------
+     
+     .preparepiPlot = function(data) {
+       
+       autopcm <- eRm::PCM(data)
+       
+       
+       # Prepare Data For Plot -------
+       
+       image <- self$results$piplot
+       image$setState(autopcm)
+       
+     },
+     
+     .piPlot= function(image, ...) {
+       
+       autopcm <- image$state
+       
+       if (is.null(autopcm))
+         return()
+       
+       
+       plot <- eRm::plotPImap(autopcm, sorted=TRUE,
+                              warn.ord.colour = "red")
+       
+       print(plot)
+       
+       TRUE
+       
+     },
+     
+     
+     ### fit plot----------------
+     
+     
+     
       .prepareInfitPlot=function(data){
         
         

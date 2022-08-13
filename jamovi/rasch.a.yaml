@@ -50,12 +50,12 @@ options:
     - name: imean
       title: Item mean
       type: Bool
-      default: FALSE
+      default: TRUE
 
     - name: imeasure
       title: Measure
       type: Bool
-      default: FALSE
+      default: TRUE
 
     - name: ise
       title: S.E. measure
@@ -90,7 +90,7 @@ options:
     - name: wrightmap
       title: Wright map
       type: Bool
-      default: FALSE
+      default: TRUE
 
     - name: total
       title: Total score
@@ -146,5 +146,11 @@ options:
     - name: plot3
       title: 'Partial credit' 
       type: Bool
-      default: FALSE          
+      default: FALSE   
+
+    - name: piplot
+      title: Person-item map for PCM 
+      type: Bool
+      default: FALSE
+      
 ...

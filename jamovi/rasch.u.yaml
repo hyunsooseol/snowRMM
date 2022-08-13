@@ -131,8 +131,13 @@ children:
                 suggestedValues:
                   - value: 0
                   - value: 45
+          - type: Label
+            label: 'Map'
+            children:
               - type: CheckBox
                 name: wrightmap
+              - type: CheckBox
+                name: piplot                
   - type: CollapseBox
     label: Person Analysis
     margin: normal
