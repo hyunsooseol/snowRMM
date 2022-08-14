@@ -306,7 +306,7 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         self$add(jmvcore::Table$new(
                             options=options,
                             name="items",
-                            title="Item Statistics",
+                            title="Item statistics",
                             visible="(imean || imeasure || ise || infit || outfit || pbis)",
                             rows="(vars)",
                             clearWith=list(
@@ -347,7 +347,7 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Table$new(
                 options=options,
                 name="rsm",
-                title="Thresholds of the rating scale model",
+                title="Thresholds of Rating Scale Model",
                 rows="(vars)",
                 visible="(rsm)",
                 refs="eRm",
@@ -362,7 +362,7 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Table$new(
                 options=options,
                 name="pcm",
-                title="Thresholds of the partial credit model",
+                title="Thresholds of Partial Credit Model",
                 rows="(vars)",
                 visible="(pcm)",
                 refs="eRm",
@@ -391,7 +391,7 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Image$new(
                 options=options,
                 name="piplot",
-                title="Person-item map for PCM ",
+                title="Person-Item Map for Partial Credit Model ",
                 width=500,
                 height=500,
                 visible="(piplot)",
@@ -404,7 +404,7 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot1",
-                title="Item Characteristic Curve(ICC) for dichotomous items",
+                title="ICC for Dichotomous Item",
                 width=500,
                 height=500,
                 visible="(plot1)",
@@ -417,7 +417,7 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot2",
-                title="Category for rating scale model",
+                title="Category for Rating Scale Model",
                 width=500,
                 height=500,
                 visible="(plot2)",
@@ -430,7 +430,7 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot3",
-                title="Category for partial credit model",
+                title="Category for Partial Credit Model",
                 width=500,
                 height=500,
                 visible="(plot3)",
