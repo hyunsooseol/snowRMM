@@ -48,7 +48,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             if (self$options$fit)
                 self$results$fit$setNote(
                     "Note",
-                    "G\u00B2=Likelihood ratio statistic; \u03C7\u00B2=Pearson Chi-square goodness of fit statistic; Entropy=non-normalized entropy which ranges between 0 and infinity."
+                    "G\u00B2=Likelihood ratio statistic; \u03C7\u00B2=Pearson Chi-square goodness of fit statistic; Entropy=entropy R^2 statistic (Vermunt & Magidson, 2013, p. 71)"
                 )
             # if (self$options$cp)
             #     self$results$cp$setNote(
@@ -217,50 +217,79 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                       #         return(-sum(P.c * log(P.c),na.rm=TRUE))
                       #     }
                       
-                      
-                      poLCA.entropy <-
-                          function(lc) {
-                              K.j <- sapply(lc$probs,ncol)
-                              lap <- lapply(K.j,seq,from=1)
-                              obs <- prod(lengths(list(lap)[[1L]]))
-                              
-                              if ( obs > 2.05E+07L ) {
-                                  
-                                   return(NA)
-                                  # return(NaN)
-                              }
-                              
-                              P.c <- poLCA.predcell(lc, expand.grid(lap))
-                              return(-sum(P.c * log(P.c), na.rm=TRUE))
-                          }
-                      
-                      
                      
-                      # if( is.na(entro <- poLCA.entropy(res)) ) 
-                      #  
-                      #     entro <- 'NaN <sup>a</sup>'
-                      # self$results$fit$setNote(
-                      #     'Note', 
-                      #     '<sup>a</sup> There are not enough memory resources to calculate entropy.'
-                      # )
-                      
-                      
-                      
-                      if( is.na(entro <- poLCA.entropy(res)) )
-                          self$results$fit$setNote(
-                              'Note',
-                              '<sup>a</sup> There are not enough memory resources to calculate entropy.'
-                          )
-
-
-                        entro<- poLCA.entropy(res)
-
-                     if(is.na(entro)){
-
-                         entro <- 'NaN <sup>a</sup>'
-                     }
-                      
+                     #  poLCA.entropy <-
+                     #      function(lc) {
+                     #          K.j <- sapply(lc$probs,ncol)
+                     #          lap <- lapply(K.j,seq,from=1)
+                     #          obs <- prod(lengths(list(lap)[[1L]]))
+                     #          
+                     #          if ( obs > 2.05E+07L ) {
+                     #              
+                     #               return(NA)
+                     #              # return(NaN)
+                     #          }
+                     #          
+                     #          P.c <- poLCA.predcell(lc, expand.grid(lap))
+                     #          return(-sum(P.c * log(P.c), na.rm=TRUE))
+                     #      }
+                     #  
+                     #  
+                     # 
+                     #  # if( is.na(entro <- poLCA.entropy(res)) ) 
+                     #  #  
+                     #  #     entro <- 'NaN <sup>a</sup>'
+                     #  # self$results$fit$setNote(
+                     #  #     'Note', 
+                     #  #     '<sup>a</sup> There are not enough memory resources to calculate entropy.'
+                     #  # )
+                     #  
+                     #  
+                     #  
+                     #  if( is.na(entro <- poLCA.entropy(res)) )
+                     #      self$results$fit$setNote(
+                     #          'Note',
+                     #          '<sup>a</sup> There are not enough memory resources to calculate entropy.'
+                     #      )
+                     # 
+                     # 
+                     #    entro<- poLCA.entropy(res)
+                     # 
+                     # if(is.na(entro)){
+                     # 
+                     #     entro <- 'NaN <sup>a</sup>'
+                     # }
+                     #  
                         
+                      ##RELATIVE ENTROPY------------
+                      
+                      #Mplus calculate relative entropy 
+                      #Celeux, G. and Soromenho, G. (1996) An Entropy Criterion for Assessing the Number of Clusters in a Mixture Model. Journal of Classification, 13, 195-212. http://dx.doi.org/10.1007/BF01246098.
+                      
+                      
+                      ##Numerator:
+                      # nume <-  -sum(res$posterior * log(res$posterior))
+                      # ##Denominator (n*log(K)): ## n is a sample size, and K is a number of class
+                      # deno <-  nrow(data)*log(nc)
+                      # ##Relative Entropy
+                      # entro <-  1-(nume/deno)
+                      
+                      
+                      #########################################
+                     # ref:https://stackoverflow.com/questions/33000511/entropy-measure-polca-mplus
+                     # caculating R2_Entropy  
+  
+                      
+                      entropy<-function (p) sum(na.omit(-p*log(p))) #sum(-p*log(p))
+                      error_prior <- entropy(res$P) # Class proportions
+                      error_post <- mean(apply(res$posterior, 1, entropy))
+                      entro <- (error_prior - error_post) / error_prior
+                      #########################################################################
+                      
+                      
+                      #self$results$text$setContent(entro)
+                      
+                      
                         ####### result###############################
                       
                       classprob<- res$P
