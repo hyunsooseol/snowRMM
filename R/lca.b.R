@@ -110,15 +110,15 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                        
                        # populate output variables-----
                        
-                       private$.populateOutputs(data)
+                       private$.populateOutputs(results)
                        
                        # populated cell percentages in a latent class model-----
                        
-                       private$.populateCellOutputs(data)
+                       private$.populateCellOutputs(results)
                        
                        # populated posterior probabilities--
                        
-                       private$.populatePosteriorOutputs(data)
+                       private$.populatePosteriorOutputs(results)
                        
                        
                        # prepare plot-----
@@ -313,7 +313,19 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                       cell<- res$predcell 
                       
                       
-                       results <-
+                      # output results------------
+                      
+                      cm <- res$predclass
+                      
+                      #Predicted cell percentages in a latent class model
+                      pc<- poLCA::poLCA.predcell(lc=res,res$y)
+                      
+                      # Posterior probabilities---------------
+                      
+                      post <- res$posterior
+                      
+                      
+                      results <-
                            list(
                                'classprob'=classprob,
                                 'itemprob'=itemprob,
@@ -325,7 +337,10 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                                'entro'=entro,
                                'cell'= cell,
                              'cp'=cp,
-                             'gp'=gp
+                             'gp'=gp,
+                             'cm'=cm,
+                             'pc'=pc,
+                             'post'=post
                                
                            )
                        
@@ -519,23 +534,9 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
            # populate class membership-------
         
         
-        .populateOutputs = function(data) {
+        .populateOutputs = function(results) {
             
-            nc<- self$options$nc
-            
-            data<- as.data.frame(data)
-            
-            vars <- colnames(data)
-            vars <- vapply(vars, function(x) jmvcore::composeTerm(x), '')
-            vars <- paste0(vars, collapse=',')
-            formula <- as.formula(paste0('cbind(', vars, ')~1'))
-            
-            
-            # estimate ------------
-            
-            res<- poLCA::poLCA(formula,data,nclass=nc,calc.se = FALSE)
-            
-            cm <- res$predclass
+            cm <- results$cm
             
             if (self$options$cm
                 && self$results$cm$isNotFilled()) {
@@ -550,25 +551,9 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         # Predicted cell percentages in a latent class model---
         
-        .populateCellOutputs = function(data) {
+        .populateCellOutputs = function(results) {
             
-            nc<- self$options$nc
-            
-            data<- as.data.frame(data)
-            
-            vars <- colnames(data)
-            vars <- vapply(vars, function(x) jmvcore::composeTerm(x), '')
-            vars <- paste0(vars, collapse=',')
-            formula <- as.formula(paste0('cbind(', vars, ')~1'))
-            
-            
-            # estimate ------------
-            
-            res<- poLCA::poLCA(formula,data,nclass=nc,calc.se = FALSE)
-            
-           #Predicted cell percentages in a latent class model
-            pc<- poLCA::poLCA.predcell(lc=res,res$y)
-            
+              pc <- results$pc  
             
             if (self$options$pc
                 && self$results$pc$isNotFilled()) {
@@ -584,28 +569,10 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         # Posterior probabilities---------
         
         
-        .populatePosteriorOutputs= function(data) {
+        .populatePosteriorOutputs= function(results) {
             
-            nc<- self$options$nc
-            
-            data<- as.data.frame(data)
-            
-            vars <- colnames(data)
-            vars <- vapply(vars, function(x) jmvcore::composeTerm(x), '')
-            vars <- paste0(vars, collapse=',')
-            formula <- as.formula(paste0('cbind(', vars, ')~1'))
-            
-            
-            # estimate ------------
-            
-            res<- poLCA::poLCA(formula,data,nclass=nc,calc.se = FALSE)
-            
-            
-            # Posterior probabilities---------------
-            
-            post <- res$posterior
-            
-            
+                    post <- results$post
+          
             if (self$options$post
                 && self$results$post$isNotFilled()) {
                 
