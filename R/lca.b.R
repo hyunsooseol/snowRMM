@@ -123,7 +123,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                        
                        # prepare plot-----
                        
-                       private$.preparePlot(data)
+                     #  private$.preparePlot(data)
                        
                        
                        # prepare plot1(profile)-----
@@ -155,7 +155,8 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                       
                       ############################################################### 
                       
-                      # Model comparison-------
+                     
+                     # Model comparison-------
                       
                       out <- NULL
                       
@@ -323,6 +324,14 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                       # Posterior probabilities---------------
                       
                       post <- res$posterior
+                      
+                      
+                      # plot----------
+                        
+                        image <- self$results$plot
+                        image$setState(res)
+                      
+                      
                       
                       
                       results <-
@@ -601,31 +610,31 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         },
         
         
-        .preparePlot = function(data) {
-            
-            nc<- self$options$nc
-            
-            data<- as.data.frame(data)
-            
-            vars <- colnames(data)
-            vars <- vapply(vars, function(x) jmvcore::composeTerm(x), '')
-            vars <- paste0(vars, collapse=',')
-            formula <- as.formula(paste0('cbind(', vars, ')~1'))
-            
-            
-            # estimate ------------
-            
-            x <- poLCA::poLCA(formula,data,nclass=nc, calc.se = FALSE)
-            
-            
-            # plot----------
-            
-            image <- self$results$plot
-            image$setState(x)
-            
-            
-        },
-        
+        # .preparePlot = function(data) {
+        #     
+        #     nc<- self$options$nc
+        #     
+        #     data<- as.data.frame(data)
+        #     
+        #     vars <- colnames(data)
+        #     vars <- vapply(vars, function(x) jmvcore::composeTerm(x), '')
+        #     vars <- paste0(vars, collapse=',')
+        #     formula <- as.formula(paste0('cbind(', vars, ')~1'))
+        #     
+        #     
+        #     # estimate ------------
+        #     
+        #     x <- poLCA::poLCA(formula,data,nclass=nc, calc.se = FALSE)
+        #     
+        #     
+        #     # plot----------
+        #     
+        #     image <- self$results$plot
+        #     image$setState(x)
+        #     
+        #     
+        # },
+        # 
         .plot = function(image,...) {
             
             if (is.null(self$options$vars))
