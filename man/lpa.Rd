@@ -4,7 +4,17 @@
 \alias{lpa}
 \title{Latent Profile Analysis}
 \usage{
-lpa(data, vars, nc = 2, fit = TRUE, plot = FALSE, plot1 = FALSE)
+lpa(
+  data,
+  vars,
+  nc = 2,
+  variances = "equal",
+  covariances = "zero",
+  fit = TRUE,
+  best = FALSE,
+  plot = FALSE,
+  plot1 = FALSE
+)
 }
 \arguments{
 \item{data}{.}
@@ -13,7 +23,13 @@ lpa(data, vars, nc = 2, fit = TRUE, plot = FALSE, plot1 = FALSE)
 
 \item{nc}{.}
 
+\item{variances}{.}
+
+\item{covariances}{.}
+
 \item{fit}{.}
+
+\item{best}{.}
 
 \item{plot}{.}
 
@@ -24,10 +40,18 @@ A results object containing:
 \tabular{llllll}{
   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
   \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
+  \code{results$fit} \tab \tab \tab \tab \tab a table \cr
+  \code{results$best} \tab \tab \tab \tab \tab a table \cr
   \code{results$pc} \tab \tab \tab \tab \tab an output \cr
   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
 }
+
+Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
+
+\code{results$fit$asDF}
+
+\code{as.data.frame(results$fit)}
 }
 \description{
 Latent Profile Analysis

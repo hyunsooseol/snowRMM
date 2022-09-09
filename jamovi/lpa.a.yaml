@@ -24,10 +24,32 @@ options:
       min: 2
       default: 2       
       
+    - name: variances
+      title: Variances
+      type: List
+      options:
+        - equal
+        - varying
+      default: equal
+      
+    - name: covariances
+      title: Covariances
+      type: List
+      options:
+        - zero
+        - equal
+        - varying
+      default: zero      
+
     - name: fit
-      title: Model fit
+      title: Fit measures
       type: Bool
       default: TRUE
+
+    - name: best
+      title: Class comparison
+      type: Bool
+      default: FALSE
 
     - name: pc
       title: Person class

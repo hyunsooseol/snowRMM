@@ -10,6 +10,7 @@
 #' @importFrom tidyLPA get_fit
 #' @importFrom tidyLPA plot_profiles
 #' @importFrom tidyLPA plot_bivariate
+#' @importFrom tidyLPA compare_solutions
 #' @importFrom tidyLPA get_data
 #' @export
 
@@ -58,42 +59,119 @@ lpaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
     
     
             vars <- self$options$vars
-            
             nc <- self$options$nc
             
+            variances <- self$options$variances
+            covariances <- self$options$covariances
             
             data <- self$data
             
             data <- jmvcore::naOmit(data)
             
-            # for (i in seq_along(vars))
-            #     data[[i]] <- jmvcore::toNumeric(data[[i]])
-            #
-            # data <- jmvcore::select(data, self$options$vars)
-
-
-            # res <- NA
-            # 
-            # for(i in 1:nc){
-            # 
-            #     res[i]<- tidyLPA::estimate_profiles(data,i)
-            # 
-            # 
-            # }
-
-
-
-         #   df <- as.data.frame(res)
-            
-            res<- tidyLPA::estimate_profiles(data,nc)
-            
+          
+          #######################Estimates profile  
+            res<- tidyLPA::estimate_profiles(data,nc,
+                                             variances = variances,
+                                             covariances = covariances)
+           ############################################ 
            
-           #  fit <- tidyLPA::get_fit(res)
+           # self$results$text$setContent(res)
 
-            self$results$text$setContent(res)
+            res<- res[[1]]
+            df<- as.data.frame(res$fit)
+            
+            names <- dimnames(df)[[1]]
+            
+            # populating fit measres----------
+            
+            table <- self$results$fit
+            
+            for(name in names){
+              
+              row <- list()
+              
+              row[['value']] <- df[name,1]
+              
+              table$addRow(rowKey=name, values=row)
+              
+            }
+              
+            # Choosing best model fit-----------
+            
+            # Model comparison-------
+            
+            out <- NULL
+            
+            for (i in 1:self$options$nc) {
+              
+              res<- tidyLPA::estimate_profiles(data,n_profiles=i,
+                                               variances = variances,
+                                               covariances = covariances)
+              
+              res<- res[[1]]
+              df<- data.frame(res$fit)
+              df<- t(df)
+              
+              
+              model<- df[1]
+              log<- df[3]
+              aic<- df[4]
+              awe<- df[5]
+              bic<- df[6]
+              caic<- df[7]
+              clc<- df[8]
+              kic<- df[9]
+              sabic<- df[10]
+              icl<- df[11]
+              entropy<- df[12]
+              df<- data.frame(model, log, aic,
+                              awe, bic,caic,clc,kic,
+                              sabic,icl,entropy)
+              
+              
+              if (is.null(out)) {
+                out <- df
+              } else {
+                out <- rbind(out, df)
+              }
+            }
+            
+            out <- out
+            
+            self$results$text$setContent(out)
+            
+             
+            # populating table---------
+             
+             table <- self$results$best
+             
+            out <- data.frame(out)
+            
+            names <- dimnames(out)[[1]]
+            
+
+            for(name in names){
+
+              row <- list()
+
+              row[['model']] <- out[name, 1]
+              row[['log']] <- out[name, 2]
+              row[['aic']] <- out[name, 3]
+              row[['awe']] <- out[name, 4]
+              row[['bic']] <- out[name, 5]
+              row[['caic']] <- out[name, 6]
+              row[['clc']] <- out[name, 7]
+              row[['kic']] <- out[name, 8]
+              row[['sabic']] <- out[name, 9]
+              row[['icl']] <- out[name, 10]
+              row[['entropy']] <- out[name, 11]
+
+              table$addRow(rowKey=name, values=row)
+
+            }
 
             
-        # person class---------
+            # person class---------
             
             pc<- tidyLPA:: get_data(res)
             pc<- pc$Class

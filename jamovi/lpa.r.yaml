@@ -14,6 +14,77 @@ items:
       title: Model fit
       type:  Preformatted
 
+    - name: fit
+      title: 'Model fit'
+      type: Table
+      visible: (fit)
+      clearWith:
+        - vars
+        - nc
+        - variances
+        - covariances
+ 
+      refs: tidyLPA 
+
+      columns:
+        - name: name
+          title: ''
+          type: 'text'
+          content: ($key)
+
+        - name: value
+          title: 'Values'
+ 
+    - name: best
+      title: 'Class comparison'
+      type: Table
+      visible: (best)
+      refs: tidyLPA 
+      clearWith:
+        - vars
+        - nc
+        - variances
+        - covariances
+
+      columns:
+        - name: name
+          title: 'Class'
+          type: 'text'
+          content: ($key)
+        - name: model
+          title: Model
+          type: integer
+        - name: log
+          title: LogLik 
+          type: number 
+        - name: aic
+          title: AIC 
+          type: number
+        - name: awe
+          title: AWE 
+          type: number
+        - name: bic
+          title: BIC 
+          type: number
+        - name: caic
+          title: CAIC
+          type: number
+        - name: clc
+          title: CLC
+          type: number
+        - name: kic
+          title: KIC
+          type: number          
+        - name: sabic
+          title: SABIC
+          type: number      
+        - name: icl
+          title: ICL
+          type: number      
+        - name: entropy
+          title: Entropy
+          type: number      
+
     - name: pc
       title: Person class
       type: Output
@@ -22,6 +93,8 @@ items:
       clearWith:
         - vars
         - nc
+        - variances
+        - covariances
 
     - name: plot
       title: 'Correlation plot for a mixture model'
@@ -33,6 +106,8 @@ items:
       clearWith:
         - vars
         - nc
+        - variances
+        - covariances
             
     - name: plot1
       title: 'Latent profile plot'
@@ -44,7 +119,9 @@ items:
       renderFun: .plot1
       clearWith:
         - vars
-        - nc            
+        - nc
+        - variances
+        - covariances     
             
             
 ...

@@ -8,7 +8,10 @@ lpaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         initialize = function(
             vars = NULL,
             nc = 2,
+            variances = "equal",
+            covariances = "zero",
             fit = TRUE,
+            best = FALSE,
             plot = FALSE,
             plot1 = FALSE, ...) {
 
@@ -30,10 +33,29 @@ lpaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 nc,
                 min=2,
                 default=2)
+            private$..variances <- jmvcore::OptionList$new(
+                "variances",
+                variances,
+                options=list(
+                    "equal",
+                    "varying"),
+                default="equal")
+            private$..covariances <- jmvcore::OptionList$new(
+                "covariances",
+                covariances,
+                options=list(
+                    "zero",
+                    "equal",
+                    "varying"),
+                default="zero")
             private$..fit <- jmvcore::OptionBool$new(
                 "fit",
                 fit,
                 default=TRUE)
+            private$..best <- jmvcore::OptionBool$new(
+                "best",
+                best,
+                default=FALSE)
             private$..pc <- jmvcore::OptionOutput$new(
                 "pc")
             private$..plot <- jmvcore::OptionBool$new(
@@ -47,7 +69,10 @@ lpaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 
             self$.addOption(private$..vars)
             self$.addOption(private$..nc)
+            self$.addOption(private$..variances)
+            self$.addOption(private$..covariances)
             self$.addOption(private$..fit)
+            self$.addOption(private$..best)
             self$.addOption(private$..pc)
             self$.addOption(private$..plot)
             self$.addOption(private$..plot1)
@@ -55,14 +80,20 @@ lpaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     active = list(
         vars = function() private$..vars$value,
         nc = function() private$..nc$value,
+        variances = function() private$..variances$value,
+        covariances = function() private$..covariances$value,
         fit = function() private$..fit$value,
+        best = function() private$..best$value,
         pc = function() private$..pc$value,
         plot = function() private$..plot$value,
         plot1 = function() private$..plot1$value),
     private = list(
         ..vars = NA,
         ..nc = NA,
+        ..variances = NA,
+        ..covariances = NA,
         ..fit = NA,
+        ..best = NA,
         ..pc = NA,
         ..plot = NA,
         ..plot1 = NA)
@@ -74,6 +105,8 @@ lpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     active = list(
         instructions = function() private$.items[["instructions"]],
         text = function() private$.items[["text"]],
+        fit = function() private$.items[["fit"]],
+        best = function() private$.items[["best"]],
         pc = function() private$.items[["pc"]],
         plot = function() private$.items[["plot"]],
         plot1 = function() private$.items[["plot1"]]),
@@ -94,6 +127,87 @@ lpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 options=options,
                 name="text",
                 title="Model fit"))
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="fit",
+                title="Model fit",
+                visible="(fit)",
+                clearWith=list(
+                    "vars",
+                    "nc",
+                    "variances",
+                    "covariances"),
+                refs="tidyLPA",
+                columns=list(
+                    list(
+                        `name`="name", 
+                        `title`="", 
+                        `type`="text", 
+                        `content`="($key)"),
+                    list(
+                        `name`="value", 
+                        `title`="Values"))))
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="best",
+                title="Class comparison",
+                visible="(best)",
+                refs="tidyLPA",
+                clearWith=list(
+                    "vars",
+                    "nc",
+                    "variances",
+                    "covariances"),
+                columns=list(
+                    list(
+                        `name`="name", 
+                        `title`="Class", 
+                        `type`="text", 
+                        `content`="($key)"),
+                    list(
+                        `name`="model", 
+                        `title`="Model", 
+                        `type`="integer"),
+                    list(
+                        `name`="log", 
+                        `title`="LogLik", 
+                        `type`="number"),
+                    list(
+                        `name`="aic", 
+                        `title`="AIC", 
+                        `type`="number"),
+                    list(
+                        `name`="awe", 
+                        `title`="AWE", 
+                        `type`="number"),
+                    list(
+                        `name`="bic", 
+                        `title`="BIC", 
+                        `type`="number"),
+                    list(
+                        `name`="caic", 
+                        `title`="CAIC", 
+                        `type`="number"),
+                    list(
+                        `name`="clc", 
+                        `title`="CLC", 
+                        `type`="number"),
+                    list(
+                        `name`="kic", 
+                        `title`="KIC", 
+                        `type`="number"),
+                    list(
+                        `name`="sabic", 
+                        `title`="SABIC", 
+                        `type`="number"),
+                    list(
+                        `name`="icl", 
+                        `title`="ICL", 
+                        `type`="number"),
+                    list(
+                        `name`="entropy", 
+                        `title`="Entropy", 
+                        `type`="number"))))
             self$add(jmvcore::Output$new(
                 options=options,
                 name="pc",
@@ -102,7 +216,9 @@ lpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 measureType="nominal",
                 clearWith=list(
                     "vars",
-                    "nc")))
+                    "nc",
+                    "variances",
+                    "covariances")))
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot",
@@ -113,7 +229,9 @@ lpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 renderFun=".plot",
                 clearWith=list(
                     "vars",
-                    "nc")))
+                    "nc",
+                    "variances",
+                    "covariances")))
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot1",
@@ -125,7 +243,9 @@ lpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 renderFun=".plot1",
                 clearWith=list(
                     "vars",
-                    "nc")))}))
+                    "nc",
+                    "variances",
+                    "covariances")))}))
 
 lpaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "lpaBase",
@@ -153,24 +273,38 @@ lpaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param data .
 #' @param vars .
 #' @param nc .
+#' @param variances .
+#' @param covariances .
 #' @param fit .
+#' @param best .
 #' @param plot .
 #' @param plot1 .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
 #'   \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
+#'   \code{results$fit} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$best} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$pc} \tab \tab \tab \tab \tab an output \cr
 #'   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
 #' }
+#'
+#' Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
+#'
+#' \code{results$fit$asDF}
+#'
+#' \code{as.data.frame(results$fit)}
 #'
 #' @export
 lpa <- function(
     data,
     vars,
     nc = 2,
+    variances = "equal",
+    covariances = "zero",
     fit = TRUE,
+    best = FALSE,
     plot = FALSE,
     plot1 = FALSE) {
 
@@ -187,7 +321,10 @@ lpa <- function(
     options <- lpaOptions$new(
         vars = vars,
         nc = nc,
+        variances = variances,
+        covariances = covariances,
         fit = fit,
+        best = best,
         plot = plot,
         plot1 = plot1)
 

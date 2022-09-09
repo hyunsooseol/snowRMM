@@ -14,32 +14,40 @@ children:
           - type: VariablesListBox
             name: vars
             isTarget: true
+  - type: LayoutBox
+    margin: large
+    style: inline
+    children:
+      - type: Label
+        label: Fit options
+        margin: large
+        style: list-inline
+        children:
+          - name: nc
+            type: TextBox
+            label: Class
+            format: number
+          - type: ComboBox
+            name: variances
+          - type: ComboBox
+            name: covariances
+
   - type: CollapseBox
     label: Analysis
     margin: normal
     collapsed: true
     children:
       - type: LayoutBox
-        stretchFactor: 1
         margin: large
+        stretchFactor: 1
         children:
           - type: Label
-            label: Table
-            fitToGrid: true
-            cell:
-              column: 0
-              row: 0
-            children:
-              - type: TextBox
-                name: nc
-                format: number
-          - type: LayoutBox
-            margin: large
+            label: Model fit
             children:
               - type: CheckBox
                 name: fit
-              - type: Output
-                name: pc
+              - type: CheckBox
+                name: best
       - type: LayoutBox
         stretchFactor: 1
         margin: large
@@ -50,12 +58,18 @@ children:
         children:
           - type: Label
             label: Plots
-            fitToGrid: true
-            cell:
-              column: 1
-              row: 0
             children:
               - type: CheckBox
                 name: plot
               - type: CheckBox
                 name: plot1
+  - type: CollapseBox
+    label: Save
+    margin: normal
+    collapsed: true
+    children:
+      - type: Output
+        name: pc
+
+
+
