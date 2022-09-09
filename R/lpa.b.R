@@ -10,7 +10,6 @@
 #' @importFrom tidyLPA get_fit
 #' @importFrom tidyLPA plot_profiles
 #' @importFrom tidyLPA plot_bivariate
-#' @importFrom tidyLPA compare_solutions
 #' @importFrom tidyLPA get_data
 #' @export
 
@@ -95,9 +94,7 @@ lpaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
               table$addRow(rowKey=name, values=row)
               
             }
-              
-            # Choosing best model fit-----------
-            
+          
             # Model comparison-------
             
             out <- NULL
@@ -138,7 +135,7 @@ lpaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             
             out <- out
             
-            self$results$text$setContent(out)
+            #self$results$text$setContent(out)
             
              
             # populating table---------
