@@ -112,7 +112,7 @@ items:
           type: number
         - name: p
           title: p 
-          format: zto, number
+          format: zto,pvalue
         - name: cl
           title: Class
           type: integer

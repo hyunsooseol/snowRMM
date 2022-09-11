@@ -248,7 +248,7 @@ lpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     list(
                         `name`="p", 
                         `title`="p", 
-                        `format`="zto, number"),
+                        `format`="zto,pvalue"),
                     list(
                         `name`="cl", 
                         `title`="Class", 
