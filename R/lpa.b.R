@@ -8,6 +8,7 @@
 #' @import ggplot2
 #' @importFrom tidyLPA estimate_profiles
 #' @importFrom tidyLPA get_fit
+#' @importFrom tidyLPA get_estimates
 #' @importFrom tidyLPA plot_profiles
 #' @importFrom tidyLPA plot_bivariate
 #' @importFrom tidyLPA get_data
@@ -37,7 +38,7 @@ lpaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             <p><b>Instructions</b></p>
             <p>_____________________________________________________________________________________________</p>
             <p>1. <b>tidyLPA</b> R package is described in the <a href='https://cran.r-project.org/web/packages/tidyLPA/vignettes/Introduction_to_tidyLPA.html' target = '_blank'>page</a>.</p>
-            <p>2. <b>mclust</b> R package is used for choosing models.
+            <p>2. Models are selected using <b>mclust</b> R package.</p>
             <p>3. The result of <b>Person class</b> will be displayed in the datasheet.</p>
             <p>4. Feature requests and bug reports can be made on the <a href='https://github.com/hyunsooseol/snowRMM/issues'  target = '_blank'>GitHub</a>.</p>
             <p>_____________________________________________________________________________________________</p>
@@ -168,6 +169,47 @@ lpaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             }
 
+            # get estimates--------------
+            e<- tidyLPA::get_estimates(res)
+            #################################
+            
+            e<- data.frame(e)
+            
+            table <- self$results$est
+            
+            names<- dimnames(e)[[1]]
+            #dim<- dimnames(e)[[2]]
+            
+            # for (dim in dims) {
+            #   
+            #   table$addColumn(name = paste0(dim),
+            #                   type = 'number')
+            # }
+            
+            
+            for (name in names) {
+              
+              row <- list()
+              
+              row[['cat']] <- e[name, 1]
+              row[['par']] <- e[name, 2]
+              row[['est']] <- e[name, 3]
+              row[['se']] <- e[name, 4]
+              row[['p']] <- e[name, 5]
+              row[['cl']] <- e[name, 6]
+              row[['model']] <- e[name, 7]
+              row[['cla']] <- e[name, 8] 
+              
+              # for(j in seq_along(dims)){
+              #   
+              #   row[[dims[j]]] <- e[name,j]
+              #   
+              # }
+              
+              table$addRow(rowKey=name, values=row)
+              
+            }
+            
             
             # person class---------
             
@@ -184,10 +226,6 @@ lpaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 self$results$pc$setRowNums(rownames(data))
                 
             }
-            
-            
-            
-            
             
             
             # plot----------

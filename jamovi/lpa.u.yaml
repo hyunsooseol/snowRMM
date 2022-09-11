@@ -19,7 +19,7 @@ children:
     style: inline
     children:
       - type: Label
-        label: Fit options
+        label: Model Fit options
         margin: large
         style: list-inline
         children:
@@ -64,10 +64,12 @@ children:
               - type: CheckBox
                 name: plot1
   - type: CollapseBox
-    label: Save
+    label: Additional Output
     margin: normal
     collapsed: true
     children:
+      - type: CheckBox
+        name: est
       - type: Output
         name: pc
 

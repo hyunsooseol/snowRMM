@@ -81,6 +81,48 @@ items:
           title: Entropy
           type: number      
 
+    - name: est
+      title: 'Estimates'
+      type: Table
+      visible: (est)
+      clearWith:
+        - vars
+        - nc
+        - variances
+        - covariances
+ 
+      refs: tidyLPA 
+
+      columns:
+        - name: name
+          title: ''
+          type: 'text'
+          content: ($key)
+        - name: cat
+          title: Category
+          type: 'text'
+        - name: par
+          title: Parameter 
+          type: 'text' 
+        - name: est
+          title: Estimate 
+          type: number
+        - name: se
+          title: SE 
+          type: number
+        - name: p
+          title: p 
+          format: zto, number
+        - name: cl
+          title: Class
+          type: integer
+        - name: model
+          title: Model
+          type: integer
+        - name: cla
+          title: Classes
+          type: integer    
+ 
     - name: pc
       title: Person class
       type: Output

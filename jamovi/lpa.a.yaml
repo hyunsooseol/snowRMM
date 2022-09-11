@@ -51,6 +51,11 @@ options:
       type: Bool
       default: FALSE
 
+    - name: est
+      title: Estimates
+      type: Bool
+      default: FALSE
+
     - name: pc
       title: Person class
       type: Output

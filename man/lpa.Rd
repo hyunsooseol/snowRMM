@@ -12,6 +12,7 @@ lpa(
   covariances = "zero",
   fit = TRUE,
   best = FALSE,
+  est = FALSE,
   plot = FALSE,
   plot1 = FALSE
 )
@@ -31,6 +32,8 @@ lpa(
 
 \item{best}{.}
 
+\item{est}{.}
+
 \item{plot}{.}
 
 \item{plot1}{.}
@@ -41,6 +44,7 @@ A results object containing:
   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
   \code{results$fit} \tab \tab \tab \tab \tab a table \cr
   \code{results$best} \tab \tab \tab \tab \tab a table \cr
+  \code{results$est} \tab \tab \tab \tab \tab a table \cr
   \code{results$pc} \tab \tab \tab \tab \tab an output \cr
   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
