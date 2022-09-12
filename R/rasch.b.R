@@ -110,10 +110,10 @@ raschClass <- if (requireNamespace('jmvcore'))
           #  populate RSM thresholds table-----
           
          
-          # private$.populateRsmTable(results)
-          # 
-          #  private$.populatePcmTable(results)
-          # 
+          private$.populateRsmTable(results)
+
+           private$.populatePcmTable(results)
+
          
           #  populate Model information table-----
           
@@ -213,116 +213,113 @@ raschClass <- if (requireNamespace('jmvcore'))
         
        ########################################
         
-        
-        ##########################
-        rsm.res <- eRm::RSM(data)
-        ###########################
+       rsm.res <- eRm::RSM(data)
+       #######################################
         
         tab<- thresholds(rsm.res)
         tab<- tab$threshtable
         rsm<- data.frame(Reduce(rbind, tab))
         rsm<- rsm[,-1]
-        
-        
-        ###################################
+       
+       #######################################
         pcm.res <- eRm::PCM(data)
-        ##################################
+        #####################################
         
         tab1<- thresholds(pcm.res)
         tab1<- tab1$threshtable
         pcm<- data.frame(Reduce(rbind, tab1))
         pcm<- pcm[,-1]
         
-        
+       
         # number of category---------
         
         nc <- ncol(rsm)
         
         #####################################################
         
-        if(self$options$rsm==TRUE){ 
-          
-          table <- self$results$rsm
-          
-          nCategory <- nc
-          
-          vars <- self$options$vars
-          
-          
-          if (nCategory > 1) {
-            for (i in 1:nCategory)
-              
-              table$addColumn(
-                name = paste0("name", i),
-                title = as.character(i),
-                superTitle = 'Thresholds',
-                type = 'number'
-              )
-          }
-          
-          
-          for (i in seq_along(vars)) {
-            
-            row <- list()
-            
-            
-            for (j in 1:nCategory) {
-              
-              row[[paste0("name", j)]] <- rsm[i, j]
-              
-              
-            }
-            
-            
-            
-            table$setRow(rowNo = i, values = row)
-          }
-          
-        } 
-        
-        ######################################
-        
-        if(self$options$pcm==TRUE){  
-          
-          table <- self$results$pcm
-          
-          
-          nCategory <- nc
-          
-          vars <- self$options$vars
-          
-          
-          if (nCategory > 1) {
-            for (i in 1:nCategory)
-              
-              table$addColumn(
-                name = paste0("name", i),
-                title = as.character(i),
-                superTitle = 'Thresholds',
-                type = 'number'
-              )
-          }
-          
-          
-          for (i in seq_along(vars)) {
-            
-            row <- list()
-            
-            
-            for (j in 1:nCategory) {
-              
-              row[[paste0("name", j)]] <- pcm[i, j]
-              
-              
-            }
-            
-            
-            table$setRow(rowNo = i, values = row)
-          }
-          
-        }
-        
-        
+        # if(self$options$rsm==TRUE){ 
+        #   
+        #   table <- self$results$rsm
+        #   
+        #   nCategory <- nc
+        #   
+        #   vars <- self$options$vars
+        #   
+        #   
+        #   if (nCategory > 1) {
+        #     for (i in 1:nCategory)
+        #       
+        #       table$addColumn(
+        #         name = paste0("name", i),
+        #         title = as.character(i),
+        #         superTitle = 'Thresholds',
+        #         type = 'number'
+        #       )
+        #   }
+        #   
+        #   
+        #   for (i in seq_along(vars)) {
+        #     
+        #     row <- list()
+        #     
+        #     
+        #     for (j in 1:nCategory) {
+        #       
+        #       row[[paste0("name", j)]] <- rsm[i, j]
+        #       
+        #       
+        #     }
+        #     
+        #     
+        #     
+        #     table$setRow(rowNo = i, values = row)
+        #   }
+        #   
+        # } 
+        # 
+        # ######################################
+        # 
+        # if(self$options$pcm==TRUE){  
+        #   
+        #   table <- self$results$pcm
+        #   
+        #   
+        #   nCategory <- nc
+        #   
+        #   vars <- self$options$vars
+        #   
+        #   
+        #   if (nCategory > 1) {
+        #     for (i in 1:nCategory)
+        #       
+        #       table$addColumn(
+        #         name = paste0("name", i),
+        #         title = as.character(i),
+        #         superTitle = 'Thresholds',
+        #         type = 'number'
+        #       )
+        #   }
+        #   
+        #   
+        #   for (i in seq_along(vars)) {
+        #     
+        #     row <- list()
+        #     
+        #     
+        #     for (j in 1:nCategory) {
+        #       
+        #       row[[paste0("name", j)]] <- pcm[i, j]
+        #       
+        #       
+        #     }
+        #     
+        #     
+        #     table$setRow(rowNo = i, values = row)
+        #   }
+        #   
+        # }
+        # 
+        # 
         
         ############################################
         results <-
@@ -339,10 +336,10 @@ raschClass <- if (requireNamespace('jmvcore'))
             'infit' = infit,
             'outfit' = outfit,
             'pbis' = pbis,
-            'class' = class
-             # 'rsm'=rsm,
-             # 'pcm'=pcm,
-             # 'nc'=nc
+            'class' = class,
+              'rsm'=rsm,
+              'pcm'=pcm,
+              'nc'=nc
            
             
           )
@@ -354,103 +351,97 @@ raschClass <- if (requireNamespace('jmvcore'))
      # populate RSM thresholds table----------
      
      
-     # .populateRsmTable = function(results) {
-     #   
-     #   if(self$options$step==1)
-     #     return()
-     #   
-     #   table <- self$results$rsm
-     #   
-     #   rsm <- results$rsm
-     #  
-     # 
-     #   nCategory <- results$nc
-     #   
-     #   vars <- self$options$vars
-     #   
-     #   
-     #   if (nCategory > 1) {
-     #     for (i in 1:nCategory)
-     #       
-     #       table$addColumn(
-     #         name = paste0("name", i),
-     #         title = as.character(i),
-     #         superTitle = 'Thresholds',
-     #         type = 'number'
-     #       )
-     #   }
-     # 
-     #   
-     #   for (i in seq_along(vars)) {
-     #     
-     #     row <- list()
-     #     
-     #     
-     #     for (j in 1:nCategory) {
-     #       
-     #       row[[paste0("name", j)]] <- rsm[i, j]
-     #       
-     #       
-     #     }
-     #     
-     #  #   row[["rm"]] <- rm[i]
-     #     
-     #     table$setRow(rowNo = i, values = row)
-     #   }
-     # },
-     # 
-     # 
-     # populate PCM thresholds table----------
-     
-     
-     # .populatePcmTable = function(results) {
-     #   
-     #   if(self$options$step==1)
-     #     return()
-     #   
-     #   table <- self$results$pcm
-     #   
-     #   pcm <- results$pcm
-     #   
-     # #  pm <- results$pm
-     #   
-     #   nCategory <- results$nc
-     #   
-     #   vars <- self$options$vars
-     #   
-     #   
-     #   if (nCategory > 1) {
-     #     for (i in 1:nCategory)
-     #       
-     #       table$addColumn(
-     #         name = paste0("name", i),
-     #         title = as.character(i),
-     #         superTitle = 'Thresholds',
-     #         type = 'number'
-     #       )
-     #   }
-     #   
-     #   
-     #   for (i in seq_along(vars)) {
-     #     
-     #     row <- list()
-     #     
-     #     
-     #     for (j in 1:nCategory) {
-     #       
-     #       row[[paste0("name", j)]] <- pcm[i, j]
-     #       
-     #       
-     #     }
-     #     
-     #   #  row[["pm"]] <- pm[i]
-     #     
-     #     table$setRow(rowNo = i, values = row)
-     #   }
-     # },
-     # 
-     # 
+     .populateRsmTable = function(results) {
+
       
+       table <- self$results$rsm
+
+       rsm <- results$rsm
+
+
+       nCategory <- results$nc
+
+       vars <- self$options$vars
+
+
+       if (nCategory > 1) {
+         for (i in 1:nCategory)
+
+           table$addColumn(
+             name = paste0("name", i),
+             title = as.character(i),
+             superTitle = 'Thresholds',
+             type = 'number'
+           )
+       }
+
+
+       for (i in seq_along(vars)) {
+
+         row <- list()
+
+
+         for (j in 1:nCategory) {
+
+           row[[paste0("name", j)]] <- rsm[i, j]
+
+
+         }
+
+      
+         table$setRow(rowNo = i, values = row)
+       }
+     },
+
+
+     # populate PCM thresholds table----------
+
+
+     .populatePcmTable = function(results) {
+
+       if(self$options$step==1)
+         return()
+
+       table <- self$results$pcm
+
+       pcm <- results$pcm
+
+    
+       nCategory <- results$nc
+
+       vars <- self$options$vars
+
+
+       if (nCategory > 1) {
+         for (i in 1:nCategory)
+
+           table$addColumn(
+             name = paste0("name", i),
+             title = as.character(i),
+             superTitle = 'Thresholds',
+             type = 'number'
+           )
+       }
+
+
+       for (i in seq_along(vars)) {
+
+         row <- list()
+
+
+         for (j in 1:nCategory) {
+
+           row[[paste0("name", j)]] <- pcm[i, j]
+
+
+         }
+
+       table$setRow(rowNo = i, values = row)
+       }
+     },
+
+
+
       # populate Model information table-----
       
       .populateModelTable = function(results) {

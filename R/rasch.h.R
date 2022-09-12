@@ -270,7 +270,7 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         self$add(jmvcore::Table$new(
                             options=options,
                             name="model",
-                            title="Model FIt Information",
+                            title="`Model information - ${type}`",
                             rows=1,
                             visible="(fit)",
                             clearWith=list(
@@ -306,7 +306,7 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         self$add(jmvcore::Table$new(
                             options=options,
                             name="items",
-                            title="Item statistics",
+                            title="`Item statistics - ${type}`",
                             visible="(imean || imeasure || ise || infit || outfit || pbis)",
                             rows="(vars)",
                             clearWith=list(
