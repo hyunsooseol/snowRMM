@@ -59,7 +59,7 @@ children:
               - type: CheckBox
                 name: pcm                
           - type: Label
-            label: 'Tests(Step=1)'
+            label: 'Testing dichotomous Rasch model(Step=1)'
             children:                
               - type: CheckBox
                 name: lr
