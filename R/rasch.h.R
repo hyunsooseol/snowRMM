@@ -20,6 +20,12 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             rsm = FALSE,
             pcm = FALSE,
             wrightmap = TRUE,
+            lrsplit = "median",
+            mlsplit = "median",
+            waldsplit = "median",
+            lr = FALSE,
+            ml = FALSE,
+            wald = FALSE,
             inplot = FALSE,
             outplot = FALSE,
             angle = 0,
@@ -108,6 +114,39 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "pinfit")
             private$..poutfit <- jmvcore::OptionOutput$new(
                 "poutfit")
+            private$..lrsplit <- jmvcore::OptionList$new(
+                "lrsplit",
+                lrsplit,
+                options=list(
+                    "median",
+                    "mean"),
+                default="median")
+            private$..mlsplit <- jmvcore::OptionList$new(
+                "mlsplit",
+                mlsplit,
+                options=list(
+                    "median",
+                    "mean"),
+                default="median")
+            private$..waldsplit <- jmvcore::OptionList$new(
+                "waldsplit",
+                waldsplit,
+                options=list(
+                    "median",
+                    "mean"),
+                default="median")
+            private$..lr <- jmvcore::OptionBool$new(
+                "lr",
+                lr,
+                default=FALSE)
+            private$..ml <- jmvcore::OptionBool$new(
+                "ml",
+                ml,
+                default=FALSE)
+            private$..wald <- jmvcore::OptionBool$new(
+                "wald",
+                wald,
+                default=FALSE)
             private$..inplot <- jmvcore::OptionBool$new(
                 "inplot",
                 inplot,
@@ -158,6 +197,12 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..pse)
             self$.addOption(private$..pinfit)
             self$.addOption(private$..poutfit)
+            self$.addOption(private$..lrsplit)
+            self$.addOption(private$..mlsplit)
+            self$.addOption(private$..waldsplit)
+            self$.addOption(private$..lr)
+            self$.addOption(private$..ml)
+            self$.addOption(private$..wald)
             self$.addOption(private$..inplot)
             self$.addOption(private$..outplot)
             self$.addOption(private$..angle)
@@ -186,6 +231,12 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         pse = function() private$..pse$value,
         pinfit = function() private$..pinfit$value,
         poutfit = function() private$..poutfit$value,
+        lrsplit = function() private$..lrsplit$value,
+        mlsplit = function() private$..mlsplit$value,
+        waldsplit = function() private$..waldsplit$value,
+        lr = function() private$..lr$value,
+        ml = function() private$..ml$value,
+        wald = function() private$..wald$value,
         inplot = function() private$..inplot$value,
         outplot = function() private$..outplot$value,
         angle = function() private$..angle$value,
@@ -213,6 +264,12 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..pse = NA,
         ..pinfit = NA,
         ..poutfit = NA,
+        ..lrsplit = NA,
+        ..mlsplit = NA,
+        ..waldsplit = NA,
+        ..lr = NA,
+        ..ml = NA,
+        ..wald = NA,
         ..inplot = NA,
         ..outplot = NA,
         ..angle = NA,
@@ -241,7 +298,10 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         pmeasure = function() private$.items[["pmeasure"]],
         pse = function() private$.items[["pse"]],
         pinfit = function() private$.items[["pinfit"]],
-        poutfit = function() private$.items[["poutfit"]]),
+        poutfit = function() private$.items[["poutfit"]],
+        lr = function() private$.items[["lr"]],
+        ml = function() private$.items[["ml"]],
+        wald = function() private$.items[["wald"]]),
     private = list(),
     public=list(
         initialize=function(options) {
@@ -352,7 +412,9 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 visible="(rsm)",
                 refs="eRm",
                 clearWith=list(
-                    "vars"),
+                    "vars",
+                    "step",
+                    "type"),
                 columns=list(
                     list(
                         `name`="name", 
@@ -367,7 +429,9 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 visible="(pcm)",
                 refs="eRm",
                 clearWith=list(
-                    "vars"),
+                    "vars",
+                    "step",
+                    "type"),
                 columns=list(
                     list(
                         `name`="name", 
@@ -413,6 +477,8 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 refs="eRm",
                 clearWith=list(
                     "vars",
+                    "step",
+                    "type",
                     "num")))
             self$add(jmvcore::Image$new(
                 options=options,
@@ -426,6 +492,8 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 refs="eRm",
                 clearWith=list(
                     "vars",
+                    "step",
+                    "type",
                     "num")))
             self$add(jmvcore::Image$new(
                 options=options,
@@ -439,6 +507,8 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 refs="eRm",
                 clearWith=list(
                     "vars",
+                    "step",
+                    "type",
                     "num")))
             self$add(jmvcore::Image$new(
                 options=options,
@@ -515,7 +585,92 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 clearWith=list(
                     "vars",
                     "step",
-                    "type")))}))
+                    "type")))
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="lr",
+                title="`Andersen\u2019s LR test - ${lrsplit}`",
+                visible="(lr)",
+                rows=1,
+                refs="eRm",
+                clearWith=list(
+                    "vars",
+                    "step",
+                    "type",
+                    "lrsplit"),
+                columns=list(
+                    list(
+                        `name`="name", 
+                        `title`="", 
+                        `type`="text", 
+                        `content`="Likelihood ratio"),
+                    list(
+                        `name`="value", 
+                        `title`="Value", 
+                        `type`="number"),
+                    list(
+                        `name`="df", 
+                        `title`="df", 
+                        `type`="number"),
+                    list(
+                        `name`="p", 
+                        `title`="p", 
+                        `format`="zto,pvalue"))))
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="ml",
+                title="`Martin-Loef test - ${mlsplit}`",
+                visible="(ml)",
+                rows=1,
+                refs="eRm",
+                clearWith=list(
+                    "vars",
+                    "step",
+                    "type",
+                    "mlsplit"),
+                columns=list(
+                    list(
+                        `name`="name", 
+                        `title`="", 
+                        `type`="text", 
+                        `content`="Likelihood ratio"),
+                    list(
+                        `name`="value", 
+                        `title`="Value", 
+                        `type`="number"),
+                    list(
+                        `name`="df", 
+                        `title`="df", 
+                        `type`="integer"),
+                    list(
+                        `name`="p", 
+                        `title`="p", 
+                        `format`="zto,pvalue"))))
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="wald",
+                title="`Wald test - ${waldsplit}`",
+                visible="(wald)",
+                refs="eRm",
+                clearWith=list(
+                    "vars",
+                    "step",
+                    "type",
+                    "waldsplit"),
+                columns=list(
+                    list(
+                        `name`="name", 
+                        `title`="Item", 
+                        `type`="text", 
+                        `content`="($key)"),
+                    list(
+                        `name`="item", 
+                        `title`="Z statistic", 
+                        `type`="number"),
+                    list(
+                        `name`="p", 
+                        `title`="p", 
+                        `format`="zto, pvalue"))))}))
 
 raschBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "raschBase",
@@ -555,6 +710,12 @@ raschBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param rsm .
 #' @param pcm .
 #' @param wrightmap .
+#' @param lrsplit .
+#' @param mlsplit .
+#' @param waldsplit .
+#' @param lr .
+#' @param ml .
+#' @param wald .
 #' @param inplot .
 #' @param outplot .
 #' @param angle a number from 0 to 45 defining the angle of the x-axis labels,
@@ -582,6 +743,9 @@ raschBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$pse} \tab \tab \tab \tab \tab an output \cr
 #'   \code{results$pinfit} \tab \tab \tab \tab \tab an output \cr
 #'   \code{results$poutfit} \tab \tab \tab \tab \tab an output \cr
+#'   \code{results$lr} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$ml} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$wald} \tab \tab \tab \tab \tab a table \cr
 #' }
 #'
 #' Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
@@ -607,6 +771,12 @@ rasch <- function(
     rsm = FALSE,
     pcm = FALSE,
     wrightmap = TRUE,
+    lrsplit = "median",
+    mlsplit = "median",
+    waldsplit = "median",
+    lr = FALSE,
+    ml = FALSE,
+    wald = FALSE,
     inplot = FALSE,
     outplot = FALSE,
     angle = 0,
@@ -640,6 +810,12 @@ rasch <- function(
         rsm = rsm,
         pcm = pcm,
         wrightmap = wrightmap,
+        lrsplit = lrsplit,
+        mlsplit = mlsplit,
+        waldsplit = waldsplit,
+        lr = lr,
+        ml = ml,
+        wald = wald,
         inplot = inplot,
         outplot = outplot,
         angle = angle,

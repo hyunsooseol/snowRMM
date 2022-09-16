@@ -117,7 +117,7 @@ items:
         
         - name: p
           title: 'p'
-          format: zto, number
+          format: zto, pvalue
 
     - name: eta
       title: 'LLTM Basic item easiness parameters(eta)'

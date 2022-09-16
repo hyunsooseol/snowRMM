@@ -58,6 +58,27 @@ children:
                 name: rsm
               - type: CheckBox
                 name: pcm                
+          - type: Label
+            label: 'Tests(Step=1)'
+            children:                
+              - type: CheckBox
+                name: lr
+                children:
+                  - type: ComboBox
+                    name: lrsplit
+                    enable: (lr) 
+              - type: CheckBox
+                name: ml
+                children:
+                  - type: ComboBox
+                    name: mlsplit
+                    enable: (ml) 
+              - type: CheckBox
+                name: wald
+                children:
+                  - type: ComboBox
+                    name: waldsplit
+                    enable: (wald) 
       - type: LayoutBox
         stretchFactor: 1
         margin: large

@@ -253,7 +253,7 @@ lltmResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     list(
                         `name`="p", 
                         `title`="p", 
-                        `format`="zto, number"))))
+                        `format`="zto, pvalue"))))
             self$add(jmvcore::Table$new(
                 options=options,
                 name="eta",

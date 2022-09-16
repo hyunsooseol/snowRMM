@@ -20,6 +20,12 @@ rasch(
   rsm = FALSE,
   pcm = FALSE,
   wrightmap = TRUE,
+  lrsplit = "median",
+  mlsplit = "median",
+  waldsplit = "median",
+  lr = FALSE,
+  ml = FALSE,
+  wald = FALSE,
   inplot = FALSE,
   outplot = FALSE,
   angle = 0,
@@ -60,6 +66,18 @@ rasch(
 
 \item{wrightmap}{.}
 
+\item{lrsplit}{.}
+
+\item{mlsplit}{.}
+
+\item{waldsplit}{.}
+
+\item{lr}{.}
+
+\item{ml}{.}
+
+\item{wald}{.}
+
 \item{inplot}{.}
 
 \item{outplot}{.}
@@ -95,6 +113,9 @@ A results object containing:
   \code{results$pse} \tab \tab \tab \tab \tab an output \cr
   \code{results$pinfit} \tab \tab \tab \tab \tab an output \cr
   \code{results$poutfit} \tab \tab \tab \tab \tab an output \cr
+  \code{results$lr} \tab \tab \tab \tab \tab a table \cr
+  \code{results$ml} \tab \tab \tab \tab \tab a table \cr
+  \code{results$wald} \tab \tab \tab \tab \tab a table \cr
 }
 
 Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:

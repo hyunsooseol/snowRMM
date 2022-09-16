@@ -86,6 +86,8 @@ items:
       refs: eRm    
       clearWith:
         - vars
+        - step
+        - type
       columns:
         - name: name
           title: ''
@@ -100,6 +102,8 @@ items:
       refs: eRm    
       clearWith:
         - vars
+        - step
+        - type
       columns:
         - name: name
           title: ''
@@ -144,6 +148,8 @@ items:
       refs: eRm
       clearWith:
         - vars
+        - step
+        - type
         - num
  
     - name: plot2
@@ -157,6 +163,8 @@ items:
       refs: eRm
       clearWith:
         - vars
+        - step
+        - type
         - num
  
  
@@ -171,6 +179,8 @@ items:
       refs: eRm
       clearWith:
         - vars
+        - step
+        - type 
         - num
  
     - name: inplot
@@ -249,4 +259,82 @@ items:
         - step
         - type 
 
+    - name: lr
+      title: '`Andersen’s LR test - ${lrsplit}`'
+      type: Table
+      visible: (lr)
+      rows: 1
+      refs: eRm 
+      clearWith:
+        - vars
+        - step
+        - type
+        - lrsplit
+        
+      columns:
+        - name: name
+          title: ''
+          type: 'text'
+          content: Likelihood ratio
+        - name: value
+          title: 'Value'
+          type: number
+        - name: df
+          title: 'df'
+          type: number
+        - name: p
+          title: 'p'
+          format: zto,pvalue
+
+    - name: ml
+      title: '`Martin-Loef test - ${mlsplit}`'
+      type: Table
+      visible: (ml)
+      rows: 1
+      refs: eRm 
+      clearWith:
+        - vars
+        - step
+        - type
+        - mlsplit
+        
+      columns:
+        - name: name
+          title: ''
+          type: 'text'
+          content: Likelihood ratio
+        - name: value
+          title: 'Value'
+          type: number
+        - name: df
+          title: 'df'
+          type: integer
+        - name: p
+          title: 'p'
+          format: zto,pvalue
+
+    - name: wald
+      title: '`Wald test - ${waldsplit}`'
+      type: Table
+      visible: (wald)
+      refs: eRm 
+      clearWith:
+        - vars
+        - step
+        - type
+        - waldsplit
+
+      columns:
+        - name: name
+          title: 'Item'
+          type: 'text'
+          content: ($key)
+
+        - name: item
+          title: 'Z statistic'
+          type: number
+        
+        - name: p
+          title: 'p'
+          format: zto, pvalue
 ...

@@ -112,6 +112,45 @@ options:
       title: Outfit
       type: Output
 
+    - name: lrsplit
+      title: Split criterion
+      type: List
+      options:
+        - median
+        - mean
+      default: median
+
+    - name: mlsplit
+      title: Split criterion
+      type: List
+      options:
+        - median
+        - mean
+      default: median
+
+    - name: waldsplit
+      title: Split criterion
+      type: List
+      options:
+        - median
+        - mean
+      default: median
+
+    - name: lr
+      title: 'LR test'
+      type: Bool
+      default: FALSE
+
+    - name: ml
+      title: 'Martin-Loef Test'
+      type: Bool
+      default: FALSE
+
+    - name: wald
+      title: 'Wald test'
+      type: Bool
+      default: FALSE
+
     - name: inplot
       title: Infit 
       type: Bool
@@ -152,5 +191,5 @@ options:
       title: Person-item map for PCM 
       type: Bool
       default: FALSE
-      
+
 ...
