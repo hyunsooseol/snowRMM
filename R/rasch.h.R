@@ -25,6 +25,8 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             waldsplit = "median",
             lr = FALSE,
             ml = FALSE,
+            ml1 = FALSE,
+            mlsplit1 = "median",
             wald = FALSE,
             inplot = FALSE,
             outplot = FALSE,
@@ -143,6 +145,17 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "ml",
                 ml,
                 default=FALSE)
+            private$..ml1 <- jmvcore::OptionBool$new(
+                "ml1",
+                ml1,
+                default=FALSE)
+            private$..mlsplit1 <- jmvcore::OptionList$new(
+                "mlsplit1",
+                mlsplit1,
+                options=list(
+                    "median",
+                    "mean"),
+                default="median")
             private$..wald <- jmvcore::OptionBool$new(
                 "wald",
                 wald,
@@ -202,6 +215,8 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..waldsplit)
             self$.addOption(private$..lr)
             self$.addOption(private$..ml)
+            self$.addOption(private$..ml1)
+            self$.addOption(private$..mlsplit1)
             self$.addOption(private$..wald)
             self$.addOption(private$..inplot)
             self$.addOption(private$..outplot)
@@ -236,6 +251,8 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         waldsplit = function() private$..waldsplit$value,
         lr = function() private$..lr$value,
         ml = function() private$..ml$value,
+        ml1 = function() private$..ml1$value,
+        mlsplit1 = function() private$..mlsplit1$value,
         wald = function() private$..wald$value,
         inplot = function() private$..inplot$value,
         outplot = function() private$..outplot$value,
@@ -269,6 +286,8 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..waldsplit = NA,
         ..lr = NA,
         ..ml = NA,
+        ..ml1 = NA,
+        ..mlsplit1 = NA,
         ..wald = NA,
         ..inplot = NA,
         ..outplot = NA,
@@ -301,6 +320,7 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         poutfit = function() private$.items[["poutfit"]],
         lr = function() private$.items[["lr"]],
         ml = function() private$.items[["ml"]],
+        ml1 = function() private$.items[["ml1"]],
         wald = function() private$.items[["wald"]]),
     private = list(),
     public=list(
@@ -648,6 +668,36 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         `format`="zto,pvalue"))))
             self$add(jmvcore::Table$new(
                 options=options,
+                name="ml1",
+                title="`Martin-Loef test - ${mlsplit1}`",
+                visible="(ml1)",
+                rows=1,
+                refs="eRm",
+                clearWith=list(
+                    "vars",
+                    "step",
+                    "type",
+                    "mlsplit1"),
+                columns=list(
+                    list(
+                        `name`="name", 
+                        `title`="", 
+                        `type`="text", 
+                        `content`="Likelihood ratio"),
+                    list(
+                        `name`="value", 
+                        `title`="Value", 
+                        `type`="number"),
+                    list(
+                        `name`="df", 
+                        `title`="df", 
+                        `type`="integer"),
+                    list(
+                        `name`="p", 
+                        `title`="p", 
+                        `format`="zto,pvalue"))))
+            self$add(jmvcore::Table$new(
+                options=options,
                 name="wald",
                 title="`Wald test - ${waldsplit}`",
                 visible="(wald)",
@@ -715,6 +765,8 @@ raschBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param waldsplit .
 #' @param lr .
 #' @param ml .
+#' @param ml1 .
+#' @param mlsplit1 .
 #' @param wald .
 #' @param inplot .
 #' @param outplot .
@@ -745,6 +797,7 @@ raschBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$poutfit} \tab \tab \tab \tab \tab an output \cr
 #'   \code{results$lr} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$ml} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$ml1} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$wald} \tab \tab \tab \tab \tab a table \cr
 #' }
 #'
@@ -776,6 +829,8 @@ rasch <- function(
     waldsplit = "median",
     lr = FALSE,
     ml = FALSE,
+    ml1 = FALSE,
+    mlsplit1 = "median",
     wald = FALSE,
     inplot = FALSE,
     outplot = FALSE,
@@ -815,6 +870,8 @@ rasch <- function(
         waldsplit = waldsplit,
         lr = lr,
         ml = ml,
+        ml1 = ml1,
+        mlsplit1 = mlsplit1,
         wald = wald,
         inplot = inplot,
         outplot = outplot,

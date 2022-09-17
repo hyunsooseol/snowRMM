@@ -58,8 +58,39 @@ children:
                 name: rsm
               - type: CheckBox
                 name: pcm                
+      - type: LayoutBox
+        stretchFactor: 1
+        margin: large
+        cell:
+          column: 1
+          row: 0
+        fitToGrid: true
+        children:
           - type: Label
-            label: 'Testing dichotomous Rasch model(Step=1)'
+            label: 'Model fit'
+            children:
+              - type: CheckBox
+                name: fit
+          - type: Label
+            label: 'Item fit'
+            children:                
+              - type: CheckBox
+                name: infit
+              - type: CheckBox
+                name: outfit
+              - type: CheckBox
+                name: pbis
+  - type: CollapseBox
+    label: Testing the Rasch model
+    margin: normal
+    collapsed: true
+    children:
+      - type: LayoutBox
+        stretchFactor: 1
+        margin: large
+        children:
+          - type: Label
+            label: 'Dichotomous(Step=1)'
             children:                
               - type: CheckBox
                 name: lr
@@ -88,19 +119,14 @@ children:
         fitToGrid: true
         children:
           - type: Label
-            label: 'Model fit'
-            children:
+            label: 'Polytomous(Step>1)'
+            children:    
               - type: CheckBox
-                name: fit
-          - type: Label
-            label: 'Item fit'
-            children:                
-              - type: CheckBox
-                name: infit
-              - type: CheckBox
-                name: outfit
-              - type: CheckBox
-                name: pbis
+                name: ml1
+                children:
+                  - type: ComboBox
+                    name: mlsplit1
+                    enable: (ml1) 
   - type: CollapseBox
     label: Plots
     margin: normal

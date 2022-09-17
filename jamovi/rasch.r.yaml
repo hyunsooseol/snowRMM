@@ -166,8 +166,7 @@ items:
         - step
         - type
         - num
- 
- 
+
     - name: plot3
       title: 'Category for Partial Credit Model'
       type: Image
@@ -297,6 +296,33 @@ items:
         - step
         - type
         - mlsplit
+        
+      columns:
+        - name: name
+          title: ''
+          type: 'text'
+          content: Likelihood ratio
+        - name: value
+          title: 'Value'
+          type: number
+        - name: df
+          title: 'df'
+          type: integer
+        - name: p
+          title: 'p'
+          format: zto,pvalue
+
+    - name: ml1
+      title: '`Martin-Loef test - ${mlsplit1}`'
+      type: Table
+      visible: (ml1)
+      rows: 1
+      refs: eRm 
+      clearWith:
+        - vars
+        - step
+        - type
+        - mlsplit1
         
       columns:
         - name: name

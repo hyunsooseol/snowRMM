@@ -25,6 +25,8 @@ rasch(
   waldsplit = "median",
   lr = FALSE,
   ml = FALSE,
+  ml1 = FALSE,
+  mlsplit1 = "median",
   wald = FALSE,
   inplot = FALSE,
   outplot = FALSE,
@@ -76,6 +78,10 @@ rasch(
 
 \item{ml}{.}
 
+\item{ml1}{.}
+
+\item{mlsplit1}{.}
+
 \item{wald}{.}
 
 \item{inplot}{.}
@@ -115,6 +121,7 @@ A results object containing:
   \code{results$poutfit} \tab \tab \tab \tab \tab an output \cr
   \code{results$lr} \tab \tab \tab \tab \tab a table \cr
   \code{results$ml} \tab \tab \tab \tab \tab a table \cr
+  \code{results$ml1} \tab \tab \tab \tab \tab a table \cr
   \code{results$wald} \tab \tab \tab \tab \tab a table \cr
 }
 

@@ -146,6 +146,19 @@ options:
       type: Bool
       default: FALSE
 
+    - name: ml1
+      title: 'Martin-Loef Test'
+      type: Bool
+      default: FALSE
+      
+    - name: mlsplit1
+      title: Split criterion
+      type: List
+      options:
+        - median
+        - mean
+      default: median
+      
     - name: wald
       title: 'Wald test'
       type: Bool
