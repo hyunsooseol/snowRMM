@@ -29,6 +29,7 @@ rasch(
   mlsplit1 = "median",
   wald = FALSE,
   gofplot = FALSE,
+  tlab = "item",
   inplot = FALSE,
   outplot = FALSE,
   angle = 0,
@@ -86,6 +87,8 @@ rasch(
 \item{wald}{.}
 
 \item{gofplot}{.}
+
+\item{tlab}{.}
 
 \item{inplot}{.}
 
