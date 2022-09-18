@@ -164,6 +164,19 @@ options:
       type: Bool
       default: FALSE
 
+    - name: gofplot
+      title: Fit plot for LR test 
+      type: Bool
+      default: false
+
+    - name: tlab
+      title: Item labels
+      type: List
+      options:
+        - item
+        - number
+      default: item
+
     - name: inplot
       title: Infit 
       type: Bool

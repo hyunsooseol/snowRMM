@@ -127,6 +127,15 @@ children:
                   - type: ComboBox
                     name: mlsplit1
                     enable: (ml1) 
+          - type: Label
+            label: 'Plot'
+            children:
+              - type: CheckBox
+                name: gofplot
+                children:
+                  - type: ComboBox
+                    name: tlab
+                    enable: (gofplot) 
   - type: CollapseBox
     label: Plots
     margin: normal

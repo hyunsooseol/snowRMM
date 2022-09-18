@@ -28,6 +28,8 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             ml1 = FALSE,
             mlsplit1 = "median",
             wald = FALSE,
+            gofplot = FALSE,
+            tlab = "item",
             inplot = FALSE,
             outplot = FALSE,
             angle = 0,
@@ -160,6 +162,17 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "wald",
                 wald,
                 default=FALSE)
+            private$..gofplot <- jmvcore::OptionBool$new(
+                "gofplot",
+                gofplot,
+                default=FALSE)
+            private$..tlab <- jmvcore::OptionList$new(
+                "tlab",
+                tlab,
+                options=list(
+                    "item",
+                    "number"),
+                default="item")
             private$..inplot <- jmvcore::OptionBool$new(
                 "inplot",
                 inplot,
@@ -218,6 +231,8 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..ml1)
             self$.addOption(private$..mlsplit1)
             self$.addOption(private$..wald)
+            self$.addOption(private$..gofplot)
+            self$.addOption(private$..tlab)
             self$.addOption(private$..inplot)
             self$.addOption(private$..outplot)
             self$.addOption(private$..angle)
@@ -254,6 +269,8 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ml1 = function() private$..ml1$value,
         mlsplit1 = function() private$..mlsplit1$value,
         wald = function() private$..wald$value,
+        gofplot = function() private$..gofplot$value,
+        tlab = function() private$..tlab$value,
         inplot = function() private$..inplot$value,
         outplot = function() private$..outplot$value,
         angle = function() private$..angle$value,
@@ -289,6 +306,8 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..ml1 = NA,
         ..mlsplit1 = NA,
         ..wald = NA,
+        ..gofplot = NA,
+        ..tlab = NA,
         ..inplot = NA,
         ..outplot = NA,
         ..angle = NA,
@@ -308,6 +327,7 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         pcm = function() private$.items[["pcm"]],
         plot = function() private$.items[["plot"]],
         piplot = function() private$.items[["piplot"]],
+        gofplot = function() private$.items[["gofplot"]],
         plot1 = function() private$.items[["plot1"]],
         plot2 = function() private$.items[["plot2"]],
         plot3 = function() private$.items[["plot3"]],
@@ -485,6 +505,21 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "vars",
                     "step",
                     "type")))
+            self$add(jmvcore::Image$new(
+                options=options,
+                name="gofplot",
+                title="Goodness-of-Fit for LR test",
+                width=500,
+                height=500,
+                visible="(gofplot)",
+                renderFun=".gofplot",
+                refs="eRm",
+                clearWith=list(
+                    "vars",
+                    "step",
+                    "type",
+                    "lrsplit",
+                    "tlab")))
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot1",
@@ -768,6 +803,8 @@ raschBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param ml1 .
 #' @param mlsplit1 .
 #' @param wald .
+#' @param gofplot .
+#' @param tlab .
 #' @param inplot .
 #' @param outplot .
 #' @param angle a number from 0 to 45 defining the angle of the x-axis labels,
@@ -785,6 +822,7 @@ raschBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$pcm} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$piplot} \tab \tab \tab \tab \tab an image \cr
+#'   \code{results$gofplot} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$plot2} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$plot3} \tab \tab \tab \tab \tab an image \cr
@@ -832,6 +870,8 @@ rasch <- function(
     ml1 = FALSE,
     mlsplit1 = "median",
     wald = FALSE,
+    gofplot = FALSE,
+    tlab = "item",
     inplot = FALSE,
     outplot = FALSE,
     angle = 0,
@@ -873,6 +913,8 @@ rasch <- function(
         ml1 = ml1,
         mlsplit1 = mlsplit1,
         wald = wald,
+        gofplot = gofplot,
+        tlab = tlab,
         inplot = inplot,
         outplot = outplot,
         angle = angle,

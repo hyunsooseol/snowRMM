@@ -137,6 +137,21 @@ items:
         - step
         - type
 
+    - name: gofplot
+      title: 'Goodness-of-Fit for LR test'
+      type: Image
+      width: 500
+      height: 500
+      visible: (gofplot)
+      renderFun: .gofplot
+      refs: eRm
+      clearWith:
+        - vars
+        - step
+        - type
+        - lrsplit
+        - tlab
+
     - name: plot1
       title: 'ICC for Dichotomous Item'
       type: Image

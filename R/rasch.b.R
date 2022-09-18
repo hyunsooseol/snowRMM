@@ -16,6 +16,7 @@
 #' @importFrom eRm LRtest
 #' @importFrom  eRm Waldtest
 #' @importFrom  eRm MLoef
+#' @importFrom  eRm plotGOF
 #' @import RColorBrewer
 #' @import ggplot2
 #' @export
@@ -250,6 +251,14 @@ raschClass <- if (requireNamespace('jmvcore'))
           
           table$setRow(rowNo = 1, values = row)
           
+          #Goodness-of-fit plot for LR test--------
+          
+          image <- self$results$gofplot
+         
+          image$setState(lr)
+          
+         
+          ##############################################
           
           mlsplit<- self$options$mlsplit
           # Martin-lof test--------------
@@ -451,114 +460,30 @@ raschClass <- if (requireNamespace('jmvcore'))
             'outfit' = outfit,
             'pbis' = pbis,
             'class' = class
-              # 'rsm'=rsm,
-              # 'pcm'=pcm,
-              # 'nc'=nc
-           
-            
+         
           )
         
         
         
       },
       
-     # populate RSM thresholds table----------
+      .gofplot = function(image, ...) {
+        
+      
+        lr <- image$state
+        
+        tlab <- self$options$tlab
+        
+        # additional 95 percent control line with user specified style
+        gofplot<- plotGOF(lr, tlab=tlab, 
+                          ctrline = list(gamma = 0.95, col = "red", lty = "dashed"))
+        
+        
+        print(gofplot)
+        TRUE
+      },
+      
      
-     
-     # .populateRsmTable = function(results) {
-     # 
-     #  if(self$option$step<2)
-     #    return()
-     #   
-     #   
-     #   table <- self$results$rsm
-     # 
-     #   rsm <- results$rsm
-     # 
-     # 
-     #   nCategory <- results$nc
-     # 
-     #   vars <- self$options$vars
-     # 
-     # 
-     #   if (nCategory > 1) {
-     #     for (i in 1:nCategory)
-     # 
-     #       table$addColumn(
-     #         name = paste0("name", i),
-     #         title = as.character(i),
-     #         superTitle = 'Thresholds',
-     #         type = 'number'
-     #       )
-     #   }
-     # 
-     # 
-     #   for (i in seq_along(vars)) {
-     # 
-     #     row <- list()
-     # 
-     # 
-     #     for (j in 1:nCategory) {
-     # 
-     #       row[[paste0("name", j)]] <- rsm[i, j]
-     # 
-     # 
-     #     }
-     # 
-     #  
-     #     table$setRow(rowNo = i, values = row)
-     #   }
-     # },
-     # 
-     # 
-     # # populate PCM thresholds table----------
-     # 
-     # 
-     # .populatePcmTable = function(results) {
-     # 
-     #   if(self$option$step<2)
-     #     return()
-     # 
-     #   table <- self$results$pcm
-     # 
-     #   pcm <- results$pcm
-     # 
-     # 
-     #   nCategory <- results$nc
-     # 
-     #   vars <- self$options$vars
-     # 
-     # 
-     #   if (nCategory > 1) {
-     #     for (i in 1:nCategory)
-     # 
-     #       table$addColumn(
-     #         name = paste0("name", i),
-     #         title = as.character(i),
-     #         superTitle = 'Thresholds',
-     #         type = 'number'
-     #       )
-     #   }
-     # 
-     # 
-     #   for (i in seq_along(vars)) {
-     # 
-     #     row <- list()
-     # 
-     # 
-     #     for (j in 1:nCategory) {
-     # 
-     #       row[[paste0("name", j)]] <- pcm[i, j]
-     # 
-     # 
-     #     }
-     # 
-     #   table$setRow(rowNo = i, values = row)
-     #   }
-     # },
-     # 
-
-
       # populate Model information table-----
       
       .populateModelTable = function(results) {

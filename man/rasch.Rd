@@ -28,6 +28,7 @@ rasch(
   ml1 = FALSE,
   mlsplit1 = "median",
   wald = FALSE,
+  gofplot = FALSE,
   inplot = FALSE,
   outplot = FALSE,
   angle = 0,
@@ -84,6 +85,8 @@ rasch(
 
 \item{wald}{.}
 
+\item{gofplot}{.}
+
 \item{inplot}{.}
 
 \item{outplot}{.}
@@ -109,6 +112,7 @@ A results object containing:
   \code{results$pcm} \tab \tab \tab \tab \tab a table \cr
   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
   \code{results$piplot} \tab \tab \tab \tab \tab an image \cr
+  \code{results$gofplot} \tab \tab \tab \tab \tab an image \cr
   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
   \code{results$plot2} \tab \tab \tab \tab \tab an image \cr
   \code{results$plot3} \tab \tab \tab \tab \tab an image \cr
