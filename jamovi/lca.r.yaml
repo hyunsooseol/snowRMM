@@ -104,22 +104,25 @@ items:
           title: 'Probability'
 
     - name:  ip
-      title: 'Estimated class-conditional response probability'
-      type:  Table
+      title:  'Item response probabilities'
+      type:  Array
       visible: (ip)
+      items: (vars)
       clearWith:
-        - vars
-        - nc
+            - vars
+            - nc
 
-      columns:
-        - name: name
-          title: 'Variable'
-          type: 'text'
-          content: ($key)
-        - name: pc1
-          title: '1'
-          type: number
-          superTitle: 'Class'
+      template:
+          title: Probability of $key
+          type: Table
+          clearWith:
+            - vars
+            - nc
+          columns: 
+            - name: name
+              title: ''
+              type: 'text'
+              content: ($key)
 
     - name:  mc
       title: 'Variable means across membership' 

@@ -277,25 +277,27 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     list(
                         `name`="value", 
                         `title`="Probability"))))
-            self$add(jmvcore::Table$new(
+            self$add(jmvcore::Array$new(
                 options=options,
                 name="ip",
-                title="Estimated class-conditional response probability",
+                title="Item response probabilities",
                 visible="(ip)",
+                items="(vars)",
                 clearWith=list(
                     "vars",
                     "nc"),
-                columns=list(
-                    list(
-                        `name`="name", 
-                        `title`="Variable", 
-                        `type`="text", 
-                        `content`="($key)"),
-                    list(
-                        `name`="pc1", 
-                        `title`="1", 
-                        `type`="number", 
-                        `superTitle`="Class"))))
+                template=jmvcore::Table$new(
+                    options=options,
+                    title="Probability of $key",
+                    clearWith=list(
+                        "vars",
+                        "nc"),
+                    columns=list(
+                        list(
+                            `name`="name", 
+                            `title`="", 
+                            `type`="text", 
+                            `content`="($key)")))))
             self$add(jmvcore::Table$new(
                 options=options,
                 name="mc",
@@ -406,7 +408,7 @@ lcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$comp} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$cf} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$cp} \tab \tab \tab \tab \tab a table \cr
-#'   \code{results$ip} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$ip} \tab \tab \tab \tab \tab an array of tables \cr
 #'   \code{results$mc} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$cm} \tab \tab \tab \tab \tab an output \cr
 #'   \code{results$pc} \tab \tab \tab \tab \tab an output \cr

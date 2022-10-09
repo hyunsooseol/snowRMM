@@ -425,46 +425,49 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         .populateItemTable= function(results){
         
-            nc <- self$options$nc
-            
+           
+           tables <- self$results$ip
+          
             itemprob <- results$itemprob
             
-            itemprob<- as.data.frame(itemprob)
-            itemprob<- t(itemprob)
+            vars <- self$options$vars
             
-            names<- dimnames(itemprob)[[1]]
-            
-            #creating table--------
-            
-            table <- self$results$ip
-            
-            for (i in 1:nc)
+            for(i in seq_along(vars)){
+              
+              item <- results$item[[ vars[i] ]]
+              
+              
+              table <- tables[[i]]
+              
+              names<- row.names(item)
+              dims <- colnames(item)
+              
+              
+              for (dim in dims) {
                 
-                table$addColumn(
-                    name = paste0("pc", i),
-                    title = as.character(i),
-                    type = 'number',
-                    superTitle = 'Class'
-                )
-            
-            for (name in names) {
+                table$addColumn(name = paste0(dim),
+                                type = 'text',
+                                combineBelow=TRUE)
+              }
+              
+              
+              for (name in names) {
                 
                 row <- list()
                 
-                
-                for (j in seq_along(1:nc)) {
-                    row[[paste0("pc", j)]] <- itemprob[name, j]
+                for(j in seq_along(dims)){
+                  
+                  row[[dims[j]]] <- item[name,j]
+                  
                 }
-                
                 
                 table$addRow(rowKey=name, values=row)
                 
+              }
+              
             }
             
-            
-            
-            
-        },
+        },   
         
                    # populate Model table-----
                    

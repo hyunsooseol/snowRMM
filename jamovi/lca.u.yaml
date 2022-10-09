@@ -37,7 +37,7 @@ children:
             stretchFactor: 1
             children:
               - type: Label
-                label: ''
+                label: 'Fit'
                 children:
                   - name: nc
                     type: TextBox
@@ -47,15 +47,11 @@ children:
                     name: fit
                   - type: CheckBox
                     name: comp
+              - type: Label
+                label: 'Plot'
+                children:
                   - type: CheckBox
-                    name: cf
-          - type: Label
-            label: 'Probability'
-            children:
-              - type: CheckBox
-                name: cp
-              - type: CheckBox
-                name: ip
+                    name: plot
       - type: LayoutBox
         stretchFactor: 1
         margin: large
@@ -65,10 +61,14 @@ children:
         fitToGrid: true
         children:
           - type: Label
-            label: 'Plot'
+            label: 'Probability'
             children:
               - type: CheckBox
-                name: plot
+                name: cp
+              - type: CheckBox
+                name: ip
+              - type: CheckBox
+                name: cf
   - type: CollapseBox
     label: 'Save'
     margin: normal

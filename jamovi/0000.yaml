@@ -1,12 +1,12 @@
 ---
 title: 'Rasch Mixture, LCA, and Test Equating Analysis'
 name: snowRMM
-version: 5.2.1
+version: 5.2.2
 jms: '1.0'
 authors:
   - Hyunsoo Seol
 maintainer: Hyunsoo Seol <snow@cau.ac.kr>
-date: '2022-09-18'
+date: '2022-10-09'
 type: R
 description: >-
   This module allows users to conduct Latent class analysis, Latent Profile
