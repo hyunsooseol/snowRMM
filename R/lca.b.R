@@ -175,10 +175,8 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
            
            lo <- NULL
            for (r in 2:R) {
-             cat(r,"/ 1 \n")
+           #  cat(r,"/ 1 \n")
         
-             print(r,"1")
-             
              disp <- data.frame(coeff=round(res$coeff[,(r-1)],5),
                                 se=round(res$coeff.se[,(r-1)],5),
                                 tval=round(res$coeff[,(r-1)]/res$coeff.se[,(r-1)],3),
@@ -186,9 +184,9 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
              colnames(disp) <- c("Coefficient"," Std. error"," t value"," Pr(>|t|)")
         
         
-             print(disp)
+            # print(disp)
                 
-           cat("========================================================= \n")
+           #cat("========================================================= \n")
         
           if (is.null(lo)) {
                lo <- disp
