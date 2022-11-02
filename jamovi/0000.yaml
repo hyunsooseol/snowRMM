@@ -110,6 +110,11 @@ datasets:
       a symptom, a 1 the absence.
     tags:
       - LCA
+  - name: cheating
+    path: cheating.omv
+    description: LCA with covariates
+    tags:
+      - LCA
   - name: iris
     path: iris.omv
     description: Latent profile analysis

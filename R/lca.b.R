@@ -50,18 +50,20 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             "Note",
             "G\u00B2=Likelihood ratio statistic; \u03C7\u00B2=Pearson Chi-square goodness of fit statistic; Entropy=entropy R^2 statistic (Vermunt & Magidson, 2013, p. 71)"
           )
-        # if (self$options$cp)
-        #     self$results$cp$setNote(
-        #         "Note",
-        #         "Sizes of each latent class."
-        #     )
-        # 
-        # if (self$options$ip)
-        #     self$results$ip$setNote(
-        #         "Note",
-        #         "Pr.=Probability."
-        #     )
         
+        
+        if (self$options$lo)
+            self$results$lo$setNote(
+                "Note",
+                "All logit coefficients are calculated for classes with respect to class 1."
+            )
+
+        # if (self$options$le)
+        #   self$results$le$setNote(
+        #     "Note",
+        #     "Coefficient is a matrix with number of class-1 columns"
+        #   )
+
         
         if (length(self$options$vars) <= 1)
           self$setStatus('complete')
@@ -130,6 +132,13 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           
           private$.preparePlot1()
           
+          # Multinomial logit coeff.---
+          
+          private$.populateLoTable(results)
+          
+          # Multinomial logit coeff. SE---
+          
+          private$.populateLeTable(results)
           
         }
       },
@@ -163,42 +172,43 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         library(poLCA) 
         
         res<- poLCA::poLCA(formula,data,nclass=nc,
-                           calc.se = FALSE,
-                           nrep = 5)
+                           calc.se = FALSE)
+                           
         
         ############################################################### 
       
+        #self$results$text$setContent(res)
         
-         if( !is.null(self$options$covs) ) {
-        
-           R <- length(res$P)
-           
-           lo <- NULL
-           for (r in 2:R) {
-           #  cat(r,"/ 1 \n")
-        
-             disp <- data.frame(coeff=round(res$coeff[,(r-1)],5),
-                                se=round(res$coeff.se[,(r-1)],5),
-                                tval=round(res$coeff[,(r-1)]/res$coeff.se[,(r-1)],3),
-                                pr=round(1-(2*abs(pt(res$coeff[,(r-1)]/res$coeff.se[,(r-1)],res$resid.df)-0.5)),3))
-             colnames(disp) <- c("Coefficient"," Std. error"," t value"," Pr(>|t|)")
-        
-        
-            # print(disp)
-                
-           #cat("========================================================= \n")
-        
-          if (is.null(lo)) {
-               lo <- disp
-              
-          } else {
-            lo <- rbind(lo, disp)
-          }
-           }
-
-           self$results$text$setContent(lo)
-           }
-           
+         # if( !is.null(self$options$covs) ) {
+         # 
+         #   R <- length(res$P)
+         #   
+         #   lo <- NULL
+         #   for (r in 2:R) {
+         #   #  cat(r,"/ 1 \n")
+         # 
+         #     disp <- data.frame(coeff=round(res$coeff[,(r-1)],5),
+         #                        se=round(res$coeff.se[,(r-1)],5),
+         #                        tval=round(res$coeff[,(r-1)]/res$coeff.se[,(r-1)],3),
+         #                        pr=round(1-(2*abs(pt(res$coeff[,(r-1)]/res$coeff.se[,(r-1)],res$resid.df)-0.5)),3))
+         #     colnames(disp) <- c("Coefficient"," Std. error"," t value"," Pr(>|t|)")
+         # 
+         # 
+         #    # print(disp)
+         #        
+         #   #cat("========================================================= \n")
+         # 
+         #  if (is.null(lo)) {
+         #       lo <- disp
+         #      
+         #  } else {
+         #    lo <- rbind(lo, disp)
+         #  }
+         #   }
+         # 
+         #   self$results$text$setContent(lo)
+         #   }
+         #   
           
         
          
@@ -378,6 +388,13 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         image <- self$results$plot
         image$setState(res)
         
+        # Multinomial logit coefficients---
+        
+        lo<- res[["coeff"]]
+        le <- res[["coeff.se"]]
+     
+       
+        
         
         results <-
           list(
@@ -394,14 +411,96 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             'gp'=gp,
             'cm'=cm,
             'pc'=pc,
-            'post'=post
+            'post'=post,
+            'lo'=lo,
+            'le'=le
             
           )
         
       },  
       
       
-      # Model comparison table----------
+      # Multinomial logit coefficients--------
+      
+      .populateLoTable= function(results) {
+        
+        table <- self$results$lo
+        
+        lo <- results$lo
+        
+        coef<- as.data.frame(lo)
+        
+        
+        names <- dimnames(coef)[[1]]
+        
+     
+        dims <- dimnames(coef)[[2]]
+
+        for (dim in dims) {
+
+          table$addColumn(name = paste0(dim),
+                          type = 'text')
+        }
+        
+        
+        for (name in names) {
+          
+          row <- list()
+          
+          for(j in seq_along(dims)){
+            
+            row[[dims[j]]] <- coef[name,j]
+            
+          }
+          
+          table$addRow(rowKey=name, values=row)
+          
+        }
+      
+      },
+      
+      
+     # S.E of coefficients--------
+     
+     .populateLeTable= function(results) {
+       
+       table <- self$results$le
+       
+       le <- results$le
+       
+       coef<- as.data.frame(le)
+       
+       
+       names <- dimnames(coef)[[1]]
+       
+       
+       dims <- dimnames(coef)[[2]]
+       
+       for (dim in dims) {
+         
+         table$addColumn(name = paste0(dim),
+                         type = 'text')
+       }
+       
+       
+       for (name in names) {
+         
+         row <- list()
+         
+         for(j in seq_along(dims)){
+           
+           row[[dims[j]]] <- coef[name,j]
+           
+         }
+         
+         table$addRow(rowKey=name, values=row)
+         
+       }
+       
+     },
+     
+     
+     # Model comparison table----------
       
       
       .populateModelTable = function(results) {

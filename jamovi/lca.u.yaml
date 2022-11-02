@@ -77,10 +77,12 @@ children:
               - type: CheckBox
                 name: cf
           - type: Label
-            label: 'Covariates'
+            label: 'Multinomial logistic regression'
             children:
               - type: CheckBox
                 name: lo
+              - type: CheckBox
+                name: le  
   - type: CollapseBox
     label: 'Save'
     margin: normal

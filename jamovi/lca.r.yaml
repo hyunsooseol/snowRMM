@@ -10,13 +10,45 @@ items:
       visible: True
 
     - name:  text
-      title: Logistic regression coefficients
+      title: ''
       type:  Preformatted
       clearWith:
         - vars
         - nc
         - covs
         
+    - name: lo
+      title: 'logit coefficients estimates'
+      type: Table
+      refs: poLCA
+      visible: (lo)
+      clearWith:
+        - vars
+        - nc
+        - covs
+
+      columns:
+        - name: name
+          title: ''
+          type: 'text'
+          content: ($key)
+
+    - name: le
+      title: 'S.E of logit coefficient estimates'
+      type: Table
+      refs: poLCA
+      visible: (le)
+      clearWith:
+        - vars
+        - nc
+        - covs
+
+      columns:
+        - name: name
+          title: ''
+          type: 'text'
+          content: ($key)
+
     - name: fit
       title: 'Model fit'
       type: Table

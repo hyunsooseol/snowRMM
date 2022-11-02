@@ -17,6 +17,7 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             cf = FALSE,
             mc = FALSE,
             lo = FALSE,
+            le = FALSE,
             plot = FALSE,
             angle = 0,
             plot1 = FALSE, ...) {
@@ -91,6 +92,10 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "lo",
                 lo,
                 default=FALSE)
+            private$..le <- jmvcore::OptionBool$new(
+                "le",
+                le,
+                default=FALSE)
             private$..plot <- jmvcore::OptionBool$new(
                 "plot",
                 plot,
@@ -120,6 +125,7 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..pc)
             self$.addOption(private$..post)
             self$.addOption(private$..lo)
+            self$.addOption(private$..le)
             self$.addOption(private$..plot)
             self$.addOption(private$..angle)
             self$.addOption(private$..plot1)
@@ -139,6 +145,7 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         pc = function() private$..pc$value,
         post = function() private$..post$value,
         lo = function() private$..lo$value,
+        le = function() private$..le$value,
         plot = function() private$..plot$value,
         angle = function() private$..angle$value,
         plot1 = function() private$..plot1$value),
@@ -157,6 +164,7 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..pc = NA,
         ..post = NA,
         ..lo = NA,
+        ..le = NA,
         ..plot = NA,
         ..angle = NA,
         ..plot1 = NA)
@@ -168,6 +176,8 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     active = list(
         instructions = function() private$.items[["instructions"]],
         text = function() private$.items[["text"]],
+        lo = function() private$.items[["lo"]],
+        le = function() private$.items[["le"]],
         fit = function() private$.items[["fit"]],
         comp = function() private$.items[["comp"]],
         cf = function() private$.items[["cf"]],
@@ -195,11 +205,43 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Preformatted$new(
                 options=options,
                 name="text",
-                title="Logistic regression coefficients",
+                title="",
                 clearWith=list(
                     "vars",
                     "nc",
                     "covs")))
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="lo",
+                title="logit coefficients estimates",
+                refs="poLCA",
+                visible="(lo)",
+                clearWith=list(
+                    "vars",
+                    "nc",
+                    "covs"),
+                columns=list(
+                    list(
+                        `name`="name", 
+                        `title`="", 
+                        `type`="text", 
+                        `content`="($key)"))))
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="le",
+                title="S.E of logit coefficient estimates",
+                refs="poLCA",
+                visible="(le)",
+                clearWith=list(
+                    "vars",
+                    "nc",
+                    "covs"),
+                columns=list(
+                    list(
+                        `name`="name", 
+                        `title`="", 
+                        `type`="text", 
+                        `content`="($key)"))))
             self$add(jmvcore::Table$new(
                 options=options,
                 name="fit",
@@ -435,6 +477,7 @@ lcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param cf .
 #' @param mc .
 #' @param lo .
+#' @param le .
 #' @param plot .
 #' @param angle a number from 0 to 45 defining the angle of the x-axis labels,
 #'   where 0 degrees represents completely horizontal labels.
@@ -443,6 +486,8 @@ lcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
 #'   \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
+#'   \code{results$lo} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$le} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$fit} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$comp} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$cf} \tab \tab \tab \tab \tab a table \cr
@@ -458,9 +503,9 @@ lcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'
 #' Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
 #'
-#' \code{results$fit$asDF}
+#' \code{results$lo$asDF}
 #'
-#' \code{as.data.frame(results$fit)}
+#' \code{as.data.frame(results$lo)}
 #'
 #' @export
 lca <- function(
@@ -476,6 +521,7 @@ lca <- function(
     cf = FALSE,
     mc = FALSE,
     lo = FALSE,
+    le = FALSE,
     plot = FALSE,
     angle = 0,
     plot1 = FALSE) {
@@ -508,6 +554,7 @@ lca <- function(
         cf = cf,
         mc = mc,
         lo = lo,
+        le = le,
         plot = plot,
         angle = angle,
         plot1 = plot1)

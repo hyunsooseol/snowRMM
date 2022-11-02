@@ -17,6 +17,7 @@ lca(
   cf = FALSE,
   mc = FALSE,
   lo = FALSE,
+  le = FALSE,
   plot = FALSE,
   angle = 0,
   plot1 = FALSE
@@ -47,6 +48,8 @@ lca(
 
 \item{lo}{.}
 
+\item{le}{.}
+
 \item{plot}{.}
 
 \item{angle}{a number from 0 to 45 defining the angle of the x-axis labels,
@@ -59,6 +62,8 @@ A results object containing:
 \tabular{llllll}{
   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
   \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
+  \code{results$lo} \tab \tab \tab \tab \tab a table \cr
+  \code{results$le} \tab \tab \tab \tab \tab a table \cr
   \code{results$fit} \tab \tab \tab \tab \tab a table \cr
   \code{results$comp} \tab \tab \tab \tab \tab a table \cr
   \code{results$cf} \tab \tab \tab \tab \tab a table \cr
@@ -74,9 +79,9 @@ A results object containing:
 
 Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
 
-\code{results$fit$asDF}
+\code{results$lo$asDF}
 
-\code{as.data.frame(results$fit)}
+\code{as.data.frame(results$lo)}
 }
 \description{
 Latent Class Analysis

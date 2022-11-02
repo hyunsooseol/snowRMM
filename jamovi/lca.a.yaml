@@ -90,7 +90,12 @@ options:
       type: Output  
       
     - name: lo
-      title: Logistic regression
+      title: logit coefficients
+      type: Bool 
+      default: FALSE  
+
+    - name: le
+      title: S.E of coefficients
       type: Bool 
       default: FALSE  
 
