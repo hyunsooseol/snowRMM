@@ -7,6 +7,7 @@
 lca(
   data,
   vars,
+  covs,
   group,
   nc = 2,
   fit = TRUE,
@@ -15,6 +16,7 @@ lca(
   ip = FALSE,
   cf = FALSE,
   mc = FALSE,
+  lo = FALSE,
   plot = FALSE,
   angle = 0,
   plot1 = FALSE
@@ -24,6 +26,8 @@ lca(
 \item{data}{The data as a data frame.}
 
 \item{vars}{.}
+
+\item{covs}{.}
 
 \item{group}{.}
 
@@ -41,6 +45,8 @@ lca(
 
 \item{mc}{.}
 
+\item{lo}{.}
+
 \item{plot}{.}
 
 \item{angle}{a number from 0 to 45 defining the angle of the x-axis labels,
@@ -51,8 +57,8 @@ where 0 degrees represents completely horizontal labels.}
 \value{
 A results object containing:
 \tabular{llllll}{
-  \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
+  \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
   \code{results$fit} \tab \tab \tab \tab \tab a table \cr
   \code{results$comp} \tab \tab \tab \tab \tab a table \cr
   \code{results$cf} \tab \tab \tab \tab \tab a table \cr

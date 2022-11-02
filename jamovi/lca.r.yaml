@@ -4,15 +4,19 @@ title: Latent Class Analysis
 jrs:   '1.1'
 refs: snowRMM
 items:
-    - name:  text
-      title: test
-      type:  Preformatted
-      
     - name: instructions
       title: 'Instructions'
       type: Html
       visible: True
 
+    - name:  text
+      title: Logistic regression coefficients
+      type:  Preformatted
+      clearWith:
+        - vars
+        - nc
+        - covs
+        
     - name: fit
       title: 'Model fit'
       type: Table
@@ -20,6 +24,7 @@ items:
       clearWith:
         - vars
         - nc
+        - covs
       refs: poLCA 
 
       columns:
@@ -49,6 +54,7 @@ items:
       clearWith:
         - vars
         - nc
+        - covs
       refs: poLCA 
 
       columns:
@@ -79,7 +85,7 @@ items:
       clearWith:
         - vars
         - nc
-     
+        - covs     
       columns:
         - name: name
           title: ''
@@ -93,7 +99,7 @@ items:
       clearWith:
         - vars
         - nc
-      
+        - covs      
       columns:
         - name: name
           title: ''
@@ -111,13 +117,14 @@ items:
       clearWith:
             - vars
             - nc
-
+            - covs
       template:
           title: Probability of $key
           type: Table
           clearWith:
             - vars
             - nc
+            - covs
           columns: 
             - name: name
               title: ''
@@ -131,6 +138,7 @@ items:
       clearWith:
         - vars
         - nc
+        - covs
       refs: snowCluster
 
       columns:
@@ -147,6 +155,7 @@ items:
       clearWith:
         - vars
         - nc
+        - covs
      
     - name: pc
       title: Predicted cell percentages
@@ -156,6 +165,7 @@ items:
       clearWith:
         - vars
         - nc
+        - covs
 
     - name: post
       title: Posterior probabilities
@@ -164,6 +174,7 @@ items:
       clearWith:
         - vars
         - nc
+        - covs
 
     - name: plot
       title: 'LCA plot'
@@ -174,7 +185,8 @@ items:
       renderFun: .plot
       clearWith:
             - vars
-            - nc          
+            - nc 
+            - covs
       
     - name: plot1
       title: 'Profile plot'
@@ -186,6 +198,7 @@ items:
       clearWith:
             - vars
             - nc 
+            - covs
             - angle
 
 

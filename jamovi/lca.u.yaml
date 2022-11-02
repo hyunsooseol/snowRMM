@@ -15,6 +15,13 @@ children:
             name: vars
             isTarget: true
       - type: TargetLayoutBox
+        label: Covariates(Optional)
+        children:
+          - type: VariablesListBox
+            name: covs
+            height: small
+            isTarget: true
+      - type: TargetLayoutBox
         children:
           - type: VariablesListBox
             name: group
@@ -69,6 +76,11 @@ children:
                 name: ip
               - type: CheckBox
                 name: cf
+          - type: Label
+            label: 'Covariates'
+            children:
+              - type: CheckBox
+                name: lo
   - type: CollapseBox
     label: 'Save'
     margin: normal
