@@ -68,6 +68,8 @@ items:
           type: number
         - name: Entropy
           type: number
+        - name: Resid.df
+          type: number 
         - name: G²
           type: number
         - name: G² p
@@ -109,7 +111,7 @@ items:
         - name: Gsq
           title:  G² 
           type: number          
-
+ 
     - name: cf
       title: 'Predicted cell counts from latent class analysis'
       type: Table

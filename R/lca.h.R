@@ -266,6 +266,9 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         `name`="Entropy", 
                         `type`="number"),
                     list(
+                        `name`="Resid.df", 
+                        `type`="number"),
+                    list(
                         `name`="G\u00B2", 
                         `type`="number"),
                     list(

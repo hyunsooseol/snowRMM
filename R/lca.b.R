@@ -190,7 +190,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
          #     disp <- data.frame(coeff=round(res$coeff[,(r-1)],5),
          #                        se=round(res$coeff.se[,(r-1)],5),
          #                        tval=round(res$coeff[,(r-1)]/res$coeff.se[,(r-1)],3),
-         #                        pr=round(1-(2*abs(pt(res$coeff[,(r-1)]/res$coeff.se[,(r-1)],res$resid.df)-0.5)),3))
+         # pr=round(1-(2*abs(pt(res$coeff[,(r-1)]/res$coeff.se[,(r-1)],res$resid.df)-0.5)),3))
          #     colnames(disp) <- c("Coefficient"," Std. error"," t value"," Pr(>|t|)")
          # 
          # 
@@ -219,14 +219,14 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         for (i in 1:self$options$nc) {
           
-          res<- poLCA::poLCA(formula,data,nclass=nc,maxiter = 2000,calc.se = FALSE) 
+          res<- poLCA::poLCA(formula,data,nclass=nc,calc.se = FALSE) 
           
           aic<- res$aic 
           bic<- res$bic 
           loglik <- res$llik
           Chisq<- res$Chisq 
           Gsq <- res$Gsq
-          
+         
           
           df<- data.frame(aic,bic,loglik,Chisq,Gsq)
           
@@ -413,12 +413,85 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             'pc'=pc,
             'post'=post,
             'lo'=lo,
-            'le'=le
+            'le'=le,
+            'df'=df
             
           )
         
       },  
       
+
+# populate Model table-----
+
+.populateFitTable = function(results) {
+  
+  table <- self$results$fit
+  
+  nc <- self$options$nc
+  aic <- results$aic
+  bic <- results$bic
+  entro <- results$entro
+  resid.df <- results$df
+  Gsq <- results$Gsq
+  gp <- results$gp
+  Chisq <- results$Chisq
+  cp <- results$cp
+  
+  
+  row <- list()
+  
+  row[['Class']] <- nc
+  row[['AIC']] <- aic
+  row[['BIC']] <- bic
+  row[['Entropy']] <- entro
+  row[['Resid.df']] <- resid.df
+  row[['G\u00B2']] <- Gsq
+  row[['G\u00B2 p']] <- gp
+  row[['\u03C7\u00B2']] <- Chisq
+  row[['\u03C7\u00B2 p']] <- cp
+  
+  
+  table$setRow(rowNo = 1, values = row)
+  
+  
+  
+},
+
+# Model comparison table----------
+
+
+.populateModelTable = function(results) {
+  
+  table <- self$results$comp
+  
+  nc <- self$options$nc
+  
+  out <- results$out
+  
+  
+  fit<- data.frame(out)
+  
+  
+  names <- dimnames(fit)[[1]]
+  
+  
+  for (name in names) {
+    
+    row <- list()
+    
+    row[["aic"]]   <-  fit[name, 1]
+    row[["bic"]] <-  fit[name, 2]
+    row[["loglik"]] <-  fit[name, 3]
+    row[["Chisq"]] <-  fit[name, 4]
+    row[["Gsq"]] <-  fit[name, 5]
+    row[["resid.df"]] <-  fit[name, 6]
+    
+    table$addRow(rowKey=name, values=row)
+    
+  }  
+},
+
+
       
       # Multinomial logit coefficients--------
       
@@ -500,42 +573,6 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
      },
      
      
-     # Model comparison table----------
-      
-      
-      .populateModelTable = function(results) {
-        
-        table <- self$results$comp
-        
-        nc <- self$options$nc
-        
-        out <- results$out
-        
-        
-        fit<- data.frame(out)
-        
-        # self$results$text$setContent(fit)
-        
-        
-        
-        names <- dimnames(fit)[[1]]
-        
-        
-        for (name in names) {
-          
-          row <- list()
-          
-          row[["aic"]]   <-  fit[name, 1]
-          row[["bic"]] <-  fit[name, 2]
-          row[["loglik"]] <-  fit[name, 3]
-          row[["Chisq"]] <-  fit[name, 4]
-          row[["Gsq"]] <-  fit[name, 5]
-          
-          table$addRow(rowKey=name, values=row)
-          
-        }  
-      },
-      
       
       
       # populate class probability table---------------
@@ -612,38 +649,6 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
       },   
       
-      # populate Model table-----
-      
-      .populateFitTable = function(results) {
-        
-        table <- self$results$fit
-        
-        nc <- self$options$nc
-        aic <- results$aic
-        bic <- results$bic
-        entro <- results$entro
-        Gsq <- results$Gsq
-        gp <- results$gp
-        Chisq <- results$Chisq
-        cp <- results$cp
-        
-        
-        row <- list()
-        
-        row[['Class']] <- nc
-        row[['AIC']] <- aic
-        row[['BIC']] <- bic
-        row[['Entropy']] <- entro
-        row[['G\u00B2']] <- Gsq
-        row[['G\u00B2 p']] <- gp
-        row[['\u03C7\u00B2']] <- Chisq
-        row[['\u03C7\u00B2 p']] <- cp
-        
-        table$setRow(rowNo = 1, values = row)
-        
-        
-        
-      },
       
       
       # populate cell frequencies------------
