@@ -135,22 +135,6 @@ items:
               type: 'text'
               content: ($key)
 
-    - name:  mc
-      title: 'Variable means across membership' 
-      type:  Table
-      visible: (mc)
-      clearWith:
-        - vars
-        - nc
-        - covs
-      refs: snowCluster
-
-      columns:
-          - name: .name[x]
-            title: ""
-            type: 'text'
-            content: ($key)
-
     - name:  text
       title: 'Logistic regression coefficients'
       type:  Preformatted
@@ -201,18 +185,5 @@ items:
             - nc 
             - covs
       
-    - name: plot1
-      title: 'Profile plot'
-      type: Image
-      visible: (plot1)
-      width: 600
-      height: 450
-      renderFun: .plot1
-      clearWith:
-            - vars
-            - nc 
-            - covs
-            - angle
-
 
 ...

@@ -8,17 +8,13 @@ lca(
   data,
   vars,
   covs,
-  group,
   nc = 2,
   fit = TRUE,
   comp = TRUE,
   cp = FALSE,
   ip = FALSE,
   cf = FALSE,
-  mc = FALSE,
-  plot = FALSE,
-  angle = 0,
-  plot1 = FALSE
+  plot = FALSE
 )
 }
 \arguments{
@@ -27,8 +23,6 @@ lca(
 \item{vars}{.}
 
 \item{covs}{.}
-
-\item{group}{.}
 
 \item{nc}{.}
 
@@ -42,14 +36,7 @@ lca(
 
 \item{cf}{.}
 
-\item{mc}{.}
-
 \item{plot}{.}
-
-\item{angle}{a number from 0 to 45 defining the angle of the x-axis labels,
-where 0 degrees represents completely horizontal labels.}
-
-\item{plot1}{.}
 }
 \value{
 A results object containing:
@@ -60,13 +47,11 @@ A results object containing:
   \code{results$cf} \tab \tab \tab \tab \tab a table \cr
   \code{results$cp} \tab \tab \tab \tab \tab a table \cr
   \code{results$ip} \tab \tab \tab \tab \tab an array of tables \cr
-  \code{results$mc} \tab \tab \tab \tab \tab a table \cr
   \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
   \code{results$cm} \tab \tab \tab \tab \tab an output \cr
   \code{results$pc} \tab \tab \tab \tab \tab an output \cr
   \code{results$post} \tab \tab \tab \tab \tab an output \cr
   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
-  \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
 }
 
 Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
