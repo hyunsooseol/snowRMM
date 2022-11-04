@@ -89,16 +89,6 @@ options:
       title: Posterior probabilities
       type: Output  
       
-    - name: lo
-      title: logit coefficients
-      type: Bool 
-      default: FALSE  
-
-    - name: le
-      title: S.E of coefficients
-      type: Bool 
-      default: FALSE  
-
     - name: plot
       title: LCA plot
       type: Bool

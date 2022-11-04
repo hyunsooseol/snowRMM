@@ -16,8 +16,6 @@ lca(
   ip = FALSE,
   cf = FALSE,
   mc = FALSE,
-  lo = FALSE,
-  le = FALSE,
   plot = FALSE,
   angle = 0,
   plot1 = FALSE
@@ -46,10 +44,6 @@ lca(
 
 \item{mc}{.}
 
-\item{lo}{.}
-
-\item{le}{.}
-
 \item{plot}{.}
 
 \item{angle}{a number from 0 to 45 defining the angle of the x-axis labels,
@@ -61,15 +55,13 @@ where 0 degrees represents completely horizontal labels.}
 A results object containing:
 \tabular{llllll}{
   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
-  \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
-  \code{results$lo} \tab \tab \tab \tab \tab a table \cr
-  \code{results$le} \tab \tab \tab \tab \tab a table \cr
   \code{results$fit} \tab \tab \tab \tab \tab a table \cr
   \code{results$comp} \tab \tab \tab \tab \tab a table \cr
   \code{results$cf} \tab \tab \tab \tab \tab a table \cr
   \code{results$cp} \tab \tab \tab \tab \tab a table \cr
   \code{results$ip} \tab \tab \tab \tab \tab an array of tables \cr
   \code{results$mc} \tab \tab \tab \tab \tab a table \cr
+  \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
   \code{results$cm} \tab \tab \tab \tab \tab an output \cr
   \code{results$pc} \tab \tab \tab \tab \tab an output \cr
   \code{results$post} \tab \tab \tab \tab \tab an output \cr
@@ -79,9 +71,9 @@ A results object containing:
 
 Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
 
-\code{results$lo$asDF}
+\code{results$fit$asDF}
 
-\code{as.data.frame(results$lo)}
+\code{as.data.frame(results$fit)}
 }
 \description{
 Latent Class Analysis

@@ -9,46 +9,6 @@ items:
       type: Html
       visible: True
 
-    - name:  text
-      title: ''
-      type:  Preformatted
-      clearWith:
-        - vars
-        - nc
-        - covs
-        
-    - name: lo
-      title: 'logit coefficients estimates'
-      type: Table
-      refs: poLCA
-      visible: (lo)
-      clearWith:
-        - vars
-        - nc
-        - covs
-
-      columns:
-        - name: name
-          title: ''
-          type: 'text'
-          content: ($key)
-
-    - name: le
-      title: 'S.E of logit coefficient estimates'
-      type: Table
-      refs: poLCA
-      visible: (le)
-      clearWith:
-        - vars
-        - nc
-        - covs
-
-      columns:
-        - name: name
-          title: ''
-          type: 'text'
-          content: ($key)
-
     - name: fit
       title: 'Model fit'
       type: Table
@@ -68,8 +28,6 @@ items:
           type: number
         - name: Entropy
           type: number
-        - name: Resid.df
-          type: number 
         - name: G²
           type: number
         - name: G² p
@@ -180,6 +138,15 @@ items:
             title: ""
             type: 'text'
             content: ($key)
+
+    - name:  text
+      title: 'Logistic regression coefficients'
+      type:  Preformatted
+      visible: (text)
+      clearWith:
+        - vars
+        - nc
+        - covs
 
     - name: cm
       title: Class membership

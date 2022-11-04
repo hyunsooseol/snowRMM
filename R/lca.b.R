@@ -52,11 +52,11 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           )
         
         
-        if (self$options$lo)
-            self$results$lo$setNote(
-                "Note",
-                "All logit coefficients are calculated for classes with respect to class 1."
-            )
+        # if (self$options$lo)
+        #     self$results$lo$setNote(
+        #         "Note",
+        #         "All logit coefficients are calculated for classes with respect to class 1."
+        #     )
 
         # if (self$options$le)
         #   self$results$le$setNote(
@@ -123,23 +123,13 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           private$.populatePosteriorOutputs(results)
           
           
-          # prepare plot-----
-          
-          #  private$.preparePlot(data)
-          
-          
-          # prepare plot1(profile)-----
+        # prepare plot1(profile)-----
           
           private$.preparePlot1()
           
-          # Multinomial logit coeff.---
+ 
           
-          private$.populateLoTable(results)
-          
-          # Multinomial logit coeff. SE---
-          
-          private$.populateLeTable(results)
-          
+         
         }
       },
       
@@ -171,46 +161,36 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         ################ Model Estimates############################ 
         library(poLCA) 
         
-        res<- poLCA::poLCA(formula,data,nclass=nc,
+        res<- poLCA::poLCA(formula,data,nclass=nc,nrep = 10,
                            calc.se = FALSE)
                            
         
         ############################################################### 
       
-        #self$results$text$setContent(res)
-        
-         # if( !is.null(self$options$covs) ) {
-         # 
-         #   R <- length(res$P)
-         #   
-         #   lo <- NULL
-         #   for (r in 2:R) {
-         #   #  cat(r,"/ 1 \n")
-         # 
-         #     disp <- data.frame(coeff=round(res$coeff[,(r-1)],5),
-         #                        se=round(res$coeff.se[,(r-1)],5),
-         #                        tval=round(res$coeff[,(r-1)]/res$coeff.se[,(r-1)],3),
-         # pr=round(1-(2*abs(pt(res$coeff[,(r-1)]/res$coeff.se[,(r-1)],res$resid.df)-0.5)),3))
-         #     colnames(disp) <- c("Coefficient"," Std. error"," t value"," Pr(>|t|)")
-         # 
-         # 
-         #    # print(disp)
-         #        
-         #   #cat("========================================================= \n")
-         # 
-         #  if (is.null(lo)) {
-         #       lo <- disp
-         #      
-         #  } else {
-         #    lo <- rbind(lo, disp)
-         #  }
-         #   }
-         # 
-         #   self$results$text$setContent(lo)
-         #   }
-         #   
+        if( !is.null(self$options$covs) ) {
           
-        
+          R <- length(res$P)
+          
+          mzout <- function(){
+            cat("=========================================================\n")
+            cat("Fit for", R, "latent classes:\n")
+            cat("=========================================================\n")
+            
+            for (r in 2:R) {
+              cat(paste(r,"/ 1\n"))
+              disp <- data.frame(coeff=round(res$coeff[,(r-1)],5),
+                                 se=round(res$coeff.se[,(r-1)],5),
+                                 tval=round(res$coeff[,(r-1)]/res$coeff.se[,(r-1)],3),
+                                 pr=round(1-(2*abs(pt(res$coeff[,(r-1)]/res$coeff.se[,(r-1)],res$resid.df)-0.5)),3))
+              
+              colnames(disp) <- c("Coefficient"," Std. error"," t value"," Pr(>|t|)")
+              print(disp)
+              cat("=========================================================\n")
+            }
+          }
+          out <- utils::capture.output(mzout())
+          self$results$text$setContent(out)
+        }          
          
          
           # Model comparison-------
@@ -219,7 +199,8 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         for (i in 1:self$options$nc) {
           
-          res<- poLCA::poLCA(formula,data,nclass=nc,calc.se = FALSE) 
+          res<- poLCA::poLCA(formula,data,nclass=nc,nrep = 10,
+                             calc.se = FALSE) 
           
           aic<- res$aic 
           bic<- res$bic 
@@ -240,99 +221,30 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         out <- out
         
-        #   self$results$text$setContent(out)
-        
-        
         
         # Caculating Chi and Gsp p values----------
         
-        y <- res$y
-        K.j <- t(matrix(apply(y,2,max)))
-        C <- max(K.j)
-        J <- ncol(y)
-        I <- J # number of items
+         y <- res$y
+         K.j <- t(matrix(apply(y,2,max)))
+         C <- max(K.j)
+         J <- ncol(y)
+         I <- J # number of items
         
         df <- C^I - res$npar - 1 # Degrees of freedom
+        
         cp <- 1-pchisq(res$Chisq,df)
         gp <- 1-pchisq(res$Gsq,df)
-        
-        
+
+
         # pvalue-----
-        
-        # C <- max(K.j) # number of categories
-        # I <- J # number of items
-        # df <- C^I - ret$npar - 1 # Degrees of freedom
-        # Chisq.pvalue <- 1-pchisq(ret$Chisq,df)
-        # Gsq.pvalue <- 1-pchisq(ret$Gsq,df)
-        
-        # entropy-------------
-        
-        # poLCA.entropy <-
-        #     function(lc) {
-        #         K.j <- sapply(lc$probs,ncol)
-        #         fullcell <- expand.grid(lapply(K.j,seq,from=1))
-        #         P.c <- poLCA.predcell(lc,fullcell)
-        #         return(-sum(P.c * log(P.c),na.rm=TRUE))
-        #     }
-        
-        
-        #  poLCA.entropy <-
-        #      function(lc) {
-        #          K.j <- sapply(lc$probs,ncol)
-        #          lap <- lapply(K.j,seq,from=1)
-        #          obs <- prod(lengths(list(lap)[[1L]]))
-        #          
-        #          if ( obs > 2.05E+07L ) {
-        #              
-        #               return(NA)
-        #              # return(NaN)
-        #          }
-        #          
-        #          P.c <- poLCA.predcell(lc, expand.grid(lap))
-        #          return(-sum(P.c * log(P.c), na.rm=TRUE))
-        #      }
-        #  
-        #  
-        # 
-        #  # if( is.na(entro <- poLCA.entropy(res)) ) 
-        #  #  
-        #  #     entro <- 'NaN <sup>a</sup>'
-        #  # self$results$fit$setNote(
-        #  #     'Note', 
-        #  #     '<sup>a</sup> There are not enough memory resources to calculate entropy.'
-        #  # )
-        #  
-        #  
-        #  
-        #  if( is.na(entro <- poLCA.entropy(res)) )
-        #      self$results$fit$setNote(
-        #          'Note',
-        #          '<sup>a</sup> There are not enough memory resources to calculate entropy.'
-        #      )
-        # 
-        # 
-        #    entro<- poLCA.entropy(res)
-        # 
-        # if(is.na(entro)){
-        # 
-        #     entro <- 'NaN <sup>a</sup>'
-        # }
-        #  
-        
-        ##RELATIVE ENTROPY------------
-        
-        #Mplus calculate relative entropy 
-        #Celeux, G. and Soromenho, G. (1996) An Entropy Criterion for Assessing the Number of Clusters in a Mixture Model. Journal of Classification, 13, 195-212. http://dx.doi.org/10.1007/BF01246098.
-        
-        
-        ##Numerator:
-        # nume <-  -sum(res$posterior * log(res$posterior))
-        # ##Denominator (n*log(K)): ## n is a sample size, and K is a number of class
-        # deno <-  nrow(data)*log(nc)
-        # ##Relative Entropy
-        # entro <-  1-(nume/deno)
-        
-        
+
+         # C <- max(K.j) # number of categories
+         # I <- J # number of items
+         # df <- C^I - ret$npar - 1 # Degrees of freedom
+         # Chisq.pvalue <- 1-pchisq(ret$Chisq,df)
+         # Gsq.pvalue <- 1-pchisq(ret$Gsq,df)
+
+
         #########################################
         # ref:https://stackoverflow.com/questions/33000511/entropy-measure-polca-mplus
         # caculating R2_Entropy  
@@ -344,17 +256,9 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         entro <- (error_prior - error_post) / error_prior
         #########################################################################
         
-        
-        #self$results$text$setContent(entro)
-        
-        
-        ####### result###############################
+       ####### result###############################
         
         classprob<- res$P
-        
-        
-        #  self$results$ip$setContent(res$probs)
-        
         itemprob<- res$probs
         
         # Fit---------
@@ -364,22 +268,17 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         Chisq<- res$Chisq
         Gsq <- res$Gsq
         
-        
-        
         # cell frequencies-------
-        
         cell<- res$predcell 
         
         
         # output results------------
-        
         cm <- res$predclass
         
         #Predicted cell percentages in a latent class model
         pc<- poLCA::poLCA.predcell(lc=res,res$y)
         
         # Posterior probabilities---------------
-        
         post <- res$posterior
         
         
@@ -390,11 +289,9 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         # Multinomial logit coefficients---
         
-        lo<- res[["coeff"]]
-        le <- res[["coeff.se"]]
+        # lo<- res[["coeff"]]
+        # le <- res[["coeff.se"]]
      
-       
-        
         
         results <-
           list(
@@ -412,8 +309,6 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             'cm'=cm,
             'pc'=pc,
             'post'=post,
-            'lo'=lo,
-            'le'=le,
             'df'=df
             
           )
@@ -495,83 +390,85 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
       
       # Multinomial logit coefficients--------
       
-      .populateLoTable= function(results) {
-        
-        table <- self$results$lo
-        
-        lo <- results$lo
-        
-        coef<- as.data.frame(lo)
-        
-        
-        names <- dimnames(coef)[[1]]
-        
-     
-        dims <- dimnames(coef)[[2]]
-
-        for (dim in dims) {
-
-          table$addColumn(name = paste0(dim),
-                          type = 'text')
-        }
-        
-        
-        for (name in names) {
-          
-          row <- list()
-          
-          for(j in seq_along(dims)){
-            
-            row[[dims[j]]] <- coef[name,j]
-            
-          }
-          
-          table$addRow(rowKey=name, values=row)
-          
-        }
-      
-      },
-      
-      
-     # S.E of coefficients--------
-     
-     .populateLeTable= function(results) {
-       
-       table <- self$results$le
-       
-       le <- results$le
-       
-       coef<- as.data.frame(le)
-       
-       
-       names <- dimnames(coef)[[1]]
-       
-       
-       dims <- dimnames(coef)[[2]]
-       
-       for (dim in dims) {
-         
-         table$addColumn(name = paste0(dim),
-                         type = 'text')
-       }
-       
-       
-       for (name in names) {
-         
-         row <- list()
-         
-         for(j in seq_along(dims)){
-           
-           row[[dims[j]]] <- coef[name,j]
-           
-         }
-         
-         table$addRow(rowKey=name, values=row)
-         
-       }
-       
-     },
-     
+     #  .populateLoTable= function(results) {
+     #    
+     #    
+     #    table <- self$results$lo
+     #    
+     #    lo <- results$lo
+     #    
+     #    coef<- as.data.frame(lo)
+     #    
+     #    
+     #    names <- dimnames(coef)[[1]]
+     #    
+     # 
+     #    dims <- dimnames(coef)[[2]]
+     # 
+     #    
+     #     for (dim in dims) {
+     #    
+     #       table$addColumn(name = paste0(dim),
+     #                       type = 'text')
+     #     }
+     # 
+     # 
+     #     for (name in names) {
+     #    
+     #       row <- list()
+     #    
+     #       for(j in seq_along(dims)){
+     #    
+     #         row[[dims[j]]] <- coef[name,j]
+     #    
+     #       }
+     #    
+     #       table$addRow(rowKey=name, values=row)
+     #    
+     #     }
+     # 
+     #  },
+     #  
+     #  
+     # # S.E of coefficients--------
+     # 
+     # .populateLeTable= function(results) {
+     #   
+     #   table <- self$results$le
+     #   
+     #   le <- results$le
+     #   
+     #   coef<- as.data.frame(le)
+     #   
+     #   
+     #   names <- dimnames(coef)[[1]]
+     #   
+     #   
+     #   dims <- dimnames(coef)[[2]]
+     #   
+     #   for (dim in dims) {
+     #     
+     #     table$addColumn(name = paste0(dim),
+     #                     type = 'text')
+     #   }
+     #   
+     #   
+     #   for (name in names) {
+     #     
+     #     row <- list()
+     #     
+     #     for(j in seq_along(dims)){
+     #       
+     #       row[[dims[j]]] <- coef[name,j]
+     #       
+     #     }
+     #     
+     #     table$addRow(rowKey=name, values=row)
+     #     
+     #   }
+     #   
+     # },
+     # 
      
       
       
