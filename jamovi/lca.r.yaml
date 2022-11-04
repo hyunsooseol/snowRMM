@@ -30,6 +30,10 @@ items:
           type: number
         - name: BIC
           type: number
+        - name: ABIC
+          type: number
+        - name: CAIC
+          type: number
         - name: Entropy
           type: number
         - name: G²
@@ -63,6 +67,10 @@ items:
           type: number
         - name: bic
           title: BIC      
+          type: number
+        - name: ABIC
+          type: number
+        - name: CAIC
           type: number
         - name: loglik
           title: Log-likelihood      

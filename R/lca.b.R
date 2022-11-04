@@ -194,8 +194,20 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           self$results$text$setContent(out)
         }          
          
+        
+        # Model Fit---------
+        
+        aic<- res$aic
+        bic<- res$bic
+        Chisq<- res$Chisq
+        Gsq <- res$Gsq
+        
+        ABIC=(-2*res$llik) + ((log((res$N + 2)/24)) * res$npar)
+        CAIC = (-2*res$llik) + res$npar * (1 + log(res$N))
+        
+        
          
-          # Model comparison-------
+       # Model comparison-------
         
         out <- NULL
         
@@ -212,8 +224,12 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           Chisq<- res$Chisq 
           Gsq <- res$Gsq
          
+          ABIC=(-2*res$llik) + ((log((res$N + 2)/24)) * res$npar)
+          CAIC = (-2*res$llik) + res$npar * (1 + log(res$N))
           
-          df<- data.frame(aic,bic,loglik,Chisq,Gsq)
+          
+          
+          df<- data.frame(aic,bic,ABIC, CAIC,loglik,Chisq,Gsq)
           
           
           if (is.null(out)) {
@@ -265,13 +281,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         classprob<- res$P
         itemprob<- res$probs
         
-        # Fit---------
-        
-        aic<- res$aic
-        bic<- res$bic
-        Chisq<- res$Chisq
-        Gsq <- res$Gsq
-        
+      
         # cell frequencies-------
         cell<- res$predcell 
         
@@ -318,7 +328,9 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             'pc'=pc,
             'post'=post,
             'df'=df,
-            'like'=like
+            'like'=like,
+            'ABIC'=ABIC,
+            'CAIC'=CAIC
             
           )
         
@@ -344,6 +356,8 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
   Chisq <- results$Chisq
   cp <- results$cp
   
+  ABIC <- results$ABIC
+  CAIC <- results$CAIC
   
   row <- list()
   
@@ -352,6 +366,10 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
   row[['Resid.df']] <- df
   row[['AIC']] <- aic
   row[['BIC']] <- bic
+
+  row[['ABIC']] <- ABIC
+  row[['CAIC']] <- CAIC
+  
   row[['Entropy']] <- entro
   row[['Resid.df']] <- resid.df
   row[['G\u00B2']] <- Gsq
@@ -390,10 +408,13 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
     
     row[["aic"]]   <-  fit[name, 1]
     row[["bic"]] <-  fit[name, 2]
-    row[["loglik"]] <-  fit[name, 3]
-    row[["Chisq"]] <-  fit[name, 4]
-    row[["Gsq"]] <-  fit[name, 5]
-    row[["resid.df"]] <-  fit[name, 6]
+    
+    row[["ABIC"]] <-  fit[name, 3]
+    row[["CAIC"]] <-  fit[name, 4]
+    
+    row[["loglik"]] <-  fit[name, 5]
+    row[["Chisq"]] <-  fit[name, 6]
+    row[["Gsq"]] <-  fit[name, 7]
     
     table$addRow(rowKey=name, values=row)
     
