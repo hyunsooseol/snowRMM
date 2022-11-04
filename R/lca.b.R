@@ -159,9 +159,11 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         
         ################ Model Estimates############################ 
-        library(poLCA) 
+        set.seed(1126)
         
-        res<- poLCA::poLCA(formula,data,nclass=nc,nrep = 10,
+        library(poLCA) 
+       
+        res<- poLCA::poLCA(formula,data,nclass=nc,
                            calc.se = FALSE)
                            
         
@@ -199,8 +201,10 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         for (i in 1:self$options$nc) {
           
-          res<- poLCA::poLCA(formula,data,nclass=nc,nrep = 10,
+          #########################################
+          res<- poLCA::poLCA(formula,data,nclass=nc,
                              calc.se = FALSE) 
+          ##########################################
           
           aic<- res$aic 
           bic<- res$bic 
@@ -292,7 +296,11 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         # lo<- res[["coeff"]]
         # le <- res[["coeff.se"]]
      
+        # log-likelihood--------
         
+        like<- res[["llik"]]
+        
+       
         results <-
           list(
             'classprob'=classprob,
@@ -309,20 +317,24 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             'cm'=cm,
             'pc'=pc,
             'post'=post,
-            'df'=df
+            'df'=df,
+            'like'=like
             
           )
         
       },  
       
 
-# populate Model table-----
+# Model table-----
 
 .populateFitTable = function(results) {
   
   table <- self$results$fit
   
   nc <- self$options$nc
+  
+  like <- results$like
+  df <- results$df
   aic <- results$aic
   bic <- results$bic
   entro <- results$entro
@@ -336,6 +348,8 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
   row <- list()
   
   row[['Class']] <- nc
+  row[['Log-likelihood']] <- like
+  row[['Resid.df']] <- df
   row[['AIC']] <- aic
   row[['BIC']] <- bic
   row[['Entropy']] <- entro

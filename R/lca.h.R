@@ -199,6 +199,12 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         `name`="Class", 
                         `type`="number"),
                     list(
+                        `name`="Log-likelihood", 
+                        `type`="number"),
+                    list(
+                        `name`="Resid.df", 
+                        `type`="number"),
+                    list(
                         `name`="AIC", 
                         `type`="number"),
                     list(

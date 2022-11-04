@@ -22,6 +22,10 @@ items:
       columns:
         - name: Class
           type: number
+        - name: Log-likelihood
+          type: number
+        - name: Resid.df
+          type: number
         - name: AIC
           type: number
         - name: BIC
