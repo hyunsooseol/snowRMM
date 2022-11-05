@@ -5,11 +5,10 @@
 #' @import jmvcore
 #' @import poLCA
 #' @importFrom poLCA poLCA
-#' @importFrom  broom tidy
+#' @importFrom  data.table melt
 #' @import MASS
 #' @import scatterplot3d
 #' @import ggplot2
-#' @import tidyverse
 #' @export
 
 
@@ -296,11 +295,13 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
      
         # plot1------
        
-        td <- broom::tidy(res)
-        self$results$text$setContent(td)
+        lcModelProbs <- data.table::melt(res$probs)
+        colnames(lcModelProbs) <-c("Class", "Factor_level", "value", "L1")
+        
+        
         
         image1 <- self$results$plot1
-        image1$setState(td)
+        image1$setState(lcModelProbs )
      
         # log-likelihood--------
         
@@ -776,14 +777,17 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
   
 .plot1 = function(image1, ggtheme, theme, ...) {    
 
-  td <- image1$state
+  lcModelProbs <- image1$state
   
-  vars <- self$options$vars
-  
-  plot1 <- ggplot(td, aes(factor(class), estimate, fill = factor(outcome))) +
-    geom_bar(stat = "identity", width = 1) +
-    facet_wrap(~vars)
-
+  plot1 <- ggplot2::ggplot(lcModelProbs,
+                aes(x = Class, y = value, fill = Factor_level)) + 
+    geom_bar(stat = "identity", position = "stack")+ 
+    facet_wrap(~ L1)+
+    scale_x_discrete("Class", expand = c(0, 0)) +
+    scale_y_continuous("Proportion", expand = c(0, 0)) +
+  #  scale_fill_discrete("Factor Level") +
+    theme_bw()
+ 
   plot1 <- plot1+ggtheme
   print(plot1)
   TRUE

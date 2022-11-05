@@ -28,6 +28,5 @@ Imports:
     equate,
     eRm,
     iarm,
-    broom,
-    tidyverse,
+    data.table,
 Remotes: twolodzko/equi
