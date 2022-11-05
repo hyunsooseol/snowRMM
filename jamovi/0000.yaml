@@ -98,11 +98,6 @@ datasets:
       - Rasch
       - Mixture
       - Bootstrap
-  - name: carcinoma
-    path: carcinoma.omv
-    description: Dichotomous ratings by seven pathologists(A through G)
-    tags:
-      - LCA
   - name: alzheimer
     path: alzheimer.omv
     description: >-

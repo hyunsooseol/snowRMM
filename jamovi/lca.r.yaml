@@ -17,8 +17,7 @@ items:
         - vars
         - nc
         - covs
-      refs: poLCA 
-
+      
       columns:
         - name: Class
           type: number
@@ -55,8 +54,7 @@ items:
         - vars
         - nc
         - covs
-      refs: poLCA 
-
+      
       columns:
         - name: name
           title: 'Class'
@@ -184,6 +182,17 @@ items:
             - vars
             - nc 
             - covs
-      
+
+    - name: plot1
+      title: 'Item by class'
+      type: Image
+      visible: (plot1)
+      width: 500
+      height: 500
+      renderFun: .plot1
+      clearWith:
+            - vars
+            - nc 
+            - covs      
 
 ...

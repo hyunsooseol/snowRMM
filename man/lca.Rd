@@ -14,7 +14,8 @@ lca(
   cp = FALSE,
   ip = FALSE,
   cf = FALSE,
-  plot = FALSE
+  plot = FALSE,
+  plot1 = FALSE
 )
 }
 \arguments{
@@ -37,6 +38,8 @@ lca(
 \item{cf}{.}
 
 \item{plot}{.}
+
+\item{plot1}{.}
 }
 \value{
 A results object containing:
@@ -52,6 +55,7 @@ A results object containing:
   \code{results$pc} \tab \tab \tab \tab \tab an output \cr
   \code{results$post} \tab \tab \tab \tab \tab an output \cr
   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
+  \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
 }
 
 Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:

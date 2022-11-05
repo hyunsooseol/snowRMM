@@ -80,5 +80,10 @@ options:
       type: Bool
       default: FALSE
    
- 
+    - name: plot1
+      title: Item by class
+      type: Bool
+      default: FALSE
+
+
 ...

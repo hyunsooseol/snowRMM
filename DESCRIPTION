@@ -28,4 +28,6 @@ Imports:
     equate,
     eRm,
     iarm,
+    broom,
+    tidyverse,
 Remotes: twolodzko/equi
