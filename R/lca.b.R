@@ -5,7 +5,7 @@
 #' @import jmvcore
 #' @import poLCA
 #' @importFrom poLCA poLCA
-#' @importFrom  data.table melt
+#' @importFrom reshape2 melt
 #' @import MASS
 #' @import scatterplot3d
 #' @import ggplot2
@@ -295,10 +295,8 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
      
         # plot1------
        
-        lcModelProbs <- data.table::melt(res$probs)
-        colnames(lcModelProbs) <-c("Class", "Factor_level", "value", "L1")
-        
-        
+        lcModelProbs <- reshape2::melt(res$probs)
+        colnames(lcModelProbs) <-c("Class", "Level", "value", "L1")
         
         image1 <- self$results$plot1
         image1$setState(lcModelProbs )
@@ -690,31 +688,6 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
       },
       
       
-      # .preparePlot = function(data) {
-      #     
-      #     nc<- self$options$nc
-      #     
-      #     data<- as.data.frame(data)
-      #     
-      #     vars <- colnames(data)
-      #     vars <- vapply(vars, function(x) jmvcore::composeTerm(x), '')
-      #     vars <- paste0(vars, collapse=',')
-      #     formula <- as.formula(paste0('cbind(', vars, ')~1'))
-      #     
-      #     
-      #     # estimate ------------
-      #     
-      #     x <- poLCA::poLCA(formula,data,nclass=nc, calc.se = FALSE)
-      #     
-      #     
-      #     # plot----------
-      #     
-      #     image <- self$results$plot
-      #     image$setState(x)
-      #     
-      #     
-      # },
-      # 
       .plot = function(image,...) {
         
         if (is.null(self$options$vars))
@@ -780,7 +753,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
   lcModelProbs <- image1$state
   
   plot1 <- ggplot2::ggplot(lcModelProbs,
-                aes(x = Class, y = value, fill = Factor_level)) + 
+                aes(x = Class, y = value, fill = Level)) + 
     geom_bar(stat = "identity", position = "stack")+ 
     facet_wrap(~ L1)+
     scale_x_discrete("Class", expand = c(0, 0)) +
@@ -789,6 +762,16 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
     theme_bw()
  
   plot1 <- plot1+ggtheme
+  
+  if (self$options$angle > 0) {
+    plot1 <- plot1 + ggplot2::theme(
+      axis.text.x = ggplot2::element_text(
+        angle = self$options$angle, hjust = 1
+      )
+    )
+  }
+  
+  
   print(plot1)
   TRUE
   

@@ -15,7 +15,8 @@ lca(
   ip = FALSE,
   cf = FALSE,
   plot = FALSE,
-  plot1 = FALSE
+  plot1 = FALSE,
+  angle = 0
 )
 }
 \arguments{
@@ -40,6 +41,9 @@ lca(
 \item{plot}{.}
 
 \item{plot1}{.}
+
+\item{angle}{a number from 0 to 45 defining the angle of the x-axis labels,
+where 0 degrees represents completely horizontal labels.}
 }
 \value{
 A results object containing:

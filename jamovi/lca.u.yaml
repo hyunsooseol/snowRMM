@@ -55,6 +55,12 @@ children:
                     name: plot
                   - type: CheckBox
                     name: plot1
+                  - type: TextBox
+                    name: angle
+                    format: number
+                    suggestedValues:
+                      - value: 0
+                      - value: 45
       - type: LayoutBox
         stretchFactor: 1
         margin: large
