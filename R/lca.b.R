@@ -166,9 +166,9 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           R <- length(res$P)
           
           mzout <- function(){
-            cat("=========================================================\n")
-            cat("Fit for", R, "latent classes:\n")
-            cat("=========================================================\n")
+            cat("_________________________________________________________\n")
+            cat("Fit for", R, "latent classes\n")
+            cat("_________________________________________________________\n")
             
             for (r in 2:R) {
               cat(paste(r,"/ 1\n"))
@@ -179,7 +179,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
               
               colnames(disp) <- c("Coefficient"," Std. error"," t value"," Pr(>|t|)")
               print(disp)
-              cat("=========================================================\n")
+              cat("_________________________________________________________\n")
             }
           }
           out <- utils::capture.output(mzout())
