@@ -178,6 +178,7 @@ items:
       width: 600
       height: 450
       renderFun: .plot
+      refs: poLCA
       clearWith:
             - vars
             - nc 
@@ -190,6 +191,7 @@ items:
       width: 650
       height: 650
       renderFun: .plot1
+      refs: snowRMM
       clearWith:
             - vars
             - nc 
@@ -203,6 +205,7 @@ items:
       width: 1000
       height: 350
       renderFun: .plot2
+      refs: snowRMM
       clearWith:
             - vars
             - nc 

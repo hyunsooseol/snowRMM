@@ -363,6 +363,7 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 width=600,
                 height=450,
                 renderFun=".plot",
+                refs="poLCA",
                 clearWith=list(
                     "vars",
                     "nc",
@@ -375,6 +376,7 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 width=650,
                 height=650,
                 renderFun=".plot1",
+                refs="snowRMM",
                 clearWith=list(
                     "vars",
                     "nc",
@@ -388,6 +390,7 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 width=1000,
                 height=350,
                 renderFun=".plot2",
+                refs="snowRMM",
                 clearWith=list(
                     "vars",
                     "nc",
