@@ -196,4 +196,17 @@ items:
             - covs 
             - angle
 
+    - name: plot2
+      title: 'Profile plot'
+      type: Image
+      visible: (plot2)
+      width: 1000
+      height: 350
+      renderFun: .plot2
+      clearWith:
+            - vars
+            - nc 
+            - covs 
+            - angle
+
 ...

@@ -301,6 +301,15 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         image1 <- self$results$plot1
         image1$setState(lcModelProbs )
      
+        # plot2------
+        
+        profile <- reshape2::melt(res$probs)
+        colnames(profile) <-c("Class", "Level", "value", "Variable")
+        
+        image2 <- self$results$plot2
+        image2$setState(profile )
+        
+        
         # log-likelihood--------
         
         like<- res[["llik"]]
@@ -776,6 +785,32 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
   TRUE
   
 },
+
+.plot2 = function(image2, ggtheme, theme, ...) {    
+  
+  profile <- image2$state
+  
+  plot2 <- ggplot2::ggplot(profile,aes(x = Variable, y = value, group = Class))+
+    facet_wrap(~ Level)+
+    geom_line(aes(color=Class))+
+    geom_point(aes(color=Class))
+  
+    
+    plot2 <- plot2+ggtheme
+  
+  if (self$options$angle > 0) {
+    plot2 <- plot2 + ggplot2::theme(
+      axis.text.x = ggplot2::element_text(
+        angle = self$options$angle, hjust = 1
+      )
+    )
+  }
+  
+  print(plot2)
+  TRUE
+  
+},
+
 
 
 ### Helper functions =================================     

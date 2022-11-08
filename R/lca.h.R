@@ -16,6 +16,7 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             cf = FALSE,
             plot = FALSE,
             plot1 = FALSE,
+            plot2 = FALSE,
             angle = 0, ...) {
 
             super$initialize(
@@ -80,6 +81,10 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "plot1",
                 plot1,
                 default=FALSE)
+            private$..plot2 <- jmvcore::OptionBool$new(
+                "plot2",
+                plot2,
+                default=FALSE)
             private$..angle <- jmvcore::OptionNumber$new(
                 "angle",
                 angle,
@@ -100,6 +105,7 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..post)
             self$.addOption(private$..plot)
             self$.addOption(private$..plot1)
+            self$.addOption(private$..plot2)
             self$.addOption(private$..angle)
         }),
     active = list(
@@ -116,6 +122,7 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         post = function() private$..post$value,
         plot = function() private$..plot$value,
         plot1 = function() private$..plot1$value,
+        plot2 = function() private$..plot2$value,
         angle = function() private$..angle$value),
     private = list(
         ..vars = NA,
@@ -131,6 +138,7 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..post = NA,
         ..plot = NA,
         ..plot1 = NA,
+        ..plot2 = NA,
         ..angle = NA)
 )
 
@@ -149,7 +157,8 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         pc = function() private$.items[["pc"]],
         post = function() private$.items[["post"]],
         plot = function() private$.items[["plot"]],
-        plot1 = function() private$.items[["plot1"]]),
+        plot1 = function() private$.items[["plot1"]],
+        plot2 = function() private$.items[["plot2"]]),
     private = list(),
     public=list(
         initialize=function(options) {
@@ -370,6 +379,19 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "vars",
                     "nc",
                     "covs",
+                    "angle")))
+            self$add(jmvcore::Image$new(
+                options=options,
+                name="plot2",
+                title="Profile plot",
+                visible="(plot2)",
+                width=1000,
+                height=350,
+                renderFun=".plot2",
+                clearWith=list(
+                    "vars",
+                    "nc",
+                    "covs",
                     "angle")))}))
 
 lcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -406,6 +428,7 @@ lcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param cf .
 #' @param plot .
 #' @param plot1 .
+#' @param plot2 .
 #' @param angle a number from 0 to 45 defining the angle of the x-axis labels,
 #'   where 0 degrees represents completely horizontal labels.
 #' @return A results object containing:
@@ -422,6 +445,7 @@ lcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$post} \tab \tab \tab \tab \tab an output \cr
 #'   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
+#'   \code{results$plot2} \tab \tab \tab \tab \tab an image \cr
 #' }
 #'
 #' Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
@@ -443,6 +467,7 @@ lca <- function(
     cf = FALSE,
     plot = FALSE,
     plot1 = FALSE,
+    plot2 = FALSE,
     angle = 0) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
@@ -469,6 +494,7 @@ lca <- function(
         cf = cf,
         plot = plot,
         plot1 = plot1,
+        plot2 = plot2,
         angle = angle)
 
     analysis <- lcaClass$new(

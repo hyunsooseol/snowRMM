@@ -85,6 +85,11 @@ options:
       type: Bool
       default: FALSE
 
+    - name: plot2
+      title: Profile plot
+      type: Bool
+      default: FALSE
+
     - name: angle
       title: Angle of x-axis labels
       type: Number
