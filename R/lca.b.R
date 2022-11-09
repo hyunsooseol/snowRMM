@@ -301,12 +301,20 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         image1 <- self$results$plot1
         image1$setState(lcModelProbs )
      
-        # plot2------
+        # profile plot2------
         
         profile <- reshape2::melt(res$probs)
         colnames(profile) <-c("Class", "Level", "value", "Variable")
         
         image2 <- self$results$plot2
+        
+        nvars <- length(vars)
+        
+         width <- 700 + nvars * 40
+         
+         image2$setSize(width, 300)
+        
+        
         image2$setState(profile )
         
         
