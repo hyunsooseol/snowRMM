@@ -77,14 +77,14 @@ children:
           - type: Label
             label: Plot
             children:
+              - type: CheckBox
+                name: iplot
               - type: TextBox
                 name: angle
                 format: number
                 suggestedValues:
                   - value: 0
                   - value: 45
-              - type: CheckBox
-                name: iplot
   - type: CollapseBox
     label: Person Analysis
     margin: normal

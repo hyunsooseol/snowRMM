@@ -391,9 +391,11 @@ mixtureClass <- if (requireNamespace('jmvcore'))
         
         imeasure$item <- seq.int(nrow(imeasure))
         
-        data<- tidyr::gather(data =imeasure, class, measure, -item)
+        n<- paste(1:self$options$nc, sep = '')
+        colnames(imeasure) <- c(n,'item')
         
-       
+        
+        data<- tidyr::gather(data =imeasure, class, measure, -item)
         image$setState(data)
         
         
