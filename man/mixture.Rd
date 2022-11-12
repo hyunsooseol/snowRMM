@@ -71,7 +71,7 @@ A results object containing:
   \code{results$person$average} \tab \tab \tab \tab \tab a table \cr
   \code{results$iplot} \tab \tab \tab \tab \tab an image \cr
   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
-  \code{results$pclass} \tab \tab \tab \tab \tab an output \cr
+  \code{results$pmember} \tab \tab \tab \tab \tab an output \cr
 }
 }
 \description{

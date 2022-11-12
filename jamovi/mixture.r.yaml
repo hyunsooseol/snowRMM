@@ -232,14 +232,15 @@ items:
             - step
             - type
             
-    - name: pclass
-      title: Person membership
+    - name: pmember
+      title: Class membership
       type: Output
+      varTitle: Membership
+      measureType: nominal
       clearWith:
         - vars
         - nc
         - step
-        - type        
-
+        - type  
 ...
 

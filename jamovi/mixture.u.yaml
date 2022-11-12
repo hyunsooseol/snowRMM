@@ -103,6 +103,8 @@ children:
             children:
               - type: CheckBox
                 name: average
+              - type: Output
+                name: pmember
       - type: LayoutBox
         stretchFactor: 1
         margin: large
@@ -116,14 +118,5 @@ children:
             children:
               - type: CheckBox
                 name: wrightmap
-  - type: CollapseBox
-    label: Save
-    collapsed: true
-    stretchFactor: 1
-    children:
-      - type: LayoutBox
-        margin: large
-        stretchFactor: 1
-        children:
-          - type: Output
-            name: pclass
+ 
+

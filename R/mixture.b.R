@@ -47,7 +47,7 @@ mixtureClass <- if (requireNamespace('jmvcore'))
             <p>_____________________________________________________________________________________________</p>
             <p>1. First, specify the number of <b>'Class', Step', and 'Type'</b> in the 'Analysis option'.</p>
             <p>2. Second, highlight the variables and click the arrow to move it across into the 'Variables' box.</p>
-            <p>3. The results of <b> Save </b> will be displayed in the datasheet.</p>
+            <p>3. <b> Person membership</b> table will be displayed in the datasheet.</p>
             <p>4. Rasch mixture model is estimated by Jonint Maximum Liklihood(JML).</p>
             <p>5. Feature requests and bug reports can be made on my <a href='https://github.com/hyunsooseol/snowRMM/issues'  target = '_blank'>GitHub</a>.</p>
             <p>_____________________________________________________________________________________________</p>
@@ -100,7 +100,12 @@ mixtureClass <- if (requireNamespace('jmvcore'))
           
         #  private$.populatePersonTable(results)
           
-          private$.populateOutputs(data)
+        #  private$.populateClassOutputs(results)
+          
+          
+          # Person membership--------------------
+          
+          private$.populateMemberOutputs(results)
           
           
           # prepare plot-----
@@ -169,13 +174,7 @@ mixtureClass <- if (requireNamespace('jmvcore'))
         
         
         # model fit information------
-        
-        # aic <- res1$info.fit$AIC
-        # 
-        # bic <- res1$info.fit$BIC
-        # 
-        # caic <- res1$info.fit$CAIC
-        
+      
         out <- NULL
         
         for (i in 1:nc) {
@@ -213,16 +212,13 @@ mixtureClass <- if (requireNamespace('jmvcore'))
         
         average <- mixRaschTools::avg.theta(res1)
         
-        # person class
+        # class membership-------------
         
-        # pclass <- res1$class
-        
+        pclass <- res1$class
+        mem <- as.numeric(apply(pclass, 1, which.max))
         
         results <-
           list(
-            # 'aic' = aic,
-            # 'bic' = bic,
-            # 'caic' = caic,
             'out'= out,
             'imeasure' = imeasure,
             'ise' = ise,
@@ -231,8 +227,9 @@ mixtureClass <- if (requireNamespace('jmvcore'))
             'imean' = imean,
             'pbis'=pbis,
             'class' = class,
-            'average' = average
-            # 'pclass' = pclass
+            'average' = average,
+            'mem'=mem
+           
           )
         
         
@@ -630,103 +627,78 @@ mixtureClass <- if (requireNamespace('jmvcore'))
       ##### Output variables for Person membership----------------
       
       
-      .populateOutputs = function(data) {
-        
-        
-        if (self$options$pclass
-            && self$results$pclass$isNotFilled()) {
-        
-          
-          nc <- self$options$nc
-          
-          step <- self$options$step
-          
-          type <- self$options$type
-          
-          # computing mixRasch-----------
-          
-          res1 <-
-            mixRasch::mixRasch(
-              data = data,
-              steps = step,
-              model = type,
-              n.c = nc
-            )
-          
-          pclass <- res1$class
-          
-          
-          keys <- 1:self$options$nc
-          titles <- paste("Class", 1:self$options$nc)
-          descriptions <- paste("Class", 1:self$options$nc)
-          measureTypes <- rep("continuous", self$options$nc)
-          
-          self$results$pclass$set(
-            keys=keys,
-            titles=titles,
-            descriptions=descriptions,
-            measureTypes=measureTypes
-          )
-          
-          self$results$pclass$setRowNums(rownames(data))
-          
-        
-          pclass <- as.data.frame(pclass)
-         
-          for (i in 1:self$options$nc) {
-            scores <- as.numeric(pclass[, i])
-            self$results$pclass$setValues(index=i, scores)
-          }
-        }
-      },
-      
-      
-      # populate Person Statistics table-----
-      
-      # .populatePersonTable = function(results) {
-      #   data <- self$data
+      # .populateClassOutputs = function(results) {
       #   
-      #   nc <- self$options$nc
-      #   
-      #   table <- self$results$person$persons
-      #   
-      #   
-      #   # result-----------
-      #   
-      #   nclass <- results$class
       #   
       #   pclass <- results$pclass
       #   
-      #   pclass <- as.data.frame(pclass)
       #   
       #   
-      #   if (nclass > 1) {
-      #     for (i in 2:nclass)
-      #       
-      #       table$addColumn(
-      #         name = paste0("pc", i),
-      #         title = as.character(i),
-      #         type = 'number',
-      #         superTitle = 'Class'
-      #       )
-      #     
-      #   }
+      #   if (self$options$pclass
+      #       && self$results$pclass$isNotFilled()) {
       #   
-      #   for (i in 1:nrow(data)) {
-      #     row <- list()
+      #     
+      #     # nc <- self$options$nc
+      #     # 
+      #     # step <- self$options$step
+      #     # 
+      #     # type <- self$options$type
+      #     # 
+      #     # # computing mixRasch-----------
+      #     # 
+      #     # res1 <-
+      #     #   mixRasch::mixRasch(
+      #     #     data = data,
+      #     #     steps = step,
+      #     #     model = type,
+      #     #     n.c = nc
+      #     #   )
+      #     
+      #     #pclass <- res1$class
       #     
       #     
-      #     for (j in 1:nclass) {
-      #       row[[paste0("pc", j)]] <- pclass[i, j]
+      #     keys <- 1:self$options$nc
+      #     titles <- paste("Class", 1:self$options$nc)
+      #     descriptions <- paste("Class", 1:self$options$nc)
+      #     measureTypes <- rep("continuous", self$options$nc)
+      #     
+      #     self$results$pclass$set(
+      #       keys=keys,
+      #       titles=titles,
+      #       descriptions=descriptions,
+      #       measureTypes=measureTypes
+      #     )
+      #     
+      #     self$results$pclass$setRowNums(rownames(data))
+      #     
+      #   
+      #     pclass <- as.data.frame(pclass)
+      #    
+      #     for (i in 1:self$options$nc) {
+      #       scores <- as.numeric(pclass[, i])
+      #       self$results$pclass$setValues(index=i, scores)
       #     }
-      #     
-      #     table$addRow(rowKey = i, values = row)
-      #     
       #   }
-      #   
       # },
       # 
-      # 
+     .populateMemberOutputs= function(results) {
+
+       
+       mem <- results$mem
+       mem<- as.factor(mem)
+       
+       if (self$options$pmember
+           && self$results$pmember$isNotFilled()) {
+
+        self$results$pmember$setValues(mem)
+
+       self$results$pmember$setRowNums(rownames(data))
+
+       }
+
+     },
+
+
       # Item plot--------------
       
       .itemPlot = function(image, ggtheme, theme, ...) {

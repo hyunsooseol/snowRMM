@@ -98,8 +98,8 @@ mixtureOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "wrightmap",
                 wrightmap,
                 default=FALSE)
-            private$..pclass <- jmvcore::OptionOutput$new(
-                "pclass")
+            private$..pmember <- jmvcore::OptionOutput$new(
+                "pmember")
 
             self$.addOption(private$..vars)
             self$.addOption(private$..nc)
@@ -116,7 +116,7 @@ mixtureOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..angle)
             self$.addOption(private$..iplot)
             self$.addOption(private$..wrightmap)
-            self$.addOption(private$..pclass)
+            self$.addOption(private$..pmember)
         }),
     active = list(
         vars = function() private$..vars$value,
@@ -134,7 +134,7 @@ mixtureOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         angle = function() private$..angle$value,
         iplot = function() private$..iplot$value,
         wrightmap = function() private$..wrightmap$value,
-        pclass = function() private$..pclass$value),
+        pmember = function() private$..pmember$value),
     private = list(
         ..vars = NA,
         ..nc = NA,
@@ -151,7 +151,7 @@ mixtureOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..angle = NA,
         ..iplot = NA,
         ..wrightmap = NA,
-        ..pclass = NA)
+        ..pmember = NA)
 )
 
 mixtureResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -163,7 +163,7 @@ mixtureResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         person = function() private$.items[["person"]],
         iplot = function() private$.items[["iplot"]],
         plot = function() private$.items[["plot"]],
-        pclass = function() private$.items[["pclass"]]),
+        pmember = function() private$.items[["pmember"]]),
     private = list(),
     public=list(
         initialize=function(options) {
@@ -429,8 +429,10 @@ mixtureResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "type")))
             self$add(jmvcore::Output$new(
                 options=options,
-                name="pclass",
-                title="Person membership",
+                name="pmember",
+                title="Class membership",
+                varTitle="Membership",
+                measureType="nominal",
                 clearWith=list(
                     "vars",
                     "nc",
@@ -490,7 +492,7 @@ mixtureBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$person$average} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$iplot} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
-#'   \code{results$pclass} \tab \tab \tab \tab \tab an output \cr
+#'   \code{results$pmember} \tab \tab \tab \tab \tab an output \cr
 #' }
 #'
 #' @export
