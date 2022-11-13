@@ -20,7 +20,8 @@ mixtureOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             average = FALSE,
             angle = 0,
             iplot = FALSE,
-            wrightmap = FALSE, ...) {
+            wrightmap = FALSE,
+            plot1 = FALSE, ...) {
 
             super$initialize(
                 package="snowRMM",
@@ -98,6 +99,10 @@ mixtureOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "wrightmap",
                 wrightmap,
                 default=FALSE)
+            private$..plot1 <- jmvcore::OptionBool$new(
+                "plot1",
+                plot1,
+                default=FALSE)
             private$..pmember <- jmvcore::OptionOutput$new(
                 "pmember")
 
@@ -116,6 +121,7 @@ mixtureOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..angle)
             self$.addOption(private$..iplot)
             self$.addOption(private$..wrightmap)
+            self$.addOption(private$..plot1)
             self$.addOption(private$..pmember)
         }),
     active = list(
@@ -134,6 +140,7 @@ mixtureOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         angle = function() private$..angle$value,
         iplot = function() private$..iplot$value,
         wrightmap = function() private$..wrightmap$value,
+        plot1 = function() private$..plot1$value,
         pmember = function() private$..pmember$value),
     private = list(
         ..vars = NA,
@@ -151,6 +158,7 @@ mixtureOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..angle = NA,
         ..iplot = NA,
         ..wrightmap = NA,
+        ..plot1 = NA,
         ..pmember = NA)
 )
 
@@ -163,6 +171,7 @@ mixtureResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         person = function() private$.items[["person"]],
         iplot = function() private$.items[["iplot"]],
         plot = function() private$.items[["plot"]],
+        plot1 = function() private$.items[["plot1"]],
         pmember = function() private$.items[["pmember"]]),
     private = list(),
     public=list(
@@ -427,6 +436,20 @@ mixtureResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "nc",
                     "step",
                     "type")))
+            self$add(jmvcore::Image$new(
+                options=options,
+                name="plot1",
+                title="Average theta plot",
+                visible="(plot1)",
+                width=500,
+                height=500,
+                renderFun=".plot1",
+                clearWith=list(
+                    "vars",
+                    "nc",
+                    "step",
+                    "type",
+                    "angle")))
             self$add(jmvcore::Output$new(
                 options=options,
                 name="pmember",
@@ -479,6 +502,7 @@ mixtureBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   where 0 degrees represents completely horizontal labels.
 #' @param iplot .
 #' @param wrightmap .
+#' @param plot1 .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
@@ -492,6 +516,7 @@ mixtureBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$person$average} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$iplot} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
+#'   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$pmember} \tab \tab \tab \tab \tab an output \cr
 #' }
 #'
@@ -512,7 +537,8 @@ mixture <- function(
     average = FALSE,
     angle = 0,
     iplot = FALSE,
-    wrightmap = FALSE) {
+    wrightmap = FALSE,
+    plot1 = FALSE) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("mixture requires jmvcore to be installed (restart may be required)")
@@ -539,7 +565,8 @@ mixture <- function(
         average = average,
         angle = angle,
         iplot = iplot,
-        wrightmap = wrightmap)
+        wrightmap = wrightmap,
+        plot1 = plot1)
 
     analysis <- mixtureClass$new(
         options = options,

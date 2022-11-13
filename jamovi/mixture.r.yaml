@@ -231,6 +231,20 @@ items:
             - nc
             - step
             - type
+
+    - name: plot1
+      title: 'Average theta plot'
+      type: Image
+      visible: (plot1)
+      width: 500
+      height: 500
+      renderFun: .plot1
+      clearWith:
+            - vars
+            - nc
+            - step
+            - type
+            - angle
             
     - name: pmember
       title: Class membership

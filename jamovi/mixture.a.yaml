@@ -103,8 +103,14 @@ options:
       title: Wright Map
       type: Bool
       default: FALSE  
+
+    - name: plot1
+      title: Average theta
+      type: Bool
+      default: FALSE
       
     - name: pmember
       title: Person membership
       type: Output    
+
 ...

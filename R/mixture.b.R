@@ -212,6 +212,16 @@ mixtureClass <- if (requireNamespace('jmvcore'))
         
         average <- mixRaschTools::avg.theta(res1)
         
+        
+        # average theta bar plot----------
+        
+        df<-  as.data.frame(average)
+        df$class <- seq.int(nrow(df))
+        df<- reshape2::melt(df, id.vars=c("class"))
+        
+        image1 <- self$results$plot1
+        image1$setState(df)
+        
         # class membership-------------
         
         pclass <- res1$class
@@ -812,7 +822,28 @@ mixtureClass <- if (requireNamespace('jmvcore'))
                                      
       },                             
       
-
+     .plot1 = function(image1, ggtheme, theme, ...) {    
+       
+       if (is.null(self$options$plot1))
+         return()
+       
+       
+       df <- image1$state
+       
+       plot1 <- ggplot2::ggplot(data=df, aes(x=class, y=value)) +
+         geom_bar(stat="identity",fill="steelblue" )+
+         #geom_text(aes(label=value), vjust=-0.3, size=3.5)+
+         #geom_text(aes(label=value), vjust=1.6, color="white", size=3.5)+
+         #scale_x_discrete("class", expand = c(0, 0)) +
+         scale_y_continuous(breaks = seq(-5, +5, 1)) 
+       
+       plot1 <- plot1+ggtheme
+       
+       print(plot1)
+       TRUE
+     
+     },
+     
      # .prepareModelPlot = function(results){
      #   
      #   nc<- self$options$nc
