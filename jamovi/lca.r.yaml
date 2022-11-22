@@ -9,6 +9,10 @@ items:
       type: Html
       visible: True
 
+    - name:  text1
+      title: Model information
+      type:  Preformatted
+
     - name: fit
       title: 'Model fit'
       type: Table

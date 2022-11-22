@@ -147,6 +147,7 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     inherit = jmvcore::Group,
     active = list(
         instructions = function() private$.items[["instructions"]],
+        text1 = function() private$.items[["text1"]],
         fit = function() private$.items[["fit"]],
         comp = function() private$.items[["comp"]],
         cf = function() private$.items[["cf"]],
@@ -172,6 +173,10 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 name="instructions",
                 title="Instructions",
                 visible=TRUE))
+            self$add(jmvcore::Preformatted$new(
+                options=options,
+                name="text1",
+                title="Model information"))
             self$add(jmvcore::Table$new(
                 options=options,
                 name="fit",
@@ -435,6 +440,7 @@ lcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
+#'   \code{results$text1} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$fit} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$comp} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$cf} \tab \tab \tab \tab \tab a table \cr

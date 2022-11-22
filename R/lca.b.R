@@ -156,6 +156,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         library(poLCA) 
        
         res<- poLCA::poLCA(formula,data,nclass=nc,
+                           na.rm=FALSE,
                            calc.se = FALSE)
                            
         
@@ -279,7 +280,12 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         
         # output results------------
+        
         cm <- res$predclass
+       
+        self$results$text1$setContent(cm)
+        
+        
         
         #Predicted cell percentages in a latent class model
         pc<- poLCA::poLCA.predcell(lc=res,res$y)
@@ -639,6 +645,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
       
       
       .populateOutputs = function(results) {
+        
         
         cm <- results$cm
         
