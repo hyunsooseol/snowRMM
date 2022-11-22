@@ -114,11 +114,11 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           
           # populated cell percentages in a latent class model-----
           
-          private$.populateCellOutputs(results)
+         # private$.populateCellOutputs(results)
           
           # populated posterior probabilities--
           
-          private$.populatePosteriorOutputs(results)
+          # private$.populatePosteriorOutputs(results)
           
           
        
@@ -128,6 +128,16 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
       
       
       .compute = function(data) {
+        
+        
+        # test <- readr::read_csv("test.csv")
+        # 
+        # library(poLCA)
+        # f <- cbind(B,C,D,E)~A
+        # res<- poLCA::poLCA(f,test,nclass=3, na.rm = F,calc.se = FALSE)
+       
+        # membership<- res$predclass
+        
         
         nc <- self$options$nc
         
@@ -208,6 +218,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           
           #########################################
           res<- poLCA::poLCA(formula,data,nclass=nc,
+                             na.rm = FALSE,
                              calc.se = FALSE) 
           ##########################################
           
@@ -281,17 +292,19 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         # output results------------
         
+        base::options(max.print = 1000000)
         cm <- res$predclass
        
-        self$results$text1$setContent(cm)
+        
+        #self$results$text1$setContent(cm)
         
         
         
         #Predicted cell percentages in a latent class model
-        pc<- poLCA::poLCA.predcell(lc=res,res$y)
+       # pc<- poLCA::poLCA.predcell(lc=res,res$y)
         
         # Posterior probabilities---------------
-        post <- res$posterior
+        #post <- res$posterior
         
         
         # plot----------
@@ -343,8 +356,6 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             'cp'=cp,
             'gp'=gp,
             'cm'=cm,
-            'pc'=pc,
-            'post'=post,
             'df'=df,
             'like'=like,
             'ABIC'=ABIC,
@@ -646,13 +657,12 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
       
       .populateOutputs = function(results) {
         
-        
+        base::options(max.print = 1000000)
         cm <- results$cm
         
         if (self$options$cm
             && self$results$cm$isNotFilled()) {
-          
-          
+         
           self$results$cm$setValues(cm)
           
           self$results$cm$setRowNums(rownames(data))
@@ -662,56 +672,56 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
       
       # Predicted cell percentages in a latent class model---
       
-      .populateCellOutputs = function(results) {
-        
-        pc <- results$pc  
-        
-        if (self$options$pc
-            && self$results$pc$isNotFilled()) {
-          
-          
-          self$results$pc$setValues(pc)
-          
-          self$results$pc$setRowNums(rownames(data))
-          
-        }
-      },
+      # .populateCellOutputs = function(results) {
+      #   
+      #   pc <- results$pc  
+      #   
+      #   if (self$options$pc
+      #       && self$results$pc$isNotFilled()) {
+      #     
+      #     
+      #     self$results$pc$setValues(pc)
+      #     
+      #     self$results$pc$setRowNums(rownames(data))
+      #     
+      #   }
+      # },
       
       # Posterior probabilities---------
       
       
-      .populatePosteriorOutputs= function(results) {
-        
-        post <- results$post
-        
-        if (self$options$post
-            && self$results$post$isNotFilled()) {
-          
-          keys <- 1:self$options$nc
-          measureTypes <- rep("continuous", self$options$nc)
-          
-          titles <- paste(.("Class"), keys)
-          descriptions <- paste(.("Class"), keys)
-          
-          self$results$post$set(
-            keys=keys,
-            titles=titles,
-            descriptions=descriptions,
-            measureTypes=measureTypes
-          )                
-          
-          self$results$post$setRowNums(rownames(data))
-          
-          for (i in 1:self$options$nc) {
-            scores <- as.numeric(post[, i])
-            self$results$post$setValues(index=i, scores)
-          }
-          
-          
-        }
-      },
-      
-      
+      # .populatePosteriorOutputs= function(results) {
+      #   
+      #   post <- results$post
+      #   
+      #   if (self$options$post
+      #       && self$results$post$isNotFilled()) {
+      #     
+      #     keys <- 1:self$options$nc
+      #     measureTypes <- rep("continuous", self$options$nc)
+      #     
+      #     titles <- paste(.("Class"), keys)
+      #     descriptions <- paste(.("Class"), keys)
+      #     
+      #     self$results$post$set(
+      #       keys=keys,
+      #       titles=titles,
+      #       descriptions=descriptions,
+      #       measureTypes=measureTypes
+      #     )                
+      #     
+      #     self$results$post$setRowNums(rownames(data))
+      #     
+      #     for (i in 1:self$options$nc) {
+      #       scores <- as.numeric(post[, i])
+      #       self$results$post$setValues(index=i, scores)
+      #     }
+      #     
+      #     
+      #   }
+      # },
+      # 
+      # 
       .plot = function(image,...) {
         
         if (is.null(self$options$vars))

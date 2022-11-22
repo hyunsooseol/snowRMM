@@ -155,25 +155,6 @@ items:
         - vars
         - nc
         - covs
-     
-    - name: pc
-      title: Predicted cell percentages
-      type: Output
-      varTitle: Cell percentages
-      measureType: continuous
-      clearWith:
-        - vars
-        - nc
-        - covs
-
-    - name: post
-      title: Posterior probabilities
-      type: Output
-      measureType: continuous
-      clearWith:
-        - vars
-        - nc
-        - covs
 
     - name: plot
       title: 'LCA plot'

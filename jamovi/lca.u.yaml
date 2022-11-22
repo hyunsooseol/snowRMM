@@ -91,8 +91,4 @@ children:
         children:
           - type: Output
             name: cm
-          - type: Output
-            name: pc
-          - type: Output
-            name: post
 

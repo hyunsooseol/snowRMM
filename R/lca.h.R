@@ -69,10 +69,6 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 default=FALSE)
             private$..cm <- jmvcore::OptionOutput$new(
                 "cm")
-            private$..pc <- jmvcore::OptionOutput$new(
-                "pc")
-            private$..post <- jmvcore::OptionOutput$new(
-                "post")
             private$..plot <- jmvcore::OptionBool$new(
                 "plot",
                 plot,
@@ -101,8 +97,6 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..ip)
             self$.addOption(private$..cf)
             self$.addOption(private$..cm)
-            self$.addOption(private$..pc)
-            self$.addOption(private$..post)
             self$.addOption(private$..plot)
             self$.addOption(private$..plot1)
             self$.addOption(private$..plot2)
@@ -118,8 +112,6 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ip = function() private$..ip$value,
         cf = function() private$..cf$value,
         cm = function() private$..cm$value,
-        pc = function() private$..pc$value,
-        post = function() private$..post$value,
         plot = function() private$..plot$value,
         plot1 = function() private$..plot1$value,
         plot2 = function() private$..plot2$value,
@@ -134,8 +126,6 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..ip = NA,
         ..cf = NA,
         ..cm = NA,
-        ..pc = NA,
-        ..post = NA,
         ..plot = NA,
         ..plot1 = NA,
         ..plot2 = NA,
@@ -155,8 +145,6 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ip = function() private$.items[["ip"]],
         text = function() private$.items[["text"]],
         cm = function() private$.items[["cm"]],
-        pc = function() private$.items[["pc"]],
-        post = function() private$.items[["post"]],
         plot = function() private$.items[["plot"]],
         plot1 = function() private$.items[["plot1"]],
         plot2 = function() private$.items[["plot2"]]),
@@ -341,25 +329,6 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "vars",
                     "nc",
                     "covs")))
-            self$add(jmvcore::Output$new(
-                options=options,
-                name="pc",
-                title="Predicted cell percentages",
-                varTitle="Cell percentages",
-                measureType="continuous",
-                clearWith=list(
-                    "vars",
-                    "nc",
-                    "covs")))
-            self$add(jmvcore::Output$new(
-                options=options,
-                name="post",
-                title="Posterior probabilities",
-                measureType="continuous",
-                clearWith=list(
-                    "vars",
-                    "nc",
-                    "covs")))
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot",
@@ -448,8 +417,6 @@ lcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$ip} \tab \tab \tab \tab \tab an array of tables \cr
 #'   \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$cm} \tab \tab \tab \tab \tab an output \cr
-#'   \code{results$pc} \tab \tab \tab \tab \tab an output \cr
-#'   \code{results$post} \tab \tab \tab \tab \tab an output \cr
 #'   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$plot2} \tab \tab \tab \tab \tab an image \cr

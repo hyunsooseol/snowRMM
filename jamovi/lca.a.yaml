@@ -67,14 +67,6 @@ options:
       title: Class membership
       type: Output   
 
-    - name: pc
-      title: Predicted cell percentages
-      type: Output  
-     
-    - name: post
-      title: Posterior probabilities
-      type: Output  
-      
     - name: plot
       title: LCA plot
       type: Bool
