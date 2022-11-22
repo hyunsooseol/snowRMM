@@ -292,7 +292,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         # output results------------
         
-        base::options(max.print = 1000000)
+        base::options(max.print = .Machine$integer.max)
         cm <- res$predclass
        
         
@@ -656,8 +656,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
       
       
       .populateOutputs = function(results) {
-        
-        base::options(max.print = 1000000)
+       
         cm <- results$cm
         
         if (self$options$cm
