@@ -10,7 +10,7 @@ items:
       visible: True
 
     - name:  text1
-      title: Model information
+      title: ''
       type:  Preformatted
 
     - name: fit

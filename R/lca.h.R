@@ -164,7 +164,7 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Preformatted$new(
                 options=options,
                 name="text1",
-                title="Model information"))
+                title=""))
             self$add(jmvcore::Table$new(
                 options=options,
                 name="fit",
