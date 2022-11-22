@@ -213,6 +213,8 @@ lpaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             
             # person class---------
             
+            base::options(max.print = .Machine$integer.max)
+            
             pc<- tidyLPA:: get_data(res)
             pc<- pc$Class
             
