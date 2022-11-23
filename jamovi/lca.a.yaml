@@ -64,7 +64,7 @@ options:
       default: FALSE  
 
     - name: cm
-      title: Class membership
+      title: Person class
       type: Output   
 
     - name: plot

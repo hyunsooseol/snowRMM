@@ -80,15 +80,11 @@ children:
                 name: ip
               - type: CheckBox
                 name: cf
-  - type: CollapseBox
-    label: Save
-    margin: normal
-    collapsed: true
-    children:
-      - type: LayoutBox
-        stretchFactor: 1
-        margin: large
-        children:
-          - type: Output
-            name: cm
+          - type: Label
+            label: Membership
+            children:
+              - type: Output
+                name: cm
+
+ 
 

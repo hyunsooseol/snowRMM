@@ -34,7 +34,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             <p><b>To get started:</b></p>
             <p>_____________________________________________________________________________________________</p>
             <p>1. Variables must contain only integer values, and must be coded with consecutive values from 1 to the maximum number.</p>
-            <p>2. The results of <b> Class membership </b> will be displayed in the datasheet.</p>
+            <p>2. <b> Membership table</b> will be shown in the datasheet.</p>
             <p>3. Feature requests and bug reports can be made on my <a href='https://github.com/hyunsooseol/snowRMM/issues'  target = '_blank'>GitHub</a>.</p>
             <p>_____________________________________________________________________________________________</p>
             
