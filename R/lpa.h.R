@@ -264,8 +264,8 @@ lpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Output$new(
                 options=options,
                 name="pc",
-                title="Person class",
-                varTitle="Class",
+                title="Membership",
+                varTitle="Membership",
                 measureType="nominal",
                 clearWith=list(
                     "vars",

@@ -57,7 +57,7 @@ options:
       default: FALSE
 
     - name: pc
-      title: Person class
+      title: Person Membership
       type: Output
       
     - name: plot

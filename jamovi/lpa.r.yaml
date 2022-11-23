@@ -124,9 +124,9 @@ items:
           type: integer    
  
     - name: pc
-      title: Person class
+      title: Membership
       type: Output
-      varTitle: Class
+      varTitle: Membership
       measureType: nominal
       clearWith:
         - vars
