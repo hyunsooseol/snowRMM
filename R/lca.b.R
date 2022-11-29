@@ -865,8 +865,8 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
   
   
   plot3 <- ggplot2::ggplot(elbow,aes(x = Class, y = Value, group = Fit))+
-    geom_line(aes(color=Fit))+
-    geom_point(aes(color=Fit))
+    geom_line(size=1.1,aes(color=Fit))+
+    geom_point(size=3,aes(color=Fit))
   
   
   plot3 <- plot3+ggtheme
