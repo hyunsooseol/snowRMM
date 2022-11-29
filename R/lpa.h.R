@@ -14,7 +14,8 @@ lpaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             best = FALSE,
             est = FALSE,
             plot = FALSE,
-            plot1 = FALSE, ...) {
+            plot1 = FALSE,
+            plot2 = FALSE, ...) {
 
             super$initialize(
                 package="snowRMM",
@@ -71,6 +72,10 @@ lpaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "plot1",
                 plot1,
                 default=FALSE)
+            private$..plot2 <- jmvcore::OptionBool$new(
+                "plot2",
+                plot2,
+                default=FALSE)
 
             self$.addOption(private$..vars)
             self$.addOption(private$..nc)
@@ -82,6 +87,7 @@ lpaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..pc)
             self$.addOption(private$..plot)
             self$.addOption(private$..plot1)
+            self$.addOption(private$..plot2)
         }),
     active = list(
         vars = function() private$..vars$value,
@@ -93,7 +99,8 @@ lpaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         est = function() private$..est$value,
         pc = function() private$..pc$value,
         plot = function() private$..plot$value,
-        plot1 = function() private$..plot1$value),
+        plot1 = function() private$..plot1$value,
+        plot2 = function() private$..plot2$value),
     private = list(
         ..vars = NA,
         ..nc = NA,
@@ -104,7 +111,8 @@ lpaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..est = NA,
         ..pc = NA,
         ..plot = NA,
-        ..plot1 = NA)
+        ..plot1 = NA,
+        ..plot2 = NA)
 )
 
 lpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -117,7 +125,8 @@ lpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         est = function() private$.items[["est"]],
         pc = function() private$.items[["pc"]],
         plot = function() private$.items[["plot"]],
-        plot1 = function() private$.items[["plot1"]]),
+        plot1 = function() private$.items[["plot1"]],
+        plot2 = function() private$.items[["plot2"]]),
     private = list(),
     public=list(
         initialize=function(options) {
@@ -298,6 +307,20 @@ lpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "vars",
                     "nc",
                     "variances",
+                    "covariances")))
+            self$add(jmvcore::Image$new(
+                options=options,
+                name="plot2",
+                title="Elbow plot",
+                visible="(plot2)",
+                width=500,
+                height=500,
+                refs="snowRMM",
+                renderFun=".plot2",
+                clearWith=list(
+                    "vars",
+                    "nc",
+                    "variances",
                     "covariances")))}))
 
 lpaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -333,6 +356,7 @@ lpaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param est .
 #' @param plot .
 #' @param plot1 .
+#' @param plot2 .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
@@ -342,6 +366,7 @@ lpaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$pc} \tab \tab \tab \tab \tab an output \cr
 #'   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
+#'   \code{results$plot2} \tab \tab \tab \tab \tab an image \cr
 #' }
 #'
 #' Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
@@ -361,7 +386,8 @@ lpa <- function(
     best = FALSE,
     est = FALSE,
     plot = FALSE,
-    plot1 = FALSE) {
+    plot1 = FALSE,
+    plot2 = FALSE) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("lpa requires jmvcore to be installed (restart may be required)")
@@ -382,7 +408,8 @@ lpa <- function(
         best = best,
         est = est,
         plot = plot,
-        plot1 = plot1)
+        plot1 = plot1,
+        plot2 = plot2)
 
     analysis <- lpaClass$new(
         options = options,

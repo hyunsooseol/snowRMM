@@ -69,4 +69,10 @@ options:
       title: 'Latent profile'
       type: Bool
       default: FALSE        
+
+    - name: plot2
+      title: 'Elbow plot'
+      type: Bool
+      default: FALSE
+
 ...

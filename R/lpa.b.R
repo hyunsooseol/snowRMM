@@ -12,6 +12,7 @@
 #' @importFrom tidyLPA plot_profiles
 #' @importFrom tidyLPA plot_bivariate
 #' @importFrom tidyLPA get_data
+#' @importFrom reshape2 melt
 #' @export
 
 
@@ -113,6 +114,9 @@ lpaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
               
               
               model<- df[1]
+              
+              class <- df[2]
+              
               log<- df[3]
               aic<- df[4]
               awe<- df[5]
@@ -123,9 +127,10 @@ lpaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
               sabic<- df[10]
               icl<- df[11]
               entropy<- df[12]
-              df<- data.frame(model, log, aic,
-                              awe, bic,caic,clc,kic,
-                              sabic,icl,entropy)
+              df<- data.frame(model,log, aic,
+                              awe, bic,caic,
+                              clc,kic,
+                              sabic,icl,entropy,class)
               
               
               if (is.null(out)) {
@@ -137,9 +142,7 @@ lpaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             
             out <- out
             
-            #self$results$text$setContent(out)
-            
-             
+           
             # populating table---------
              
              table <- self$results$best
@@ -240,8 +243,29 @@ lpaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             image <- self$results$plot1
             image$setState(res)
             
+            # elbow plot----------
             
-              
+            out1 <- out[,c(3:10,12),]
+            
+            colnames(out1) <- c('AIC','AWE','BIC',
+                                'CAIC','CLC','KIC',
+                                'SABIC','ICL','Class')
+            
+           
+            elbow <- reshape2::melt(out1,
+                                    id.vars='Class',
+                                    variable.name="Fit",
+                                    value.name='Value')
+            
+            
+            #self$results$text$setContent(elbow)
+            
+            image <- self$results$plot2
+            image$setState(elbow )
+            
+            
+            
+            
         },
         
         .plot = function(image, ggtheme, theme,...) {
@@ -267,7 +291,7 @@ lpaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             res <- image$state
             
             
-            plot1 <- tidyLPA::plot_profiles(res,  add_line = TRUE)
+            plot1 <- tidyLPA::plot_profiles(res,add_line = TRUE)
             
             
             print(plot1)
@@ -276,5 +300,30 @@ lpaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         
         
-        })
+        },
+
+
+.plot2 = function(image, ggtheme, theme,...) {
+  
+  if (is.null(self$options$vars))
+    return()
+  
+  elbow <- image$state
+  
+  
+  plot2 <- ggplot2::ggplot(elbow,aes(x = Class, y = Value, group = Fit))+
+    geom_line(aes(color=Fit))+
+    geom_point(aes(color=Fit))
+  
+  
+  plot2 <- plot2+ggtheme
+  
+  
+  print(plot2)
+  TRUE
+  
+}
+
+
+)
 )

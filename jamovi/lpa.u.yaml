@@ -63,6 +63,9 @@ children:
                 name: plot
               - type: CheckBox
                 name: plot1
+              - type: CheckBox
+                name: plot2
+
   - type: CollapseBox
     label: Additional Output
     margin: normal
