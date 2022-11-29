@@ -231,8 +231,6 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           ABIC=(-2*res$llik) + ((log((res$N + 2)/24)) * res$npar)
           CAIC = (-2*res$llik) + res$npar * (1 + log(res$N))
           
-          
-          
           df<- data.frame(aic,bic,ABIC, CAIC,loglik,Chisq,Gsq)
           
           
@@ -244,6 +242,31 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         }
         
         out <- out
+        
+       
+         
+        # Elbow plot-------------
+        
+        out1 <- out[,c(1:4)]
+       
+       
+         cla <- c(1:self$options$nc)
+        
+         out1 <- data.frame(out1,cla)
+        
+        # self$results$text1$setContent(out1)
+         
+         colnames(out1) <- c('AIC','BIC','ABIC',
+                            'CAIC','Class')
+        
+        elbow <- reshape2::melt(out1,
+                                id.vars='Class',
+                                variable.name="Fit",
+                                value.name='Value')
+        
+        image <- self$results$plot3
+        image$setState(elbow )
+        
         
         
         # Caculating Chi and Gsp p values----------
@@ -835,7 +858,24 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
   
 },
 
-
+.plot3 = function(image, ggtheme, theme,...) {
+  
+ 
+  elbow <- image$state
+  
+  
+  plot3 <- ggplot2::ggplot(elbow,aes(x = Class, y = Value, group = Fit))+
+    geom_line(aes(color=Fit))+
+    geom_point(aes(color=Fit))
+  
+  
+  plot3 <- plot3+ggtheme
+  
+  
+  print(plot3)
+  TRUE
+  
+},
 
 ### Helper functions =================================     
       

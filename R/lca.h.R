@@ -17,7 +17,8 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             plot = FALSE,
             plot1 = FALSE,
             plot2 = FALSE,
-            angle = 0, ...) {
+            angle = 0,
+            plot3 = FALSE, ...) {
 
             super$initialize(
                 package="snowRMM",
@@ -87,6 +88,10 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 min=0,
                 max=45,
                 default=0)
+            private$..plot3 <- jmvcore::OptionBool$new(
+                "plot3",
+                plot3,
+                default=FALSE)
 
             self$.addOption(private$..vars)
             self$.addOption(private$..covs)
@@ -101,6 +106,7 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..plot1)
             self$.addOption(private$..plot2)
             self$.addOption(private$..angle)
+            self$.addOption(private$..plot3)
         }),
     active = list(
         vars = function() private$..vars$value,
@@ -115,7 +121,8 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         plot = function() private$..plot$value,
         plot1 = function() private$..plot1$value,
         plot2 = function() private$..plot2$value,
-        angle = function() private$..angle$value),
+        angle = function() private$..angle$value,
+        plot3 = function() private$..plot3$value),
     private = list(
         ..vars = NA,
         ..covs = NA,
@@ -129,7 +136,8 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..plot = NA,
         ..plot1 = NA,
         ..plot2 = NA,
-        ..angle = NA)
+        ..angle = NA,
+        ..plot3 = NA)
 )
 
 lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -147,7 +155,8 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         cm = function() private$.items[["cm"]],
         plot = function() private$.items[["plot"]],
         plot1 = function() private$.items[["plot1"]],
-        plot2 = function() private$.items[["plot2"]]),
+        plot2 = function() private$.items[["plot2"]],
+        plot3 = function() private$.items[["plot3"]]),
     private = list(),
     public=list(
         initialize=function(options) {
@@ -170,6 +179,7 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 name="fit",
                 title="Model fit",
                 rows=1,
+                refs="poLCA",
                 clearWith=list(
                     "vars",
                     "nc",
@@ -218,6 +228,7 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 name="comp",
                 title="Model comparison",
                 visible="(comp)",
+                refs="poLCA",
                 clearWith=list(
                     "vars",
                     "nc",
@@ -259,6 +270,7 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 name="cf",
                 title="Predicted cell counts from latent class analysis",
                 visible="(cf)",
+                refs="poLCA",
                 clearWith=list(
                     "vars",
                     "nc",
@@ -274,6 +286,7 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 name="cp",
                 title="Size of each latent class",
                 visible="(cp)",
+                refs="poLCA",
                 clearWith=list(
                     "vars",
                     "nc",
@@ -293,6 +306,7 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 title="Item response probabilities",
                 visible="(ip)",
                 items="(vars)",
+                refs="poLCA",
                 clearWith=list(
                     "vars",
                     "nc",
@@ -315,6 +329,7 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 name="text",
                 title="Logistic regression coefficients",
                 visible="(text)",
+                refs="poLCA",
                 clearWith=list(
                     "vars",
                     "nc",
@@ -367,7 +382,20 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "vars",
                     "nc",
                     "covs",
-                    "angle")))}))
+                    "angle")))
+            self$add(jmvcore::Image$new(
+                options=options,
+                name="plot3",
+                title="Elbow plot",
+                visible="(plot3)",
+                width=500,
+                height=500,
+                refs="snowRMM",
+                renderFun=".plot3",
+                clearWith=list(
+                    "vars",
+                    "nc",
+                    "covs")))}))
 
 lcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "lcaBase",
@@ -406,6 +434,7 @@ lcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param plot2 .
 #' @param angle a number from 0 to 45 defining the angle of the x-axis labels,
 #'   where 0 degrees represents completely horizontal labels.
+#' @param plot3 .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
@@ -420,6 +449,7 @@ lcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$plot2} \tab \tab \tab \tab \tab an image \cr
+#'   \code{results$plot3} \tab \tab \tab \tab \tab an image \cr
 #' }
 #'
 #' Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
@@ -442,7 +472,8 @@ lca <- function(
     plot = FALSE,
     plot1 = FALSE,
     plot2 = FALSE,
-    angle = 0) {
+    angle = 0,
+    plot3 = FALSE) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("lca requires jmvcore to be installed (restart may be required)")
@@ -469,7 +500,8 @@ lca <- function(
         plot = plot,
         plot1 = plot1,
         plot2 = plot2,
-        angle = angle)
+        angle = angle,
+        plot3 = plot3)
 
     analysis <- lcaClass$new(
         options = options,

@@ -48,6 +48,8 @@ children:
                     name: fit
                   - type: CheckBox
                     name: comp
+                  - type: CheckBox
+                    name: plot3  
               - type: Label
                 label: Plot
                 children:
