@@ -240,8 +240,15 @@ raschClass <- if (requireNamespace('jmvcore'))
         
         # person separation reliability----------
         
+        if(self$options$step ==1){
+        
         pers <- eRm::person.parameter(eRm::RM(data))
         rel <- eRm::SepRel(pers)
+        } else if(self$options$step >1){
+          pers <- eRm::person.parameter(eRm::RSM(data))
+          rel <- eRm::SepRel(pers)
+          
+        }
         
         ssd <- rel$SSD.PS
         mse<-rel$MSE
