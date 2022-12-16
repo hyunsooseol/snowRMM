@@ -11,6 +11,7 @@ rasch(
   step = 1,
   type = "RSM",
   fit = TRUE,
+  rel = TRUE,
   imean = TRUE,
   imeasure = TRUE,
   ise = FALSE,
@@ -51,6 +52,8 @@ rasch(
 \item{type}{.}
 
 \item{fit}{.}
+
+\item{rel}{.}
 
 \item{imean}{.}
 
@@ -111,6 +114,7 @@ A results object containing:
   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
   \code{results$item$model} \tab \tab \tab \tab \tab a table \cr
   \code{results$item$items} \tab \tab \tab \tab \tab a table \cr
+  \code{results$rel} \tab \tab \tab \tab \tab a table \cr
   \code{results$rsm} \tab \tab \tab \tab \tab a table \cr
   \code{results$pcm} \tab \tab \tab \tab \tab a table \cr
   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
@@ -134,9 +138,9 @@ A results object containing:
 
 Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
 
-\code{results$rsm$asDF}
+\code{results$rel$asDF}
 
-\code{as.data.frame(results$rsm)}
+\code{as.data.frame(results$rel)}
 }
 \description{
 Rasch Model

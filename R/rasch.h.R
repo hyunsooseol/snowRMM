@@ -11,6 +11,7 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             step = 1,
             type = "RSM",
             fit = TRUE,
+            rel = TRUE,
             imean = TRUE,
             imeasure = TRUE,
             ise = FALSE,
@@ -71,6 +72,10 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             private$..fit <- jmvcore::OptionBool$new(
                 "fit",
                 fit,
+                default=TRUE)
+            private$..rel <- jmvcore::OptionBool$new(
+                "rel",
+                rel,
                 default=TRUE)
             private$..imean <- jmvcore::OptionBool$new(
                 "imean",
@@ -209,6 +214,7 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..step)
             self$.addOption(private$..type)
             self$.addOption(private$..fit)
+            self$.addOption(private$..rel)
             self$.addOption(private$..imean)
             self$.addOption(private$..imeasure)
             self$.addOption(private$..ise)
@@ -247,6 +253,7 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         step = function() private$..step$value,
         type = function() private$..type$value,
         fit = function() private$..fit$value,
+        rel = function() private$..rel$value,
         imean = function() private$..imean$value,
         imeasure = function() private$..imeasure$value,
         ise = function() private$..ise$value,
@@ -284,6 +291,7 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..step = NA,
         ..type = NA,
         ..fit = NA,
+        ..rel = NA,
         ..imean = NA,
         ..imeasure = NA,
         ..ise = NA,
@@ -323,6 +331,7 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     active = list(
         instructions = function() private$.items[["instructions"]],
         item = function() private$.items[["item"]],
+        rel = function() private$.items[["rel"]],
         rsm = function() private$.items[["rsm"]],
         pcm = function() private$.items[["pcm"]],
         plot = function() private$.items[["plot"]],
@@ -444,6 +453,27 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                     `name`="pbis", 
                                     `title`="Point biserial", 
                                     `visible`="(pbis)"))))}))$new(options=options))
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="rel",
+                title="Person separation reliability",
+                rows=1,
+                visible="(rel)",
+                clearWith=list(
+                    "vars",
+                    "step",
+                    "type"),
+                refs="eRm",
+                columns=list(
+                    list(
+                        `name`="SSD", 
+                        `type`="number"),
+                    list(
+                        `name`="MSE", 
+                        `type`="number"),
+                    list(
+                        `name`="Reliability", 
+                        `type`="number"))))
             self$add(jmvcore::Table$new(
                 options=options,
                 name="rsm",
@@ -786,6 +816,7 @@ raschBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param step .
 #' @param type .
 #' @param fit .
+#' @param rel .
 #' @param imean .
 #' @param imeasure .
 #' @param ise .
@@ -818,6 +849,7 @@ raschBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
 #'   \code{results$item$model} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$item$items} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$rel} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$rsm} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$pcm} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
@@ -841,9 +873,9 @@ raschBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'
 #' Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
 #'
-#' \code{results$rsm$asDF}
+#' \code{results$rel$asDF}
 #'
-#' \code{as.data.frame(results$rsm)}
+#' \code{as.data.frame(results$rel)}
 #'
 #' @export
 rasch <- function(
@@ -853,6 +885,7 @@ rasch <- function(
     step = 1,
     type = "RSM",
     fit = TRUE,
+    rel = TRUE,
     imean = TRUE,
     imeasure = TRUE,
     ise = FALSE,
@@ -896,6 +929,7 @@ rasch <- function(
         step = step,
         type = type,
         fit = fit,
+        rel = rel,
         imean = imean,
         imeasure = imeasure,
         ise = ise,

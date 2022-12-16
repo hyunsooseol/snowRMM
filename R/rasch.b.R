@@ -17,6 +17,8 @@
 #' @importFrom  eRm Waldtest
 #' @importFrom  eRm MLoef
 #' @importFrom  eRm plotGOF
+#' @importFrom  eRm person.parameter
+#' @importFrom  eRm SepRel
 #' @import RColorBrewer
 #' @import ggplot2
 #' @export
@@ -80,6 +82,14 @@ raschClass <- if (requireNamespace('jmvcore'))
             
           )
         
+        if (self$options$rel)
+          self$results$rel$setNote(
+            "Note",
+            "SSD=Squared Standard Deviation, MSE=Mean Squared Error"
+           
+          )
+        
+        
         
         if (length(self$options$vars) <= 1)
           self$setStatus('complete')
@@ -135,6 +145,11 @@ raschClass <- if (requireNamespace('jmvcore'))
           private$.populateItemTable(results)
           
          
+          # populate reliability table----------
+          
+          private$.populateRelTable(results)
+          
+          
           # populate Person statistics table
           
          # private$.populatePersonTable(results)
@@ -223,7 +238,17 @@ raschClass <- if (requireNamespace('jmvcore'))
         res0 <- mixRasch::getEstDetails(res)
         class <- res0$nC
         
+        # person separation reliability----------
         
+        pers <- eRm::person.parameter(eRm::RM(data))
+        rel <- eRm::SepRel(pers)
+        
+        ssd <- rel$SSD.PS
+        mse<-rel$MSE
+        rel<- rel$sep.rel
+       
+
+        ########################################################
         if(self$options$step ==1){
           
           rasch <- eRm::RM(data)
@@ -261,6 +286,7 @@ raschClass <- if (requireNamespace('jmvcore'))
           ##############################################
           
           mlsplit<- self$options$mlsplit
+          
           # Martin-lof test--------------
           
           ml<- eRm::MLoef(rasch,splitcr = mlsplit)
@@ -459,8 +485,10 @@ raschClass <- if (requireNamespace('jmvcore'))
             'infit' = infit,
             'outfit' = outfit,
             'pbis' = pbis,
-            'class' = class
-         
+            'class' = class,
+            'ssd' =ssd,
+            'mse'=mse,
+            'rel'=rel
           )
         
         
@@ -483,6 +511,29 @@ raschClass <- if (requireNamespace('jmvcore'))
         TRUE
       },
       
+      # populate reliability table---------
+      
+      .populateRelTable = function(results) {
+        
+        table <- self$results$rel
+        
+        
+        #results---------
+        
+        ssd <- results$ssd
+        mse <- results$mse
+        rel <- results$rel
+       
+        row <- list()
+
+        row[['SSD']] <- ssd
+        row[['MSE']] <- mse
+        row[['Reliability']] <- rel
+
+        table$setRow(rowNo = 1, values = row)
+
+        
+      },
      
       # populate Model information table-----
       

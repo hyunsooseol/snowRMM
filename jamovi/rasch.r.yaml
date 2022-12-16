@@ -78,6 +78,25 @@ items:
               title: Point biserial
               visible: (pbis)
 
+    - name: rel
+      title: 'Person separation reliability'
+      type: Table
+      rows: 1
+      visible: (rel)
+      clearWith:
+        - vars
+        - step
+        - type
+      refs: eRm    
+
+      columns:
+        - name: SSD
+          type: number
+        - name: MSE
+          type: number
+        - name: Reliability
+          type: number
+
     - name: rsm
       title: 'Thresholds of Rating Scale Model'
       type: Table

@@ -47,6 +47,11 @@ options:
       type: Bool
       default: True
 
+    - name: rel
+      title: Separation reliability
+      type: Bool
+      default: True
+
     - name: imean
       title: Item mean
       type: Bool

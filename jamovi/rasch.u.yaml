@@ -71,6 +71,9 @@ children:
             children:
               - type: CheckBox
                 name: fit
+              - type: CheckBox
+                name: rel
+
           - type: Label
             label: 'Item fit'
             children:                
@@ -128,7 +131,7 @@ children:
                     name: mlsplit1
                     enable: (ml1) 
           - type: Label
-            label: 'Plot'
+            label: 'Plot(Step=1)'
             children:
               - type: CheckBox
                 name: gofplot
