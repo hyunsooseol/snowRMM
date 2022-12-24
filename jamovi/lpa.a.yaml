@@ -70,14 +70,15 @@ options:
       type: Bool
       default: FALSE        
 
+    - name: plot3
+      title: 'Density'
+      type: Bool
+      default: FALSE
+
     - name: plot2
       title: 'Elbow plot'
       type: Bool
       default: FALSE
 
-    - name: plot3
-      title: 'Density'
-      type: Bool
-      default: FALSE
 
 ...

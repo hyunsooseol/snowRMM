@@ -315,6 +315,21 @@ lpaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         },
 
 
+.plot3 = function(image, ggtheme, theme,...) {
+  
+  if (is.null(self$options$vars))
+    return()
+  
+  res1 <- image$state
+  
+  
+  plot3 <- tidyLPA::plot_density(res1)
+  
+  
+  print(plot3)
+  TRUE
+},
+
 .plot2 = function(image, ggtheme, theme,...) {
   
   if (is.null(self$options$vars))
@@ -334,21 +349,6 @@ lpaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
   print(plot2)
   TRUE
   
-},
-
-.plot3 = function(image, ggtheme, theme,...) {
-  
-  if (is.null(self$options$vars))
-    return()
-  
-  res1 <- image$state
-  
-  
-  plot3 <- tidyLPA::plot_density(res1)
-  
-  
-  print(plot3)
-  TRUE
 }
 
 )
