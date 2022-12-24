@@ -13,6 +13,7 @@
 #' @importFrom tidyLPA plot_bivariate
 #' @importFrom tidyLPA get_data
 #' @importFrom reshape2 melt
+#' @importFrom tidyLPA plot_density
 #' @export
 
 
@@ -71,11 +72,13 @@ lpaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             data <- jmvcore::naOmit(data)
             
           
-          #######################Estimates profile  
-            res<- tidyLPA::estimate_profiles(data,nc,
+          #Estimates profile------------------------  
+            
+            res<- tidyLPA::estimate_profiles(data,
+                                             nc,
                                              variances = variances,
                                              covariances = covariances)
-           ############################################ 
+           #------------------------------------------ 
            
            # self$results$text$setContent(res)
 
@@ -263,7 +266,16 @@ lpaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             image <- self$results$plot2
             image$setState(elbow )
             
+            # Density plot-----------
             
+            res1<- tidyLPA::estimate_profiles(data,
+                                             1:nc,
+                                             variances = variances,
+                                             covariances = covariances)
+            #--------------------------------------
+            
+            image <- self$results$plot3
+            image$setState(res1)
             
             
         },
@@ -322,8 +334,22 @@ lpaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
   print(plot2)
   TRUE
   
-}
+},
 
+.plot3 = function(image, ggtheme, theme,...) {
+  
+  if (is.null(self$options$vars))
+    return()
+  
+  res1 <- image$state
+  
+  
+  plot3 <- tidyLPA::plot_density(res1)
+  
+  
+  print(plot3)
+  TRUE
+}
 
 )
 )

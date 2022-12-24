@@ -175,5 +175,18 @@ items:
         - variances
         - covariances    
 
+    - name: plot3
+      title: 'Density plot'
+      type: Image
+      visible: (plot3)
+      width: 700
+      height: 500
+      refs: tidyLPA
+      renderFun: .plot3
+      clearWith:
+        - vars
+        - nc
+        - variances
+        - covariances    
             
 ...
