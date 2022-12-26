@@ -222,8 +222,6 @@ items:
       refs: WrightMap
       type: Image
       visible: (wrightmap)
-      width: 500
-      height: 500
       renderFun: .plot
       requiresData: TRUE
       clearWith:

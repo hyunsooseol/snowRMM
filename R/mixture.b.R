@@ -759,15 +759,18 @@ mixtureClass <- if (requireNamespace('jmvcore'))
         
         step <- self$options$step
         
+        #-----------------------
         unidif <-
           mixRasch::mixRasch(
             data = data,
             steps = step,
             n.c = 1
           )  
+        #----------------------
         
         dif <- unidif$item.par$delta.i
         
+        #--------------------------
         person <-
           
             mixRasch::mixRasch(
@@ -775,6 +778,7 @@ mixtureClass <- if (requireNamespace('jmvcore'))
             steps = step,
             n.c = nc
           )  
+        #----------------------------------
         
         theta <- sapply(person$LatentClass, function(x) x$person.par$theta)
         theta <- as.data.frame(theta)
@@ -784,10 +788,10 @@ mixtureClass <- if (requireNamespace('jmvcore'))
         image <- self$results$plot
         
         vars <- length(self$options$vars)
-        
-        width <- 300 + vars * 30
-        
-        image$setSize(width, 500)
+
+        width <- 300 + vars * 50
+
+        image$setSize(width, 450)
         
         state <- list(theta, dif)
         
@@ -808,16 +812,26 @@ mixtureClass <- if (requireNamespace('jmvcore'))
         dif <- image$state[[2]]
         
         plot <- WrightMap::wrightMap(theta,dif,
-                                     item.prop= 0.7,
+                                     item.prop= 0.5,
+                                     min.l = -5,
+                                     max.l= +5,
                                      dim.color = brewer.pal(10, "Set1"),
                                      axis.persons = "Person distribution",
                                      show.thr.lab = FALSE
                                      , thr.sym.col.fg = rep(brewer.pal(10, "Set1"), each = 2)
                                      , thr.sym.col.bg = rep(brewer.pal(10, "Set1"), each = 2)
                                      , thr.sym.cex = 2)
-                                     
-                 
-                                    
+        
+        # if (self$options$angle1 > 0) {
+        #   plot <- plot + ggplot2::theme(
+        #     axis.text.x = ggplot2::element_text(
+        #       angle = self$options$angle1, hjust = 1
+        #     )
+        #   )
+        # }                      
+         
+        print(plot)
+        TRUE                           
                                      
                                      
       },                             

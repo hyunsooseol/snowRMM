@@ -79,12 +79,14 @@ children:
             children:
               - type: CheckBox
                 name: iplot
-              - type: TextBox
-                name: angle
-                format: number
-                suggestedValues:
-                  - value: 0
-                  - value: 45
+                children:
+                  - type: TextBox
+                    name: angle
+                    enable: (iplot) 
+                    format: number
+                    suggestedValues:
+                      - value: 0
+                      - value: 45
   - type: CollapseBox
     label: Person Analysis
     margin: normal
@@ -114,11 +116,11 @@ children:
         fitToGrid: true
         children:
           - type: Label
-            label: Plot
+            label: Plots
             children:
               - type: CheckBox
                 name: plot1
               - type: CheckBox
                 name: wrightmap
- 
+
 
