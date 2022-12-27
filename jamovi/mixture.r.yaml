@@ -249,7 +249,7 @@ items:
       type: Image
       visible: (plot2)
       width: 500
-      height: 500
+      height: 400
       refs: snowRMM
       renderFun: .plot2
       clearWith:
