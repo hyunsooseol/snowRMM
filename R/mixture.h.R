@@ -21,7 +21,8 @@ mixtureOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             angle = 0,
             iplot = FALSE,
             wrightmap = FALSE,
-            plot1 = FALSE, ...) {
+            plot1 = FALSE,
+            plot2 = FALSE, ...) {
 
             super$initialize(
                 package="snowRMM",
@@ -103,6 +104,10 @@ mixtureOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "plot1",
                 plot1,
                 default=FALSE)
+            private$..plot2 <- jmvcore::OptionBool$new(
+                "plot2",
+                plot2,
+                default=FALSE)
             private$..pmember <- jmvcore::OptionOutput$new(
                 "pmember")
 
@@ -122,6 +127,7 @@ mixtureOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..iplot)
             self$.addOption(private$..wrightmap)
             self$.addOption(private$..plot1)
+            self$.addOption(private$..plot2)
             self$.addOption(private$..pmember)
         }),
     active = list(
@@ -141,6 +147,7 @@ mixtureOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         iplot = function() private$..iplot$value,
         wrightmap = function() private$..wrightmap$value,
         plot1 = function() private$..plot1$value,
+        plot2 = function() private$..plot2$value,
         pmember = function() private$..pmember$value),
     private = list(
         ..vars = NA,
@@ -159,6 +166,7 @@ mixtureOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..iplot = NA,
         ..wrightmap = NA,
         ..plot1 = NA,
+        ..plot2 = NA,
         ..pmember = NA)
 )
 
@@ -172,6 +180,7 @@ mixtureResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         iplot = function() private$.items[["iplot"]],
         plot = function() private$.items[["plot"]],
         plot1 = function() private$.items[["plot1"]],
+        plot2 = function() private$.items[["plot2"]],
         pmember = function() private$.items[["pmember"]]),
     private = list(),
     public=list(
@@ -448,6 +457,20 @@ mixtureResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "step",
                     "type",
                     "angle")))
+            self$add(jmvcore::Image$new(
+                options=options,
+                name="plot2",
+                title="Elbow plot",
+                visible="(plot2)",
+                width=500,
+                height=500,
+                refs="snowRMM",
+                renderFun=".plot2",
+                clearWith=list(
+                    "vars",
+                    "nc",
+                    "step",
+                    "type")))
             self$add(jmvcore::Output$new(
                 options=options,
                 name="pmember",
@@ -501,6 +524,7 @@ mixtureBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param iplot .
 #' @param wrightmap .
 #' @param plot1 .
+#' @param plot2 .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
@@ -515,6 +539,7 @@ mixtureBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$iplot} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
+#'   \code{results$plot2} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$pmember} \tab \tab \tab \tab \tab an output \cr
 #' }
 #'
@@ -536,7 +561,8 @@ mixture <- function(
     angle = 0,
     iplot = FALSE,
     wrightmap = FALSE,
-    plot1 = FALSE) {
+    plot1 = FALSE,
+    plot2 = FALSE) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("mixture requires jmvcore to be installed (restart may be required)")
@@ -564,7 +590,8 @@ mixture <- function(
         angle = angle,
         iplot = iplot,
         wrightmap = wrightmap,
-        plot1 = plot1)
+        plot1 = plot1,
+        plot2 = plot2)
 
     analysis <- mixtureClass$new(
         options = options,

@@ -109,6 +109,11 @@ options:
       type: Bool
       default: FALSE
       
+    - name: plot2
+      title: 'Elbow plot'
+      type: Bool
+      default: FALSE
+      
     - name: pmember
       title: Person membership
       type: Output    

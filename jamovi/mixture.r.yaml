@@ -244,6 +244,20 @@ items:
             - type
             - angle
             
+    - name: plot2
+      title: 'Elbow plot'
+      type: Image
+      visible: (plot2)
+      width: 500
+      height: 500
+      refs: snowRMM
+      renderFun: .plot2
+      clearWith:
+            - vars
+            - nc
+            - step
+            - type
+
     - name: pmember
       title: Class membership
       type: Output

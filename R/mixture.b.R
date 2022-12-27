@@ -16,6 +16,7 @@
 #' @importFrom ggplot2 aes
 #' @importFrom WrightMap wrightMap
 #' @importFrom tidyr gather
+#' @importFrom reshape2 melt
 #' @export
 
 
@@ -200,7 +201,32 @@ mixtureClass <- if (requireNamespace('jmvcore'))
         
         out <- out
         
-     # self$results$text$setContent(out)
+      #self$results$text$setContent(out)
+        
+      #############################
+      
+      # elbow plot----------
+      
+      out1 <- out[,c(1:3)]
+      
+     
+        
+      colnames(out1) <- c('AIC','BIC',
+                          'CAIC')
+      
+      df<-  as.data.frame(out1)
+      df$Class <- seq.int(nrow(df))
+      elbow<- reshape2::melt(df,
+                             id.vars='Class',
+                             variable.name="Fit",
+                             value.name='Value')
+      
+      #self$results$text$setContent(elbow) 
+     
+      image <- self$results$plot2
+      image$setState(elbow )
+      
+      ###############################################  
         
         # number of class
         
@@ -856,6 +882,27 @@ mixtureClass <- if (requireNamespace('jmvcore'))
        print(plot1)
        TRUE
      
+     },
+     
+     .plot2 = function(image, ggtheme, theme,...) {
+       
+       if (is.null(self$options$plot2))
+         return()
+       
+       elbow <- image$state
+       
+       
+       plot2 <- ggplot2::ggplot(elbow,aes(x = Class, y = Value, group = Fit))+
+         geom_line(size=1.1,aes(color=Fit))+
+         geom_point(size=3,aes(color=Fit))
+       
+       
+       plot2 <- plot2+ggtheme
+       
+       
+       print(plot2)
+       TRUE
+       
      },
      
      # .prepareModelPlot = function(results){
