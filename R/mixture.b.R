@@ -49,7 +49,7 @@ mixtureClass <- if (requireNamespace('jmvcore'))
             <p>1. Specify the number of <b>'Class', Step', and 'Type'</b> in the 'Analysis option'.</p>
             <p>2. Highlight the variables and click the arrow to move it across into the 'Variables' box.</p>
             <p>3. <b> Person membership</b> table will be displayed in the datasheet.</p>
-            <p>4. Rasch mixture model is estimated by <b>mixRasch</b>R package.</p>
+            <p>4. Rasch mixture model is estimated by <b>mixRasch</b> R package.</p>
             <p>5. Feature requests and bug reports can be made on my <a href='https://github.com/hyunsooseol/snowRMM/issues'  target = '_blank'>GitHub</a>.</p>
             <p>_____________________________________________________________________________________________</p>
             

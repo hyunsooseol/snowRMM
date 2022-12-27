@@ -465,7 +465,7 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Table$new(
                 options=options,
                 name="rel",
-                title="Person separation reliability with eRm R package",
+                title="Person separation reliability using eRm R package",
                 rows=1,
                 visible="(rel)",
                 clearWith=list(
@@ -503,7 +503,7 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Table$new(
                 options=options,
                 name="rsm",
-                title="Rating Scale Model with eRm R package",
+                title="Rating Scale Model using eRm R package",
                 rows="(vars)",
                 visible="(rsm)",
                 refs="eRm",
@@ -520,7 +520,7 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Table$new(
                 options=options,
                 name="pcm",
-                title="Partial Credit Model with eRm R package",
+                title="Partial Credit Model using eRm R package",
                 rows="(vars)",
                 visible="(pcm)",
                 refs="eRm",

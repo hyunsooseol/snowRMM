@@ -79,7 +79,7 @@ items:
               visible: (pbis)
 
     - name: rel
-      title: 'Person separation reliability with eRm R package'
+      title: 'Person separation reliability using eRm R package'
       type: Table
       rows: 1
       visible: (rel)
@@ -114,7 +114,7 @@ items:
           content: ($key)
 
     - name: rsm
-      title: 'Rating Scale Model with eRm R package'
+      title: 'Rating Scale Model using eRm R package'
       type: Table
       rows: (vars)
       visible: (rsm)
@@ -130,7 +130,7 @@ items:
           content: ($key)
 
     - name: pcm
-      title: 'Partial Credit Model with eRm R package'
+      title: 'Partial Credit Model using eRm R package'
       type: Table
       rows: (vars)
       visible: (pcm)
