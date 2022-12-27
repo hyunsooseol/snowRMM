@@ -14,12 +14,13 @@ rasch(
   rel = TRUE,
   imean = TRUE,
   imeasure = TRUE,
-  ise = FALSE,
+  ise = TRUE,
   infit = FALSE,
   outfit = FALSE,
   pbis = FALSE,
   rsm = FALSE,
   pcm = FALSE,
+  thr = FALSE,
   wrightmap = TRUE,
   lrsplit = "median",
   mlsplit = "median",
@@ -71,6 +72,8 @@ rasch(
 
 \item{pcm}{.}
 
+\item{thr}{.}
+
 \item{wrightmap}{.}
 
 \item{lrsplit}{.}
@@ -115,6 +118,7 @@ A results object containing:
   \code{results$item$model} \tab \tab \tab \tab \tab a table \cr
   \code{results$item$items} \tab \tab \tab \tab \tab a table \cr
   \code{results$rel} \tab \tab \tab \tab \tab a table \cr
+  \code{results$thr} \tab \tab \tab \tab \tab a table \cr
   \code{results$rsm} \tab \tab \tab \tab \tab a table \cr
   \code{results$pcm} \tab \tab \tab \tab \tab a table \cr
   \code{results$plot} \tab \tab \tab \tab \tab an image \cr

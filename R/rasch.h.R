@@ -14,12 +14,13 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             rel = TRUE,
             imean = TRUE,
             imeasure = TRUE,
-            ise = FALSE,
+            ise = TRUE,
             infit = FALSE,
             outfit = FALSE,
             pbis = FALSE,
             rsm = FALSE,
             pcm = FALSE,
+            thr = FALSE,
             wrightmap = TRUE,
             lrsplit = "median",
             mlsplit = "median",
@@ -88,7 +89,7 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             private$..ise <- jmvcore::OptionBool$new(
                 "ise",
                 ise,
-                default=FALSE)
+                default=TRUE)
             private$..infit <- jmvcore::OptionBool$new(
                 "infit",
                 infit,
@@ -108,6 +109,10 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             private$..pcm <- jmvcore::OptionBool$new(
                 "pcm",
                 pcm,
+                default=FALSE)
+            private$..thr <- jmvcore::OptionBool$new(
+                "thr",
+                thr,
                 default=FALSE)
             private$..wrightmap <- jmvcore::OptionBool$new(
                 "wrightmap",
@@ -223,6 +228,7 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..pbis)
             self$.addOption(private$..rsm)
             self$.addOption(private$..pcm)
+            self$.addOption(private$..thr)
             self$.addOption(private$..wrightmap)
             self$.addOption(private$..total)
             self$.addOption(private$..pmeasure)
@@ -262,6 +268,7 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         pbis = function() private$..pbis$value,
         rsm = function() private$..rsm$value,
         pcm = function() private$..pcm$value,
+        thr = function() private$..thr$value,
         wrightmap = function() private$..wrightmap$value,
         total = function() private$..total$value,
         pmeasure = function() private$..pmeasure$value,
@@ -300,6 +307,7 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..pbis = NA,
         ..rsm = NA,
         ..pcm = NA,
+        ..thr = NA,
         ..wrightmap = NA,
         ..total = NA,
         ..pmeasure = NA,
@@ -332,6 +340,7 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         instructions = function() private$.items[["instructions"]],
         item = function() private$.items[["item"]],
         rel = function() private$.items[["rel"]],
+        thr = function() private$.items[["thr"]],
         rsm = function() private$.items[["rsm"]],
         pcm = function() private$.items[["pcm"]],
         plot = function() private$.items[["plot"]],
@@ -456,7 +465,7 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Table$new(
                 options=options,
                 name="rel",
-                title="Person separation reliability",
+                title="Person separation reliability with eRm R package",
                 rows=1,
                 visible="(rel)",
                 clearWith=list(
@@ -476,8 +485,25 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         `type`="number"))))
             self$add(jmvcore::Table$new(
                 options=options,
+                name="thr",
+                title="`Thresholds table(tau parameter)- ${type}`",
+                rows="(vars)",
+                visible="(thr)",
+                refs="mixRasch",
+                clearWith=list(
+                    "vars",
+                    "step",
+                    "type"),
+                columns=list(
+                    list(
+                        `name`="name", 
+                        `title`="", 
+                        `type`="number", 
+                        `content`="($key)"))))
+            self$add(jmvcore::Table$new(
+                options=options,
                 name="rsm",
-                title="Thresholds of Rating Scale Model",
+                title="Rating Scale Model with eRm R package",
                 rows="(vars)",
                 visible="(rsm)",
                 refs="eRm",
@@ -494,7 +520,7 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Table$new(
                 options=options,
                 name="pcm",
-                title="Thresholds of Partial Credit Model",
+                title="Partial Credit Model with eRm R package",
                 rows="(vars)",
                 visible="(pcm)",
                 refs="eRm",
@@ -825,6 +851,7 @@ raschBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param pbis .
 #' @param rsm .
 #' @param pcm .
+#' @param thr .
 #' @param wrightmap .
 #' @param lrsplit .
 #' @param mlsplit .
@@ -850,6 +877,7 @@ raschBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$item$model} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$item$items} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$rel} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$thr} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$rsm} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$pcm} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
@@ -888,12 +916,13 @@ rasch <- function(
     rel = TRUE,
     imean = TRUE,
     imeasure = TRUE,
-    ise = FALSE,
+    ise = TRUE,
     infit = FALSE,
     outfit = FALSE,
     pbis = FALSE,
     rsm = FALSE,
     pcm = FALSE,
+    thr = FALSE,
     wrightmap = TRUE,
     lrsplit = "median",
     mlsplit = "median",
@@ -938,6 +967,7 @@ rasch <- function(
         pbis = pbis,
         rsm = rsm,
         pcm = pcm,
+        thr = thr,
         wrightmap = wrightmap,
         lrsplit = lrsplit,
         mlsplit = mlsplit,

@@ -79,7 +79,7 @@ items:
               visible: (pbis)
 
     - name: rel
-      title: 'Person separation reliability'
+      title: 'Person separation reliability with eRm R package'
       type: Table
       rows: 1
       visible: (rel)
@@ -97,8 +97,24 @@ items:
         - name: Reliability
           type: number
 
+    - name: thr
+      title: '`Thresholds table(tau parameter)- ${type}`'
+      type: Table
+      rows: (vars)
+      visible: (thr)
+      refs: mixRasch    
+      clearWith:
+        - vars
+        - step
+        - type
+      columns:
+        - name: name
+          title: ''
+          type: 'number'
+          content: ($key)
+
     - name: rsm
-      title: 'Thresholds of Rating Scale Model'
+      title: 'Rating Scale Model with eRm R package'
       type: Table
       rows: (vars)
       visible: (rsm)
@@ -114,7 +130,7 @@ items:
           content: ($key)
 
     - name: pcm
-      title: 'Thresholds of Partial Credit Model'
+      title: 'Partial Credit Model with eRm R package'
       type: Table
       rows: (vars)
       visible: (pcm)

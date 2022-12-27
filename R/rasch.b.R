@@ -47,13 +47,12 @@ raschClass <- if (requireNamespace('jmvcore'))
             
             <p><b>Instructions</b></p>
             <p>_____________________________________________________________________________________________</p>
-            <p>1. The standard Rasch model is performed by Jonint Maximum Liklihood(JML).</p>
-            <p>2. Specify </b> the number of 'Step' and model 'Type'</b> in the 'Analysis option'.</p>
-            <p>3. Step is defined as number of <b>category-1</b>. </p>
-            <p>4. The minimum and maximum values of a category must be the same across all items. Otherwise, an error message will be appeared.</p>
-            <p>5. <b>Person Analysis</b> will be displayed in the datasheet.</p>
-            <p>6. The <b>eRm</b> R package was used for the person-item map for PCM.</p>
-            <p>7. Feature requests and bug reports can be made on my <a href='https://github.com/hyunsooseol/snowRMM/issues'  target = '_blank'>GitHub</a>.</p>
+            <p>- Specify </b> the number of 'Step' and model 'Type'</b> in the 'Analysis option'.</p>
+            <p>- Step is defined as number of <b>category-1</b>. </p>
+            <p>- The minimum and maximum values of a category must be the same across all items for <b>rating sclaes</b> with eRm R package.</p>
+            <p>- <b>Person Analysis</b> will be displayed in the datasheet.</p>
+            <p>- The <b>eRm</b> R package was used for the person-item map for PCM.</p>
+            <p>- Feature requests and bug reports can be made on my <a href='https://github.com/hyunsooseol/snowRMM/issues'  target = '_blank'>GitHub</a>.</p>
             <p>_____________________________________________________________________________________________</p>
             
             </div>
@@ -61,24 +60,24 @@ raschClass <- if (requireNamespace('jmvcore'))
             </html>"
         )
         
-        if (self$options$rsm)
-          self$results$rsm$setNote(
-            "Note",
-            "The <b>eRm</b> R package was used for calculating thresholds."
-            
-          )
-        
-        if (self$options$pcm)
-          self$results$pcm$setNote(
-            "Note",
-            "The <b>eRm</b> R package was used for calculating thresholds."
-            
-          )
+        # if (self$options$rsm)
+        #   self$results$rsm$setNote(
+        #     "Note",
+        #     "The <b>eRm</b> R package was used for calculating thresholds."
+        #     
+        #   )
+        # 
+        # if (self$options$pcm)
+        #   self$results$pcm$setNote(
+        #     "Note",
+        #     "The <b>eRm</b> R package was used for calculating thresholds."
+        #     
+        #   )
         
         if (self$options$ml1)
           self$results$ml1$setNote(
             "Note",
-            "The <b>eRm</b> R package with rating scale model was used. "
+            "Number of categories should be the same for each item with eRm R package."
             
           )
         
@@ -149,9 +148,11 @@ raschClass <- if (requireNamespace('jmvcore'))
           
           private$.populateRelTable(results)
           
+          # populate thresholds table-----
           
-          # populate Person statistics table
+          private$.populateThrTable(results)
           
+         
          # private$.populatePersonTable(results)
           
           # populate output variables-----
@@ -176,7 +177,7 @@ raschClass <- if (requireNamespace('jmvcore'))
           
           private$.prepareIccPlot(data)
           
-          private$.prepareRsmPlot(data)
+          # private$.prepareRsmPlot(data)
           
           private$.preparePcmPlot(data)
           
@@ -238,14 +239,14 @@ raschClass <- if (requireNamespace('jmvcore'))
         res0 <- mixRasch::getEstDetails(res)
         class <- res0$nC
         
-        # person separation reliability----------
+        # person separation reliability using eRm R package---------
         
         if(self$options$step ==1){
         
         pers <- eRm::person.parameter(eRm::RM(data))
         rel <- eRm::SepRel(pers)
         } else if(self$options$step >1){
-          pers <- eRm::person.parameter(eRm::RSM(data))
+          pers <- eRm::person.parameter(eRm::PCM(data))
           rel <- eRm::SepRel(pers)
           
         }
@@ -254,7 +255,12 @@ raschClass <- if (requireNamespace('jmvcore'))
         mse<-rel$MSE
         rel<- rel$sep.rel
        
-
+        # thresholds(tau parameter)---------
+        
+        tau<- res$item.par$tau
+        tau <- t(tau)
+        tau<- as.data.frame(tau)
+        
         ########################################################
         if(self$options$step ==1){
           
@@ -348,7 +354,7 @@ raschClass <- if (requireNamespace('jmvcore'))
         }
         
       
-        if(self$options$step > 1){
+        if(self$options$rsm==TRUE || self$options$mlsplit1==TRUE || self$options$plot2==TRUE){
      
        ########################################
         
@@ -402,10 +408,16 @@ raschClass <- if (requireNamespace('jmvcore'))
             table$setRow(rowNo = i, values = row)
           }
 
+          #RSM plot----------
+          
+          image <- self$results$plot2
+          image$setState(rsm.res)
+          
           ##################################################
           # Testing the Rasch model with Rating scale---
           
           mlsplit1<- self$options$mlsplit1
+          
           #Martin-lof test--------------
           
           ml1<- eRm::MLoef(rsm.res,splitcr = mlsplit1)
@@ -426,8 +438,11 @@ raschClass <- if (requireNamespace('jmvcore'))
           
           table$setRow(rowNo = 1, values = row)
           
-          
-       #######################################
+        }
+      
+        if(self$options$pcm==TRUE){    
+       
+        #######################################
         pcm.res <- eRm::PCM(data)
         #####################################
         
@@ -436,7 +451,10 @@ raschClass <- if (requireNamespace('jmvcore'))
         pcm<- data.frame(Reduce(rbind, tab1))
         pcm<- pcm[,-1]
         
-          
+        nc <- ncol(pcm)
+       
+        nCategory <- nc
+        
         table <- self$results$pcm
 
 
@@ -474,8 +492,7 @@ raschClass <- if (requireNamespace('jmvcore'))
           }
 
           
-        }
-        
+          }
         
         ############################################
         results <-
@@ -495,13 +512,64 @@ raschClass <- if (requireNamespace('jmvcore'))
             'class' = class,
             'ssd' =ssd,
             'mse'=mse,
-            'rel'=rel
+            'rel'=rel,
+            'tau'=tau
           )
         
         
         
       },
       
+      # populate thresholds table(tau parameter)---------
+      
+      .populateThrTable = function(results) {
+        
+        table <- self$results$thr
+        
+        tau <- results$tau
+      
+        #-------------
+        nc <- ncol(tau)
+       
+        nCategory <- nc
+        
+        vars <- self$options$vars
+        
+        
+        if (nCategory > 1) {
+          for (i in 1:nCategory)
+            
+            table$addColumn(
+              name = paste0("name", i),
+              title = as.character(i),
+              superTitle = 'Thresholds',
+              type = 'number'
+            )
+        }
+        
+        
+        for (i in seq_along(vars)) {
+          
+          row <- list()
+          
+          
+          for (j in 1:nCategory) {
+            
+            row[[paste0("name", j)]] <- tau[i, j]
+            
+            
+          }
+          
+          
+          
+          table$setRow(rowNo = i, values = row)
+        
+          }
+        
+      },
+      
+      
+      ####################################
       .gofplot = function(image, ...) {
         
       
@@ -625,6 +693,11 @@ raschClass <- if (requireNamespace('jmvcore'))
         }
         
       },
+      
+      
+      
+      
+      
       
       ##### person statistics for output variable-------------------
       
@@ -1040,23 +1113,23 @@ raschClass <- if (requireNamespace('jmvcore'))
       
       },
       
-     .prepareRsmPlot=function(data){
-       
-       num <- self$options$num
-       
-       
-       if (self$options$step<=1)
-         return()
-       
-       rsm.res <- eRm::RSM(data)
-       
-     #  rsm.res<- eRm::thresholds(rsm.res)
-       
-       image <- self$results$plot2
-       image$setState(rsm.res)
-       
-       
-     },
+     # .prepareRsmPlot=function(data){
+     #   
+     #   num <- self$options$num
+     #   
+     #   
+     #   if (!self$options$rsm==TRUE)
+     #     return()
+     #   
+     #   rsm.res <- eRm::RSM(data)
+     #   
+     # #  rsm.res<- eRm::thresholds(rsm.res)
+     #   
+     #   image <- self$results$plot2
+     #   image$setState(rsm.res)
+     #   
+     #   
+     # },
      
      .plot2 = function(image,...) {
        

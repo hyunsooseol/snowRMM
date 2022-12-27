@@ -65,7 +65,7 @@ options:
     - name: ise
       title: S.E. measure
       type: Bool
-      default: FALSE
+      default: TRUE
 
     - name: infit
       title: Infit
@@ -89,6 +89,11 @@ options:
 
     - name: pcm
       title: Partial credit
+      type: Bool
+      default: FALSE
+
+    - name: thr
+      title: 'Thresholds(tau)'
       type: Bool
       default: FALSE
 

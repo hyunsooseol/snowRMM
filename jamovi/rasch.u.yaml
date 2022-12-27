@@ -34,7 +34,7 @@ children:
           - type: ComboBox
             name: type
   - type: CollapseBox
-    label: Item Analysis
+    label: 'Item Analysis using mixRasch R package'
     margin: normal
     collapsed: true
     children:
@@ -55,9 +55,7 @@ children:
             label: 'Thresholds(Step>1)'
             children:
               - type: CheckBox
-                name: rsm
-              - type: CheckBox
-                name: pcm                
+                name: thr
       - type: LayoutBox
         stretchFactor: 1
         margin: large
@@ -73,7 +71,6 @@ children:
                 name: fit
               - type: CheckBox
                 name: rel
-
           - type: Label
             label: 'Item fit'
             children:                
@@ -84,7 +81,7 @@ children:
               - type: CheckBox
                 name: pbis
   - type: CollapseBox
-    label: Testing the Rasch model
+    label: 'Testing model using eRm R package'
     margin: normal
     collapsed: true
     children:
@@ -234,3 +231,23 @@ children:
                 name: pinfit
               - type: Output
                 name: poutfit
+  - type: CollapseBox
+    label: Additional Outputs
+    margin: normal
+    collapsed: true
+    children:
+      - type: LayoutBox
+        stretchFactor: 1
+        margin: large
+        children:
+          - type: Label
+            label: 'Thresholds(eRm R package)'
+            fitToGrid: true
+            cell:
+              column: 0
+              row: 0
+            children:
+              - type: CheckBox
+                name: rsm
+              - type: CheckBox
+                name: pcm   
