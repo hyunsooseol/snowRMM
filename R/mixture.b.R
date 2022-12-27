@@ -838,7 +838,7 @@ mixtureClass <- if (requireNamespace('jmvcore'))
         dif <- image$state[[2]]
         
         plot <- WrightMap::wrightMap(theta,dif,
-                                     item.prop= 0.7,
+                                     item.prop= 0.6,
                                      min.l = -5,
                                      max.l= +5,
                                      dim.color = brewer.pal(10, "Set1"),
