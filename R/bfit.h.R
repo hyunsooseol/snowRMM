@@ -132,7 +132,8 @@ bfitResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                             clearWith=list(
                                 "vars",
                                 "step",
-                                "bn"),
+                                "bn",
+                                "angle"),
                             columns=list(
                                 list(
                                     `name`="name", 
@@ -162,7 +163,8 @@ bfitResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                             clearWith=list(
                                 "vars",
                                 "step",
-                                "bn"),
+                                "bn",
+                                "angle"),
                             columns=list(
                                 list(
                                     `name`="name", 
