@@ -107,45 +107,73 @@ bfitClass <- if (requireNamespace('jmvcore'))
             
             bn <- self$options$bn
             
-          
-            # Computing boot infit -------------
-           
-            # Define bootstrapped infit statistic function
-            boot.infit <- function(data, indices) {
+          #######################
+            
+            # Define bootstrapped infit and outfit statistic functions
+            boot.stat <- function(data, indices, stat) {
               d = data[indices,]
               res1 <- mixRasch::mixRasch(data = d, steps = step, model = "RSM", n.c = 1)
-              infit <- res1$item.par$in.out[, 1]
-              return(infit)
+              stat.raw <- res1$item.par$in.out[, stat]
+              return(stat.raw)
             }
             
-            # Perform bootstrapping for infit
-            boot.in <- boot::boot(data = data, statistic = boot.infit, R = bn)
+            # Perform bootstrapping for infit and outfit
+            boot.in <- boot::boot(data = data, statistic = boot.stat, stat = 1, R = bn)
+            boot.out <- boot::boot(data = data, statistic = boot.stat, stat = 3, R = bn)
             
-            # Extract original infit statistic and confidence intervals
+            # Extract original infit and outfit statistics and confidence intervals
             infit.raw <- boot.in$t0
             infit <- boot.in$t
             infitlow <- apply(infit, 2, quantile, prob = 0.025)
             infithigh <- apply(infit, 2, quantile, prob = 0.975)
             
-            # Define bootstrapped outfit statistic function
-            boot.outfit <- function(data, indices) {
-              d = data[indices,]
-              res1 <- mixRasch::mixRasch(data = d, steps = step, model = "RSM", n.c = 1)
-              outfit <- res1$item.par$in.out[, 3]
-              return(outfit)
-            }
-            
-            # Perform bootstrapping for outfit
-            boot.out <- boot::boot(data = data, statistic = boot.outfit, R = bn)
-            
-            # Extract original outfit statistic and confidence intervals
             outfit.raw <- boot.out$t0
             outfit <- boot.out$t
             outfitlow <- apply(outfit, 2, quantile, prob = 0.025)
             outfithigh <- apply(outfit, 2, quantile, prob = 0.975)
             
+            
            
-       #      #####################
+            # # Computing boot infit -------------
+            # 
+            # # Define bootstrapped infit statistic function
+            # boot.infit <- function(data, indices) {
+            #   d = data[indices,]
+            #   res1 <- mixRasch::mixRasch(data = d, steps = step, model = "RSM", n.c = 1)
+            #   infit <- res1$item.par$in.out[, 1]
+            #   return(infit)
+            # }
+            # 
+            # # Perform bootstrapping for infit
+            # boot.in <- boot::boot(data = data, statistic = boot.infit, R = bn)
+            # 
+            # # Extract original infit statistic and confidence intervals
+            # infit.raw <- boot.in$t0
+            # infit <- boot.in$t
+            # infitlow <- apply(infit, 2, quantile, prob = 0.025)
+            # infithigh <- apply(infit, 2, quantile, prob = 0.975)
+            # 
+            # # Define bootstrapped outfit statistic function
+            # boot.outfit <- function(data, indices) {
+            #   d = data[indices,]
+            #   res1 <- mixRasch::mixRasch(data = d, steps = step, model = "RSM", n.c = 1)
+            #   outfit <- res1$item.par$in.out[, 3]
+            #   return(outfit)
+            # }
+            # 
+            # # Perform bootstrapping for outfit
+            # boot.out <- boot::boot(data = data, statistic = boot.outfit, R = bn)
+            # 
+            # # Extract original outfit statistic and confidence intervals
+            # outfit.raw <- boot.out$t0
+            # outfit <- boot.out$t
+            # outfitlow <- apply(outfit, 2, quantile, prob = 0.025)
+            # outfithigh <- apply(outfit, 2, quantile, prob = 0.975)
+            # 
+
+       
+            
+        #      #####################
        #      boot.infit <- function(data, indices) {
        #         d = data[indices,]
        # 
