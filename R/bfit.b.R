@@ -410,7 +410,7 @@ bfitClass <- if (requireNamespace('jmvcore'))
    
    inplot <- self$options$inplot
    
-   if (!inplot)
+   if (is.null(self$options$vars))
       return()
    
    infit1 <- image$state
@@ -463,7 +463,7 @@ bfitClass <- if (requireNamespace('jmvcore'))
    
    outplot <- self$options$outplot
    
-   if (!outplot)
+   if (is.null(self$options$vars))
       return()
    
    outfit1 <- image$state
