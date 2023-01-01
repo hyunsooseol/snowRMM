@@ -840,6 +840,7 @@ raschClass <- if (requireNamespace('jmvcore'))
         
         imeasure <- res$item.par$delta.i
         pmeasure <- res$person.par$theta
+        vars <- self$options$vars
         
         # plot---------
         
@@ -851,7 +852,7 @@ raschClass <- if (requireNamespace('jmvcore'))
         # 
         # image$setSize(width, 500)
         
-        state <- list(pmeasure, imeasure)
+        state <- list(pmeasure, imeasure, vars)
         
         image$setState(state)
         
@@ -869,9 +870,10 @@ raschClass <- if (requireNamespace('jmvcore'))
         
         pmeasure <- image$state[[1]]
         imeasure <- image$state[[2]]
-        
+        vars <- image$state[[3]]
 
         plot<- ShinyItemAnalysis::ggWrightMap(pmeasure, imeasure,
+                                              item.names = vars,
                                               color = "deepskyblue")
         
         print(plot)
