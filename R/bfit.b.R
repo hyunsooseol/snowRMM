@@ -417,8 +417,8 @@ bfitClass <- if (requireNamespace('jmvcore'))
    
    plot <- ggplot(infit1, aes(item, infit)) +        
       geom_point() +
-      geom_errorbar(aes(ymin = infitlow, ymax = infithigh))
-   
+      geom_errorbar(aes(ymin = infitlow, ymax = infithigh)) +
+      geom_hline(yintercept = 1, color = "red", linetype = "dashed", size = 1.0)
     
    plot<- plot+ggtheme
    
@@ -470,8 +470,8 @@ bfitClass <- if (requireNamespace('jmvcore'))
    
    plot <- ggplot(outfit1, aes(item, outfit)) +        
       geom_point() +
-      geom_errorbar(aes(ymin = outfitlow, ymax = outfithigh))
-   
+      geom_errorbar(aes(ymin = outfitlow, ymax = outfithigh))+
+   geom_hline(yintercept = 1, color = "red", linetype = "dashed", size = 1.0)
    
    plot<- plot+ggtheme
    
