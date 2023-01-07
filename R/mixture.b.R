@@ -94,23 +94,19 @@ mixtureClass <- if (requireNamespace('jmvcore'))
           private$.populatePbisTable(results)
           
           # populate Average theta table----
-          
           private$.populateAverageTable(results)
           
-          # populate Person analysis table-------
-          
-        #  private$.populatePersonTable(results)
-          
-        #  private$.populateClassOutputs(results)
-          
+         # populate Person analysis table-------
+          private$.populatePmeasureOutputs(results)
+          private$.populatePseOutputs(results)
+          private$.populatePinfitOutputs(results)
+          private$.populatePoutfitOutputs(results)
           
           # Person membership--------------------
-          
           private$.populateMemberOutputs(results)
           
           
           # prepare plot-----
-          
           private$.prepareWrightmapPlot(data)
           
         
@@ -173,7 +169,29 @@ mixtureClass <- if (requireNamespace('jmvcore'))
         pbis <- sapply(res1$LatentClass, function(x) x$item.par$itemDescriptives[,2])
         pbis <- as.data.frame(pbis)
         
+        ######### Person analysis####################
         
+        # person measure--------------
+        
+        pmeasure <- sapply(res1$LatentClass, function(x) x$person.par$theta)
+        pmeasure <- as.data.frame(pmeasure)
+
+         # person error-------------------
+        
+        pse <- sapply(res1$LatentClass, function(x) x$person.par$SE.theta)
+        pse <- as.data.frame(pmeasure)
+        
+        
+        # person fit--------------
+        
+        pinfit <- sapply(res1$LatentClass, function(x) x$person.par$infit)
+        pinfit <- as.data.frame(pinfit)
+        
+        poutfit <- sapply(res1$LatentClass, function(x) x$person.par$outfit)
+        poutfit <- as.data.frame(poutfit)
+        
+        
+        #####################################################
         # model fit information------
       
         out <- NULL
@@ -253,6 +271,7 @@ mixtureClass <- if (requireNamespace('jmvcore'))
         pclass <- res1$class
         mem <- as.numeric(apply(pclass, 1, which.max))
         
+       
         results <-
           list(
             'out'= out,
@@ -264,7 +283,12 @@ mixtureClass <- if (requireNamespace('jmvcore'))
             'pbis'=pbis,
             'class' = class,
             'average' = average,
-            'mem'=mem
+            'mem'=mem,
+            'pmeasure'=pmeasure,
+            'pse'=pse,
+            'pinfit'=pinfit,
+            'poutfit'=poutfit
+           
            
           )
         
@@ -660,63 +684,7 @@ mixtureClass <- if (requireNamespace('jmvcore'))
         
       },
       
-      ##### Output variables for Person membership----------------
-      
-      
-      # .populateClassOutputs = function(results) {
-      #   
-      #   
-      #   pclass <- results$pclass
-      #   
-      #   
-      #   
-      #   if (self$options$pclass
-      #       && self$results$pclass$isNotFilled()) {
-      #   
-      #     
-      #     # nc <- self$options$nc
-      #     # 
-      #     # step <- self$options$step
-      #     # 
-      #     # type <- self$options$type
-      #     # 
-      #     # # computing mixRasch-----------
-      #     # 
-      #     # res1 <-
-      #     #   mixRasch::mixRasch(
-      #     #     data = data,
-      #     #     steps = step,
-      #     #     model = type,
-      #     #     n.c = nc
-      #     #   )
-      #     
-      #     #pclass <- res1$class
-      #     
-      #     
-      #     keys <- 1:self$options$nc
-      #     titles <- paste("Class", 1:self$options$nc)
-      #     descriptions <- paste("Class", 1:self$options$nc)
-      #     measureTypes <- rep("continuous", self$options$nc)
-      #     
-      #     self$results$pclass$set(
-      #       keys=keys,
-      #       titles=titles,
-      #       descriptions=descriptions,
-      #       measureTypes=measureTypes
-      #     )
-      #     
-      #     self$results$pclass$setRowNums(rownames(data))
-      #     
-      #   
-      #     pclass <- as.data.frame(pclass)
-      #    
-      #     for (i in 1:self$options$nc) {
-      #       scores <- as.numeric(pclass[, i])
-      #       self$results$pclass$setValues(index=i, scores)
-      #     }
-      #   }
-      # },
-      # 
+      ################################################## 
      .populateMemberOutputs= function(results) {
 
        
@@ -734,8 +702,148 @@ mixtureClass <- if (requireNamespace('jmvcore'))
 
      },
 
+     # Person measure across class----------
+     
+     .populatePmeasureOutputs= function(results) {
 
-      # Item plot--------------
+      
+       pmeasure <- results$pmeasure
+
+
+       if (self$options$pmeasure
+           && self$results$pmeasure$isNotFilled()) {
+
+         keys <- 1:self$options$nc
+         measureTypes <- rep("continuous", self$options$nc)
+
+         titles <- paste("Measure_Class", keys)
+         descriptions <- paste("Measure_Class", keys)
+
+         self$results$pmeasure$set(
+           keys=keys,
+           titles=titles,
+           descriptions=descriptions,
+           measureTypes=measureTypes
+         )
+
+         self$results$pmeasure$setRowNums(rownames(data))
+
+         for (i in 1:self$options$nc) {
+           scores <- as.numeric(pmeasure[, i])
+           self$results$pmeasure$setValues(index=i, scores)
+         }
+
+
+       }
+     },
+
+     # Person error across class----------
+     
+     .populatePseOutputs= function(results) {
+       
+       
+       pse <- results$pse
+       
+       
+       if (self$options$pse
+           && self$results$pse$isNotFilled()) {
+         
+         keys <- 1:self$options$nc
+         measureTypes <- rep("continuous", self$options$nc)
+         
+         titles <- paste("SE_Class", keys)
+         descriptions <- paste("SE_Class", keys)
+         
+         self$results$pse$set(
+           keys=keys,
+           titles=titles,
+           descriptions=descriptions,
+           measureTypes=measureTypes
+         )
+         
+         self$results$pse$setRowNums(rownames(data))
+         
+         for (i in 1:self$options$nc) {
+           scores <- as.numeric(pse[, i])
+           self$results$pse$setValues(index=i, scores)
+         }
+         
+         
+       }
+     },
+     
+     # Person fit analysis across class---------
+     
+     .populatePinfitOutputs= function(results) {
+       
+       
+       pinfit <- results$pinfit
+       
+       
+       if (self$options$pinfit
+           && self$results$pinfit$isNotFilled()) {
+         
+         keys <- 1:self$options$nc
+         measureTypes <- rep("continuous", self$options$nc)
+         
+         titles <- paste("Infit_Class", keys)
+         descriptions <- paste("Infit_Class", keys)
+         
+         self$results$pinfit$set(
+           keys=keys,
+           titles=titles,
+           descriptions=descriptions,
+           measureTypes=measureTypes
+         )
+         
+         self$results$pinfit$setRowNums(rownames(data))
+         
+         for (i in 1:self$options$nc) {
+           scores <- as.numeric(pinfit[, i])
+           self$results$pinfit$setValues(index=i, scores)
+         }
+         
+         
+       }
+     },
+     
+     #Outfit----------
+     
+     .populatePoutfitOutputs= function(results) {
+       
+       
+       poutfit <- results$poutfit
+       
+       
+       if (self$options$poutfit
+           && self$results$poutfit$isNotFilled()) {
+         
+         keys <- 1:self$options$nc
+         measureTypes <- rep("continuous", self$options$nc)
+         
+         titles <- paste("Outfit_Class", keys)
+         descriptions <- paste("Outfit_Class", keys)
+         
+         self$results$poutfit$set(
+           keys=keys,
+           titles=titles,
+           descriptions=descriptions,
+           measureTypes=measureTypes
+         )
+         
+         self$results$poutfit$setRowNums(rownames(data))
+         
+         for (i in 1:self$options$nc) {
+           scores <- as.numeric(poutfit[, i])
+           self$results$poutfit$setValues(index=i, scores)
+         }
+         
+         
+       }
+     },
+     
+     
+   #  Item plot--------------
       
       .itemPlot = function(image, ggtheme, theme, ...) {
         

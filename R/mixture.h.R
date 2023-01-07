@@ -110,6 +110,14 @@ mixtureOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 default=FALSE)
             private$..pmember <- jmvcore::OptionOutput$new(
                 "pmember")
+            private$..pmeasure <- jmvcore::OptionOutput$new(
+                "pmeasure")
+            private$..pse <- jmvcore::OptionOutput$new(
+                "pse")
+            private$..pinfit <- jmvcore::OptionOutput$new(
+                "pinfit")
+            private$..poutfit <- jmvcore::OptionOutput$new(
+                "poutfit")
 
             self$.addOption(private$..vars)
             self$.addOption(private$..nc)
@@ -129,6 +137,10 @@ mixtureOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..plot1)
             self$.addOption(private$..plot2)
             self$.addOption(private$..pmember)
+            self$.addOption(private$..pmeasure)
+            self$.addOption(private$..pse)
+            self$.addOption(private$..pinfit)
+            self$.addOption(private$..poutfit)
         }),
     active = list(
         vars = function() private$..vars$value,
@@ -148,7 +160,11 @@ mixtureOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         wrightmap = function() private$..wrightmap$value,
         plot1 = function() private$..plot1$value,
         plot2 = function() private$..plot2$value,
-        pmember = function() private$..pmember$value),
+        pmember = function() private$..pmember$value,
+        pmeasure = function() private$..pmeasure$value,
+        pse = function() private$..pse$value,
+        pinfit = function() private$..pinfit$value,
+        poutfit = function() private$..poutfit$value),
     private = list(
         ..vars = NA,
         ..nc = NA,
@@ -167,7 +183,11 @@ mixtureOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..wrightmap = NA,
         ..plot1 = NA,
         ..plot2 = NA,
-        ..pmember = NA)
+        ..pmember = NA,
+        ..pmeasure = NA,
+        ..pse = NA,
+        ..pinfit = NA,
+        ..poutfit = NA)
 )
 
 mixtureResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -181,7 +201,11 @@ mixtureResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         plot = function() private$.items[["plot"]],
         plot1 = function() private$.items[["plot1"]],
         plot2 = function() private$.items[["plot2"]],
-        pmember = function() private$.items[["pmember"]]),
+        pmember = function() private$.items[["pmember"]],
+        pmeasure = function() private$.items[["pmeasure"]],
+        pse = function() private$.items[["pse"]],
+        pinfit = function() private$.items[["pinfit"]],
+        poutfit = function() private$.items[["poutfit"]]),
     private = list(),
     public=list(
         initialize=function(options) {
@@ -481,6 +505,46 @@ mixtureResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "vars",
                     "nc",
                     "step",
+                    "type")))
+            self$add(jmvcore::Output$new(
+                options=options,
+                name="pmeasure",
+                title="Measure",
+                measureType="continuous",
+                clearWith=list(
+                    "vars",
+                    "nc",
+                    "step",
+                    "type")))
+            self$add(jmvcore::Output$new(
+                options=options,
+                name="pse",
+                title="SE",
+                measureType="continuous",
+                clearWith=list(
+                    "vars",
+                    "nc",
+                    "step",
+                    "type")))
+            self$add(jmvcore::Output$new(
+                options=options,
+                name="pinfit",
+                title="Infit",
+                measureType="continuous",
+                clearWith=list(
+                    "vars",
+                    "nc",
+                    "step",
+                    "type")))
+            self$add(jmvcore::Output$new(
+                options=options,
+                name="poutfit",
+                title="Outfit",
+                measureType="continuous",
+                clearWith=list(
+                    "vars",
+                    "nc",
+                    "step",
                     "type")))}))
 
 mixtureBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -541,6 +605,10 @@ mixtureBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$plot2} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$pmember} \tab \tab \tab \tab \tab an output \cr
+#'   \code{results$pmeasure} \tab \tab \tab \tab \tab an output \cr
+#'   \code{results$pse} \tab \tab \tab \tab \tab an output \cr
+#'   \code{results$pinfit} \tab \tab \tab \tab \tab an output \cr
+#'   \code{results$poutfit} \tab \tab \tab \tab \tab an output \cr
 #' }
 #'
 #' @export

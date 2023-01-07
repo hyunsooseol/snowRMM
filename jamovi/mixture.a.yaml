@@ -118,4 +118,19 @@ options:
       title: Person membership
       type: Output    
 
+    - name: pmeasure
+      title: Measure
+      type: Output
+
+    - name: pse
+      title: S.E. measure  
+      type: Output
+
+    - name: pinfit
+      title: Infit
+      type: Output
+
+    - name: poutfit
+      title: Outfit
+      type: Output
 ...

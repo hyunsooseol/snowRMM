@@ -80,6 +80,10 @@ A results object containing:
   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
   \code{results$plot2} \tab \tab \tab \tab \tab an image \cr
   \code{results$pmember} \tab \tab \tab \tab \tab an output \cr
+  \code{results$pmeasure} \tab \tab \tab \tab \tab an output \cr
+  \code{results$pse} \tab \tab \tab \tab \tab an output \cr
+  \code{results$pinfit} \tab \tab \tab \tab \tab an output \cr
+  \code{results$poutfit} \tab \tab \tab \tab \tab an output \cr
 }
 }
 \description{

@@ -268,5 +268,47 @@ items:
         - nc
         - step
         - type  
+
+    - name: pmeasure
+      title: Measure
+      type: Output
+      measureType: continuous
+      clearWith:
+        - vars
+        - nc
+        - step
+        - type 
+
+    - name: pse
+      title: SE
+      type: Output
+      measureType: continuous
+      clearWith:
+        - vars
+        - nc
+        - step
+        - type         
+
+    - name: pinfit
+      title: Infit
+      type: Output
+      measureType: continuous
+      clearWith:
+        - vars
+        - nc
+        - step
+        - type         
+
+    - name: poutfit
+      title: Outfit
+      type: Output
+      measureType: continuous
+      clearWith:
+        - vars
+        - nc
+        - step
+        - type                 
+
+
 ...
 
