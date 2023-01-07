@@ -258,7 +258,7 @@ items:
         - type
         - angle
 
-    - name: total
+    - name: ptotal
       title: Total
       type: Output
       varTitle: Total

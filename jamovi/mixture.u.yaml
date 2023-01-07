@@ -103,10 +103,18 @@ children:
               column: 0
               row: 0
             children:
-              - type: CheckBox
-                name: average
+              - type: Output
+                name: pmeasure
+              - type: Output
+                name: pse
+              - type: Output
+                name: pinfit
+              - type: Output
+                name: poutfit      
               - type: Output
                 name: pmember
+              - type: CheckBox
+                name: average
       - type: LayoutBox
         stretchFactor: 1
         margin: large
@@ -124,20 +132,4 @@ children:
                 name: wrightmap
               - type: CheckBox
                 name: plot2
-  - type: CollapseBox
-    label: Person Analysis
-    margin: normal
-    collapsed: true
-    children:
-      - type: LayoutBox
-        stretchFactor: 1
-        margin: large
-        children:
-          - type: Output
-            name: pmeasure
-          - type: Output
-            name: pse
-          - type: Output
-            name: pinfit
-          - type: Output
-            name: poutfit         
+ 

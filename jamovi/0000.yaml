@@ -79,6 +79,7 @@ datasets:
     description: Mixture data
     tags:
       - Mixture
+      - Rasch
   - name: binary
     path: boot.omv
     description: Bootstrap Item Fit

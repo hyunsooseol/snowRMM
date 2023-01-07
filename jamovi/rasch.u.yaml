@@ -34,7 +34,7 @@ children:
           - type: ComboBox
             name: type
   - type: CollapseBox
-    label: 'Item Analysis using mixRasch R package'
+    label: Item Analysis using mixRasch R package
     margin: normal
     collapsed: true
     children:
@@ -43,7 +43,7 @@ children:
         margin: large
         children:
           - type: Label
-            label: 'Item measures'
+            label: Item measures
             children:
               - type: CheckBox
                 name: imean
@@ -52,7 +52,7 @@ children:
               - type: CheckBox
                 name: ise
           - type: Label
-            label: 'Thresholds(Step>1)'
+            label: Thresholds(Step>1)
             children:
               - type: CheckBox
                 name: thr
@@ -65,15 +65,15 @@ children:
         fitToGrid: true
         children:
           - type: Label
-            label: 'Model fit'
+            label: Model fit
             children:
               - type: CheckBox
                 name: fit
               - type: CheckBox
                 name: rel
           - type: Label
-            label: 'Item fit'
-            children:                
+            label: Item fit
+            children:
               - type: CheckBox
                 name: infit
               - type: CheckBox
@@ -81,7 +81,7 @@ children:
               - type: CheckBox
                 name: pbis
   - type: CollapseBox
-    label: 'Testing model using eRm R package'
+    label: Testing model using eRm R package
     margin: normal
     collapsed: true
     children:
@@ -90,26 +90,26 @@ children:
         margin: large
         children:
           - type: Label
-            label: 'Dichotomous(Step=1)'
-            children:                
+            label: Dichotomous(Step=1)
+            children:
               - type: CheckBox
                 name: lr
                 children:
                   - type: ComboBox
                     name: lrsplit
-                    enable: (lr) 
+                    enable: (lr)
               - type: CheckBox
                 name: ml
                 children:
                   - type: ComboBox
                     name: mlsplit
-                    enable: (ml) 
+                    enable: (ml)
               - type: CheckBox
                 name: wald
                 children:
                   - type: ComboBox
                     name: waldsplit
-                    enable: (wald) 
+                    enable: (wald)
       - type: LayoutBox
         stretchFactor: 1
         margin: large
@@ -119,23 +119,23 @@ children:
         fitToGrid: true
         children:
           - type: Label
-            label: 'Polytomous(Step>1)'
-            children:    
+            label: Polytomous(Step>1)
+            children:
               - type: CheckBox
                 name: ml1
                 children:
                   - type: ComboBox
                     name: mlsplit1
-                    enable: (ml1) 
+                    enable: (ml1)
           - type: Label
-            label: 'Plot(Step=1)'
+            label: Plot(Step=1)
             children:
               - type: CheckBox
                 name: gofplot
                 children:
                   - type: ComboBox
                     name: tlab
-                    enable: (gofplot) 
+                    enable: (gofplot)
   - type: CollapseBox
     label: Plots
     margin: normal
@@ -153,19 +153,19 @@ children:
                 name: num
                 format: number
           - type: Label
-            label: 'Item Characteristic Curve(ICC)'
+            label: Item Characteristic Curve(ICC)
             fitToGrid: true
-            children:  
+            children:
               - type: CheckBox
                 name: plot1
           - type: Label
-            label: 'Category(Step>1)'
+            label: Category(Step>1)
             fitToGrid: true
-            children:          
+            children:
               - type: CheckBox
-                name: plot2 
+                name: plot2
               - type: CheckBox
-                name: plot3                 
+                name: plot3
       - type: LayoutBox
         stretchFactor: 1
         margin: large
@@ -175,7 +175,7 @@ children:
         fitToGrid: true
         children:
           - type: Label
-            label: 'Fit'
+            label: Fit
             children:
               - type: CheckBox
                 name: inplot
@@ -188,12 +188,12 @@ children:
                   - value: 0
                   - value: 45
           - type: Label
-            label: 'Map'
+            label: Map
             children:
               - type: CheckBox
                 name: wrightmap
               - type: CheckBox
-                name: piplot                
+                name: piplot
   - type: CollapseBox
     label: Person Analysis
     margin: normal
@@ -204,14 +204,14 @@ children:
         margin: large
         children:
           - type: Label
-            label: 'Person measures'
+            label: Person measures
             fitToGrid: true
             cell:
               column: 0
               row: 0
             children:
               - type: Output
-                name: total
+                name: ptotal
               - type: Output
                 name: pmeasure
               - type: Output
@@ -241,7 +241,7 @@ children:
         margin: large
         children:
           - type: Label
-            label: 'Thresholds(eRm R package)'
+            label: Thresholds(eRm R package)
             fitToGrid: true
             cell:
               column: 0
@@ -250,4 +250,4 @@ children:
               - type: CheckBox
                 name: rsm
               - type: CheckBox
-                name: pcm   
+                name: pcm

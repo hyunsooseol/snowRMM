@@ -118,8 +118,8 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "wrightmap",
                 wrightmap,
                 default=TRUE)
-            private$..total <- jmvcore::OptionOutput$new(
-                "total")
+            private$..ptotal <- jmvcore::OptionOutput$new(
+                "ptotal")
             private$..pmeasure <- jmvcore::OptionOutput$new(
                 "pmeasure")
             private$..pse <- jmvcore::OptionOutput$new(
@@ -230,7 +230,7 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..pcm)
             self$.addOption(private$..thr)
             self$.addOption(private$..wrightmap)
-            self$.addOption(private$..total)
+            self$.addOption(private$..ptotal)
             self$.addOption(private$..pmeasure)
             self$.addOption(private$..pse)
             self$.addOption(private$..pinfit)
@@ -270,7 +270,7 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         pcm = function() private$..pcm$value,
         thr = function() private$..thr$value,
         wrightmap = function() private$..wrightmap$value,
-        total = function() private$..total$value,
+        ptotal = function() private$..ptotal$value,
         pmeasure = function() private$..pmeasure$value,
         pse = function() private$..pse$value,
         pinfit = function() private$..pinfit$value,
@@ -309,7 +309,7 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..pcm = NA,
         ..thr = NA,
         ..wrightmap = NA,
-        ..total = NA,
+        ..ptotal = NA,
         ..pmeasure = NA,
         ..pse = NA,
         ..pinfit = NA,
@@ -351,7 +351,7 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         plot3 = function() private$.items[["plot3"]],
         inplot = function() private$.items[["inplot"]],
         outplot = function() private$.items[["outplot"]],
-        total = function() private$.items[["total"]],
+        ptotal = function() private$.items[["ptotal"]],
         pmeasure = function() private$.items[["pmeasure"]],
         pse = function() private$.items[["pse"]],
         pinfit = function() private$.items[["pinfit"]],
@@ -649,7 +649,7 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "angle")))
             self$add(jmvcore::Output$new(
                 options=options,
-                name="total",
+                name="ptotal",
                 title="Total",
                 varTitle="Total",
                 measureType="continuous",
@@ -888,7 +888,7 @@ raschBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$plot3} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$inplot} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$outplot} \tab \tab \tab \tab \tab an image \cr
-#'   \code{results$total} \tab \tab \tab \tab \tab an output \cr
+#'   \code{results$ptotal} \tab \tab \tab \tab \tab an output \cr
 #'   \code{results$pmeasure} \tab \tab \tab \tab \tab an output \cr
 #'   \code{results$pse} \tab \tab \tab \tab \tab an output \cr
 #'   \code{results$pinfit} \tab \tab \tab \tab \tab an output \cr

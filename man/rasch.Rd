@@ -129,7 +129,7 @@ A results object containing:
   \code{results$plot3} \tab \tab \tab \tab \tab an image \cr
   \code{results$inplot} \tab \tab \tab \tab \tab an image \cr
   \code{results$outplot} \tab \tab \tab \tab \tab an image \cr
-  \code{results$total} \tab \tab \tab \tab \tab an output \cr
+  \code{results$ptotal} \tab \tab \tab \tab \tab an output \cr
   \code{results$pmeasure} \tab \tab \tab \tab \tab an output \cr
   \code{results$pse} \tab \tab \tab \tab \tab an output \cr
   \code{results$pinfit} \tab \tab \tab \tab \tab an output \cr

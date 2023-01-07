@@ -127,14 +127,7 @@ raschClass <- if (requireNamespace('jmvcore'))
           
           results <- private$.compute(data)
           
-          #  populate RSM thresholds table-----
           
-         
-           # private$.populateRsmTable(results)
-           # 
-           # private$.populatePcmTable(results)
-
-         
           #  populate Model information table-----
           
           private$.populateModelTable(results)
@@ -153,13 +146,6 @@ raschClass <- if (requireNamespace('jmvcore'))
           private$.populateThrTable(results)
           
          
-         # private$.populatePersonTable(results)
-          
-          # populate output variables-----
-          
-          private$.populateOutputs(data)
-          
-          
           # prepare wrightmap plot-----
           
           private$.prepareWrightmapPlot(data)
@@ -180,6 +166,14 @@ raschClass <- if (requireNamespace('jmvcore'))
           # private$.prepareRsmPlot(data)
           
           private$.preparePcmPlot(data)
+          
+          # populate Person analysis table-------
+          private$.populatePtotalOutputs(results)
+          private$.populatePmeasureOutputs(results)
+          private$.populatePseOutputs(results)
+          private$.populatePinfitOutputs(results)
+          private$.populatePoutfitOutputs(results)
+          
           
           
         }
@@ -207,7 +201,15 @@ raschClass <- if (requireNamespace('jmvcore'))
             n.c = 1
           )
         
-       
+       # Person analysis-----------
+        
+        ptotal <- res$person.par$r
+        pmeasure <- res$person.par$theta
+        pse <- res$person.par$SE.theta
+        pinfit <- res$person.par$infit
+        poutfit <- res$person.par$outfit
+        
+        
         # model information--------
         
         aic <- res$info.fit$AIC
@@ -269,10 +271,9 @@ raschClass <- if (requireNamespace('jmvcore'))
           
           lrsplit<- self$options$lrsplit
           
-          # LR test#################
-          
+          # LR test----------
           lr <- eRm::LRtest(rasch, splitcr = lrsplit)
-          ##############################
+          #-------------------
           
           value<- lr$LR
           df<- lr$df
@@ -513,9 +514,13 @@ raschClass <- if (requireNamespace('jmvcore'))
             'ssd' =ssd,
             'mse'=mse,
             'rel'=rel,
-            'tau'=tau
+            'tau'=tau,
+            'ptotal'=ptotal,
+            'pmeasure'=pmeasure,
+            'pse'=pse,
+            'pinfit'=pinfit,
+            'poutfit'=poutfit
           )
-        
         
         
       },
@@ -695,135 +700,91 @@ raschClass <- if (requireNamespace('jmvcore'))
       },
       
       
+      ##### person statistics -------------------
       
       
-      
-      
-      ##### person statistics for output variable-------------------
-      
-      .populateOutputs= function(data) {
+      .populatePtotalOutputs= function(results) {
+
+        ptotal <- results$ptotal
         
-        if (self$options$total&& self$results$total$isNotFilled()){
-          
-          step <- self$options$step
-          
-          type <- self$options$type
-          
-          res <-
-            mixRasch::mixRasch(
-              data = data,
-              steps = step,
-              model = type,
-              n.c = 1
-            )
+        
+        if (self$options$ptotal&& self$results$ptotal$isNotFilled()){
+
          
-          total <- res$person.par$r
-          
-          self$results$total$setRowNums(rownames(data))
-          self$results$total$setValues(total)
-          
+          self$results$ptotal$setRowNums(rownames(data))
+          self$results$ptotal$setValues(ptotal)
+
         }
+      },
+      
         
-        if (self$options$pmeasure&& self$results$pmeasure$isNotFilled()){
+        .populatePmeasureOutputs= function(results) {
           
-          step <- self$options$step
+          pmeasure <- results$pmeasure
           
-          type <- self$options$type
           
-          res <-
-            mixRasch::mixRasch(
-              data = data,
-              steps = step,
-              model = type,
-              n.c = 1
-            )
-          
-          pmeasure <- res$person.par$theta
-          
-          self$results$pmeasure$setRowNums(rownames(data))
-          self$results$pmeasure$setValues(pmeasure)
-          
-        }
+          if (self$options$pmeasure&& self$results$pmeasure$isNotFilled()){
+            
+            
+            self$results$pmeasure$setRowNums(rownames(data))
+            self$results$pmeasure$setValues(pmeasure)
+            
+          }
+
+        },
+        
+      .populatePseOutputs= function(results) {
+        
+        pse<- results$pse
+        
         
         if (self$options$pse&& self$results$pse$isNotFilled()){
           
-          step <- self$options$step
-          
-          type <- self$options$type
-          
-          res <-
-            mixRasch::mixRasch(
-              data = data,
-              steps = step,
-              model = type,
-              n.c = 1
-            )
-        
-          pse <- res$person.par$SE.theta
           
           self$results$pse$setRowNums(rownames(data))
           self$results$pse$setValues(pse)
           
         }
-       
+        
+      },
+        
+      .populatePinfitOutputs= function(results) {
+        
+        pinfit<- results$pinfit
+        
         
         if (self$options$pinfit&& self$results$pinfit$isNotFilled()){
           
-          step <- self$options$step
-          
-          type <- self$options$type
-          
-          res <-
-            mixRasch::mixRasch(
-              data = data,
-              steps = step,
-              model = type,
-              n.c = 1
-            )
-         
-          pinfit <- res$person.par$infit
           
           self$results$pinfit$setRowNums(rownames(data))
           self$results$pinfit$setValues(pinfit)
           
         }
         
+      },
+      
+      .populatePoutfitOutputs= function(results) {
+        
+        poutfit<- results$poutfit
+        
         
         if (self$options$poutfit&& self$results$poutfit$isNotFilled()){
           
-          step <- self$options$step
-          
-          type <- self$options$type
-          
-          res <-
-            mixRasch::mixRasch(
-              data = data,
-              steps = step,
-              model = type,
-              n.c = 1
-            )
-         
-          poutfit <- res$person.par$outfit
           
           self$results$poutfit$setRowNums(rownames(data))
           self$results$poutfit$setValues(poutfit)
           
         }
-         
         
       },
       
-      
-      
+     
       ### wrightmap Plot functions -----------
       
       
       .prepareWrightmapPlot = function(data) {
         
-        # get variables--------
-        
-        # data <- self$data
-        
+       
         step <- self$options$step
         
         type <- self$options$type
@@ -1114,24 +1075,7 @@ raschClass <- if (requireNamespace('jmvcore'))
         
       
       },
-      
-     # .prepareRsmPlot=function(data){
-     #   
-     #   num <- self$options$num
-     #   
-     #   
-     #   if (!self$options$rsm==TRUE)
-     #     return()
-     #   
-     #   rsm.res <- eRm::RSM(data)
-     #   
-     # #  rsm.res<- eRm::thresholds(rsm.res)
-     #   
-     #   image <- self$results$plot2
-     #   image$setState(rsm.res)
-     #   
-     #   
-     # },
+    
      
      .plot2 = function(image,...) {
        
