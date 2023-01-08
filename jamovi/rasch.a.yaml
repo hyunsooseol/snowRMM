@@ -16,10 +16,12 @@ options:
       title: Variables
       type: Variables
       suggested:
+         - nominal
          - continuous
       permitted:
+        - factor
         - numeric
-
+ 
     - name: num
       title: Item number
       default: 1

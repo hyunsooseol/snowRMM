@@ -50,8 +50,10 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "vars",
                 vars,
                 suggested=list(
+                    "nominal",
                     "continuous"),
                 permitted=list(
+                    "factor",
                     "numeric"))
             private$..num <- jmvcore::OptionInteger$new(
                 "num",
