@@ -87,6 +87,7 @@ children:
                     suggestedValues:
                       - value: 0
                       - value: 45
+                      - value: 90  
   - type: CollapseBox
     label: Person Analysis
     margin: normal

@@ -58,7 +58,7 @@ bfitOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "angle",
                 angle,
                 min=0,
-                max=45,
+                max=90,
                 default=0)
 
             self$.addOption(private$..vars)
@@ -243,8 +243,7 @@ bfitBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param boutfit .
 #' @param inplot .
 #' @param outplot .
-#' @param angle a number from 0 to 45 defining the angle of the x-axis labels,
-#'   where 0 degrees represents completely horizontal labels.
+#' @param angle .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr

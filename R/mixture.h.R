@@ -92,7 +92,7 @@ mixtureOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "angle",
                 angle,
                 min=0,
-                max=45,
+                max=90,
                 default=0)
             private$..iplot <- jmvcore::OptionBool$new(
                 "iplot",

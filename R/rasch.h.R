@@ -197,7 +197,7 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "angle",
                 angle,
                 min=0,
-                max=45,
+                max=90,
                 default=0)
             private$..plot1 <- jmvcore::OptionBool$new(
                 "plot1",
@@ -867,7 +867,7 @@ raschBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param tlab .
 #' @param inplot .
 #' @param outplot .
-#' @param angle a number from 0 to 45 defining the angle of the x-axis labels,
+#' @param angle a number from 0 to 90 defining the angle of the x-axis labels,
 #'   where 0 degrees represents completely horizontal labels.
 #' @param plot1 .
 #' @param plot2 .
