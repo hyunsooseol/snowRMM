@@ -259,13 +259,13 @@ mixtureClass <- if (requireNamespace('jmvcore'))
         
         # average theta bar plot----------
         
-        df<-  as.data.frame(average)
-        df$class <- seq.int(nrow(df))
-        df<- reshape2::melt(df, id.vars=c("class"))
-        
-        image1 <- self$results$plot1
-        image1$setState(df)
-        
+        # df<-  as.data.frame(average)
+        # df$class <- seq.int(nrow(df))
+        # df<- reshape2::melt(df, id.vars=c("class"))
+        # 
+        # image1 <- self$results$plot1
+        # image1$setState(df)
+        # 
         # class membership-------------
         
         pclass <- res1$class
@@ -329,74 +329,6 @@ mixtureClass <- if (requireNamespace('jmvcore'))
         } 
         },
         
-        # # Prepare Model Plot -------
-        # 
-        # 
-        #   nc<- self$options$nc
-        # 
-        #   out <- results$out
-        # 
-        #   df<- out[,1:3]
-        #   df$Class <- 1:nc
-        # 
-        # 
-        #   pd<- tidyr::pivot_longer(df,col=c("AIC","BIC","CAIC"),
-        #                            names_to = "Fit",
-        #                            values_to = "Value")
-        # 
-        #   pd <- as.data.frame(pd)
-        # 
-        #   self$results$text$setContent(pd) #it's OK !!!
-        # 
-        # 
-        #   image1 <- self$results$plot1
-        #   image1$setState(pd)
-        # 
-        #  },
-        
-        
-        
-      #   dims <- dimnames(fit)[[2]]
-      #   
-      #   for (dim in dims) {
-      #     
-      #     table$addColumn(name = paste0(dim),
-      #                     type = 'number')
-      #   }
-      #   
-      #   
-      #   for (name in names) {
-      #     row <- list()
-      #     
-      #     for(j in seq_along(dims)){       
-      #       row[[dims[j]]] <- fit[name,j]
-      #     }
-      #     
-      #     table$addRow(rowKey=name, values=row)
-      #   }
-      # },
-        
-        #results---------
-        
-        # class <- results$class
-        # aic <- results$aic
-        # bic <- results$bic
-        # caic <- results$caic
-        # 
-        # 
-        # for (i in seq_len(nc)) {
-        #   row <- list()
-        #   
-        #   row[["class"]] <- class
-        #   row[["aic"]] <- aic
-        #   row[["bic"]] <- bic
-        #   row[["caic"]] <- caic
-        #   
-        #   table$setRow(rowNo = 1, values = row)
-        #   
-        # }
-        # 
-      
       
       # populate Item Statistics table-----
       
@@ -970,27 +902,30 @@ mixtureClass <- if (requireNamespace('jmvcore'))
                                      
       },                             
       
-     .plot1 = function(image1, ggtheme, theme, ...) {    
-       
-       if (is.null(self$options$plot1))
-         return()
-       
-       
-       df <- image1$state
-       
-       plot1 <- ggplot2::ggplot(data=df, aes(x=class, y=value)) +
-         geom_bar(stat="identity",fill="steelblue" )+
-         #geom_text(aes(label=value), vjust=-0.3, size=3.5)+
-         #geom_text(aes(label=value), vjust=1.6, color="white", size=3.5)+
-         #scale_x_discrete("class", expand = c(0, 0)) +
-         scale_y_continuous(breaks = seq(-5, +5, 1)) 
-       
-       plot1 <- plot1+ggtheme
-       
-       print(plot1)
-       TRUE
-     
-     },
+     # .plot1 = function(image1, ggtheme, theme, ...) {    
+     #   
+     #   if (is.null(self$options$plot1))
+     #     return()
+     #   
+     #   
+     #   df <- image1$state
+     #   
+     #   plot1 <- ggplot2::ggplot(data=df, aes(x=class, y=value)) +
+     #     geom_bar(stat="identity",fill="steelblue" )+
+     #     #geom_text(aes(label=value), vjust=-0.3, size=3.5)+
+     #     #geom_text(aes(label=value), vjust=1.6, color="white", size=3.5)+
+     #     #scale_x_discrete("class", expand = c(0, 0)) +
+     #     ggplot2::scale_y_continuous(breaks = seq(-5, +5, 1)) 
+     #     ggplot2::scale_x_continuous(breaks = seq(1, length(df$class), by = 1))
+     #   
+     #   
+     #   
+     #   plot1 <- plot1+ggtheme
+     #   
+     #   print(plot1)
+     #   TRUE
+     # 
+     # },
      
      .plot2 = function(image, ggtheme, theme,...) {
        
@@ -999,12 +934,17 @@ mixtureClass <- if (requireNamespace('jmvcore'))
        
        elbow <- image$state
        
+       # plot2 <- ggplot2::ggplot(elbow,aes(x = Class, y = Value, group = Fit))+
+       #   geom_line(size=1.1,aes(color=Fit))+
+       #   geom_point(size=3,aes(color=Fit))
+       # 
+
+       plot2 <- ggplot2::ggplot(elbow, ggplot2::aes(x = Class, y = Value, color = Fit)) +
+         ggplot2::geom_line(size = 1.1) +
+         ggplot2::geom_point(size = 3) +
+         ggplot2::scale_x_continuous(breaks = seq(1, length(elbow$Class), by = 1))
        
-       plot2 <- ggplot2::ggplot(elbow,aes(x = Class, y = Value, group = Fit))+
-         geom_line(size=1.1,aes(color=Fit))+
-         geom_point(size=3,aes(color=Fit))
-       
-       
+              
        plot2 <- plot2+ggtheme
        
        

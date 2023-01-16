@@ -16,7 +16,8 @@ lpaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             plot = FALSE,
             plot1 = FALSE,
             plot3 = FALSE,
-            plot2 = FALSE, ...) {
+            plot2 = FALSE,
+            angle = 0, ...) {
 
             super$initialize(
                 package="snowRMM",
@@ -81,6 +82,12 @@ lpaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "plot2",
                 plot2,
                 default=FALSE)
+            private$..angle <- jmvcore::OptionNumber$new(
+                "angle",
+                angle,
+                min=0,
+                max=90,
+                default=0)
 
             self$.addOption(private$..vars)
             self$.addOption(private$..nc)
@@ -94,6 +101,7 @@ lpaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..plot1)
             self$.addOption(private$..plot3)
             self$.addOption(private$..plot2)
+            self$.addOption(private$..angle)
         }),
     active = list(
         vars = function() private$..vars$value,
@@ -107,7 +115,8 @@ lpaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         plot = function() private$..plot$value,
         plot1 = function() private$..plot1$value,
         plot3 = function() private$..plot3$value,
-        plot2 = function() private$..plot2$value),
+        plot2 = function() private$..plot2$value,
+        angle = function() private$..angle$value),
     private = list(
         ..vars = NA,
         ..nc = NA,
@@ -120,7 +129,8 @@ lpaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..plot = NA,
         ..plot1 = NA,
         ..plot3 = NA,
-        ..plot2 = NA)
+        ..plot2 = NA,
+        ..angle = NA)
 )
 
 lpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -381,6 +391,8 @@ lpaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param plot1 .
 #' @param plot3 .
 #' @param plot2 .
+#' @param angle a number from 0 to 90 defining the angle of the x-axis labels,
+#'   where 0 degrees represents completely horizontal labels.
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
@@ -413,7 +425,8 @@ lpa <- function(
     plot = FALSE,
     plot1 = FALSE,
     plot3 = FALSE,
-    plot2 = FALSE) {
+    plot2 = FALSE,
+    angle = 0) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("lpa requires jmvcore to be installed (restart may be required)")
@@ -436,7 +449,8 @@ lpa <- function(
         plot = plot,
         plot1 = plot1,
         plot3 = plot3,
-        plot2 = plot2)
+        plot2 = plot2,
+        angle = angle)
 
     analysis <- lpaClass$new(
         options = options,

@@ -106,11 +106,6 @@ options:
       type: Bool
       default: FALSE  
 
-    - name: plot1
-      title: Average theta
-      type: Bool
-      default: FALSE
-      
     - name: plot2
       title: 'Elbow plot'
       type: Bool

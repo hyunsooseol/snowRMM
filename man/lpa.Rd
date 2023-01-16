@@ -16,7 +16,8 @@ lpa(
   plot = FALSE,
   plot1 = FALSE,
   plot3 = FALSE,
-  plot2 = FALSE
+  plot2 = FALSE,
+  angle = 0
 )
 }
 \arguments{
@@ -43,6 +44,9 @@ lpa(
 \item{plot3}{.}
 
 \item{plot2}{.}
+
+\item{angle}{a number from 0 to 90 defining the angle of the x-axis labels,
+where 0 degrees represents completely horizontal labels.}
 }
 \value{
 A results object containing:

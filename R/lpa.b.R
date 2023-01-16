@@ -306,6 +306,14 @@ lpaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             plot1 <- tidyLPA::plot_profiles(res,add_line = TRUE)
             
             
+            if (self$options$angle > 0) {
+              plot1 <- plot1 + ggplot2::theme(
+                axis.text.x = ggplot2::element_text(
+                  angle = self$options$angle, hjust = 1
+                )
+              )
+            }
+            
             print(plot1)
             TRUE
         

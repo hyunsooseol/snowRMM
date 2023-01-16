@@ -44,12 +44,12 @@ options:
       default: True
 
     - name: cp
-      title: Class 
+      title: Class size 
       type: Bool 
       default: FALSE
 
     - name: ip
-      title: Variable
+      title: Item response
       type: Bool
       default: FALSE
  

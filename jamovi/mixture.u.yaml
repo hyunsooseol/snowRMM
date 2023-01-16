@@ -128,8 +128,6 @@ children:
             label: Plots
             children:
               - type: CheckBox
-                name: plot1
-              - type: CheckBox
                 name: wrightmap
               - type: CheckBox
                 name: plot2
