@@ -224,6 +224,8 @@ lpaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             pc<- tidyLPA:: get_data(res)
             pc<- pc$Class
             
+            pc <- as.factor(pc)
+            
             
             if (self$options$pc
                 && self$results$pc$isNotFilled()) {
