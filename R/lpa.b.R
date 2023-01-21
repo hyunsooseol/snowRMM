@@ -347,11 +347,16 @@ lpaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
   
   elbow <- image$state
   
+  plot2 <- ggplot2::ggplot(elbow, ggplot2::aes(x = Class, y = Value, color = Fit)) +
+    ggplot2::geom_line(size = 1.1) +
+    ggplot2::geom_point(size = 3) +
+    ggplot2::scale_x_continuous(breaks = seq(1, length(elbow$Class), by = 1))
   
-  plot2 <- ggplot2::ggplot(elbow,aes(x = Class, y = Value, group = Fit))+
-    geom_line(size=1.1,aes(color=Fit))+
-    geom_point(size=3,aes(color=Fit))
   
+  # plot2 <- ggplot2::ggplot(elbow,aes(x = Class, y = Value, group = Fit))+
+  #   geom_line(size=1.1,aes(color=Fit))+
+  #   geom_point(size=3,aes(color=Fit))
+  # 
   
   plot2 <- plot2+ggtheme
   
