@@ -28,6 +28,6 @@ Imports:
     eRm,
     iarm,
     reshape2,
-Remotes: twolodzko/equi
-Remotes: cran/mixRasch
+Remotes: twolodzko/equi,
+         cran/mixRasch
 
