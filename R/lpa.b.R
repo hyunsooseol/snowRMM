@@ -284,8 +284,12 @@ lpaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         .plot = function(image, ggtheme, theme,...) {
             
-            if (is.null(self$options$vars))
-                return()
+          
+          if (is.null(image$state))
+            return(FALSE)
+          
+            # if (is.null(self$options$vars))
+            #     return()
             
             res <- image$state
 
@@ -299,9 +303,11 @@ lpaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         .plot1 = function(image, ggtheme, theme,...) {
             
-            if (is.null(self$options$vars))
-                return()
-            
+            # if (is.null(self$options$vars))
+            #     return()
+          if (is.null(image$state))
+            return(FALSE)
+          
             res <- image$state
             
             
@@ -327,9 +333,11 @@ lpaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
 .plot3 = function(image, ggtheme, theme,...) {
   
-  if (is.null(self$options$vars))
-    return()
+  # if (is.null(self$options$vars))
+  #   return()
   
+  if (is.null(image$state))
+    return(FALSE)
   res1 <- image$state
   
   
@@ -342,8 +350,11 @@ lpaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
 .plot2 = function(image, ggtheme, theme,...) {
   
-  if (is.null(self$options$vars))
-    return()
+  # if (is.null(self$options$vars))
+  #   return()
+  
+  if (is.null(image$state))
+    return(FALSE)
   
   elbow <- image$state
   
