@@ -132,6 +132,8 @@ mixtureClass <- if (requireNamespace('jmvcore'))
         
         # computing mixRasch-----------
         
+        set.seed(1234)
+        
         res1 <-
           mixRasch::mixRasch(
             data = data,
@@ -197,6 +199,8 @@ mixtureClass <- if (requireNamespace('jmvcore'))
         out <- NULL
         
         for (i in 1:nc) {
+          
+          set.seed(1234)
           
           res1 <-
             mixRasch::mixRasch(
@@ -826,6 +830,8 @@ mixtureClass <- if (requireNamespace('jmvcore'))
         step <- self$options$step
         
         #-----------------------
+        set.seed(1234)
+        
         unidif <-
           mixRasch::mixRasch(
             data = data,
@@ -837,6 +843,9 @@ mixtureClass <- if (requireNamespace('jmvcore'))
         dif <- unidif$item.par$delta.i
         
         #--------------------------
+        
+        set.seed(1234)
+        
         person <-
           
             mixRasch::mixRasch(
@@ -869,10 +878,13 @@ mixtureClass <- if (requireNamespace('jmvcore'))
        
       .plot = function(image,...) {
         
-        wrightmap <- self$options$wrightmap
+        if (is.null(image$state))
+          return(FALSE)
         
-        if (!wrightmap)
-          return()
+        # wrightmap <- self$options$wrightmap
+        # 
+        # if (!wrightmap)
+        #   return()
         
         theta <- image$state[[1]]
         dif <- image$state[[2]]
@@ -929,8 +941,11 @@ mixtureClass <- if (requireNamespace('jmvcore'))
      
      .plot2 = function(image, ggtheme, theme,...) {
        
-       if (is.null(self$options$plot2))
-         return()
+       if (is.null(image$state))
+         return(FALSE)
+       
+       # if (is.null(self$options$plot2))
+       #   return()
        
        elbow <- image$state
        

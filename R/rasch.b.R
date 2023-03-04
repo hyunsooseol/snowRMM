@@ -192,7 +192,7 @@ raschClass <- if (requireNamespace('jmvcore'))
         
        
         # compute results------
-        
+      set.seed(1234)
         res <-
           mixRasch::mixRasch(
             data = data,
@@ -791,7 +791,7 @@ raschClass <- if (requireNamespace('jmvcore'))
         
         
         #compute wright---
-        
+        set.seed(1234)
         res <-  mixRasch::mixRasch(
           data = data,
           steps = step,
@@ -824,10 +824,12 @@ raschClass <- if (requireNamespace('jmvcore'))
       
       .plot = function(image,...) {
         
-        wrightmap <- self$options$wrightmap
-        
-        if (!wrightmap)
-          return()
+        if (is.null(image$state))
+          return(FALSE)
+        # wrightmap <- self$options$wrightmap
+        # 
+        # if (!wrightmap)
+        #   return()
         
         pmeasure <- image$state[[1]]
         imeasure <- image$state[[2]]
@@ -888,8 +890,9 @@ raschClass <- if (requireNamespace('jmvcore'))
         type <- self$options$type
         
         
-        #compute wright---
+        #compute mixRasch---
         
+        set.seed(1234)
         res <-  mixRasch::mixRasch(
           data = data,
           steps = step,
@@ -924,11 +927,13 @@ raschClass <- if (requireNamespace('jmvcore'))
       
       .inPlot = function(image, ggtheme, theme,...) {
         
+        if (is.null(image$state))
+          return(FALSE)
         
-        inplot <- self$options$inplot
-        
-        if (!inplot)
-          return()
+        # inplot <- self$options$inplot
+        # 
+        # if (!inplot)
+        #   return()
         
         infit1 <- image$state
         
@@ -936,9 +941,10 @@ raschClass <- if (requireNamespace('jmvcore'))
         plot <- ggplot(infit1, aes(x = item, y=infit)) + 
           geom_point(shape = 21, color = 'skyblue', 
                      fill = 'white', size = 3, stroke = 2) +
-          geom_hline(yintercept = 1.5) +
-          geom_hline(yintercept = 0.5) +
-          ggtitle("Item Infit")
+         
+          geom_hline(yintercept = 1.5,linetype = "dotted", color='red', size=1.0) +
+          geom_hline(yintercept = 0.5,linetype = "dotted", color='red', size=1.0) 
+          #ggtitle("Item Infit")
         
         plot <- plot+ggtheme
         
@@ -966,8 +972,8 @@ raschClass <- if (requireNamespace('jmvcore'))
         type <- self$options$type
         
         
-        #compute wright---
-        
+        #compute mixRasch---
+        set.seed(1234)
         res <-  mixRasch::mixRasch(
           data = data,
           steps = step,
@@ -1003,10 +1009,13 @@ raschClass <- if (requireNamespace('jmvcore'))
   
       .outPlot = function(image, ggtheme, theme,...) {
         
-        outplot <- self$options$outplot
+        # outplot <- self$options$outplot
+        # 
+        # if (!outplot)
+        #   return()
         
-        if (!outplot)
-          return()
+        if (is.null(image$state))
+          return(FALSE)
         
         outfit1 <- image$state
         
@@ -1014,9 +1023,10 @@ raschClass <- if (requireNamespace('jmvcore'))
         plot <- ggplot(outfit1, aes(x = item, y=outfit)) + 
           geom_point(shape = 21, color = 'skyblue', 
                      fill = 'white', size = 3, stroke = 2) +
-          geom_hline(yintercept = 1.5) +
-          geom_hline(yintercept = 0.5) +
-          ggtitle("Item Outfit")
+         
+          geom_hline(yintercept = 1.5,linetype = "dotted", color='red', size=1.0) +
+          geom_hline(yintercept = 0.5,linetype = "dotted", color='red', size=1.0) 
+          #ggtitle("Item Outfit")
         
         plot <- plot+ggtheme
         
