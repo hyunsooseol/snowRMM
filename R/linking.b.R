@@ -139,11 +139,14 @@ linkingClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         .plot = function(image,...) {
             
              
-            if (length(self$options$ind)<1) return()
+            # if (length(self$options$ind)<1) return()
+            # 
+            # if (length(self$options$dep)<1) return()
+            # 
             
-            if (length(self$options$dep)<1) return()
-            
-            
+          if (is.null(image$state))
+            return(FALSE)
+          
             lin <- image$state[[1]]
             eq <- image$state[[2]]
             

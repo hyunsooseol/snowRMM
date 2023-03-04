@@ -357,12 +357,16 @@ lltmClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         .plot = function(image,ggtheme, theme, ...) {
             
-            plot <- self$options$plot
+            # plot <- self$options$plot
+            # 
+            # if (!plot)
+            #     return()
+            # 
             
-            if (!plot)
-                return()
-            
-            
+          
+          if (is.null(image$state))
+            return(FALSE)
+          
             lltm <- image$state[[1]]
             rm <- image$state[[2]]
             
