@@ -747,8 +747,9 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
       # 
       .plot = function(image,...) {
         
-        if (is.null(self$options$vars))
-          return()
+        if (is.null(image$state))
+          return(FALSE)
+        
         
         x <- image$state
         
@@ -807,6 +808,11 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
   
 .plot1 = function(image1, ggtheme, theme, ...) {    
 
+  
+  if (is.null(image1$state))
+    return(FALSE)
+  
+  
   lcModelProbs <- image1$state
   
   plot1 <- ggplot2::ggplot(lcModelProbs,
@@ -836,6 +842,10 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
 .plot2 = function(image2, ggtheme, theme, ...) {    
   
+  if (is.null(image2$state))
+    return(FALSE)
+  
+  
   profile <- image2$state
   
   plot2 <- ggplot2::ggplot(profile,aes(x = Variable, y = value, group = Class))+
@@ -861,7 +871,9 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
 .plot3 = function(image, ggtheme, theme,...) {
   
- 
+  if (is.null(image$state))
+    return(FALSE)
+  
   elbow <- image$state
   
 
