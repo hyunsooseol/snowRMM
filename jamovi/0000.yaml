@@ -74,6 +74,12 @@ analyses:
     menuTitle: Linear Logisitic Test Model
     menuSubgroup: Mixture
 datasets:
+  - name: binary
+    path: boot.omv
+    description: Bootstrap Item Fit
+    tags:
+      - Rasch
+      - Bootstrap
   - name: mixture
     path: mix.omv
     description: Mixture data
@@ -92,12 +98,6 @@ datasets:
     tags:
       - Rasch
       - Mixture
-      - Bootstrap
-  - name: binary
-    path: boot.omv
-    description: Bootstrap Item Fit
-    tags:
-      - Rasch
       - Bootstrap
   - name: alzheimer
     path: alzheimer.omv
