@@ -21,7 +21,7 @@ mixtureOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             angle = 0,
             iplot = FALSE,
             wrightmap = FALSE,
-            plot2 = FALSE, ...) {
+            plot2 = TRUE, ...) {
 
             super$initialize(
                 package="snowRMM",
@@ -104,7 +104,7 @@ mixtureOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             private$..plot2 <- jmvcore::OptionBool$new(
                 "plot2",
                 plot2,
-                default=FALSE)
+                default=TRUE)
             private$..pmember <- jmvcore::OptionOutput$new(
                 "pmember")
             private$..pmeasure <- jmvcore::OptionOutput$new(
@@ -606,7 +606,7 @@ mixture <- function(
     angle = 0,
     iplot = FALSE,
     wrightmap = FALSE,
-    plot2 = FALSE) {
+    plot2 = TRUE) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("mixture requires jmvcore to be installed (restart may be required)")

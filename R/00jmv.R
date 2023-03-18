@@ -14,8 +14,8 @@
         `author`="Willse, J.", 
         `year`=2014, 
         `title`="mixRasch: Mixture Rasch Models with JMLE", 
-        `publisher`="[R package]. Retrieved from https://CRAN.R-project.org/package=mixRasch", 
-        `url`="https://CRAN.R-project.org/package=mixRasch"), 
+        `publisher`="[R package]. Retrieved from https://github.com/cran/mixRasch.git", 
+        `url`="https://github.com/cran/mixRasch.git"), 
     `mixRaschTools`=list(
         `type`="software", 
         `author`="Trantham, P.", 

@@ -38,7 +38,7 @@ children:
             stretchFactor: 1
             children:
               - type: Label
-                label: Fit
+                label: 'Fit'
                 children:
                   - name: nc
                     type: TextBox
@@ -51,7 +51,7 @@ children:
                   - type: CheckBox
                     name: plot3  
               - type: Label
-                label: Plot
+                label: 'Plots'
                 children:
                   - type: CheckBox
                     name: plot

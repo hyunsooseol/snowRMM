@@ -21,7 +21,7 @@ mixture(
   angle = 0,
   iplot = FALSE,
   wrightmap = FALSE,
-  plot2 = FALSE
+  plot2 = TRUE
 )
 }
 \arguments{

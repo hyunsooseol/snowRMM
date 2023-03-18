@@ -218,7 +218,9 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         for (i in 1:self$options$nc) {
           
           #########################################
-          res<- poLCA::poLCA(formula,data,nclass=nc,
+          res<- poLCA::poLCA(formula,
+                             data,
+                             nclass=i,
                              na.rm = FALSE,
                              calc.se = FALSE) 
           ##########################################

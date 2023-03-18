@@ -78,6 +78,8 @@ children:
             label: Plot
             children:
               - type: CheckBox
+                name: plot2
+              - type: CheckBox
                 name: iplot
                 children:
                   - type: TextBox
@@ -129,6 +131,5 @@ children:
             children:
               - type: CheckBox
                 name: wrightmap
-              - type: CheckBox
-                name: plot2
+
  

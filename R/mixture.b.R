@@ -207,7 +207,7 @@ mixtureClass <- if (requireNamespace('jmvcore'))
               data = data,
               steps = step,
               model = type,
-              n.c = nc
+              n.c = i
             )
           
           model <- res1$info.fit
