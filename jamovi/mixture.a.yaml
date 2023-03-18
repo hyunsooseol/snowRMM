@@ -101,6 +101,11 @@ options:
       type: Bool
       default: FALSE
     
+    - name: plot3
+      title: 'Density'
+      type: Bool
+      default: false
+      
     - name: wrightmap
       title: Wright Map
       type: Bool
@@ -110,7 +115,7 @@ options:
       title: 'Elbow plot'
       type: Bool
       default: TRUE
-      
+
     - name: pmember
       title: Person membership
       type: Output    

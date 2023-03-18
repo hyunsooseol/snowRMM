@@ -130,16 +130,13 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
       
       .compute = function(data) {
         
-        
-        # test <- readr::read_csv("test.csv")
-        # 
-        # library(poLCA)
-        # f <- cbind(B,C,D,E)~A
-        # res<- poLCA::poLCA(f,test,nclass=3, na.rm = F,calc.se = FALSE)
        
-        # membership<- res$predclass
-        
-        
+        # library(poLCA)
+        # data(values)
+        # f <- cbind(A,B,C,D)~1
+        # res<- poLCA::poLCA(f,values,nclass=2, na.rm = F,calc.se = FALSE)
+
+ 
         nc <- self$options$nc
         
         ############ Construct formula###################        
@@ -350,16 +347,12 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         profile <- reshape2::melt(res$probs)
         colnames(profile) <-c("Class", "Level", "value", "Variable")
+        levels(profile$Class) <- c(1:self$options$nc)
         
         image2 <- self$results$plot2
-        
         nvars <- length(vars)
-        
-         width <- 700 + nvars * 40
-         
-         image2$setSize(width, 300)
-        
-        
+        width <- 700 + nvars * 40
+        image2$setSize(width, 300)
         image2$setState(profile )
         
         

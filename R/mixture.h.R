@@ -20,6 +20,7 @@ mixtureOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             average = FALSE,
             angle = 0,
             iplot = FALSE,
+            plot3 = FALSE,
             wrightmap = FALSE,
             plot2 = TRUE, ...) {
 
@@ -97,6 +98,10 @@ mixtureOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "iplot",
                 iplot,
                 default=FALSE)
+            private$..plot3 <- jmvcore::OptionBool$new(
+                "plot3",
+                plot3,
+                default=FALSE)
             private$..wrightmap <- jmvcore::OptionBool$new(
                 "wrightmap",
                 wrightmap,
@@ -130,6 +135,7 @@ mixtureOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..average)
             self$.addOption(private$..angle)
             self$.addOption(private$..iplot)
+            self$.addOption(private$..plot3)
             self$.addOption(private$..wrightmap)
             self$.addOption(private$..plot2)
             self$.addOption(private$..pmember)
@@ -153,6 +159,7 @@ mixtureOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         average = function() private$..average$value,
         angle = function() private$..angle$value,
         iplot = function() private$..iplot$value,
+        plot3 = function() private$..plot3$value,
         wrightmap = function() private$..wrightmap$value,
         plot2 = function() private$..plot2$value,
         pmember = function() private$..pmember$value,
@@ -175,6 +182,7 @@ mixtureOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..average = NA,
         ..angle = NA,
         ..iplot = NA,
+        ..plot3 = NA,
         ..wrightmap = NA,
         ..plot2 = NA,
         ..pmember = NA,
@@ -192,6 +200,7 @@ mixtureResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         item = function() private$.items[["item"]],
         person = function() private$.items[["person"]],
         iplot = function() private$.items[["iplot"]],
+        plot3 = function() private$.items[["plot3"]],
         plot = function() private$.items[["plot"]],
         plot2 = function() private$.items[["plot2"]],
         pmember = function() private$.items[["pmember"]],
@@ -440,6 +449,7 @@ mixtureResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 visible="(iplot)",
                 width=600,
                 height=450,
+                refs="snowRMM",
                 renderFun=".itemPlot",
                 clearWith=list(
                     "vars",
@@ -447,6 +457,20 @@ mixtureResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "step",
                     "type",
                     "angle")))
+            self$add(jmvcore::Image$new(
+                options=options,
+                name="plot3",
+                title="Person distributions across class",
+                visible="(plot3)",
+                width=600,
+                height=450,
+                refs="snowRMM",
+                renderFun=".plot3",
+                clearWith=list(
+                    "vars",
+                    "nc",
+                    "step",
+                    "type")))
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot",
@@ -565,6 +589,7 @@ mixtureBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param angle a number from 0 to 45 defining the angle of the x-axis labels,
 #'   where 0 degrees represents completely horizontal labels.
 #' @param iplot .
+#' @param plot3 .
 #' @param wrightmap .
 #' @param plot2 .
 #' @return A results object containing:
@@ -579,6 +604,7 @@ mixtureBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$item$pbis} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$person$average} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$iplot} \tab \tab \tab \tab \tab an image \cr
+#'   \code{results$plot3} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$plot2} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$pmember} \tab \tab \tab \tab \tab an output \cr
@@ -605,6 +631,7 @@ mixture <- function(
     average = FALSE,
     angle = 0,
     iplot = FALSE,
+    plot3 = FALSE,
     wrightmap = FALSE,
     plot2 = TRUE) {
 
@@ -633,6 +660,7 @@ mixture <- function(
         average = average,
         angle = angle,
         iplot = iplot,
+        plot3 = plot3,
         wrightmap = wrightmap,
         plot2 = plot2)
 

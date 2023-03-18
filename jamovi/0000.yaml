@@ -80,12 +80,6 @@ datasets:
     tags:
       - Mixture
       - Rasch
-  - name: binary
-    path: boot.omv
-    description: Bootstrap Item Fit
-    tags:
-      - Rasch
-      - Bootstrap
   - name: mix
     path: rating.omv
     description: Rasch mixture model
@@ -98,6 +92,12 @@ datasets:
     tags:
       - Rasch
       - Mixture
+      - Bootstrap
+  - name: binary
+    path: boot.omv
+    description: Bootstrap Item Fit
+    tags:
+      - Rasch
       - Bootstrap
   - name: alzheimer
     path: alzheimer.omv

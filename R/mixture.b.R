@@ -275,6 +275,17 @@ mixtureClass <- if (requireNamespace('jmvcore'))
         pclass <- res1$class
         mem <- as.numeric(apply(pclass, 1, which.max))
         
+        # Person density across class-------------
+        
+        colnames(pmeasure)<-c(1:self$options$nc)
+        dat<- reshape2::melt(pmeasure,
+                             variable.name="Class",
+                             value.name='Measure')
+        
+        image <- self$results$plot3
+        image$setState(dat)
+        
+        
        
         results <-
           list(
@@ -813,8 +824,25 @@ mixtureClass <- if (requireNamespace('jmvcore'))
         
       },
       
-      
-      # multidimensional wrightmap plot----------------
+   .plot3 = function(image, ggtheme, theme, ...) {
+     
+     if (is.null(image$state))
+       return(FALSE)   
+   
+     dat<- image$state
+     
+     plot3<- ggplot(dat, aes(x=Measure, color=Class)) +
+       geom_density()  +
+     coord_cartesian(xlim=c(-5, 5))
+     
+     plot3 <- plot3+ggtheme
+     
+     print(plot3)
+     TRUE
+   
+   },
+   
+   # multidimensional wrightmap plot----------------
       
       
       .prepareWrightmapPlot = function(data) {

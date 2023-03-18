@@ -209,6 +209,7 @@ items:
       visible: (iplot)
       width: 600
       height: 450
+      refs: snowRMM
       renderFun: .itemPlot
       clearWith:
             - vars
@@ -216,7 +217,21 @@ items:
             - step
             - type
             - angle
-         
+
+    - name: plot3
+      title: 'Person distributions across class'
+      type: Image
+      visible: (plot3)
+      width: 600
+      height: 450
+      refs: snowRMM
+      renderFun: .plot3
+      clearWith:
+            - vars
+            - nc
+            - step
+            - type
+
     - name: plot
       title: 'Wright Map'
       refs: WrightMap
