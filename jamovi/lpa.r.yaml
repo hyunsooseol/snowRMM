@@ -152,7 +152,7 @@ items:
       type: Image
       visible: (plot1)
       width: 600
-      height: 600
+      height: 500
       refs: tidyLPA
       renderFun: .plot1
       clearWith:
@@ -179,8 +179,8 @@ items:
       title: 'Elbow plot'
       type: Image
       visible: (plot2)
-      width: 500
-      height: 500
+      width: 600
+      height: 450
       refs: snowRMM
       renderFun: .plot2
       clearWith:

@@ -205,8 +205,8 @@ items:
       title: 'Elbow plot'
       type: Image
       visible: (plot3)
-      width: 500
-      height: 500
+      width: 600
+      height: 450
       refs: snowRMM
       renderFun: .plot3
       clearWith:
