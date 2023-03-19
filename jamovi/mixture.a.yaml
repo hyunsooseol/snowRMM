@@ -106,11 +106,6 @@ options:
       type: Bool
       default: false
       
-    - name: wrightmap
-      title: Wright Map
-      type: Bool
-      default: FALSE  
-
     - name: plot2
       title: 'Elbow plot'
       type: Bool

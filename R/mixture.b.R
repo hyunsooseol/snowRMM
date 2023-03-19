@@ -107,7 +107,7 @@ mixtureClass <- if (requireNamespace('jmvcore'))
           
           
           # prepare plot-----
-          private$.prepareWrightmapPlot(data)
+         # private$.prepareWrightmapPlot(data)
           
         
           
@@ -842,146 +842,112 @@ mixtureClass <- if (requireNamespace('jmvcore'))
    
    },
    
-   # multidimensional wrightmap plot----------------
-      
-      
-      .prepareWrightmapPlot = function(data) {
-        
-        # get variables------
-        
-       # data <- self$data
-        
-        vars <- self$options$vars
-        
-        nc <- self$options$nc
-        
-        step <- self$options$step
-        
-        #-----------------------
-        set.seed(1234)
-        
-        unidif <-
-          mixRasch::mixRasch(
-            data = data,
-            steps = step,
-            n.c = 1
-          )  
-        #----------------------
-        
-        dif <- unidif$item.par$delta.i
-        
-        #--------------------------
-        
-        set.seed(1234)
-        
-        person <-
-          
-            mixRasch::mixRasch(
-            data = data,
-            steps = step,
-            n.c = nc
-          )  
-        #----------------------------------
-        
-        theta <- sapply(person$LatentClass, function(x) x$person.par$theta)
-        theta <- as.data.frame(theta)
-        
-        # plot---------
-        
-        image <- self$results$plot
-        
-        vars <- length(self$options$vars)
-
-        width <- 300 + vars * 50
-
-        image$setSize(width, 450)
-        
-        state <- list(theta, dif)
-        
-        image$setState(state)
-        
-        
-      },
-     
-       
-      .plot = function(image,...) {
-        
-        if (is.null(image$state))
-          return(FALSE)
-        
-        # wrightmap <- self$options$wrightmap
-        # 
-        # if (!wrightmap)
-        #   return()
-        
-        theta <- image$state[[1]]
-        dif <- image$state[[2]]
-        
-        plot <- WrightMap::wrightMap(theta,dif,
-                                     item.prop= 0.6,
-                                     min.l = -5,
-                                     max.l= +5,
-                                     dim.color = brewer.pal(10, "Set1"),
-                                     axis.persons = "Person distribution",
-                                     show.thr.lab = FALSE
-                                     , thr.sym.col.fg = rep(brewer.pal(10, "Set1"), each = 2)
-                                     , thr.sym.col.bg = rep(brewer.pal(10, "Set1"), each = 2)
-                                     , thr.sym.cex = 2)
-        
-        # if (self$options$angle1 > 0) {
-        #   plot <- plot + ggplot2::theme(
-        #     axis.text.x = ggplot2::element_text(
-        #       angle = self$options$angle1, hjust = 1
-        #     )
-        #   )
-        # }                      
-         
-        print(plot)
-        TRUE                           
-                                     
-                                     
-      },                             
-      
-     # .plot1 = function(image1, ggtheme, theme, ...) {    
-     #   
-     #   if (is.null(self$options$plot1))
-     #     return()
-     #   
-     #   
-     #   df <- image1$state
-     #   
-     #   plot1 <- ggplot2::ggplot(data=df, aes(x=class, y=value)) +
-     #     geom_bar(stat="identity",fill="steelblue" )+
-     #     #geom_text(aes(label=value), vjust=-0.3, size=3.5)+
-     #     #geom_text(aes(label=value), vjust=1.6, color="white", size=3.5)+
-     #     #scale_x_discrete("class", expand = c(0, 0)) +
-     #     ggplot2::scale_y_continuous(breaks = seq(-5, +5, 1)) 
-     #     ggplot2::scale_x_continuous(breaks = seq(1, length(df$class), by = 1))
-     #   
-     #   
-     #   
-     #   plot1 <- plot1+ggtheme
-     #   
-     #   print(plot1)
-     #   TRUE
-     # 
-     # },
+   # # multidimensional wrightmap plot----------------
+   # .prepareWrightmapPlot = function(data) {
+   #      
+   #      # get variables------
+   #      
+   #     # data <- self$data
+   #      
+   #      vars <- self$options$vars
+   #      
+   #      nc <- self$options$nc
+   #      
+   #      step <- self$options$step
+   #      
+   #      #-----------------------
+   #      set.seed(1234)
+   #      
+   #      unidif <-
+   #        mixRasch::mixRasch(
+   #          data = data,
+   #          steps = step,
+   #          n.c = 1
+   #        )  
+   #      #----------------------
+   #      
+   #      dif <- unidif$item.par$delta.i
+   #      
+   #      #--------------------------
+   #      
+   #      set.seed(1234)
+   #      
+   #      person <-
+   #        
+   #          mixRasch::mixRasch(
+   #          data = data,
+   #          steps = step,
+   #          n.c = nc
+   #        )  
+   #      #----------------------------------
+   #      
+   #      theta <- sapply(person$LatentClass, function(x) x$person.par$theta)
+   #      theta <- as.data.frame(theta)
+   #      
+   #      # plot---------
+   #      
+   #      image <- self$results$plot
+   #      
+   #      vars <- length(self$options$vars)
+   # 
+   #      width <- 300 + vars * 50
+   # 
+   #      image$setSize(width, 450)
+   #      
+   #      state <- list(theta, dif)
+   #      
+   #      image$setState(state)
+   #      
+   #      
+   #    },
+   #   
+   #     
+      # .plot = function(image,...) {
+      #   
+      #   if (is.null(image$state))
+      #     return(FALSE)
+      #   
+      #   # wrightmap <- self$options$wrightmap
+      #   # 
+      #   # if (!wrightmap)
+      #   #   return()
+      #   
+      #   theta <- image$state[[1]]
+      #   dif <- image$state[[2]]
+      #   
+      #   plot <- WrightMap::wrightMap(theta,dif,
+      #                                item.prop= 0.6,
+      #                                min.l = -5,
+      #                                max.l= +5,
+      #                                dim.color = brewer.pal(10, "Set1"),
+      #                                axis.persons = "Person distribution",
+      #                                show.thr.lab = FALSE
+      #                                , thr.sym.col.fg = rep(brewer.pal(10, "Set1"), each = 2)
+      #                                , thr.sym.col.bg = rep(brewer.pal(10, "Set1"), each = 2)
+      #                                , thr.sym.cex = 2)
+      #   
+      #   # if (self$options$angle1 > 0) {
+      #   #   plot <- plot + ggplot2::theme(
+      #   #     axis.text.x = ggplot2::element_text(
+      #   #       angle = self$options$angle1, hjust = 1
+      #   #     )
+      #   #   )
+      #   # }                      
+      #    
+      #   print(plot)
+      #   TRUE                           
+      #                                
+      #                                
+      # },                             
+      # 
      
      .plot2 = function(image, ggtheme, theme,...) {
        
        if (is.null(image$state))
          return(FALSE)
        
-       # if (is.null(self$options$plot2))
-       #   return()
-       
        elbow <- image$state
        
-       # plot2 <- ggplot2::ggplot(elbow,aes(x = Class, y = Value, group = Fit))+
-       #   geom_line(size=1.1,aes(color=Fit))+
-       #   geom_point(size=3,aes(color=Fit))
-       # 
-
        plot2 <- ggplot2::ggplot(elbow, ggplot2::aes(x = Class, y = Value, color = Fit)) +
          ggplot2::geom_line(size = 1.1) +
          ggplot2::geom_point(size = 3) +
@@ -996,62 +962,7 @@ mixtureClass <- if (requireNamespace('jmvcore'))
        
      },
      
-     # .prepareModelPlot = function(results){
-     #   
-     #   nc<- self$options$nc
-     #   
-     #   out <- results$out
-     #   
-     #   df<- out[,1:3]
-     #   df$Class <- 1:nc
-     #   
-     #   
-     #   pd<- tidyr::pivot_longer(df,col=c("AIC","BIC","CAIC"), 
-     #                            names_to = "Fit",
-     #                            values_to = "Value")
-     #   
-     #   pd <- as.data.frame(pd)
-     #   
-     #   self$results$text$setContent(pd) #it's OK !!!
-     #   
-     #   
-     #   image <- self$results$mplot
-     #   image$setState(pd)
-     #   
-     #   
-     # },
-     # 
-     # 
-     
-    # .plot1 = function(image1, ggtheme, theme,...) {
-    #   
-    #   
-    #   if (is.null(image1$state))
-    #     return(FALSE)
-    #   
-    #   plot1 <- self$options$plot1
-    #   
-    #    data <- image1$state
-    #    
-    #   
-    #    plot1<- ggplot2::ggplot(data=data, aes(x=as.factor(Class),
-    #                        y=Value,
-    #                        group=Fit
-    #                        ))+
-    #      geom_line(aes(color=Fit))+
-    #      geom_point(aes(color=Fit))+
-    #      labs(title=" Fit measure",
-    #           x ="Class", y = "Measure", color='Fit')+
-    #      ggtheme        
-    #    
-    #     #plot1 <- plot1 + ggtheme            
-    #                    
-    #    
-    #    print(plot1)
-    #    TRUE
-    #  
-    #  },
-    #  
+      
    #--------------------------    
    
       .cleanData = function() {

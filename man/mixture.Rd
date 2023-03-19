@@ -21,7 +21,6 @@ mixture(
   angle = 0,
   iplot = FALSE,
   plot3 = FALSE,
-  wrightmap = FALSE,
   plot2 = TRUE
 )
 }
@@ -59,8 +58,6 @@ where 0 degrees represents completely horizontal labels.}
 
 \item{plot3}{.}
 
-\item{wrightmap}{.}
-
 \item{plot2}{.}
 }
 \value{
@@ -77,7 +74,6 @@ A results object containing:
   \code{results$person$average} \tab \tab \tab \tab \tab a table \cr
   \code{results$iplot} \tab \tab \tab \tab \tab an image \cr
   \code{results$plot3} \tab \tab \tab \tab \tab an image \cr
-  \code{results$plot} \tab \tab \tab \tab \tab an image \cr
   \code{results$plot2} \tab \tab \tab \tab \tab an image \cr
   \code{results$pmember} \tab \tab \tab \tab \tab an output \cr
   \code{results$pmeasure} \tab \tab \tab \tab \tab an output \cr

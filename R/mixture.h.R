@@ -21,7 +21,6 @@ mixtureOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             angle = 0,
             iplot = FALSE,
             plot3 = FALSE,
-            wrightmap = FALSE,
             plot2 = TRUE, ...) {
 
             super$initialize(
@@ -102,10 +101,6 @@ mixtureOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "plot3",
                 plot3,
                 default=FALSE)
-            private$..wrightmap <- jmvcore::OptionBool$new(
-                "wrightmap",
-                wrightmap,
-                default=FALSE)
             private$..plot2 <- jmvcore::OptionBool$new(
                 "plot2",
                 plot2,
@@ -136,7 +131,6 @@ mixtureOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..angle)
             self$.addOption(private$..iplot)
             self$.addOption(private$..plot3)
-            self$.addOption(private$..wrightmap)
             self$.addOption(private$..plot2)
             self$.addOption(private$..pmember)
             self$.addOption(private$..pmeasure)
@@ -160,7 +154,6 @@ mixtureOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         angle = function() private$..angle$value,
         iplot = function() private$..iplot$value,
         plot3 = function() private$..plot3$value,
-        wrightmap = function() private$..wrightmap$value,
         plot2 = function() private$..plot2$value,
         pmember = function() private$..pmember$value,
         pmeasure = function() private$..pmeasure$value,
@@ -183,7 +176,6 @@ mixtureOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..angle = NA,
         ..iplot = NA,
         ..plot3 = NA,
-        ..wrightmap = NA,
         ..plot2 = NA,
         ..pmember = NA,
         ..pmeasure = NA,
@@ -201,7 +193,6 @@ mixtureResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         person = function() private$.items[["person"]],
         iplot = function() private$.items[["iplot"]],
         plot3 = function() private$.items[["plot3"]],
-        plot = function() private$.items[["plot"]],
         plot2 = function() private$.items[["plot2"]],
         pmember = function() private$.items[["pmember"]],
         pmeasure = function() private$.items[["pmeasure"]],
@@ -473,19 +464,6 @@ mixtureResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "type")))
             self$add(jmvcore::Image$new(
                 options=options,
-                name="plot",
-                title="Wright Map",
-                refs="WrightMap",
-                visible="(wrightmap)",
-                renderFun=".plot",
-                requiresData=TRUE,
-                clearWith=list(
-                    "vars",
-                    "nc",
-                    "step",
-                    "type")))
-            self$add(jmvcore::Image$new(
-                options=options,
                 name="plot2",
                 title="Elbow plot",
                 visible="(plot2)",
@@ -590,7 +568,6 @@ mixtureBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   where 0 degrees represents completely horizontal labels.
 #' @param iplot .
 #' @param plot3 .
-#' @param wrightmap .
 #' @param plot2 .
 #' @return A results object containing:
 #' \tabular{llllll}{
@@ -605,7 +582,6 @@ mixtureBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$person$average} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$iplot} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$plot3} \tab \tab \tab \tab \tab an image \cr
-#'   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$plot2} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$pmember} \tab \tab \tab \tab \tab an output \cr
 #'   \code{results$pmeasure} \tab \tab \tab \tab \tab an output \cr
@@ -632,7 +608,6 @@ mixture <- function(
     angle = 0,
     iplot = FALSE,
     plot3 = FALSE,
-    wrightmap = FALSE,
     plot2 = TRUE) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
@@ -661,7 +636,6 @@ mixture <- function(
         angle = angle,
         iplot = iplot,
         plot3 = plot3,
-        wrightmap = wrightmap,
         plot2 = plot2)
 
     analysis <- mixtureClass$new(

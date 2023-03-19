@@ -232,19 +232,6 @@ items:
             - step
             - type
 
-    - name: plot
-      title: 'Wright Map'
-      refs: WrightMap
-      type: Image
-      visible: (wrightmap)
-      renderFun: .plot
-      requiresData: TRUE
-      clearWith:
-            - vars
-            - nc
-            - step
-            - type
-
     - name: plot2
       title: 'Elbow plot'
       type: Image

@@ -127,11 +127,10 @@ children:
         fitToGrid: true
         children:
           - type: Label
-            label: Plots
+            label: 'Plot'
             children:
               - type: CheckBox
                 name: plot3
-              - type: CheckBox
-                name: wrightmap
+
 
  
