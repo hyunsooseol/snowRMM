@@ -74,24 +74,24 @@ analyses:
     menuTitle: Linear Logisitic Test Model
     menuSubgroup: Mixture
 datasets:
-  - name: binary
-    path: boot.omv
-    description: Bootstrap Item Fit
-    tags:
-      - Rasch
-      - Bootstrap
   - name: mixture
     path: mix.omv
     description: Mixture data
     tags:
-      - Mixture
       - Rasch
+      - Mixture
   - name: mix
     path: rating.omv
     description: Rasch mixture model
     tags:
       - Rasch
       - Mixture
+  - name: binary
+    path: boot.omv
+    description: Bootstrap Item Fit
+    tags:
+      - Rasch
+      - Bootstrap
   - name: rating
     path: sim.omv
     description: Likert-type simulation data
