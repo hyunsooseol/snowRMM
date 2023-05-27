@@ -149,7 +149,8 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         formula <- as.formula(paste0('cbind(', vars, ')~1'))
         
         
-        if( !is.null(self$options$covs) ) {
+        if(length(self$options$covs)>=1){
+        # if( !is.null(self$options$covs) ) {
           covs <- self$options$covs
           covs <- vapply(covs, function(x) jmvcore::composeTerm(x), '')
           covs <- paste0(covs, collapse='+')
@@ -170,7 +171,8 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         ############################################################### 
       
-        if( !is.null(self$options$covs) ) {
+        #if( !is.null(self$options$covs) ) {
+        if(length(self$options$covs)>=1){
           
           R <- length(res$P)
           

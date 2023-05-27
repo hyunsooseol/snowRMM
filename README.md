@@ -3,7 +3,8 @@
 
 snowRMM module can be installed and used in R as a standard R packages.
 # Installation
-At the moment, snowRMM is not in CRAN yet, so you need to install it via devtools
+At the moment, snowRMM is not in CRAN yet, so you need to install it via devtools.
+
 library(jmv)
 library(haven)
 library(jmvReadWrite)

@@ -1,14 +1,14 @@
 Package: snowRMM
 Type: Package
 Title: Rasch Mixture, LCA, and Test Equating Analysis
-Version: 5.6.0
+Version: 5.6.1
 Author: Hyunsoo Seol
 Maintainer: Hyunsoo Seol <snow@cau.ac.kr>
 Description: This module provides Latent Class Analysis based on poLCA R package, Latent Profile Analysis, Linear Logisitic Test Model, Linear and Equipercentile Equating, Rasch mixture model including model information,fit statistics,and bootstrap item fit based on JMLE and CML.
 License: GPL3
 LazyData: TRUE
 Encoding: UTF-8
-RoxygenNote: 7.2.2
+RoxygenNote: 7.2.3
 Imports:
     jmvcore (>= 0.8.5), 
     R6,
@@ -30,4 +30,3 @@ Imports:
     reshape2,
 Remotes: twolodzko/equi,
          cran/mixRasch
-
