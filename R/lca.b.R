@@ -276,7 +276,10 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         y <- res$y
         K.j <- t(matrix(apply(y,2,max)))
         C <- max(K.j)
+        C<- as.numeric(C)
+        
         J <- ncol(y)
+        J<- as.numeric(J)
         #I <- J # number of items
         
         df <- C^J - res$npar - 1 # Degrees of freedom
