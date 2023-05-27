@@ -279,7 +279,8 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         J <- ncol(y)
        #I <- J # number of items
         
-        df <- C^J - res$npar - 1 # Degrees of freedom
+        
+        df <- C**J - res$npar - 1 # Degrees of freedom
         
         cp <- 1-pchisq(res$Chisq,df)
         gp <- 1-pchisq(res$Gsq,df)
