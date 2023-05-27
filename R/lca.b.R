@@ -273,13 +273,13 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         # Caculating Chi and Gsp p values----------
         
-         y <- res$y
-         K.j <- t(matrix(apply(y,2,max)))
-         C <- max(K.j)
-         J <- ncol(y)
-         I <- J # number of items
+        y <- res$y
+        K.j <- t(matrix(apply(y,2,max)))
+        C <- max(K.j)
+        J <- ncol(y)
+        I <- J # number of items
         
-        df <- C^I - res$npar - 1 # Degrees of freedom
+        df <- as.numeric(C^I) - res$npar - 1 # Degrees of freedom
         
         cp <- 1-pchisq(res$Chisq,df)
         gp <- 1-pchisq(res$Gsq,df)
