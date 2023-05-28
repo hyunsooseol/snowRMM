@@ -14,7 +14,9 @@ library(jmvReadWrite)
 library(jmvconnect)
 
 devtools::install_github("twolodzko/equi")
+
 devtools::install_github("cran/mixRasch")
+
 devtools::install_github("hyunsooseol/snowRMM")
 
 
