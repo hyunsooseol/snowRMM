@@ -14,6 +14,7 @@ lca(
   cp = FALSE,
   ip = FALSE,
   cf = FALSE,
+  coef = FALSE,
   plot = FALSE,
   plot1 = FALSE,
   plot2 = FALSE,
@@ -39,6 +40,8 @@ lca(
 \item{ip}{.}
 
 \item{cf}{.}
+
+\item{coef}{.}
 
 \item{plot}{.}
 

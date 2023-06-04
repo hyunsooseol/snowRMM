@@ -62,6 +62,11 @@ options:
       title: Person class
       type: Output   
 
+    - name: coef 
+      title: Coefficients 
+      type: Bool 
+      default: FALSE   
+
     - name: plot
       title: LCA plot
       type: Bool

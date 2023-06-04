@@ -14,6 +14,7 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             cp = FALSE,
             ip = FALSE,
             cf = FALSE,
+            coef = FALSE,
             plot = FALSE,
             plot1 = FALSE,
             plot2 = FALSE,
@@ -65,6 +66,10 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 default=FALSE)
             private$..cm <- jmvcore::OptionOutput$new(
                 "cm")
+            private$..coef <- jmvcore::OptionBool$new(
+                "coef",
+                coef,
+                default=FALSE)
             private$..plot <- jmvcore::OptionBool$new(
                 "plot",
                 plot,
@@ -97,6 +102,7 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..ip)
             self$.addOption(private$..cf)
             self$.addOption(private$..cm)
+            self$.addOption(private$..coef)
             self$.addOption(private$..plot)
             self$.addOption(private$..plot1)
             self$.addOption(private$..plot2)
@@ -113,6 +119,7 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ip = function() private$..ip$value,
         cf = function() private$..cf$value,
         cm = function() private$..cm$value,
+        coef = function() private$..coef$value,
         plot = function() private$..plot$value,
         plot1 = function() private$..plot1$value,
         plot2 = function() private$..plot2$value,
@@ -128,6 +135,7 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..ip = NA,
         ..cf = NA,
         ..cm = NA,
+        ..coef = NA,
         ..plot = NA,
         ..plot1 = NA,
         ..plot2 = NA,
@@ -432,6 +440,7 @@ lcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param cp .
 #' @param ip .
 #' @param cf .
+#' @param coef .
 #' @param plot .
 #' @param plot1 .
 #' @param plot2 .
@@ -472,6 +481,7 @@ lca <- function(
     cp = FALSE,
     ip = FALSE,
     cf = FALSE,
+    coef = FALSE,
     plot = FALSE,
     plot1 = FALSE,
     plot2 = FALSE,
@@ -499,6 +509,7 @@ lca <- function(
         cp = cp,
         ip = ip,
         cf = cf,
+        coef = coef,
         plot = plot,
         plot1 = plot1,
         plot2 = plot2,

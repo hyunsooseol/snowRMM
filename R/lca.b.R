@@ -33,7 +33,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
            
             <p><b>To get started:</b></p>
             <p>_____________________________________________________________________________________________</p>
-            <p>1. Latent Class Analysis based on <b>poLCA</b> R package.
+            <p>1. Latent Class Analysis based on <b>poLCA(Linzer & Lewis, 2022)</b> R package.
             <p>2. Variables must contain integer values, and must be coded with consecutive values from <b>1</b> to the maximum number.</p>
             <p>3. <b> Membership table</b> will be shown in the datasheet.</p>
             <p>4. Feature requests and bug reports can be made on my <a href='https://github.com/hyunsooseol/snowRMM/issues'  target = '_blank'>GitHub</a>.</p>
@@ -172,7 +172,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         ############################################################### 
       
         #if( !is.null(self$options$covs) ) {
-        if(length(self$options$covs)>=1){
+        if(length(self$options$covs)>=1 && isTRUE(self$options$coef)){
           
           R <- length(res$P)
           

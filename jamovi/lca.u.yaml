@@ -88,6 +88,10 @@ children:
             children:
               - type: Output
                 name: cm
-
+          - type: Label
+            label: Logistic regression
+            children:
+              - type: CheckBox
+                name: coef
  
 

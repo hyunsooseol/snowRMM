@@ -47,7 +47,7 @@
     `poLCA`=list(
         `type`="software", 
         `author`="Linzer, D., & Lewis, J.", 
-        `year`=2021, 
+        `year`=2022, 
         `title`="poLCA: An R Package for Polytomous Variable Latent Class Analysis", 
         `publisher`="[R package]. Retrieved from https://CRAN.R-project.org/package=poLCA", 
         `url`="https://CRAN.R-project.org/package=poLCA"), 
