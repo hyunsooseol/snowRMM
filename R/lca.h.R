@@ -193,6 +193,9 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         `name`="AIC", 
                         `type`="number"),
                     list(
+                        `name`="AIC3", 
+                        `type`="number"),
+                    list(
                         `name`="BIC", 
                         `type`="number"),
                     list(
@@ -237,6 +240,10 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     list(
                         `name`="aic", 
                         `title`="AIC", 
+                        `type`="number"),
+                    list(
+                        `name`="aic3", 
+                        `title`="AIC3", 
                         `type`="number"),
                     list(
                         `name`="bic", 
@@ -409,7 +416,8 @@ lcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 revision = revision,
                 pause = NULL,
                 completeWhenFilled = FALSE,
-                requiresMissings = FALSE)
+                requiresMissings = FALSE,
+                weightsSupport = 'none')
         }))
 
 #' Latent Class Analysis

@@ -32,6 +32,8 @@ items:
           type: number
         - name: AIC
           type: number
+        - name: AIC3
+          type: number
         - name: BIC
           type: number
         - name: ABIC
@@ -68,6 +70,9 @@ items:
           content: ($key)        
         - name: aic
           title: AIC
+          type: number
+        - name: aic3
+          title: AIC3
           type: number
         - name: bic
           title: BIC      
