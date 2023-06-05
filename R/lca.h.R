@@ -207,7 +207,7 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         `name`="BIC", 
                         `type`="number"),
                     list(
-                        `name`="ABIC", 
+                        `name`="SABIC", 
                         `type`="number"),
                     list(
                         `name`="CAIC", 
@@ -258,7 +258,7 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         `title`="BIC", 
                         `type`="number"),
                     list(
-                        `name`="ABIC", 
+                        `name`="SABIC", 
                         `type`="number"),
                     list(
                         `name`="CAIC", 

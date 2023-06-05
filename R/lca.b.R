@@ -164,7 +164,9 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         library(poLCA) 
        
-        res<- poLCA::poLCA(formula,data,nclass=nc,
+        res<- poLCA::poLCA(formula,
+                           data,
+                           nclass=nc,
                            na.rm=FALSE,
                            calc.se = FALSE)
                            
@@ -205,13 +207,16 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         Chisq<- res$Chisq
         Gsq <- res$Gsq
         
-        ABIC=(-2*res$llik) + ((log((res$N + 2)/24)) * res$npar)
+        #sample-size adjusted bic
+        SABIC=(-2 * res$llik) + (log((res$N + 2) / 24) * res$npar)
+        
         CAIC = (-2*res$llik) + res$npar * (1 + log(res$N))
         
         # Akaike Information Criterion 3
         aic3 <- (-2 * res$llik) + (3 * res$npar) 
         
-        #self$results$text1$setContent(res)
+       
+       # self$results$text1$setContent(SABIC)
          
        # Model comparison-------
         
@@ -234,10 +239,11 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           Chisq<- res$Chisq 
           Gsq <- res$Gsq
          
-          ABIC=(-2*res$llik) + ((log((res$N + 2)/24)) * res$npar)
+          SABIC=(-2 * res$llik) + (log((res$N + 2) / 24) * res$npar)
+          
           CAIC = (-2*res$llik) + res$npar * (1 + log(res$N))
           
-          df<- data.frame(aic,aic3,bic,ABIC, CAIC,loglik,Chisq,Gsq)
+          df<- data.frame(aic,aic3,bic,SABIC, CAIC,loglik,Chisq,Gsq)
           
           
           if (is.null(out)) {
@@ -262,8 +268,8 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         # self$results$text1$setContent(out1)
          
-         colnames(out1) <- c('AIC','AIC3','BIC','ABIC',
-                            'CAIC','Class')
+         colnames(out1) <- c('AIC','AIC3','BIC','SABIC',
+                              'CAIC','Class')
         
         elbow <- reshape2::melt(out1,
                                 id.vars='Class',
@@ -383,7 +389,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             'cm'=cm,
             'df'=df,
             'like'=like,
-            'ABIC'=ABIC,
+            'SABIC'=SABIC,
             'CAIC'=CAIC
             
           )
@@ -402,7 +408,9 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
   like <- results$like
   df <- results$df
   aic <- results$aic
+  
   aic3 <- results$aic3
+  
   bic <- results$bic
   entro <- results$entro
   resid.df <- results$df
@@ -411,7 +419,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
   Chisq <- results$Chisq
   cp <- results$cp
   
-  ABIC <- results$ABIC
+  SABIC <- results$SABIC
   CAIC <- results$CAIC
   
   row <- list()
@@ -423,7 +431,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
   row[['AIC3']] <- aic3
   row[['BIC']] <- bic
 
-  row[['ABIC']] <- ABIC
+  row[['SABIC']] <- SABIC
   row[['CAIC']] <- CAIC
   
   row[['Entropy']] <- entro
@@ -466,7 +474,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
     row[["aic3"]]   <-  fit[name, 2]
     row[["bic"]] <-  fit[name, 3]
     
-    row[["ABIC"]] <-  fit[name, 4]
+    row[["SABIC"]] <-  fit[name, 4]
     row[["CAIC"]] <-  fit[name, 5]
     
     row[["loglik"]] <-  fit[name, 6]

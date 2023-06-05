@@ -36,7 +36,7 @@ items:
           type: number
         - name: BIC
           type: number
-        - name: ABIC
+        - name: SABIC
           type: number
         - name: CAIC
           type: number
@@ -77,7 +77,7 @@ items:
         - name: bic
           title: BIC      
           type: number
-        - name: ABIC
+        - name: SABIC
           type: number
         - name: CAIC
           type: number
