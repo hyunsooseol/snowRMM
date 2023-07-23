@@ -939,7 +939,7 @@ raschClass <- if (requireNamespace('jmvcore'))
         
         
         plot <- ggplot(infit1, aes(x = item, y=infit)) + 
-          geom_point(shape = 21, color = 'skyblue', 
+          geom_point(shape = 4, color = 'black', 
                      fill = 'white', size = 3, stroke = 2) +
          
           geom_hline(yintercept = 1.5,linetype = "dotted", color='red', size=1.0) +
@@ -1021,7 +1021,7 @@ raschClass <- if (requireNamespace('jmvcore'))
         
         
         plot <- ggplot(outfit1, aes(x = item, y=outfit)) + 
-          geom_point(shape = 21, color = 'skyblue', 
+          geom_point(shape = 4, color = 'black', 
                      fill = 'white', size = 3, stroke = 2) +
          
           geom_hline(yintercept = 1.5,linetype = "dotted", color='red', size=1.0) +
