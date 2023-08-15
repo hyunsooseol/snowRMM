@@ -168,12 +168,12 @@ raschClass <- if (requireNamespace('jmvcore'))
           private$.preparePcmPlot(data)
           
           # populate Person analysis table-------
-          private$.populatePtotalOutputs(results)
-          private$.populatePmeasureOutputs(results)
-          private$.populatePseOutputs(results)
-          private$.populatePinfitOutputs(results)
-          private$.populatePoutfitOutputs(results)
-          
+          # private$.populatePtotalOutputs(results)
+          # private$.populatePmeasureOutputs(results)
+          # private$.populatePseOutputs(results)
+          # private$.populatePinfitOutputs(results)
+          # private$.populatePoutfitOutputs(results)
+          # 
           
           
         }
@@ -208,6 +208,41 @@ raschClass <- if (requireNamespace('jmvcore'))
         pse <- res$person.par$SE.theta
         pinfit <- res$person.par$infit
         poutfit <- res$person.par$outfit
+        
+        if (self$options$ptotal==TRUE){
+         
+          self$results$ptotal$setRowNums(rownames(data))
+          self$results$ptotal$setValues(ptotal)
+          
+        }
+        
+        if (self$options$pmeasure==TRUE){
+          
+          self$results$pmeasure$setRowNums(rownames(data))
+          self$results$pmeasure$setValues(pmeasure)
+          
+        }
+        
+        if (self$options$pse==TRUE){
+          
+          self$results$pse$setRowNums(rownames(data))
+          self$results$pse$setValues(pse)
+          
+        }
+        
+        if (self$options$pinfit==TRUE){
+          
+          self$results$pinfit$setRowNums(rownames(data))
+          self$results$pinfit$setValues(pinfit)
+          
+        }
+        
+        if (self$options$poutfit==TRUE){
+          
+          self$results$poutfit$setRowNums(rownames(data))
+          self$results$poutfit$setValues(poutfit)
+          
+        }
         
         
         # model information--------
@@ -700,85 +735,85 @@ raschClass <- if (requireNamespace('jmvcore'))
       },
       
       
-      ##### person statistics -------------------
-      
-      
-      .populatePtotalOutputs= function(results) {
-
-        ptotal <- results$ptotal
-        
-        
-        if (self$options$ptotal&& self$results$ptotal$isNotFilled()){
-
-         
-          self$results$ptotal$setRowNums(rownames(data))
-          self$results$ptotal$setValues(ptotal)
-
-        }
-      },
-      
-        
-        .populatePmeasureOutputs= function(results) {
-          
-          pmeasure <- results$pmeasure
-          
-          
-          if (self$options$pmeasure&& self$results$pmeasure$isNotFilled()){
-            
-            
-            self$results$pmeasure$setRowNums(rownames(data))
-            self$results$pmeasure$setValues(pmeasure)
-            
-          }
-
-        },
-        
-      .populatePseOutputs= function(results) {
-        
-        pse<- results$pse
-        
-        
-        if (self$options$pse&& self$results$pse$isNotFilled()){
-          
-          
-          self$results$pse$setRowNums(rownames(data))
-          self$results$pse$setValues(pse)
-          
-        }
-        
-      },
-        
-      .populatePinfitOutputs= function(results) {
-        
-        pinfit<- results$pinfit
-        
-        
-        if (self$options$pinfit&& self$results$pinfit$isNotFilled()){
-          
-          
-          self$results$pinfit$setRowNums(rownames(data))
-          self$results$pinfit$setValues(pinfit)
-          
-        }
-        
-      },
-      
-      .populatePoutfitOutputs= function(results) {
-        
-        poutfit<- results$poutfit
-        
-        
-        if (self$options$poutfit&& self$results$poutfit$isNotFilled()){
-          
-          
-          self$results$poutfit$setRowNums(rownames(data))
-          self$results$poutfit$setValues(poutfit)
-          
-        }
-        
-      },
-      
-     
+      # ##### person statistics -------------------
+      # 
+      # 
+      # .populatePtotalOutputs= function(results) {
+      # 
+      #   ptotal <- results$ptotal
+      #   
+      #   
+      #   if (self$options$ptotal&& self$results$ptotal$isNotFilled()){
+      # 
+      #    
+      #     self$results$ptotal$setRowNums(rownames(data))
+      #     self$results$ptotal$setValues(ptotal)
+      # 
+      #   }
+      # },
+      # 
+      #   
+      #   .populatePmeasureOutputs= function(results) {
+      #     
+      #     pmeasure <- results$pmeasure
+      #     
+      #     
+      #     if (self$options$pmeasure&& self$results$pmeasure$isNotFilled()){
+      #       
+      #       
+      #       self$results$pmeasure$setRowNums(rownames(data))
+      #       self$results$pmeasure$setValues(pmeasure)
+      #       
+      #     }
+      # 
+      #   },
+      #   
+      # .populatePseOutputs= function(results) {
+      #   
+      #   pse<- results$pse
+      #   
+      #   
+      #   if (self$options$pse&& self$results$pse$isNotFilled()){
+      #     
+      #     
+      #     self$results$pse$setRowNums(rownames(data))
+      #     self$results$pse$setValues(pse)
+      #     
+      #   }
+      #   
+      # },
+      #   
+      # .populatePinfitOutputs= function(results) {
+      #   
+      #   pinfit<- results$pinfit
+      #   
+      #   
+      #   if (self$options$pinfit&& self$results$pinfit$isNotFilled()){
+      #     
+      #     
+      #     self$results$pinfit$setRowNums(rownames(data))
+      #     self$results$pinfit$setValues(pinfit)
+      #     
+      #   }
+      #   
+      # },
+      # 
+      # .populatePoutfitOutputs= function(results) {
+      #   
+      #   poutfit<- results$poutfit
+      #   
+      #   
+      #   if (self$options$poutfit&& self$results$poutfit$isNotFilled()){
+      #     
+      #     
+      #     self$results$poutfit$setRowNums(rownames(data))
+      #     self$results$poutfit$setValues(poutfit)
+      #     
+      #   }
+      #   
+      # },
+      # 
+      # 
       ### wrightmap Plot functions -----------
       
       
