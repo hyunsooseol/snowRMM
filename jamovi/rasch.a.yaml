@@ -230,4 +230,9 @@ options:
       type: Bool
       default: FALSE
 
+    - name: plot4
+      title: Fit plot
+      type: Bool
+      default: false  
+
 ...

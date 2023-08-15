@@ -232,6 +232,8 @@ children:
                 name: pinfit
               - type: Output
                 name: poutfit
+              - type: CheckBox
+                name: plot4
   - type: CollapseBox
     label: Additional Outputs
     margin: normal

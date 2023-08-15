@@ -413,4 +413,16 @@ items:
         - name: p
           title: 'p'
           format: zto, pvalue
+
+    - name:  plot4
+      title: 'Person fit plot'
+      type:  Image
+      requiresData: true
+      visible: (plot4)
+      width: 600
+      height: 400
+      renderFun: .plot4
+      refs: snowRMM 
+      clearWith:
+            - vars
 ...
