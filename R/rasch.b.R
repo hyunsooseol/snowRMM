@@ -1211,13 +1211,13 @@ raschClass <- if (requireNamespace('jmvcore'))
        pf <- image$state
        
        plot4<- ggplot2::ggplot(pf, aes(x = Measure, y = Value, shape = Fit))+
-         geom_point()+
+         geom_point(size=3, stroke=2)+
          
          ggplot2::scale_shape_manual(values=c(3, 4))+
          #ggplot2::scale_color_manual(values=c("red", "blue")+
          ggplot2::coord_cartesian(xlim=c(-4, 4), ylim=c(0,4))+
-         ggplot2::geom_hline(yintercept = 1.5,linetype = "dotted", color='red', size=1.0)+ 
-         ggplot2::geom_hline(yintercept = 0.5,linetype = "dotted", color='red', size=1.0)    
+         ggplot2::geom_hline(yintercept = 1.5,linetype = "dotted", color='red', size=1.5)+ 
+         ggplot2::geom_hline(yintercept = 0.5,linetype = "dotted", color='red', size=1.5)    
        
        
        plot4 <- plot4+ggtheme
