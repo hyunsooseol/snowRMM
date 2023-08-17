@@ -994,8 +994,8 @@ raschClass <- if (requireNamespace('jmvcore'))
           geom_point(shape = 4, color = 'black', 
                      fill = 'white', size = 3, stroke = 2) +
          
-          geom_hline(yintercept = 1.5,linetype = "dotted", color='red', size=1.0) +
-          geom_hline(yintercept = 0.5,linetype = "dotted", color='red', size=1.0) 
+          geom_hline(yintercept = 1.5,linetype = "dotted", color='red', size=1.5) +
+          geom_hline(yintercept = 0.5,linetype = "dotted", color='red', size=1.5) 
           #ggtitle("Item Infit")
         
         plot <- plot+ggtheme
@@ -1076,8 +1076,8 @@ raschClass <- if (requireNamespace('jmvcore'))
           geom_point(shape = 4, color = 'black', 
                      fill = 'white', size = 3, stroke = 2) +
          
-          geom_hline(yintercept = 1.5,linetype = "dotted", color='red', size=1.0) +
-          geom_hline(yintercept = 0.5,linetype = "dotted", color='red', size=1.0) 
+          geom_hline(yintercept = 1.5,linetype = "dotted", color='red', size=1.5) +
+          geom_hline(yintercept = 0.5,linetype = "dotted", color='red', size=1.5) 
           #ggtitle("Item Outfit")
         
         plot <- plot+ggtheme
