@@ -33,7 +33,7 @@ equiClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             <body>
             <div class='instructions'>
             
-            <p><b>Instructions</b></p>
+            <h2><b>Instructions</b></h2>
             <p>_____________________________________________________________________________________________</p>
             <p>1. The Form x is equated to the Form y.
             <p>2. If an error message such as 'could not find function ns', please chang Form x and Form y variables.

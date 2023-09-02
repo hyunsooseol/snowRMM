@@ -28,7 +28,7 @@ equatingClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             <body>
             <div class='instructions'>
             
-            <p><b>Instructions</b></p>
+            <h2><b>Instructions</b></h2>
             <p>_____________________________________________________________________________________________</p>
             <p>1. The Form x is equated to the Form y with single group design.
             <p>2. The R package <b>equi</b>(Wolodzko, 2020) is described in the <a href='https://rdrr.io/github/twolodzko/equi/man/equi.html' target = '_blank'>page.</a></p>

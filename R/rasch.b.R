@@ -45,14 +45,14 @@ raschClass <- if (requireNamespace('jmvcore'))
             <body>
             <div class='instructions'>
             
-            <p><b>Instructions</b></p>
+            <h2><b>Instructions</b></h2>
             <p>_____________________________________________________________________________________________</p>
-            <p>- Specify </b> the number of 'Step' and model 'Type'</b> in the 'Analysis option'.</p>
-            <p>- Step is defined as number of <b>category-1</b>. </p>
-            <p>- The minimum and maximum values of a category must be the same across all items for <b>rating sclaes</b> with eRm R package.</p>
-            <p>- <b>Person Analysis</b> will be displayed in the datasheet.</p>
-            <p>- The <b>eRm</b> R package was used for the person-item map for PCM.</p>
-            <p>- Feature requests and bug reports can be made on my <a href='https://github.com/hyunsooseol/snowRMM/issues'  target = '_blank'>GitHub</a>.</p>
+            <p>1. Specify </b> the number of 'Step' and model 'Type'</b> in the 'Analysis option'.</p>
+            <p>2. Step is defined as number of <b>category-1</b>. </p>
+            <p>3. The minimum and maximum values of a category must be the same across all items for <b>rating sclaes</b> with eRm R package.</p>
+            <p>4. <b>Person Analysis</b> will be displayed in the datasheet.</p>
+            <p>5. The <b>eRm</b> R package was used for the person-item map for PCM.</p>
+            <p>6. Feature requests and bug reports can be made on my <a href='https://github.com/hyunsooseol/snowRMM/issues'  target = '_blank'>GitHub</a>.</p>
             <p>_____________________________________________________________________________________________</p>
             
             </div>

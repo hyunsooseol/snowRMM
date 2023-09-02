@@ -92,9 +92,7 @@ datasets:
       - Bootstrap
   - name: alzheimer
     path: alzheimer.omv
-    description: >-
-      the presence/absence of one of the 6 symptoms. A 2 denotes the presence of
-      a symptom, a 1 the absence.
+    description: Alzheimer data
     tags:
       - LCA
   - name: cheating

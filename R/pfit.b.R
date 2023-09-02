@@ -30,7 +30,7 @@ pfitClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             <body>
             <div class='instructions'>
 
-            <p><b>Instructions</b></p>
+            <h2><b>Instructions</b></h2>
             <p>_____________________________________________________________________________________________</p>
             <p>1. This analysis computes Bootstrapping P Values for Outfit and Infit Statistics.</p>
             <p>2. Specify <b>Type and Bootstrap N</b> in the Analysis option.</p>

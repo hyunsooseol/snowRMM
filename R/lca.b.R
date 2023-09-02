@@ -31,7 +31,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             <body>
             <div class='instructions'>
            
-            <p><b>To get started:</b></p>
+            <h2><b>Instructions</b></h2>
             <p>_____________________________________________________________________________________________</p>
             <p>1. Latent Class Analysis based on <b>poLCA(Linzer & Lewis, 2022)</b> R package.
             <p>2. Variables must contain integer values, and must be coded with consecutive values from <b>1</b> to the maximum number.</p>
