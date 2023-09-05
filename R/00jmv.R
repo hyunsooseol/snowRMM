@@ -85,4 +85,11 @@
         `year`=2021, 
         `title`="eRm: Extended Rasch Modeling", 
         `publisher`="[R package]. Retrieved from https://CRAN.R-project.org/package=eRm", 
-        `url`="https://CRAN.R-project.org/package=eRm"))
+        `url`="https://CRAN.R-project.org/package=eRm"), 
+    `pairwise`=list(
+        `type`="software", 
+        `author`="Heine,J-H.", 
+        `year`=2023, 
+        `title`="pairwise: Rasch Model Parameters by Pairwise Algorithm", 
+        `publisher`="[R package]. Retrieved from https://CRAN.R-project.org/package=pairwise", 
+        `url`="https://CRAN.R-project.org/package=pairwise"))

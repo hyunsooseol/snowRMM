@@ -12,7 +12,7 @@ description: >-
   This module allows users to conduct Latent class analysis based on poLCA R
   package, Latent Profile Analysis, Rasch model,Linear Logisitic Test Model,
   Linear and Equipercentile Equating, and Rasch mixture model including model
-  information,fit statistics,and bootstrap item fit. 
+  information,fit statistics, and bootstrap item fit. 
 analyses:
   - title: Rasch Model
     name: rasch
