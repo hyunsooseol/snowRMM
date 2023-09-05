@@ -19,6 +19,9 @@
 #' @importFrom  eRm plotGOF
 #' @importFrom  eRm person.parameter
 #' @importFrom  eRm SepRel
+#' @importFrom  pairwise pair
+#' @importFrom  pairwise pers
+#' @importFrom  pairwise rfa
 #' @import RColorBrewer
 #' @import ggplot2
 #' @export
@@ -47,12 +50,14 @@ raschClass <- if (requireNamespace('jmvcore'))
             
             <h2><b>Instructions</b></h2>
             <p>_____________________________________________________________________________________________</p>
-            <p>1. Specify </b> the number of 'Step' and model 'Type'</b> in the 'Analysis option'.</p>
-            <p>2. Step is defined as number of <b>category-1</b>. </p>
-            <p>3. The minimum and maximum values of a category must be the same across all items for <b>rating sclaes</b> with eRm R package.</p>
-            <p>4. <b>Person Analysis</b> will be displayed in the datasheet.</p>
-            <p>5. The <b>eRm</b> R package was used for the person-item map for PCM.</p>
-            <p>6. Feature requests and bug reports can be made on my <a href='https://github.com/hyunsooseol/snowRMM/issues'  target = '_blank'>GitHub</a>.</p>
+            <p>1. Rasch models using joint maximum likelihood estimation(JMLE).</P>
+            <p>2. Specify </b> the number of 'Step' and model 'Type'</b> in the 'Analysis option'.</p>
+            <p>3. Step is defined as number of <b>category-1</b>. </p>
+            <p>4. The minimum and maximum values of a category must be the same across all items for <b>rating sclaes</b> with eRm R package.</p>
+            <p>5. <b>Person Analysis</b> will be displayed in the datasheet.</p>
+            <p>6. The <b>eRm</b> R package was used for the person-item map for PCM.</p>
+            <p>7. The <b>pairwise</b> R package was used for the Rasch residual factor analysis.</p>
+            <p>8. Feature requests and bug reports can be made on my <a href='https://github.com/hyunsooseol/snowRMM/issues'  target = '_blank'>GitHub</a>.</p>
             <p>_____________________________________________________________________________________________</p>
             
             </div>
@@ -547,6 +552,28 @@ raschClass <- if (requireNamespace('jmvcore'))
           
           }
         
+        # Rasch residual factor analysis using pairwise R package
+        
+        # pers_obj <- pers(pair(bfiN))
+        # result <- rfa(pers_obj)
+        # summary(result)
+        # plot(result)
+        
+        if(self$options$plot5==TRUE){
+        
+        ip <- pairwise::pair(data)
+        pers_obj <- pairwise::pers(ip)
+        rf<- pairwise::rfa(pers_obj)
+        summ<- summary(rf)
+        
+        self$results$text$setContent(summ)
+        
+        image5 <- self$results$plot5
+        image5$setState(rf)
+        
+        }
+        
+      
         ############################################
         results <-
           list(
@@ -1224,6 +1251,22 @@ raschClass <- if (requireNamespace('jmvcore'))
        
        print(plot4)
        TRUE
+     },
+     
+     .plot5 = function(image5,...) {
+       
+       if (is.null(image5$state))
+         return(FALSE)
+       
+       Residuals <- image5$state
+       
+      
+       plot5 <- plot(Residuals)
+
+       print(plot5)
+       TRUE
+       
+       
      },
      
      

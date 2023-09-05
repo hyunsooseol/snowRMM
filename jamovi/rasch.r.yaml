@@ -425,4 +425,21 @@ items:
       refs: snowRMM 
       clearWith:
             - vars
+
+    - name:  plot5
+      title: 'Rasch residual factor plot'
+      type:  Image
+      requiresData: true
+      visible: (plot5)
+      width: 500
+      height: 500
+      renderFun: .plot5
+      refs: pairwise
+      clearWith:
+            - vars            
+
+    - name:  text
+      title: Rasch residual factor analysis
+      type:  Preformatted
+
 ...

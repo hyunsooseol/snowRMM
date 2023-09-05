@@ -235,4 +235,9 @@ options:
       type: Bool
       default: false  
 
+    - name: plot5
+      title: Residual factor plot
+      type: Bool
+      default: false  
+
 ...

@@ -39,7 +39,8 @@ rasch(
   plot2 = FALSE,
   plot3 = FALSE,
   piplot = FALSE,
-  plot4 = FALSE
+  plot4 = FALSE,
+  plot5 = FALSE
 )
 }
 \arguments{
@@ -113,6 +114,8 @@ where 0 degrees represents completely horizontal labels.}
 \item{piplot}{.}
 
 \item{plot4}{.}
+
+\item{plot5}{.}
 }
 \value{
 A results object containing:
@@ -142,6 +145,8 @@ A results object containing:
   \code{results$ml1} \tab \tab \tab \tab \tab a table \cr
   \code{results$wald} \tab \tab \tab \tab \tab a table \cr
   \code{results$plot4} \tab \tab \tab \tab \tab an image \cr
+  \code{results$plot5} \tab \tab \tab \tab \tab an image \cr
+  \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
 }
 
 Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:

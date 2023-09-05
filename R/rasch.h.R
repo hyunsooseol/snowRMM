@@ -39,7 +39,8 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             plot2 = FALSE,
             plot3 = FALSE,
             piplot = FALSE,
-            plot4 = FALSE, ...) {
+            plot4 = FALSE,
+            plot5 = FALSE, ...) {
 
             super$initialize(
                 package="snowRMM",
@@ -220,6 +221,10 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "plot4",
                 plot4,
                 default=FALSE)
+            private$..plot5 <- jmvcore::OptionBool$new(
+                "plot5",
+                plot5,
+                default=FALSE)
 
             self$.addOption(private$..vars)
             self$.addOption(private$..num)
@@ -260,6 +265,7 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..plot3)
             self$.addOption(private$..piplot)
             self$.addOption(private$..plot4)
+            self$.addOption(private$..plot5)
         }),
     active = list(
         vars = function() private$..vars$value,
@@ -300,7 +306,8 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         plot2 = function() private$..plot2$value,
         plot3 = function() private$..plot3$value,
         piplot = function() private$..piplot$value,
-        plot4 = function() private$..plot4$value),
+        plot4 = function() private$..plot4$value,
+        plot5 = function() private$..plot5$value),
     private = list(
         ..vars = NA,
         ..num = NA,
@@ -340,7 +347,8 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..plot2 = NA,
         ..plot3 = NA,
         ..piplot = NA,
-        ..plot4 = NA)
+        ..plot4 = NA,
+        ..plot5 = NA)
 )
 
 raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -370,7 +378,9 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ml = function() private$.items[["ml"]],
         ml1 = function() private$.items[["ml1"]],
         wald = function() private$.items[["wald"]],
-        plot4 = function() private$.items[["plot4"]]),
+        plot4 = function() private$.items[["plot4"]],
+        plot5 = function() private$.items[["plot5"]],
+        text = function() private$.items[["text"]]),
     private = list(),
     public=list(
         initialize=function(options) {
@@ -834,7 +844,23 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 renderFun=".plot4",
                 refs="snowRMM",
                 clearWith=list(
-                    "vars")))}))
+                    "vars")))
+            self$add(jmvcore::Image$new(
+                options=options,
+                name="plot5",
+                title="Rasch residual factor plot",
+                requiresData=TRUE,
+                visible="(plot5)",
+                width=500,
+                height=500,
+                renderFun=".plot5",
+                refs="pairwise",
+                clearWith=list(
+                    "vars")))
+            self$add(jmvcore::Preformatted$new(
+                options=options,
+                name="text",
+                title="Rasch residual factor analysis"))}))
 
 raschBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "raschBase",
@@ -896,6 +922,7 @@ raschBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param plot3 .
 #' @param piplot .
 #' @param plot4 .
+#' @param plot5 .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
@@ -923,6 +950,8 @@ raschBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$ml1} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$wald} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$plot4} \tab \tab \tab \tab \tab an image \cr
+#'   \code{results$plot5} \tab \tab \tab \tab \tab an image \cr
+#'   \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
 #' }
 #'
 #' Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
@@ -967,7 +996,8 @@ rasch <- function(
     plot2 = FALSE,
     plot3 = FALSE,
     piplot = FALSE,
-    plot4 = FALSE) {
+    plot4 = FALSE,
+    plot5 = FALSE) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("rasch requires jmvcore to be installed (restart may be required)")
@@ -1013,7 +1043,8 @@ rasch <- function(
         plot2 = plot2,
         plot3 = plot3,
         piplot = piplot,
-        plot4 = plot4)
+        plot4 = plot4,
+        plot5 = plot5)
 
     analysis <- raschClass$new(
         options = options,
