@@ -40,7 +40,10 @@ rasch(
   plot3 = FALSE,
   piplot = FALSE,
   plot4 = FALSE,
-  plot5 = FALSE
+  plot5 = FALSE,
+  res = "stdr",
+  q3 = FALSE,
+  res1 = "stdr"
 )
 }
 \arguments{
@@ -116,6 +119,12 @@ where 0 degrees represents completely horizontal labels.}
 \item{plot4}{.}
 
 \item{plot5}{.}
+
+\item{res}{.}
+
+\item{q3}{.}
+
+\item{res1}{.}
 }
 \value{
 A results object containing:
@@ -147,6 +156,7 @@ A results object containing:
   \code{results$plot4} \tab \tab \tab \tab \tab an image \cr
   \code{results$plot5} \tab \tab \tab \tab \tab an image \cr
   \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
+  \code{results$text1} \tab \tab \tab \tab \tab a preformatted \cr
 }
 
 Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:

@@ -22,6 +22,7 @@
 #' @importFrom  pairwise pair
 #' @importFrom  pairwise pers
 #' @importFrom  pairwise rfa
+#' @importFrom pairwise q3
 #' @import RColorBrewer
 #' @import ggplot2
 #' @export
@@ -561,9 +562,11 @@ raschClass <- if (requireNamespace('jmvcore'))
         
         if(self$options$plot5==TRUE){
         
+        res <- self$options$res
+          
         ip <- pairwise::pair(data)
         pers_obj <- pairwise::pers(ip)
-        rf<- pairwise::rfa(pers_obj)
+        rf<- pairwise::rfa(pers_obj, res=res)
         summ<- summary(rf)
         
         self$results$text$setContent(summ)
@@ -573,6 +576,21 @@ raschClass <- if (requireNamespace('jmvcore'))
         
         }
         
+        # Q3 fit statistics proposed by Yen(1984)
+        
+        
+        if(self$options$q3==TRUE){
+          
+          res1 <- self$options$res1
+          
+          ip <- pairwise::pair(data)
+          pers_obj <- pairwise::pers(ip)
+         
+          q<- pairwise::q3(pers_obj, res=res1)
+           
+          self$results$text1$setContent(summary(q))
+          
+        }
       
         ############################################
         results <-

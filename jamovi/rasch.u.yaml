@@ -263,3 +263,13 @@ children:
             children:
               - type: CheckBox
                 name: plot5
+                children:
+                  - type: ComboBox
+                    name: res
+                    enable: (plot5)
+              - type: CheckBox
+                name: q3
+                children:
+                  - type: ComboBox
+                    name: res1
+                    enable: (q3)        

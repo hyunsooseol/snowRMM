@@ -442,4 +442,7 @@ items:
       title: Rasch residual factor analysis
       type:  Preformatted
 
+    - name:  text1
+      title: Q3 fit statistic based on the residuals
+      type:  Preformatted
 ...

@@ -240,4 +240,28 @@ options:
       type: Bool
       default: false  
 
+    - name: res
+      title: Type of residual
+      type: List
+      options:
+      - name: stdr
+        title: 'Standardized'
+      - name: sr
+        title: 'Score'
+      default: stdr
+
+    - name: q3
+      title: Q3 fit statistic
+      type: Bool
+      default: false
+
+    - name: res1
+      title: Type of residual
+      type: List
+      options:
+      - name: stdr
+        title: 'Standardized'
+      - name: sr
+        title: 'Score'
+      default: stdr
 ...
