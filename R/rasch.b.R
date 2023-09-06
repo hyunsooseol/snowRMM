@@ -51,10 +51,10 @@ raschClass <- if (requireNamespace('jmvcore'))
             
             <h2><b>Instructions</b></h2>
             <p>_____________________________________________________________________________________________</p>
-            <p>1. Rasch models using joint maximum likelihood estimation(JMLE).</P>
-            <p>2. Specify </b> the number of 'Step' and model 'Type'</b> in the 'Analysis option'.</p>
+            <p>1. The <b>MixRasch</b> R package was used for the Rasch model using joint maximum likelihood estimation(JMLE).</P>
+            <p>2. Specify </b> the number of <b>Step</b> and model <b>Type</b> in the analysis option.</p>
             <p>3. Step is defined as number of <b>category-1</b>. </p>
-            <p>4. The minimum and maximum values of a category must be the same across all items for <b>rating sclaes</b> with eRm R package.</p>
+            <p>4. The minimum and maximum values of a category must be the same across all items for <b>rating sclaes</b> with <b>eRm</b> R package.</p>
             <p>5. <b>Person Analysis</b> will be displayed in the datasheet.</p>
             <p>6. The <b>eRm</b> R package was used for the person-item map for PCM.</p>
             <p>7. The <b>pairwise</b> R package was used for residual analysis.</p>
