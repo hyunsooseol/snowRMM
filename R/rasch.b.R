@@ -57,7 +57,7 @@ raschClass <- if (requireNamespace('jmvcore'))
             <p>4. The minimum and maximum values of a category must be the same across all items for <b>rating sclaes</b> with eRm R package.</p>
             <p>5. <b>Person Analysis</b> will be displayed in the datasheet.</p>
             <p>6. The <b>eRm</b> R package was used for the person-item map for PCM.</p>
-            <p>7. The <b>pairwise</b> R package was used for the Rasch residual factor analysis.</p>
+            <p>7. The <b>pairwise</b> R package was used for residual analysis.</p>
             <p>8. Feature requests and bug reports can be made on my <a href='https://github.com/hyunsooseol/snowRMM/issues'  target = '_blank'>GitHub</a>.</p>
             <p>_____________________________________________________________________________________________</p>
             
@@ -588,8 +588,33 @@ raschClass <- if (requireNamespace('jmvcore'))
          
           q<- pairwise::q3(pers_obj, res=res1)
            
-          self$results$text1$setContent(summary(q))
+        # self$results$text1$setContent(summary(q))
+         
+          table <- self$results$q3
           
+          if(is.null(self$options$q3))
+            return()
+          
+          
+          Mean<- q[["statistic"]]$Q3[1]
+          Max<- q[["statistic"]]$Q3[2]
+          Min<- q[["statistic"]]$Q3[3]
+          Max_abs<- q[["statistic"]]$Q3[4]
+          Min_abs<- q[["statistic"]]$Q3[5]
+          Q3<- q[["statistic"]]$Q3[6]
+          
+          row <- list()
+          
+          row[['Mean']] <- Mean
+          row[['Max']] <- Max
+          row[['Min']] <- Min
+          row[['Max_abs']] <- Max_abs
+          row[['Min_abs']] <- Min_abs
+          row[['Q3']] <- Q3
+          
+          table$setRow(rowNo = 1, values = row)
+          
+           
         }
       
         ############################################

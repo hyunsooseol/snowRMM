@@ -410,8 +410,8 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         wald = function() private$.items[["wald"]],
         plot4 = function() private$.items[["plot4"]],
         plot5 = function() private$.items[["plot5"]],
-        text = function() private$.items[["text"]],
-        text1 = function() private$.items[["text1"]]),
+        q3 = function() private$.items[["q3"]],
+        text = function() private$.items[["text"]]),
     private = list(),
     public=list(
         initialize=function(options) {
@@ -887,15 +887,40 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 renderFun=".plot5",
                 refs="pairwise",
                 clearWith=list(
-                    "vars")))
+                    "vars",
+                    "res")))
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="q3",
+                title="Q3 statistic based on pearson correlation",
+                rows=1,
+                clearWith=list(
+                    "vars",
+                    "res1"),
+                refs="pairwise",
+                columns=list(
+                    list(
+                        `name`="Mean", 
+                        `type`="number"),
+                    list(
+                        `name`="Max", 
+                        `type`="number"),
+                    list(
+                        `name`="Min", 
+                        `type`="number"),
+                    list(
+                        `name`="Max_abs", 
+                        `type`="number"),
+                    list(
+                        `name`="Min_abs", 
+                        `type`="number"),
+                    list(
+                        `name`="Q3", 
+                        `type`="number"))))
             self$add(jmvcore::Preformatted$new(
                 options=options,
                 name="text",
-                title="Rasch residual factor analysis"))
-            self$add(jmvcore::Preformatted$new(
-                options=options,
-                name="text1",
-                title="Q3 fit statistic based on the residuals"))}))
+                title="Rasch residual factor analysis"))}))
 
 raschBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "raschBase",
@@ -989,8 +1014,8 @@ raschBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$wald} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$plot4} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$plot5} \tab \tab \tab \tab \tab an image \cr
+#'   \code{results$q3} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
-#'   \code{results$text1} \tab \tab \tab \tab \tab a preformatted \cr
 #' }
 #'
 #' Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:

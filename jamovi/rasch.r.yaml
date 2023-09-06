@@ -436,13 +436,36 @@ items:
       renderFun: .plot5
       refs: pairwise
       clearWith:
-            - vars            
+            - vars
+            - res
 
+    - name: q3
+      title: 'Q3 statistic based on pearson correlation'
+      type: Table
+      rows: 1
+      clearWith:
+        - vars
+        - res1
+      refs: pairwise    
+
+      columns:
+        - name: Mean
+          type: number
+        - name: Max
+          type: number
+        - name: Min
+          type: number
+        - name: Max_abs
+          type: number
+        - name: Min_abs
+          type: number
+        - name: Q3
+          type: number  
+  
     - name:  text
       title: Rasch residual factor analysis
       type:  Preformatted
 
-    - name:  text1
-      title: Q3 fit statistic based on the residuals
-      type:  Preformatted
+  
+      
 ...
