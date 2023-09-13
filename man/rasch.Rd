@@ -130,9 +130,9 @@ where 0 degrees represents completely horizontal labels.}
 A results object containing:
 \tabular{llllll}{
   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
-  \code{results$item$model} \tab \tab \tab \tab \tab a table \cr
-  \code{results$item$items} \tab \tab \tab \tab \tab a table \cr
-  \code{results$rel} \tab \tab \tab \tab \tab a table \cr
+  \code{results$items} \tab \tab \tab \tab \tab a table \cr
+  \code{results$mf$model} \tab \tab \tab \tab \tab a table \cr
+  \code{results$mf$rel} \tab \tab \tab \tab \tab a table \cr
   \code{results$thr} \tab \tab \tab \tab \tab a table \cr
   \code{results$rsm} \tab \tab \tab \tab \tab a table \cr
   \code{results$pcm} \tab \tab \tab \tab \tab a table \cr
@@ -149,10 +149,10 @@ A results object containing:
   \code{results$pse} \tab \tab \tab \tab \tab an output \cr
   \code{results$pinfit} \tab \tab \tab \tab \tab an output \cr
   \code{results$poutfit} \tab \tab \tab \tab \tab an output \cr
-  \code{results$lr} \tab \tab \tab \tab \tab a table \cr
-  \code{results$ml} \tab \tab \tab \tab \tab a table \cr
-  \code{results$ml1} \tab \tab \tab \tab \tab a table \cr
-  \code{results$wald} \tab \tab \tab \tab \tab a table \cr
+  \code{results$tm$lr} \tab \tab \tab \tab \tab a table \cr
+  \code{results$tm$ml} \tab \tab \tab \tab \tab a table \cr
+  \code{results$tm$ml1} \tab \tab \tab \tab \tab a table \cr
+  \code{results$tm$wald} \tab \tab \tab \tab \tab a table \cr
   \code{results$plot4} \tab \tab \tab \tab \tab an image \cr
   \code{results$plot5} \tab \tab \tab \tab \tab an image \cr
   \code{results$q3} \tab \tab \tab \tab \tab a table \cr
@@ -161,9 +161,9 @@ A results object containing:
 
 Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
 
-\code{results$rel$asDF}
+\code{results$items$asDF}
 
-\code{as.data.frame(results$rel)}
+\code{as.data.frame(results$items)}
 }
 \description{
 Rasch Model

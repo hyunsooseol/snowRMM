@@ -386,8 +386,8 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     inherit = jmvcore::Group,
     active = list(
         instructions = function() private$.items[["instructions"]],
-        item = function() private$.items[["item"]],
-        rel = function() private$.items[["rel"]],
+        items = function() private$.items[["items"]],
+        mf = function() private$.items[["mf"]],
         thr = function() private$.items[["thr"]],
         rsm = function() private$.items[["rsm"]],
         pcm = function() private$.items[["pcm"]],
@@ -404,10 +404,7 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         pse = function() private$.items[["pse"]],
         pinfit = function() private$.items[["pinfit"]],
         poutfit = function() private$.items[["poutfit"]],
-        lr = function() private$.items[["lr"]],
-        ml = function() private$.items[["ml"]],
-        ml1 = function() private$.items[["ml1"]],
-        wald = function() private$.items[["wald"]],
+        tm = function() private$.items[["tm"]],
         plot4 = function() private$.items[["plot4"]],
         plot5 = function() private$.items[["plot5"]],
         q3 = function() private$.items[["q3"]],
@@ -425,18 +422,59 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 name="instructions",
                 title="Instructions",
                 visible=TRUE))
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="items",
+                title="`Item statistics - ${type}`",
+                visible="(imean || imeasure || ise || infit || outfit || pbis)",
+                rows="(vars)",
+                clearWith=list(
+                    "vars",
+                    "step",
+                    "type"),
+                refs="mixRasch",
+                columns=list(
+                    list(
+                        `name`="name", 
+                        `title`="", 
+                        `type`="text", 
+                        `content`="($key)"),
+                    list(
+                        `name`="imean", 
+                        `title`="Item mean", 
+                        `visible`="(imean)"),
+                    list(
+                        `name`="imeasure", 
+                        `title`="Measure", 
+                        `visible`="(imeasure)"),
+                    list(
+                        `name`="ise", 
+                        `title`="S.E.Measure", 
+                        `visible`="(ise)"),
+                    list(
+                        `name`="infit", 
+                        `title`="Infit", 
+                        `visible`="(infit)"),
+                    list(
+                        `name`="outfit", 
+                        `title`="Outfit", 
+                        `visible`="(outfit)"),
+                    list(
+                        `name`="pbis", 
+                        `title`="Point biserial", 
+                        `visible`="(pbis)"))))
             self$add(R6::R6Class(
                 inherit = jmvcore::Group,
                 active = list(
                     model = function() private$.items[["model"]],
-                    items = function() private$.items[["items"]]),
+                    rel = function() private$.items[["rel"]]),
                 private = list(),
                 public=list(
                     initialize=function(options) {
                         super$initialize(
                             options=options,
-                            name="item",
-                            title="Item Analysis")
+                            name="mf",
+                            title="Model Fit")
                         self$add(jmvcore::Table$new(
                             options=options,
                             name="model",
@@ -475,66 +513,25 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                     `type`="integer"))))
                         self$add(jmvcore::Table$new(
                             options=options,
-                            name="items",
-                            title="`Item statistics - ${type}`",
-                            visible="(imean || imeasure || ise || infit || outfit || pbis)",
-                            rows="(vars)",
+                            name="rel",
+                            title="Person separation reliability using eRm R package",
+                            rows=1,
+                            visible="(rel)",
                             clearWith=list(
                                 "vars",
                                 "step",
                                 "type"),
-                            refs="mixRasch",
+                            refs="eRm",
                             columns=list(
                                 list(
-                                    `name`="name", 
-                                    `title`="", 
-                                    `type`="text", 
-                                    `content`="($key)"),
+                                    `name`="SSD", 
+                                    `type`="number"),
                                 list(
-                                    `name`="imean", 
-                                    `title`="Item mean", 
-                                    `visible`="(imean)"),
+                                    `name`="MSE", 
+                                    `type`="number"),
                                 list(
-                                    `name`="imeasure", 
-                                    `title`="Measure", 
-                                    `visible`="(imeasure)"),
-                                list(
-                                    `name`="ise", 
-                                    `title`="S.E.Measure", 
-                                    `visible`="(ise)"),
-                                list(
-                                    `name`="infit", 
-                                    `title`="Infit", 
-                                    `visible`="(infit)"),
-                                list(
-                                    `name`="outfit", 
-                                    `title`="Outfit", 
-                                    `visible`="(outfit)"),
-                                list(
-                                    `name`="pbis", 
-                                    `title`="Point biserial", 
-                                    `visible`="(pbis)"))))}))$new(options=options))
-            self$add(jmvcore::Table$new(
-                options=options,
-                name="rel",
-                title="Person separation reliability using eRm R package",
-                rows=1,
-                visible="(rel)",
-                clearWith=list(
-                    "vars",
-                    "step",
-                    "type"),
-                refs="eRm",
-                columns=list(
-                    list(
-                        `name`="SSD", 
-                        `type`="number"),
-                    list(
-                        `name`="MSE", 
-                        `type`="number"),
-                    list(
-                        `name`="Reliability", 
-                        `type`="number"))))
+                                    `name`="Reliability", 
+                                    `type`="number"))))}))$new(options=options))
             self$add(jmvcore::Table$new(
                 options=options,
                 name="thr",
@@ -749,125 +746,139 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "vars",
                     "step",
                     "type")))
-            self$add(jmvcore::Table$new(
-                options=options,
-                name="lr",
-                title="`Andersen\u2019s LR test - ${lrsplit}`",
-                visible="(lr)",
-                rows=1,
-                refs="eRm",
-                clearWith=list(
-                    "vars",
-                    "step",
-                    "type",
-                    "lrsplit"),
-                columns=list(
-                    list(
-                        `name`="name", 
-                        `title`="", 
-                        `type`="text", 
-                        `content`="Likelihood ratio"),
-                    list(
-                        `name`="value", 
-                        `title`="Value", 
-                        `type`="number"),
-                    list(
-                        `name`="df", 
-                        `title`="df", 
-                        `type`="number"),
-                    list(
-                        `name`="p", 
-                        `title`="p", 
-                        `format`="zto,pvalue"))))
-            self$add(jmvcore::Table$new(
-                options=options,
-                name="ml",
-                title="`Martin-Loef test - ${mlsplit}`",
-                visible="(ml)",
-                rows=1,
-                refs="eRm",
-                clearWith=list(
-                    "vars",
-                    "step",
-                    "type",
-                    "mlsplit"),
-                columns=list(
-                    list(
-                        `name`="name", 
-                        `title`="", 
-                        `type`="text", 
-                        `content`="Likelihood ratio"),
-                    list(
-                        `name`="value", 
-                        `title`="Value", 
-                        `type`="number"),
-                    list(
-                        `name`="df", 
-                        `title`="df", 
-                        `type`="integer"),
-                    list(
-                        `name`="p", 
-                        `title`="p", 
-                        `format`="zto,pvalue"))))
-            self$add(jmvcore::Table$new(
-                options=options,
-                name="ml1",
-                title="`Martin-Loef test - ${mlsplit1}`",
-                visible="(ml1)",
-                rows=1,
-                refs="eRm",
-                clearWith=list(
-                    "vars",
-                    "step",
-                    "type",
-                    "mlsplit1"),
-                columns=list(
-                    list(
-                        `name`="name", 
-                        `title`="", 
-                        `type`="text", 
-                        `content`="Likelihood ratio"),
-                    list(
-                        `name`="value", 
-                        `title`="Value", 
-                        `type`="number"),
-                    list(
-                        `name`="df", 
-                        `title`="df", 
-                        `type`="integer"),
-                    list(
-                        `name`="p", 
-                        `title`="p", 
-                        `format`="zto,pvalue"))))
-            self$add(jmvcore::Table$new(
-                options=options,
-                name="wald",
-                title="`Wald test - ${waldsplit}`",
-                visible="(wald)",
-                refs="eRm",
-                clearWith=list(
-                    "vars",
-                    "step",
-                    "type",
-                    "waldsplit"),
-                columns=list(
-                    list(
-                        `name`="name", 
-                        `title`="Item", 
-                        `type`="text", 
-                        `content`="($key)"),
-                    list(
-                        `name`="item", 
-                        `title`="Z statistic", 
-                        `type`="number"),
-                    list(
-                        `name`="p", 
-                        `title`="p", 
-                        `format`="zto, pvalue"))))
+            self$add(R6::R6Class(
+                inherit = jmvcore::Group,
+                active = list(
+                    lr = function() private$.items[["lr"]],
+                    ml = function() private$.items[["ml"]],
+                    ml1 = function() private$.items[["ml1"]],
+                    wald = function() private$.items[["wald"]]),
+                private = list(),
+                public=list(
+                    initialize=function(options) {
+                        super$initialize(
+                            options=options,
+                            name="tm",
+                            title="Testing Model")
+                        self$add(jmvcore::Table$new(
+                            options=options,
+                            name="lr",
+                            title="`Andersen\u2019s LR test - ${lrsplit}`",
+                            visible="(lr)",
+                            rows=1,
+                            refs="eRm",
+                            clearWith=list(
+                                "vars",
+                                "step",
+                                "type",
+                                "lrsplit"),
+                            columns=list(
+                                list(
+                                    `name`="name", 
+                                    `title`="", 
+                                    `type`="text", 
+                                    `content`="Likelihood ratio"),
+                                list(
+                                    `name`="value", 
+                                    `title`="Value", 
+                                    `type`="number"),
+                                list(
+                                    `name`="df", 
+                                    `title`="df", 
+                                    `type`="number"),
+                                list(
+                                    `name`="p", 
+                                    `title`="p", 
+                                    `format`="zto,pvalue"))))
+                        self$add(jmvcore::Table$new(
+                            options=options,
+                            name="ml",
+                            title="`Martin-Loef test - ${mlsplit}`",
+                            visible="(ml)",
+                            rows=1,
+                            refs="eRm",
+                            clearWith=list(
+                                "vars",
+                                "step",
+                                "type",
+                                "mlsplit"),
+                            columns=list(
+                                list(
+                                    `name`="name", 
+                                    `title`="", 
+                                    `type`="text", 
+                                    `content`="Likelihood ratio"),
+                                list(
+                                    `name`="value", 
+                                    `title`="Value", 
+                                    `type`="number"),
+                                list(
+                                    `name`="df", 
+                                    `title`="df", 
+                                    `type`="integer"),
+                                list(
+                                    `name`="p", 
+                                    `title`="p", 
+                                    `format`="zto,pvalue"))))
+                        self$add(jmvcore::Table$new(
+                            options=options,
+                            name="ml1",
+                            title="`Martin-Loef test - ${mlsplit1}`",
+                            visible="(ml1)",
+                            rows=1,
+                            refs="eRm",
+                            clearWith=list(
+                                "vars",
+                                "step",
+                                "type",
+                                "mlsplit1"),
+                            columns=list(
+                                list(
+                                    `name`="name", 
+                                    `title`="", 
+                                    `type`="text", 
+                                    `content`="Likelihood ratio"),
+                                list(
+                                    `name`="value", 
+                                    `title`="Value", 
+                                    `type`="number"),
+                                list(
+                                    `name`="df", 
+                                    `title`="df", 
+                                    `type`="integer"),
+                                list(
+                                    `name`="p", 
+                                    `title`="p", 
+                                    `format`="zto,pvalue"))))
+                        self$add(jmvcore::Table$new(
+                            options=options,
+                            name="wald",
+                            title="`Wald test - ${waldsplit}`",
+                            visible="(wald)",
+                            refs="eRm",
+                            clearWith=list(
+                                "vars",
+                                "step",
+                                "type",
+                                "waldsplit"),
+                            columns=list(
+                                list(
+                                    `name`="name", 
+                                    `title`="Item", 
+                                    `type`="text", 
+                                    `content`="($key)"),
+                                list(
+                                    `name`="item", 
+                                    `title`="Z statistic", 
+                                    `type`="number"),
+                                list(
+                                    `name`="p", 
+                                    `title`="p", 
+                                    `format`="zto, pvalue"))))}))$new(options=options))
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot4",
-                title="Person fit plot",
+                title="Person Fit Plot",
                 requiresData=TRUE,
                 visible="(plot4)",
                 width=600,
@@ -879,7 +890,7 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot5",
-                title="Rasch residual factor plot",
+                title="Rasch Residual Factor Plot",
                 requiresData=TRUE,
                 visible="(plot5)",
                 width=500,
@@ -989,9 +1000,9 @@ raschBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
-#'   \code{results$item$model} \tab \tab \tab \tab \tab a table \cr
-#'   \code{results$item$items} \tab \tab \tab \tab \tab a table \cr
-#'   \code{results$rel} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$items} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$mf$model} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$mf$rel} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$thr} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$rsm} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$pcm} \tab \tab \tab \tab \tab a table \cr
@@ -1008,10 +1019,10 @@ raschBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$pse} \tab \tab \tab \tab \tab an output \cr
 #'   \code{results$pinfit} \tab \tab \tab \tab \tab an output \cr
 #'   \code{results$poutfit} \tab \tab \tab \tab \tab an output \cr
-#'   \code{results$lr} \tab \tab \tab \tab \tab a table \cr
-#'   \code{results$ml} \tab \tab \tab \tab \tab a table \cr
-#'   \code{results$ml1} \tab \tab \tab \tab \tab a table \cr
-#'   \code{results$wald} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$tm$lr} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$tm$ml} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$tm$ml1} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$tm$wald} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$plot4} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$plot5} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$q3} \tab \tab \tab \tab \tab a table \cr
@@ -1020,9 +1031,9 @@ raschBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'
 #' Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
 #'
-#' \code{results$rel$asDF}
+#' \code{results$items$asDF}
 #'
-#' \code{as.data.frame(results$rel)}
+#' \code{as.data.frame(results$items)}
 #'
 #' @export
 rasch <- function(

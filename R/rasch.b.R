@@ -81,14 +81,14 @@ raschClass <- if (requireNamespace('jmvcore'))
         #   )
         
         if (self$options$ml1)
-          self$results$ml1$setNote(
+          self$results$tm$ml1$setNote(
             "Note",
             "Number of categories should be the same for each item with eRm R package."
             
           )
         
         if (self$options$rel)
-          self$results$rel$setNote(
+          self$results$mf$rel$setNote(
             "Note",
             "SSD=Squared Standard Deviation; MSE=Mean Squared Error."
            
@@ -337,7 +337,7 @@ raschClass <- if (requireNamespace('jmvcore'))
           df<- lr$df
           p<- lr$pvalue
           
-          table <- self$results$lr
+          table <- self$results$tm$lr
           
           
           row <- list()
@@ -368,7 +368,7 @@ raschClass <- if (requireNamespace('jmvcore'))
           df<- ml$df
           p<- ml$p.value
           
-          table <- self$results$ml
+          table <- self$results$tm$ml
           
           
           row <- list()
@@ -383,7 +383,7 @@ raschClass <- if (requireNamespace('jmvcore'))
           # Wald test----------
           vars <- self$options$vars
           
-          table <- self$results$wald
+          table <- self$results$tm$wald
           
           waldsplit<- self$options$waldsplit
           #######################
@@ -486,7 +486,7 @@ raschClass <- if (requireNamespace('jmvcore'))
           df<- ml1$df
           p<- ml1$p.value
           
-          table <- self$results$ml1
+          table <- self$results$tm$ml1
           
           
           row <- list()
@@ -717,7 +717,7 @@ raschClass <- if (requireNamespace('jmvcore'))
       
       .populateRelTable = function(results) {
         
-        table <- self$results$rel
+        table <- self$results$mf$rel
         
         
         #results---------
@@ -741,7 +741,7 @@ raschClass <- if (requireNamespace('jmvcore'))
       
       .populateModelTable = function(results) {
         
-        table <- self$results$item$model
+        table <- self$results$mf$model
         
         
         #results---------
@@ -779,7 +779,7 @@ raschClass <- if (requireNamespace('jmvcore'))
       
       .populateItemTable = function(results) {
         
-        table <- self$results$item$items
+        table <- self$results$items
         
         vars <- self$options$vars
         

@@ -9,8 +9,42 @@ items:
       type: Html
       visible: True
 
-    - name: item
-      title: Item Analysis
+    - name: items
+      title: '`Item statistics - ${type}`'
+      type: Table
+      visible: (imean || imeasure || ise || infit || outfit || pbis)
+      rows: (vars)
+      clearWith:
+        - vars
+        - step
+        - type
+      refs: mixRasch
+      columns:
+        - name: name
+          title: ''
+          type: 'text'
+          content: ($key)
+        - name: imean
+          title: Item mean
+          visible: (imean)
+        - name: imeasure
+          title: Measure
+          visible: (imeasure)
+        - name: ise
+          title: S.E.Measure
+          visible: (ise)
+        - name: infit
+          title: Infit
+          visible: (infit)
+        - name: outfit
+          title: Outfit
+          visible: (outfit)
+        - name: pbis
+          title: Point biserial
+          visible: (pbis)
+
+    - name: mf
+      title: Model Fit
       type: Group
       items:   
         - name: model
@@ -44,58 +78,24 @@ items:
               title: Persons
               type: integer               
 
-        - name: items
-          title: '`Item statistics - ${type}`'
+        - name: rel
+          title: 'Person separation reliability using eRm R package'
           type: Table
-          visible: (imean || imeasure || ise || infit || outfit || pbis)
-          rows: (vars)
+          rows: 1
+          visible: (rel)
           clearWith:
             - vars
             - step
             - type
-          refs: mixRasch
+          refs: eRm    
+
           columns:
-            - name: name
-              title: ''
-              type: 'text'
-              content: ($key)
-            - name: imean
-              title: Item mean
-              visible: (imean)
-            - name: imeasure
-              title: Measure
-              visible: (imeasure)
-            - name: ise
-              title: S.E.Measure
-              visible: (ise)
-            - name: infit
-              title: Infit
-              visible: (infit)
-            - name: outfit
-              title: Outfit
-              visible: (outfit)
-            - name: pbis
-              title: Point biserial
-              visible: (pbis)
-
-    - name: rel
-      title: 'Person separation reliability using eRm R package'
-      type: Table
-      rows: 1
-      visible: (rel)
-      clearWith:
-        - vars
-        - step
-        - type
-      refs: eRm    
-
-      columns:
-        - name: SSD
-          type: number
-        - name: MSE
-          type: number
-        - name: Reliability
-          type: number
+            - name: SSD
+              type: number
+            - name: MSE
+              type: number
+            - name: Reliability
+              type: number
 
     - name: thr
       title: '`Thresholds table(tau parameter)- ${type}`'
@@ -308,114 +308,118 @@ items:
         - step
         - type 
 
-    - name: lr
-      title: '`Andersen’s LR test - ${lrsplit}`'
-      type: Table
-      visible: (lr)
-      rows: 1
-      refs: eRm 
-      clearWith:
-        - vars
-        - step
-        - type
-        - lrsplit
+    - name: tm
+      title: 'Testing Model'
+      type: Group
+      items:   
+        - name: lr
+          title: '`Andersen’s LR test - ${lrsplit}`'
+          type: Table
+          visible: (lr)
+          rows: 1
+          refs: eRm 
+          clearWith:
+            - vars
+            - step
+            - type
+            - lrsplit
         
-      columns:
-        - name: name
-          title: ''
-          type: 'text'
-          content: Likelihood ratio
-        - name: value
-          title: 'Value'
-          type: number
-        - name: df
-          title: 'df'
-          type: number
-        - name: p
-          title: 'p'
-          format: zto,pvalue
+          columns:
+            - name: name
+              title: ''
+              type: 'text'
+              content: Likelihood ratio
+            - name: value
+              title: 'Value'
+              type: number
+            - name: df
+              title: 'df'
+              type: number
+            - name: p
+              title: 'p'
+              format: zto,pvalue
 
-    - name: ml
-      title: '`Martin-Loef test - ${mlsplit}`'
-      type: Table
-      visible: (ml)
-      rows: 1
-      refs: eRm 
-      clearWith:
-        - vars
-        - step
-        - type
-        - mlsplit
+        - name: ml
+          title: '`Martin-Loef test - ${mlsplit}`'
+          type: Table
+          visible: (ml)
+          rows: 1
+          refs: eRm 
+          clearWith:
+            - vars
+            - step
+            - type
+            - mlsplit
         
-      columns:
-        - name: name
-          title: ''
-          type: 'text'
-          content: Likelihood ratio
-        - name: value
-          title: 'Value'
-          type: number
-        - name: df
-          title: 'df'
-          type: integer
-        - name: p
-          title: 'p'
-          format: zto,pvalue
+          columns:
+            - name: name
+              title: ''
+              type: 'text'
+              content: Likelihood ratio
+            - name: value
+              title: 'Value'
+              type: number
+            - name: df
+              title: 'df'
+              type: integer
+            - name: p
+              title: 'p'
+              format: zto,pvalue
 
-    - name: ml1
-      title: '`Martin-Loef test - ${mlsplit1}`'
-      type: Table
-      visible: (ml1)
-      rows: 1
-      refs: eRm 
-      clearWith:
-        - vars
-        - step
-        - type
-        - mlsplit1
+        - name: ml1
+          title: '`Martin-Loef test - ${mlsplit1}`'
+          type: Table
+          visible: (ml1)
+          rows: 1
+          refs: eRm 
+          clearWith:
+            - vars
+            - step
+            - type
+            - mlsplit1
         
-      columns:
-        - name: name
-          title: ''
-          type: 'text'
-          content: Likelihood ratio
-        - name: value
-          title: 'Value'
-          type: number
-        - name: df
-          title: 'df'
-          type: integer
-        - name: p
-          title: 'p'
-          format: zto,pvalue
+          columns:
+            - name: name
+              title: ''
+              type: 'text'
+              content: Likelihood ratio
+            - name: value
+              title: 'Value'
+              type: number
+            - name: df
+              title: 'df'
+              type: integer
+            - name: p
+              title: 'p'
+              format: zto,pvalue
 
-    - name: wald
-      title: '`Wald test - ${waldsplit}`'
-      type: Table
-      visible: (wald)
-      refs: eRm 
-      clearWith:
-        - vars
-        - step
-        - type
-        - waldsplit
+        - name: wald
+          title: '`Wald test - ${waldsplit}`'
+          type: Table
+          visible: (wald)
+          refs: eRm 
+          clearWith:
+            - vars
+            - step
+            - type
+            - waldsplit
 
-      columns:
-        - name: name
-          title: 'Item'
-          type: 'text'
-          content: ($key)
+          columns:
+            - name: name
+              title: 'Item'
+              type: 'text'
+              content: ($key)
 
-        - name: item
-          title: 'Z statistic'
-          type: number
+            - name: item
+              title: 'Z statistic'
+              type: number
         
-        - name: p
-          title: 'p'
-          format: zto, pvalue
+            - name: p
+              title: 'p'
+              format: zto, pvalue
 
     - name:  plot4
-      title: 'Person fit plot'
+      title: 'Person Fit Plot'
       type:  Image
       requiresData: true
       visible: (plot4)
@@ -427,7 +431,7 @@ items:
             - vars
 
     - name:  plot5
-      title: 'Rasch residual factor plot'
+      title: 'Rasch Residual Factor Plot'
       type:  Image
       requiresData: true
       visible: (plot5)
