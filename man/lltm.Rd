@@ -48,21 +48,15 @@ lltm(
 A results object containing:
 \tabular{llllll}{
   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
-  \code{results$items} \tab \tab \tab \tab \tab a table \cr
-  \code{results$lr} \tab \tab \tab \tab \tab a table \cr
-  \code{results$ml} \tab \tab \tab \tab \tab a table \cr
-  \code{results$wald} \tab \tab \tab \tab \tab a table \cr
-  \code{results$eta} \tab \tab \tab \tab \tab a table \cr
-  \code{results$beta} \tab \tab \tab \tab \tab a table \cr
-  \code{results$comp} \tab \tab \tab \tab \tab a table \cr
+  \code{results$ra$items} \tab \tab \tab \tab \tab a table \cr
+  \code{results$ra$lr} \tab \tab \tab \tab \tab a table \cr
+  \code{results$ra$ml} \tab \tab \tab \tab \tab a table \cr
+  \code{results$ra$wald} \tab \tab \tab \tab \tab a table \cr
+  \code{results$ll$eta} \tab \tab \tab \tab \tab a table \cr
+  \code{results$ll$beta} \tab \tab \tab \tab \tab a table \cr
+  \code{results$ll$comp} \tab \tab \tab \tab \tab a table \cr
   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
 }
-
-Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
-
-\code{results$items$asDF}
-
-\code{as.data.frame(results$items)}
 }
 \description{
 Linear Logisitic Test Model

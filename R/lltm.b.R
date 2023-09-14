@@ -41,7 +41,7 @@ lltmClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             )
             
             if (self$options$items)
-                self$results$items$setNote(
+                self$results$ra$items$setNote(
                     "Note",
                     "Easiness parameters have opposite signs to difficulty parameters."
                     
@@ -50,7 +50,7 @@ lltmClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             
             
             if (self$options$comp)
-                self$results$comp$setNote(
+                self$results$ll$comp$setNote(
                     "Note",
                     "LLs= Conditional log-likelihoods; npar= Number of parameters; 
                     LR= Likelihood ratio statistics."
@@ -105,7 +105,7 @@ lltmClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             
           #  self$results$text$setContent(rasch.item)
               
-            table <- self$results$items
+            table <- self$results$ra$items
             
             vars <- self$options$vars
             
@@ -145,7 +145,7 @@ lltmClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             df<- lr$df
             p<- lr$pvalue
 
-            table <- self$results$lr
+            table <- self$results$ra$lr
 
 
             row <- list()
@@ -166,7 +166,7 @@ lltmClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             df<- ml$df
             p<- ml$p.value
             
-            table <- self$results$ml
+            table <- self$results$ra$ml
             
             
             row <- list()
@@ -183,7 +183,7 @@ lltmClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             # Wald test----------
             vars <- self$options$vars
             
-            table <- self$results$wald
+            table <- self$results$ra$wald
             
             #######################
             
@@ -234,7 +234,7 @@ lltmClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
               
             ############################################# 
             
-            table <- self$results$eta
+            table <- self$results$ll$eta
             
             # estimating eta parameters-----------
            
@@ -275,7 +275,7 @@ lltmClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             
             #  self$results$text$setContent(rasch.item)
             
-            table <- self$results$beta
+            table <- self$results$ll$beta
             
             vars <- self$options$vars
             
@@ -309,7 +309,7 @@ lltmClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             
             # Model comparison------------
             
-            table <- self$results$comp
+            table <- self$results$ll$comp
             
             
             mod<- stats::anova(rasch, lltm)

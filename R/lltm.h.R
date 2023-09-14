@@ -117,13 +117,8 @@ lltmResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     inherit = jmvcore::Group,
     active = list(
         instructions = function() private$.items[["instructions"]],
-        items = function() private$.items[["items"]],
-        lr = function() private$.items[["lr"]],
-        ml = function() private$.items[["ml"]],
-        wald = function() private$.items[["wald"]],
-        eta = function() private$.items[["eta"]],
-        beta = function() private$.items[["beta"]],
-        comp = function() private$.items[["comp"]],
+        ra = function() private$.items[["ra"]],
+        ll = function() private$.items[["ll"]],
         plot = function() private$.items[["plot"]]),
     private = list(),
     public=list(
@@ -138,230 +133,257 @@ lltmResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 name="instructions",
                 title="Instructions",
                 visible=TRUE))
-            self$add(jmvcore::Table$new(
-                options=options,
-                name="items",
-                title="Rasch item easiness parameters(beta)",
-                visible="(items)",
-                refs="eRm",
-                clearWith=list(
-                    "vars",
-                    "mat",
-                    "col"),
-                columns=list(
-                    list(
-                        `name`="name", 
-                        `title`="Item", 
-                        `type`="text", 
-                        `content`="($key)"),
-                    list(
-                        `name`="item", 
-                        `title`="Estimate", 
-                        `type`="number"),
-                    list(
-                        `name`="se", 
-                        `title`="SE", 
-                        `type`="number"),
-                    list(
-                        `name`="lower", 
-                        `title`="Lower", 
-                        `type`="number", 
-                        `superTitle`="95% CI"),
-                    list(
-                        `name`="upper", 
-                        `title`="Upper", 
-                        `type`="number", 
-                        `superTitle`="95% CI"))))
-            self$add(jmvcore::Table$new(
-                options=options,
-                name="lr",
-                title="Andersen\u2019s LR test",
-                visible="(lr)",
-                rows=1,
-                refs="eRm",
-                clearWith=list(
-                    "vars",
-                    "mat",
-                    "col"),
-                columns=list(
-                    list(
-                        `name`="name", 
-                        `title`="", 
-                        `type`="text", 
-                        `content`="Likelihood ratio"),
-                    list(
-                        `name`="value", 
-                        `title`="Value", 
-                        `type`="number"),
-                    list(
-                        `name`="df", 
-                        `title`="df", 
-                        `type`="number"),
-                    list(
-                        `name`="p", 
-                        `title`="p", 
-                        `format`="zto,pvalue"))))
-            self$add(jmvcore::Table$new(
-                options=options,
-                name="ml",
-                title="Martin-Loef test",
-                visible="(ml)",
-                rows=1,
-                refs="eRm",
-                clearWith=list(
-                    "vars",
-                    "mat",
-                    "col"),
-                columns=list(
-                    list(
-                        `name`="name", 
-                        `title`="", 
-                        `type`="text", 
-                        `content`="Likelihood ratio"),
-                    list(
-                        `name`="value", 
-                        `title`="Value", 
-                        `type`="number"),
-                    list(
-                        `name`="df", 
-                        `title`="df", 
-                        `type`="integer"),
-                    list(
-                        `name`="p", 
-                        `title`="p", 
-                        `format`="zto,pvalue"))))
-            self$add(jmvcore::Table$new(
-                options=options,
-                name="wald",
-                title="Wald test",
-                visible="(wald)",
-                refs="eRm",
-                clearWith=list(
-                    "vars",
-                    "mat",
-                    "col"),
-                columns=list(
-                    list(
-                        `name`="name", 
-                        `title`="Item", 
-                        `type`="text", 
-                        `content`="($key)"),
-                    list(
-                        `name`="item", 
-                        `title`="Z statistic", 
-                        `type`="number"),
-                    list(
-                        `name`="p", 
-                        `title`="p", 
-                        `format`="zto, pvalue"))))
-            self$add(jmvcore::Table$new(
-                options=options,
-                name="eta",
-                title="LLTM Basic item easiness parameters(eta)",
-                visible="(eta)",
-                refs="eRm",
-                clearWith=list(
-                    "vars",
-                    "mat",
-                    "col"),
-                columns=list(
-                    list(
-                        `name`="name", 
-                        `title`="", 
-                        `type`="text", 
-                        `content`="($key)"),
-                    list(
-                        `name`="item", 
-                        `title`="Estimate", 
-                        `type`="number"),
-                    list(
-                        `name`="se", 
-                        `title`="SE", 
-                        `type`="number"),
-                    list(
-                        `name`="lower", 
-                        `title`="Lower", 
-                        `type`="number", 
-                        `superTitle`="95% CI"),
-                    list(
-                        `name`="upper", 
-                        `title`="Upper", 
-                        `type`="number", 
-                        `superTitle`="95% CI"))))
-            self$add(jmvcore::Table$new(
-                options=options,
-                name="beta",
-                title="LLTM Item easiness parameters(beta)",
-                visible="(beta)",
-                refs="eRm",
-                clearWith=list(
-                    "vars",
-                    "mat",
-                    "col"),
-                columns=list(
-                    list(
-                        `name`="name", 
-                        `title`="Item", 
-                        `type`="text", 
-                        `content`="($key)"),
-                    list(
-                        `name`="item", 
-                        `title`="Estimate", 
-                        `type`="number"),
-                    list(
-                        `name`="se", 
-                        `title`="SE", 
-                        `type`="number"),
-                    list(
-                        `name`="lower", 
-                        `title`="Lower", 
-                        `type`="number", 
-                        `superTitle`="95% CI"),
-                    list(
-                        `name`="upper", 
-                        `title`="Upper", 
-                        `type`="number", 
-                        `superTitle`="95% CI"))))
-            self$add(jmvcore::Table$new(
-                options=options,
-                name="comp",
-                title="Analysis of Deviances",
-                visible="(comp)",
-                refs="eRm",
-                clearWith=list(
-                    "vars",
-                    "mat",
-                    "col"),
-                columns=list(
-                    list(
-                        `name`="name", 
-                        `title`="Model", 
-                        `type`="text", 
-                        `content`="($key)"),
-                    list(
-                        `name`="ll", 
-                        `title`="LLs", 
-                        `type`="number"),
-                    list(
-                        `name`="dev", 
-                        `title`="Deviance", 
-                        `type`="number"),
-                    list(
-                        `name`="npar", 
-                        `title`="npar", 
-                        `type`="number"),
-                    list(
-                        `name`="lr", 
-                        `title`="LR", 
-                        `type`="number"),
-                    list(
-                        `name`="df", 
-                        `title`="df", 
-                        `type`="number"),
-                    list(
-                        `name`="p", 
-                        `title`="p", 
-                        `format`="zto, pvalue"))))
+            self$add(R6::R6Class(
+                inherit = jmvcore::Group,
+                active = list(
+                    items = function() private$.items[["items"]],
+                    lr = function() private$.items[["lr"]],
+                    ml = function() private$.items[["ml"]],
+                    wald = function() private$.items[["wald"]]),
+                private = list(),
+                public=list(
+                    initialize=function(options) {
+                        super$initialize(
+                            options=options,
+                            name="ra",
+                            title="Rasch Model")
+                        self$add(jmvcore::Table$new(
+                            options=options,
+                            name="items",
+                            title="Rasch item easiness parameters(beta)",
+                            visible="(items)",
+                            refs="eRm",
+                            clearWith=list(
+                                "vars",
+                                "mat",
+                                "col"),
+                            columns=list(
+                                list(
+                                    `name`="name", 
+                                    `title`="Item", 
+                                    `type`="text", 
+                                    `content`="($key)"),
+                                list(
+                                    `name`="item", 
+                                    `title`="Estimate", 
+                                    `type`="number"),
+                                list(
+                                    `name`="se", 
+                                    `title`="SE", 
+                                    `type`="number"),
+                                list(
+                                    `name`="lower", 
+                                    `title`="Lower", 
+                                    `type`="number", 
+                                    `superTitle`="95% CI"),
+                                list(
+                                    `name`="upper", 
+                                    `title`="Upper", 
+                                    `type`="number", 
+                                    `superTitle`="95% CI"))))
+                        self$add(jmvcore::Table$new(
+                            options=options,
+                            name="lr",
+                            title="Andersen\u2019s LR test",
+                            visible="(lr)",
+                            rows=1,
+                            refs="eRm",
+                            clearWith=list(
+                                "vars",
+                                "mat",
+                                "col"),
+                            columns=list(
+                                list(
+                                    `name`="name", 
+                                    `title`="", 
+                                    `type`="text", 
+                                    `content`="Likelihood ratio"),
+                                list(
+                                    `name`="value", 
+                                    `title`="Value", 
+                                    `type`="number"),
+                                list(
+                                    `name`="df", 
+                                    `title`="df", 
+                                    `type`="number"),
+                                list(
+                                    `name`="p", 
+                                    `title`="p", 
+                                    `format`="zto,pvalue"))))
+                        self$add(jmvcore::Table$new(
+                            options=options,
+                            name="ml",
+                            title="Martin-Loef test",
+                            visible="(ml)",
+                            rows=1,
+                            refs="eRm",
+                            clearWith=list(
+                                "vars",
+                                "mat",
+                                "col"),
+                            columns=list(
+                                list(
+                                    `name`="name", 
+                                    `title`="", 
+                                    `type`="text", 
+                                    `content`="Likelihood ratio"),
+                                list(
+                                    `name`="value", 
+                                    `title`="Value", 
+                                    `type`="number"),
+                                list(
+                                    `name`="df", 
+                                    `title`="df", 
+                                    `type`="integer"),
+                                list(
+                                    `name`="p", 
+                                    `title`="p", 
+                                    `format`="zto,pvalue"))))
+                        self$add(jmvcore::Table$new(
+                            options=options,
+                            name="wald",
+                            title="Wald test",
+                            visible="(wald)",
+                            refs="eRm",
+                            clearWith=list(
+                                "vars",
+                                "mat",
+                                "col"),
+                            columns=list(
+                                list(
+                                    `name`="name", 
+                                    `title`="Item", 
+                                    `type`="text", 
+                                    `content`="($key)"),
+                                list(
+                                    `name`="item", 
+                                    `title`="Z statistic", 
+                                    `type`="number"),
+                                list(
+                                    `name`="p", 
+                                    `title`="p", 
+                                    `format`="zto, pvalue"))))}))$new(options=options))
+            self$add(R6::R6Class(
+                inherit = jmvcore::Group,
+                active = list(
+                    eta = function() private$.items[["eta"]],
+                    beta = function() private$.items[["beta"]],
+                    comp = function() private$.items[["comp"]]),
+                private = list(),
+                public=list(
+                    initialize=function(options) {
+                        super$initialize(
+                            options=options,
+                            name="ll",
+                            title="LLTM Model")
+                        self$add(jmvcore::Table$new(
+                            options=options,
+                            name="eta",
+                            title="LLTM Basic item easiness parameters(eta)",
+                            visible="(eta)",
+                            refs="eRm",
+                            clearWith=list(
+                                "vars",
+                                "mat",
+                                "col"),
+                            columns=list(
+                                list(
+                                    `name`="name", 
+                                    `title`="", 
+                                    `type`="text", 
+                                    `content`="($key)"),
+                                list(
+                                    `name`="item", 
+                                    `title`="Estimate", 
+                                    `type`="number"),
+                                list(
+                                    `name`="se", 
+                                    `title`="SE", 
+                                    `type`="number"),
+                                list(
+                                    `name`="lower", 
+                                    `title`="Lower", 
+                                    `type`="number", 
+                                    `superTitle`="95% CI"),
+                                list(
+                                    `name`="upper", 
+                                    `title`="Upper", 
+                                    `type`="number", 
+                                    `superTitle`="95% CI"))))
+                        self$add(jmvcore::Table$new(
+                            options=options,
+                            name="beta",
+                            title="LLTM Item easiness parameters(beta)",
+                            visible="(beta)",
+                            refs="eRm",
+                            clearWith=list(
+                                "vars",
+                                "mat",
+                                "col"),
+                            columns=list(
+                                list(
+                                    `name`="name", 
+                                    `title`="Item", 
+                                    `type`="text", 
+                                    `content`="($key)"),
+                                list(
+                                    `name`="item", 
+                                    `title`="Estimate", 
+                                    `type`="number"),
+                                list(
+                                    `name`="se", 
+                                    `title`="SE", 
+                                    `type`="number"),
+                                list(
+                                    `name`="lower", 
+                                    `title`="Lower", 
+                                    `type`="number", 
+                                    `superTitle`="95% CI"),
+                                list(
+                                    `name`="upper", 
+                                    `title`="Upper", 
+                                    `type`="number", 
+                                    `superTitle`="95% CI"))))
+                        self$add(jmvcore::Table$new(
+                            options=options,
+                            name="comp",
+                            title="Analysis of Deviances",
+                            visible="(comp)",
+                            refs="eRm",
+                            clearWith=list(
+                                "vars",
+                                "mat",
+                                "col"),
+                            columns=list(
+                                list(
+                                    `name`="name", 
+                                    `title`="Model", 
+                                    `type`="text", 
+                                    `content`="($key)"),
+                                list(
+                                    `name`="ll", 
+                                    `title`="LLs", 
+                                    `type`="number"),
+                                list(
+                                    `name`="dev", 
+                                    `title`="Deviance", 
+                                    `type`="number"),
+                                list(
+                                    `name`="npar", 
+                                    `title`="npar", 
+                                    `type`="number"),
+                                list(
+                                    `name`="lr", 
+                                    `title`="LR", 
+                                    `type`="number"),
+                                list(
+                                    `name`="df", 
+                                    `title`="df", 
+                                    `type`="number"),
+                                list(
+                                    `name`="p", 
+                                    `title`="p", 
+                                    `format`="zto, pvalue"))))}))$new(options=options))
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot",
@@ -414,21 +436,15 @@ lltmBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
-#'   \code{results$items} \tab \tab \tab \tab \tab a table \cr
-#'   \code{results$lr} \tab \tab \tab \tab \tab a table \cr
-#'   \code{results$ml} \tab \tab \tab \tab \tab a table \cr
-#'   \code{results$wald} \tab \tab \tab \tab \tab a table \cr
-#'   \code{results$eta} \tab \tab \tab \tab \tab a table \cr
-#'   \code{results$beta} \tab \tab \tab \tab \tab a table \cr
-#'   \code{results$comp} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$ra$items} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$ra$lr} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$ra$ml} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$ra$wald} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$ll$eta} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$ll$beta} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$ll$comp} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
 #' }
-#'
-#' Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
-#'
-#' \code{results$items$asDF}
-#'
-#' \code{as.data.frame(results$items)}
 #'
 #' @export
 lltm <- function(

@@ -9,223 +9,231 @@ items:
       type: Html
       visible: True
 
-    - name: items
-      title: 'Rasch item easiness parameters(beta)'
-      type: Table
-      visible: (items)
-      refs: eRm 
-      clearWith:
-        - vars
-        - mat
-        - col
+    - name: ra
+      title: 'Rasch Model'
+      type: Group
+      items:
+        - name: items
+          title: 'Rasch item easiness parameters(beta)'
+          type: Table
+          visible: (items)
+          refs: eRm 
+          clearWith:
+            - vars
+            - mat
+            - col
       
-      columns:
-        - name: name
-          title: 'Item'
-          type: 'text'
-          content: ($key)
+          columns:
+            - name: name
+              title: 'Item'
+              type: 'text'
+              content: ($key)
 
-        - name: item
-          title: 'Estimate'
-          type: number
+            - name: item
+              title: 'Estimate'
+              type: number
         
-        - name: se
-          title: 'SE'
-          type: number  
+            - name: se
+              title: 'SE'
+              type: number  
 
-        - name: lower
-          title: Lower
-          type: number
-          superTitle: '95% CI'
+            - name: lower
+              title: Lower
+              type: number
+              superTitle: '95% CI'
  
-        - name: upper
-          title: Upper
-          type: number
-          superTitle: '95% CI'  
+            - name: upper
+              title: Upper
+              type: number
+              superTitle: '95% CI'  
           
-    - name: lr
-      title: 'Andersen’s LR test'
-      type: Table
-      visible: (lr)
-      rows: 1
-      refs: eRm 
-      clearWith:
-        - vars
-        - mat
-        - col
-        
-      columns:
-        - name: name
-          title: ''
-          type: 'text'
-          content: Likelihood ratio
-        - name: value
-          title: 'Value'
-          type: number
-        - name: df
-          title: 'df'
-          type: number
-        - name: p
-          title: 'p'
-          format: zto,pvalue
-
-    - name: ml
-      title: 'Martin-Loef test'
-      type: Table
-      visible: (ml)
-      rows: 1
-      refs: eRm 
-      clearWith:
-        - vars
-        - mat
-        - col
-        
-      columns:
-        - name: name
-          title: ''
-          type: 'text'
-          content: Likelihood ratio
-        - name: value
-          title: 'Value'
-          type: number
-        - name: df
-          title: 'df'
-          type: integer
-        - name: p
-          title: 'p'
-          format: zto,pvalue
-
-    - name: wald
-      title: 'Wald test'
-      type: Table
-      visible: (wald)
-      refs: eRm 
-      clearWith:
-        - vars
-        - mat
-        - col
-
-      columns:
-        - name: name
-          title: 'Item'
-          type: 'text'
-          content: ($key)
-
-        - name: item
-          title: 'Z statistic'
-          type: number
-        
-        - name: p
-          title: 'p'
-          format: zto, pvalue
-
-    - name: eta
-      title: 'LLTM Basic item easiness parameters(eta)'
-      type: Table
-      visible: (eta)
-      refs: eRm 
-      clearWith:
-        - vars
-        - mat
-        - col
-      
-      columns:
-        - name: name
-          title: ''
-          type: 'text'
-          content: ($key)
-
-        - name: item
-          title: 'Estimate'
-          type: number
-        
-        - name: se
-          title: 'SE'
-          type: number  
-
-        - name: lower
-          title: Lower
-          type: number
-          superTitle: '95% CI'
- 
-        - name: upper
-          title: Upper
-          type: number
-          superTitle: '95% CI'  
-          
-    - name: beta
-      title: 'LLTM Item easiness parameters(beta)'
-      type: Table
-      visible: (beta)
-      refs: eRm 
-      clearWith:
-        - vars
-        - mat
-        - col
-      
-      columns:
-        - name: name
-          title: 'Item'
-          type: 'text'
-          content: ($key)
-
-        - name: item
-          title: 'Estimate'
-          type: number
-        
-        - name: se
-          title: 'SE'
-          type: number  
-
-        - name: lower
-          title: Lower
-          type: number
-          superTitle: '95% CI'
- 
-        - name: upper
-          title: Upper
-          type: number
-          superTitle: '95% CI'  
- 
-    - name: comp
-      title: 'Analysis of Deviances'
-      type: Table
-      visible: (comp)
-      refs: eRm 
-      clearWith:
-        - vars
-        - mat
-        - col
-      
-      columns:
-        - name: name
-          title: 'Model'
-          type: 'text'
-          content: ($key)
-
-        - name: ll
-          title: 'LLs'
-          type: number
-        
-        - name: dev
-          title: 'Deviance'
-          type: number  
-
-        - name: npar
-          title: 'npar'
-          type: number
-
         - name: lr
-          title: 'LR'
-          type: number
+          title: 'Andersen’s LR test'
+          type: Table
+          visible: (lr)
+          rows: 1
+          refs: eRm 
+          clearWith:
+            - vars
+            - mat
+            - col
+        
+          columns:
+            - name: name
+              title: ''
+              type: 'text'
+              content: Likelihood ratio
+            - name: value
+              title: 'Value'
+              type: number
+            - name: df
+              title: 'df'
+              type: number
+            - name: p
+              title: 'p'
+              format: zto,pvalue
 
-        - name: df
-          title: 'df'
-          type: number          
+        - name: ml
+          title: 'Martin-Loef test'
+          type: Table
+          visible: (ml)
+          rows: 1
+          refs: eRm 
+          clearWith:
+            - vars
+            - mat
+            - col
+        
+          columns:
+            - name: name
+              title: ''
+              type: 'text'
+              content: Likelihood ratio
+            - name: value
+              title: 'Value'
+              type: number
+            - name: df
+              title: 'df'
+              type: integer
+            - name: p
+              title: 'p'
+              format: zto,pvalue
+
+        - name: wald
+          title: 'Wald test'
+          type: Table
+          visible: (wald)
+          refs: eRm 
+          clearWith:
+            - vars
+            - mat
+            - col
+
+          columns:
+            - name: name
+              title: 'Item'
+              type: 'text'
+              content: ($key)
+
+            - name: item
+              title: 'Z statistic'
+              type: number
+        
+            - name: p
+              title: 'p'
+              format: zto, pvalue
+
+    - name: ll
+      title: 'LLTM Model'
+      type: Group
+      items:
+        - name: eta
+          title: 'LLTM Basic item easiness parameters(eta)'
+          type: Table
+          visible: (eta)
+          refs: eRm 
+          clearWith:
+            - vars
+            - mat
+            - col
+      
+          columns:
+            - name: name
+              title: ''
+              type: 'text'
+              content: ($key)
+
+            - name: item
+              title: 'Estimate'
+              type: number
+        
+            - name: se
+              title: 'SE'
+              type: number  
+
+            - name: lower
+              title: Lower
+              type: number
+              superTitle: '95% CI'
+ 
+            - name: upper
+              title: Upper
+              type: number
+              superTitle: '95% CI'  
+          
+        - name: beta
+          title: 'LLTM Item easiness parameters(beta)'
+          type: Table
+          visible: (beta)
+          refs: eRm 
+          clearWith:
+            - vars
+            - mat
+            - col
+      
+          columns:
+            - name: name
+              title: 'Item'
+              type: 'text'
+              content: ($key)
+
+            - name: item
+              title: 'Estimate'
+              type: number
+        
+            - name: se
+              title: 'SE'
+              type: number  
+
+            - name: lower
+              title: Lower
+              type: number
+              superTitle: '95% CI'
+ 
+            - name: upper
+              title: Upper
+              type: number
+              superTitle: '95% CI'  
+ 
+        - name: comp
+          title: 'Analysis of Deviances'
+          type: Table
+          visible: (comp)
+          refs: eRm 
+          clearWith:
+            - vars
+            - mat
+            - col
+      
+          columns:
+            - name: name
+              title: 'Model'
+              type: 'text'
+              content: ($key)
+
+            - name: ll
+              title: 'LLs'
+              type: number
+        
+            - name: dev
+              title: 'Deviance'
+              type: number  
+
+            - name: npar
+              title: 'npar'
+              type: number
+
+            - name: lr
+              title: 'LR'
+              type: number
+
+            - name: df
+              title: 'df'
+              type: number          
                 
-        - name: p
-          title: 'p'
-          format: zto, pvalue
+            - name: p
+              title: 'p'
+              format: zto, pvalue
           
     - name:  plot
       title: "Comparison of item easiness parameters "
