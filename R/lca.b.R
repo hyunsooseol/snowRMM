@@ -45,7 +45,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         )
         
         if (self$options$fit)
-          self$results$fit$setNote(
+          self$results$mf$fit$setNote(
             "Note",
             "G\u00B2=Likelihood ratio statistic; \u03C7\u00B2=Pearson Chi-square goodness of fit statistic; Entropy=entropy R^2 statistic (Vermunt & Magidson, 2013, p. 71)"
           )
@@ -401,7 +401,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
 .populateFitTable = function(results) {
   
-  table <- self$results$fit
+  table <- self$results$mf$fit
   
   nc <- self$options$nc
   
@@ -453,7 +453,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
 .populateModelTable = function(results) {
   
-  table <- self$results$comp
+  table <- self$results$mf$comp
   
   nc <- self$options$nc
   
@@ -584,7 +584,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         #creating table--------
         
-        table <- self$results$cp
+        table <- self$results$pro$cp
         
         for (name in names) {
           
@@ -652,7 +652,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
       
       .populateCfTable = function(results) {
         
-        table <- self$results$cf
+        table <- self$results$pro$cf
         
         cell <- results$cell
         

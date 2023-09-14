@@ -13,116 +13,87 @@ items:
       title: ''
       type:  Preformatted
 
-    - name: fit
-      title: 'Model fit'
-      type: Table
-      rows: 1
-      refs: poLCA
-      clearWith:
-        - vars
-        - nc
-        - covs
+    - name: mf
+      title: 'Model Fit'
+      type: Group
+      items:
+        - name: fit
+          title: 'Model fit'
+          type: Table
+          rows: 1
+          refs: poLCA
+          clearWith:
+            - vars
+            - nc
+            - covs
       
-      columns:
-        - name: Class
-          type: number
-        - name: Log-likelihood
-          type: number
-        - name: Resid.df
-          type: number
-        - name: AIC
-          type: number
-        - name: AIC3
-          type: number
-        - name: BIC
-          type: number
-        - name: SABIC
-          type: number
-        - name: CAIC
-          type: number
-        - name: Entropy
-          type: number
-        - name: G²
-          type: number
-        - name: G² p
-          type: number
-          format: zto,pvalue
-        - name: χ²
-          type: number
-        - name: χ² p
-          type: number
-          format: zto,pvalue
+          columns:
+            - name: Class
+              type: number
+            - name: Log-likelihood
+              type: number
+            - name: Resid.df
+              type: number
+            - name: AIC
+              type: number
+            - name: AIC3
+              type: number
+            - name: BIC
+              type: number
+            - name: SABIC
+              type: number
+            - name: CAIC
+              type: number
+            - name: Entropy
+              type: number
+            - name: G²
+              type: number
+            - name: G² p
+              type: number
+              format: zto,pvalue
+            - name: χ²
+              type: number
+            - name: χ² p
+              type: number
+              format: zto,pvalue
   
-    - name: comp
-      title: 'Model comparison'
-      type: Table
-      visible: (comp)
-      refs: poLCA
-      clearWith:
-        - vars
-        - nc
-        - covs
+        - name: comp
+          title: 'Model comparison'
+          type: Table
+          visible: (comp)
+          refs: poLCA
+          clearWith:
+            - vars
+            - nc
+            - covs
       
-      columns:
-        - name: name
-          title: 'Class'
-          type: 'text'
-          content: ($key)        
-        - name: aic
-          title: AIC
-          type: number
-        - name: aic3
-          title: AIC3
-          type: number
-        - name: bic
-          title: BIC      
-          type: number
-        - name: SABIC
-          type: number
-        - name: CAIC
-          type: number
-        - name: loglik
-          title: Log-likelihood      
-          type: number          
-        - name: Chisq
-          title: χ²
-          type: number
-        - name: Gsq
-          title:  G² 
-          type: number          
- 
-    - name: cf
-      title: 'Predicted cell counts from latent class analysis'
-      type: Table
-      visible: (cf)
-      refs: poLCA
-      clearWith:
-        - vars
-        - nc
-        - covs     
-      columns:
-        - name: name
-          title: ''
-          type: 'text'
-          content: ($key)
- 
-    - name: cp
-      title: 'Size of each latent class'
-      type: Table
-      visible: (cp)
-      refs: poLCA
-      clearWith:
-        - vars
-        - nc
-        - covs      
-      columns:
-        - name: name
-          title: ''
-          type: 'text'
-          content: ($key)
-
-        - name: value
-          title: 'Probability'
+          columns:
+            - name: name
+              title: 'Class'
+              type: 'text'
+              content: ($key)        
+            - name: aic
+              title: AIC
+              type: number
+            - name: aic3
+              title: AIC3
+              type: number
+            - name: bic
+              title: BIC      
+              type: number
+            - name: SABIC
+              type: number
+            - name: CAIC
+              type: number
+            - name: loglik
+              title: Log-likelihood      
+              type: number          
+            - name: Chisq
+              title: χ²
+              type: number
+            - name: Gsq
+              title:  G² 
+              type: number          
 
     - name:  ip
       title:  'Item response probabilities'
@@ -142,6 +113,43 @@ items:
             - nc
             - covs
           columns: 
+            - name: name
+              title: ''
+              type: 'text'
+              content: ($key)
+
+    - name: pro
+      title: 'Probability'
+      type: Group
+      items:
+        - name: cp
+          title: 'Size of each latent class'
+          type: Table
+          visible: (cp)
+          refs: poLCA
+          clearWith:
+            - vars
+            - nc
+            - covs      
+          columns:
+            - name: name
+              title: ''
+              type: 'text'
+              content: ($key)
+
+            - name: value
+              title: 'Probability'
+
+        - name: cf
+          title: 'Predicted cell counts from latent class analysis'
+          type: Table
+          visible: (cf)
+          refs: poLCA
+          clearWith:
+            - vars
+            - nc
+            - covs     
+          columns:
             - name: name
               title: ''
               type: 'text'
@@ -168,7 +176,7 @@ items:
         - covs
 
     - name: plot
-      title: 'LCA plot'
+      title: 'LCA Plot'
       type: Image
       visible: (plot)
       width: 600
@@ -195,7 +203,7 @@ items:
             - angle
 
     - name: plot2
-      title: 'Profile plot'
+      title: 'Profile Plot'
       type: Image
       visible: (plot2)
       renderFun: .plot2
@@ -207,7 +215,7 @@ items:
             - angle
 
     - name: plot3
-      title: 'Elbow plot'
+      title: 'Elbow Plot'
       type: Image
       visible: (plot3)
       width: 600

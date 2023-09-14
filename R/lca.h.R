@@ -149,11 +149,9 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     active = list(
         instructions = function() private$.items[["instructions"]],
         text1 = function() private$.items[["text1"]],
-        fit = function() private$.items[["fit"]],
-        comp = function() private$.items[["comp"]],
-        cf = function() private$.items[["cf"]],
-        cp = function() private$.items[["cp"]],
+        mf = function() private$.items[["mf"]],
         ip = function() private$.items[["ip"]],
+        pro = function() private$.items[["pro"]],
         text = function() private$.items[["text"]],
         cm = function() private$.items[["cm"]],
         plot = function() private$.items[["plot"]],
@@ -177,139 +175,116 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 options=options,
                 name="text1",
                 title=""))
-            self$add(jmvcore::Table$new(
-                options=options,
-                name="fit",
-                title="Model fit",
-                rows=1,
-                refs="poLCA",
-                clearWith=list(
-                    "vars",
-                    "nc",
-                    "covs"),
-                columns=list(
-                    list(
-                        `name`="Class", 
-                        `type`="number"),
-                    list(
-                        `name`="Log-likelihood", 
-                        `type`="number"),
-                    list(
-                        `name`="Resid.df", 
-                        `type`="number"),
-                    list(
-                        `name`="AIC", 
-                        `type`="number"),
-                    list(
-                        `name`="AIC3", 
-                        `type`="number"),
-                    list(
-                        `name`="BIC", 
-                        `type`="number"),
-                    list(
-                        `name`="SABIC", 
-                        `type`="number"),
-                    list(
-                        `name`="CAIC", 
-                        `type`="number"),
-                    list(
-                        `name`="Entropy", 
-                        `type`="number"),
-                    list(
-                        `name`="G\u00B2", 
-                        `type`="number"),
-                    list(
-                        `name`="G\u00B2 p", 
-                        `type`="number", 
-                        `format`="zto,pvalue"),
-                    list(
-                        `name`="\u03C7\u00B2", 
-                        `type`="number"),
-                    list(
-                        `name`="\u03C7\u00B2 p", 
-                        `type`="number", 
-                        `format`="zto,pvalue"))))
-            self$add(jmvcore::Table$new(
-                options=options,
-                name="comp",
-                title="Model comparison",
-                visible="(comp)",
-                refs="poLCA",
-                clearWith=list(
-                    "vars",
-                    "nc",
-                    "covs"),
-                columns=list(
-                    list(
-                        `name`="name", 
-                        `title`="Class", 
-                        `type`="text", 
-                        `content`="($key)"),
-                    list(
-                        `name`="aic", 
-                        `title`="AIC", 
-                        `type`="number"),
-                    list(
-                        `name`="aic3", 
-                        `title`="AIC3", 
-                        `type`="number"),
-                    list(
-                        `name`="bic", 
-                        `title`="BIC", 
-                        `type`="number"),
-                    list(
-                        `name`="SABIC", 
-                        `type`="number"),
-                    list(
-                        `name`="CAIC", 
-                        `type`="number"),
-                    list(
-                        `name`="loglik", 
-                        `title`="Log-likelihood", 
-                        `type`="number"),
-                    list(
-                        `name`="Chisq", 
-                        `title`="\u03C7\u00B2", 
-                        `type`="number"),
-                    list(
-                        `name`="Gsq", 
-                        `title`="G\u00B2", 
-                        `type`="number"))))
-            self$add(jmvcore::Table$new(
-                options=options,
-                name="cf",
-                title="Predicted cell counts from latent class analysis",
-                visible="(cf)",
-                refs="poLCA",
-                clearWith=list(
-                    "vars",
-                    "nc",
-                    "covs"),
-                columns=list(
-                    list(
-                        `name`="name", 
-                        `title`="", 
-                        `type`="text", 
-                        `content`="($key)"))))
-            self$add(jmvcore::Table$new(
-                options=options,
-                name="cp",
-                title="Size of each latent class",
-                visible="(cp)",
-                refs="poLCA",
-                clearWith=list(
-                    "vars",
-                    "nc",
-                    "covs"),
-                columns=list(
-                    list(
-                        `name`="name", 
-                        `title`="", 
-                        `type`="text", 
-                        `content`="($key)"),
-                    list(
-                        `name`="value", 
-                        `title`="Probability"))))
+            self$add(R6::R6Class(
+                inherit = jmvcore::Group,
+                active = list(
+                    fit = function() private$.items[["fit"]],
+                    comp = function() private$.items[["comp"]]),
+                private = list(),
+                public=list(
+                    initialize=function(options) {
+                        super$initialize(
+                            options=options,
+                            name="mf",
+                            title="Model Fit")
+                        self$add(jmvcore::Table$new(
+                            options=options,
+                            name="fit",
+                            title="Model fit",
+                            rows=1,
+                            refs="poLCA",
+                            clearWith=list(
+                                "vars",
+                                "nc",
+                                "covs"),
+                            columns=list(
+                                list(
+                                    `name`="Class", 
+                                    `type`="number"),
+                                list(
+                                    `name`="Log-likelihood", 
+                                    `type`="number"),
+                                list(
+                                    `name`="Resid.df", 
+                                    `type`="number"),
+                                list(
+                                    `name`="AIC", 
+                                    `type`="number"),
+                                list(
+                                    `name`="AIC3", 
+                                    `type`="number"),
+                                list(
+                                    `name`="BIC", 
+                                    `type`="number"),
+                                list(
+                                    `name`="SABIC", 
+                                    `type`="number"),
+                                list(
+                                    `name`="CAIC", 
+                                    `type`="number"),
+                                list(
+                                    `name`="Entropy", 
+                                    `type`="number"),
+                                list(
+                                    `name`="G\u00B2", 
+                                    `type`="number"),
+                                list(
+                                    `name`="G\u00B2 p", 
+                                    `type`="number", 
+                                    `format`="zto,pvalue"),
+                                list(
+                                    `name`="\u03C7\u00B2", 
+                                    `type`="number"),
+                                list(
+                                    `name`="\u03C7\u00B2 p", 
+                                    `type`="number", 
+                                    `format`="zto,pvalue"))))
+                        self$add(jmvcore::Table$new(
+                            options=options,
+                            name="comp",
+                            title="Model comparison",
+                            visible="(comp)",
+                            refs="poLCA",
+                            clearWith=list(
+                                "vars",
+                                "nc",
+                                "covs"),
+                            columns=list(
+                                list(
+                                    `name`="name", 
+                                    `title`="Class", 
+                                    `type`="text", 
+                                    `content`="($key)"),
+                                list(
+                                    `name`="aic", 
+                                    `title`="AIC", 
+                                    `type`="number"),
+                                list(
+                                    `name`="aic3", 
+                                    `title`="AIC3", 
+                                    `type`="number"),
+                                list(
+                                    `name`="bic", 
+                                    `title`="BIC", 
+                                    `type`="number"),
+                                list(
+                                    `name`="SABIC", 
+                                    `type`="number"),
+                                list(
+                                    `name`="CAIC", 
+                                    `type`="number"),
+                                list(
+                                    `name`="loglik", 
+                                    `title`="Log-likelihood", 
+                                    `type`="number"),
+                                list(
+                                    `name`="Chisq", 
+                                    `title`="\u03C7\u00B2", 
+                                    `type`="number"),
+                                list(
+                                    `name`="Gsq", 
+                                    `title`="G\u00B2", 
+                                    `type`="number"))))}))$new(options=options))
             self$add(jmvcore::Array$new(
                 options=options,
                 name="ip",
@@ -334,6 +309,53 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                             `title`="", 
                             `type`="text", 
                             `content`="($key)")))))
+            self$add(R6::R6Class(
+                inherit = jmvcore::Group,
+                active = list(
+                    cp = function() private$.items[["cp"]],
+                    cf = function() private$.items[["cf"]]),
+                private = list(),
+                public=list(
+                    initialize=function(options) {
+                        super$initialize(
+                            options=options,
+                            name="pro",
+                            title="Probability")
+                        self$add(jmvcore::Table$new(
+                            options=options,
+                            name="cp",
+                            title="Size of each latent class",
+                            visible="(cp)",
+                            refs="poLCA",
+                            clearWith=list(
+                                "vars",
+                                "nc",
+                                "covs"),
+                            columns=list(
+                                list(
+                                    `name`="name", 
+                                    `title`="", 
+                                    `type`="text", 
+                                    `content`="($key)"),
+                                list(
+                                    `name`="value", 
+                                    `title`="Probability"))))
+                        self$add(jmvcore::Table$new(
+                            options=options,
+                            name="cf",
+                            title="Predicted cell counts from latent class analysis",
+                            visible="(cf)",
+                            refs="poLCA",
+                            clearWith=list(
+                                "vars",
+                                "nc",
+                                "covs"),
+                            columns=list(
+                                list(
+                                    `name`="name", 
+                                    `title`="", 
+                                    `type`="text", 
+                                    `content`="($key)"))))}))$new(options=options))
             self$add(jmvcore::Preformatted$new(
                 options=options,
                 name="text",
@@ -357,7 +379,7 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot",
-                title="LCA plot",
+                title="LCA Plot",
                 visible="(plot)",
                 width=600,
                 height=450,
@@ -384,7 +406,7 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot2",
-                title="Profile plot",
+                title="Profile Plot",
                 visible="(plot2)",
                 renderFun=".plot2",
                 refs="snowRMM",
@@ -396,7 +418,7 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot3",
-                title="Elbow plot",
+                title="Elbow Plot",
                 visible="(plot3)",
                 width=600,
                 height=450,
@@ -451,11 +473,11 @@ lcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
 #'   \code{results$text1} \tab \tab \tab \tab \tab a preformatted \cr
-#'   \code{results$fit} \tab \tab \tab \tab \tab a table \cr
-#'   \code{results$comp} \tab \tab \tab \tab \tab a table \cr
-#'   \code{results$cf} \tab \tab \tab \tab \tab a table \cr
-#'   \code{results$cp} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$mf$fit} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$mf$comp} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$ip} \tab \tab \tab \tab \tab an array of tables \cr
+#'   \code{results$pro$cp} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$pro$cf} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$cm} \tab \tab \tab \tab \tab an output \cr
 #'   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
@@ -463,12 +485,6 @@ lcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$plot2} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$plot3} \tab \tab \tab \tab \tab an image \cr
 #' }
-#'
-#' Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
-#'
-#' \code{results$fit$asDF}
-#'
-#' \code{as.data.frame(results$fit)}
 #'
 #' @export
 lca <- function(

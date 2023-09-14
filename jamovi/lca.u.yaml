@@ -78,9 +78,9 @@ children:
             label: Probability
             children:
               - type: CheckBox
-                name: cp
-              - type: CheckBox
                 name: ip
+              - type: CheckBox
+                name: cp
               - type: CheckBox
                 name: cf
           - type: Label
