@@ -93,4 +93,67 @@ items:
             - bn 
             - angle
 
+    - name: instructions1
+      title: 'Bootstrap Item Fit with P values'
+      type: Html
+      visible: True
+
+    - name: outfit
+      title:  '`Bootstrap Outfit Statistics - ${adj}`'
+      type: Table
+      visible: (outfit)
+      rows: (vars1)
+      clearWith:
+        - vars1
+        - type
+        - bn1
+        - adj
+      refs: iarm
+        
+      columns:
+        - name: name
+          title: ''
+          type: 'text'
+          content: ($key)
+
+        - name: fit
+          title: Outfit
+        
+        - name: p
+          title: p
+          format: zto,pvalue
+          
+        - name: adp
+          title: Adj.p
+          format: zto,pvalue
+         
+    - name: infit
+      title: '`Bootstrap Infit Statistics - ${adj}`'
+      type: Table
+      visible: (infit)
+      rows: (vars1)
+      clearWith:
+        - vars1
+        - type
+        - bn1
+        - adj
+      refs: iarm
+        
+      columns:
+        - name: name
+          title: ''
+          type: 'text'
+          content: ($key)
+
+        - name: fit
+          title: Infit
+        
+        - name: p
+          title: p
+          format: zto,pvalue
+          
+        - name: adp
+          title: Adj.p
+          format: zto,pvalue
+
 ...

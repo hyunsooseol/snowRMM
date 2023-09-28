@@ -6,14 +6,21 @@ bfitOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     inherit = jmvcore::Options,
     public = list(
         initialize = function(
+            mode = "simple",
             vars = NULL,
+            vars1 = NULL,
             step = 1,
             bn = 100,
-            binfit = TRUE,
+            binfit = FALSE,
             boutfit = FALSE,
             inplot = FALSE,
             outplot = FALSE,
-            angle = 0, ...) {
+            angle = 0,
+            type = "bi",
+            adj = "BH",
+            bn1 = 100,
+            outfit = FALSE,
+            infit = FALSE, ...) {
 
             super$initialize(
                 package="snowRMM",
@@ -21,9 +28,23 @@ bfitOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 requiresData=TRUE,
                 ...)
 
+            private$..mode <- jmvcore::OptionList$new(
+                "mode",
+                mode,
+                options=list(
+                    "simple",
+                    "complex"),
+                default="simple")
             private$..vars <- jmvcore::OptionVariables$new(
                 "vars",
                 vars,
+                suggested=list(
+                    "continuous"),
+                permitted=list(
+                    "numeric"))
+            private$..vars1 <- jmvcore::OptionVariables$new(
+                "vars1",
+                vars1,
                 suggested=list(
                     "continuous"),
                 permitted=list(
@@ -41,7 +62,7 @@ bfitOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             private$..binfit <- jmvcore::OptionBool$new(
                 "binfit",
                 binfit,
-                default=TRUE)
+                default=FALSE)
             private$..boutfit <- jmvcore::OptionBool$new(
                 "boutfit",
                 boutfit,
@@ -60,8 +81,41 @@ bfitOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 min=0,
                 max=90,
                 default=0)
+            private$..type <- jmvcore::OptionList$new(
+                "type",
+                type,
+                options=list(
+                    "bi",
+                    "ra"),
+                default="bi")
+            private$..adj <- jmvcore::OptionList$new(
+                "adj",
+                adj,
+                options=list(
+                    "BH",
+                    "holm",
+                    "hochberg",
+                    "hommel",
+                    "bonferroni",
+                    "BY"),
+                default="BH")
+            private$..bn1 <- jmvcore::OptionInteger$new(
+                "bn1",
+                bn1,
+                min=2,
+                default=100)
+            private$..outfit <- jmvcore::OptionBool$new(
+                "outfit",
+                outfit,
+                default=FALSE)
+            private$..infit <- jmvcore::OptionBool$new(
+                "infit",
+                infit,
+                default=FALSE)
 
+            self$.addOption(private$..mode)
             self$.addOption(private$..vars)
+            self$.addOption(private$..vars1)
             self$.addOption(private$..step)
             self$.addOption(private$..bn)
             self$.addOption(private$..binfit)
@@ -69,25 +123,44 @@ bfitOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..inplot)
             self$.addOption(private$..outplot)
             self$.addOption(private$..angle)
+            self$.addOption(private$..type)
+            self$.addOption(private$..adj)
+            self$.addOption(private$..bn1)
+            self$.addOption(private$..outfit)
+            self$.addOption(private$..infit)
         }),
     active = list(
+        mode = function() private$..mode$value,
         vars = function() private$..vars$value,
+        vars1 = function() private$..vars1$value,
         step = function() private$..step$value,
         bn = function() private$..bn$value,
         binfit = function() private$..binfit$value,
         boutfit = function() private$..boutfit$value,
         inplot = function() private$..inplot$value,
         outplot = function() private$..outplot$value,
-        angle = function() private$..angle$value),
+        angle = function() private$..angle$value,
+        type = function() private$..type$value,
+        adj = function() private$..adj$value,
+        bn1 = function() private$..bn1$value,
+        outfit = function() private$..outfit$value,
+        infit = function() private$..infit$value),
     private = list(
+        ..mode = NA,
         ..vars = NA,
+        ..vars1 = NA,
         ..step = NA,
         ..bn = NA,
         ..binfit = NA,
         ..boutfit = NA,
         ..inplot = NA,
         ..outplot = NA,
-        ..angle = NA)
+        ..angle = NA,
+        ..type = NA,
+        ..adj = NA,
+        ..bn1 = NA,
+        ..outfit = NA,
+        ..infit = NA)
 )
 
 bfitResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -97,7 +170,10 @@ bfitResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         instructions = function() private$.items[["instructions"]],
         item = function() private$.items[["item"]],
         inplot = function() private$.items[["inplot"]],
-        outplot = function() private$.items[["outplot"]]),
+        outplot = function() private$.items[["outplot"]],
+        instructions1 = function() private$.items[["instructions1"]],
+        outfit = function() private$.items[["outfit"]],
+        infit = function() private$.items[["infit"]]),
     private = list(),
     public=list(
         initialize=function(options) {
@@ -210,7 +286,70 @@ bfitResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "vars",
                     "step",
                     "bn",
-                    "angle")))}))
+                    "angle")))
+            self$add(jmvcore::Html$new(
+                options=options,
+                name="instructions1",
+                title="Bootstrap Item Fit with P values",
+                visible=TRUE))
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="outfit",
+                title="`Bootstrap Outfit Statistics - ${adj}`",
+                visible="(outfit)",
+                rows="(vars1)",
+                clearWith=list(
+                    "vars1",
+                    "type",
+                    "bn1",
+                    "adj"),
+                refs="iarm",
+                columns=list(
+                    list(
+                        `name`="name", 
+                        `title`="", 
+                        `type`="text", 
+                        `content`="($key)"),
+                    list(
+                        `name`="fit", 
+                        `title`="Outfit"),
+                    list(
+                        `name`="p", 
+                        `title`="p", 
+                        `format`="zto,pvalue"),
+                    list(
+                        `name`="adp", 
+                        `title`="Adj.p", 
+                        `format`="zto,pvalue"))))
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="infit",
+                title="`Bootstrap Infit Statistics - ${adj}`",
+                visible="(infit)",
+                rows="(vars1)",
+                clearWith=list(
+                    "vars1",
+                    "type",
+                    "bn1",
+                    "adj"),
+                refs="iarm",
+                columns=list(
+                    list(
+                        `name`="name", 
+                        `title`="", 
+                        `type`="text", 
+                        `content`="($key)"),
+                    list(
+                        `name`="fit", 
+                        `title`="Infit"),
+                    list(
+                        `name`="p", 
+                        `title`="p", 
+                        `format`="zto,pvalue"),
+                    list(
+                        `name`="adp", 
+                        `title`="Adj.p", 
+                        `format`="zto,pvalue"))))}))
 
 bfitBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "bfitBase",
@@ -237,7 +376,9 @@ bfitBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'
 #' 
 #' @param data The data as a data frame.
+#' @param mode .
 #' @param vars .
+#' @param vars1 .
 #' @param step .
 #' @param bn .
 #' @param binfit .
@@ -245,6 +386,11 @@ bfitBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param inplot .
 #' @param outplot .
 #' @param angle .
+#' @param type .
+#' @param adj .
+#' @param bn1 .
+#' @param outfit .
+#' @param infit .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
@@ -252,39 +398,64 @@ bfitBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$item$boutfit} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$inplot} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$outplot} \tab \tab \tab \tab \tab an image \cr
+#'   \code{results$instructions1} \tab \tab \tab \tab \tab a html \cr
+#'   \code{results$outfit} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$infit} \tab \tab \tab \tab \tab a table \cr
 #' }
+#'
+#' Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
+#'
+#' \code{results$outfit$asDF}
+#'
+#' \code{as.data.frame(results$outfit)}
 #'
 #' @export
 bfit <- function(
     data,
+    mode = "simple",
     vars,
+    vars1,
     step = 1,
     bn = 100,
-    binfit = TRUE,
+    binfit = FALSE,
     boutfit = FALSE,
     inplot = FALSE,
     outplot = FALSE,
-    angle = 0) {
+    angle = 0,
+    type = "bi",
+    adj = "BH",
+    bn1 = 100,
+    outfit = FALSE,
+    infit = FALSE) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("bfit requires jmvcore to be installed (restart may be required)")
 
     if ( ! missing(vars)) vars <- jmvcore::resolveQuo(jmvcore::enquo(vars))
+    if ( ! missing(vars1)) vars1 <- jmvcore::resolveQuo(jmvcore::enquo(vars1))
     if (missing(data))
         data <- jmvcore::marshalData(
             parent.frame(),
-            `if`( ! missing(vars), vars, NULL))
+            `if`( ! missing(vars), vars, NULL),
+            `if`( ! missing(vars1), vars1, NULL))
 
 
     options <- bfitOptions$new(
+        mode = mode,
         vars = vars,
+        vars1 = vars1,
         step = step,
         bn = bn,
         binfit = binfit,
         boutfit = boutfit,
         inplot = inplot,
         outplot = outplot,
-        angle = angle)
+        angle = angle,
+        type = type,
+        adj = adj,
+        bn1 = bn1,
+        outfit = outfit,
+        infit = infit)
 
     analysis <- bfitClass$new(
         options = options,

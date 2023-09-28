@@ -6,20 +6,31 @@
 \usage{
 bfit(
   data,
+  mode = "simple",
   vars,
+  vars1,
   step = 1,
   bn = 100,
-  binfit = TRUE,
+  binfit = FALSE,
   boutfit = FALSE,
   inplot = FALSE,
   outplot = FALSE,
-  angle = 0
+  angle = 0,
+  type = "bi",
+  adj = "BH",
+  bn1 = 100,
+  outfit = FALSE,
+  infit = FALSE
 )
 }
 \arguments{
 \item{data}{The data as a data frame.}
 
+\item{mode}{.}
+
 \item{vars}{.}
+
+\item{vars1}{.}
 
 \item{step}{.}
 
@@ -34,6 +45,16 @@ bfit(
 \item{outplot}{.}
 
 \item{angle}{.}
+
+\item{type}{.}
+
+\item{adj}{.}
+
+\item{bn1}{.}
+
+\item{outfit}{.}
+
+\item{infit}{.}
 }
 \value{
 A results object containing:
@@ -43,7 +64,16 @@ A results object containing:
   \code{results$item$boutfit} \tab \tab \tab \tab \tab a table \cr
   \code{results$inplot} \tab \tab \tab \tab \tab an image \cr
   \code{results$outplot} \tab \tab \tab \tab \tab an image \cr
+  \code{results$instructions1} \tab \tab \tab \tab \tab a html \cr
+  \code{results$outfit} \tab \tab \tab \tab \tab a table \cr
+  \code{results$infit} \tab \tab \tab \tab \tab a table \cr
 }
+
+Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
+
+\code{results$outfit$asDF}
+
+\code{as.data.frame(results$outfit)}
 }
 \description{
 Bootstrap Item Fit

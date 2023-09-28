@@ -1,12 +1,12 @@
 ---
 title: 'Rasch Mixture, LCA, and Test Equating Analysis'
 name: snowRMM
-version: 5.6.6
+version: 5.6.7
 jms: '1.0'
 authors:
   - Hyunsoo Seol
 maintainer: Hyunsoo Seol <snow@cau.ac.kr>
-date: '2023-09-13'
+date: '2023-09-28'
 type: R
 description: >-
   This module allows users to conduct Latent class analysis based on poLCA R
@@ -61,12 +61,6 @@ analyses:
     menuGroup: snowRMM
     menuTitle: Latent Profile Analysis
     menuSubgroup: LCA
-  - title: Bootstrap item fit with P values
-    name: pfit
-    ns: snowRMM
-    menuGroup: snowRMM
-    menuTitle: Bootstrap item fit with P values
-    menuSubgroup: Rasch
   - title: Linear Logisitic Test Model
     name: lltm
     ns: snowRMM
@@ -86,6 +80,7 @@ datasets:
     tags:
       - Polytomous
       - Mixture
+      - Bootstrap
   - name: binary
     path: boot.omv
     description: Bootstrap Item Fit

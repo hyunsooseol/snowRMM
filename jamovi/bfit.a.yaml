@@ -12,7 +12,25 @@ options:
           R: >
             The data as a data frame.
 
+    - name: mode
+      title: ""
+      type: List
+      options:
+            - name: simple
+              title: 'Item Fit'
+            - name: complex
+              title: 'With P values'
+      default: simple
+
     - name: vars
+      title: Variables
+      type: Variables
+      suggested:
+         - continuous
+      permitted:
+        - numeric
+
+    - name: vars1
       title: Variables
       type: Variables
       suggested:
@@ -35,7 +53,7 @@ options:
     - name: binfit
       title: Infit
       type: Bool
-      default: TRUE
+      default: false
       
     - name: boutfit
       title: Outfit
@@ -59,3 +77,46 @@ options:
       max: 90
       default: 0
      
+    - name: type
+      title: Type
+      type: List
+      options:
+      - name: bi
+        title: 'Binary'
+      - name: ra
+        title: 'Rating'
+      default: bi
+
+    - name: adj
+      title: Correction method
+      type: List
+      options:
+        - title: BH
+          name:  BH
+        - title: holm
+          name:  holm
+        - title: hochberg
+          name:  hochberg
+        - title: hommel
+          name:  hommel
+        - title: bonferroni
+          name:  bonferroni
+        - title: BY
+          name:  BY 
+      default: BH
+ 
+    - name: bn1
+      title: Bootstrap N
+      type: Integer
+      min: 2
+      default: 100
+
+    - name: outfit 
+      title: Outfit
+      type: Bool
+      default: false
+
+    - name: infit
+      title: Infit
+      type: Bool
+      default: false
