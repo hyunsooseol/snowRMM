@@ -29,9 +29,9 @@ options:
       title: Equating method
       type: List
       options:
-        - title: linear
+        - title: Linear
           name:  linear
-        - title: equipercentile
+        - title: Equipercentile
           name:  equipercentile
       default: linear    
 

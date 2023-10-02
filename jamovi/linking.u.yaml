@@ -24,11 +24,36 @@ children:
             isTarget: true
   - type: LayoutBox
     margin: large
+    stretchFactor: 1
     children:
-      - type: ComboBox
-        name: method
-  - type: LayoutBox
-    margin: large
-    children:
-      - type: CheckBox
-        name: plot
+      - type: LayoutBox
+        margin: large
+        cell:
+          column: 0
+          row: 0
+        stretchFactor: 1
+        children:
+          - type: Label
+            label: Equating Method
+            children:
+              - type: RadioButton
+                name: method_linear
+                optionName: method
+                optionPart: linear
+              - type: RadioButton
+                name: method_equipercentile
+                optionName: method
+                optionPart: equipercentile
+      - type: LayoutBox
+        margin: large
+        cell:
+          column: 1
+          row: 0
+        stretchFactor: 1
+        children:
+          - type: Label
+            label: "Plot"
+            children:
+              - type: CheckBox
+                name: plot
+
