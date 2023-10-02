@@ -22,14 +22,16 @@ children:
             name: dep
             maxItemCount: 1
             isTarget: true
-  - type: CollapseBox
-    label: Analysis
-    margin: normal
-    collapsed: true
+  - type: LayoutBox
+    margin: large
+    stretchFactor: 1
     children:
       - type: LayoutBox
-        stretchFactor: 1
         margin: large
+        cell:
+          column: 0
+          row: 0
+        stretchFactor: 1
         children:
           - type: Label
             label: Table
@@ -60,21 +62,17 @@ children:
         fitToGrid: true
         children:
           - type: Label
-            label: Contingency table
+            label: 'Contingency tables'
             children:
               - type: CheckBox
                 name: contabx
               - type: CheckBox
                 name: contaby
+          - type: Label
+            label: 'Save'
+            children:
+              - type: Output
+                name: escore   
 
-  - type: CollapseBox
-    label: Save
-    margin: normal
-    collapsed: true
-    children:
-      - type: LayoutBox
-        stretchFactor: 1
-        margin: large
-        children:
-          - type: Output
-            name: escore
+
+ 
