@@ -206,6 +206,7 @@ bfitResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                             visible="(binfit)",
                             rows="(vars)",
                             clearWith=list(
+                                "mode",
                                 "vars",
                                 "step",
                                 "bn",
@@ -237,6 +238,7 @@ bfitResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                             visible="(boutfit)",
                             rows="(vars)",
                             clearWith=list(
+                                "mode",
                                 "vars",
                                 "step",
                                 "bn",
@@ -270,6 +272,7 @@ bfitResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 visible="(inplot)",
                 renderFun=".inPlot",
                 clearWith=list(
+                    "mode",
                     "vars",
                     "step",
                     "bn",
@@ -283,6 +286,7 @@ bfitResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 visible="(outplot)",
                 renderFun=".outPlot",
                 clearWith=list(
+                    "mode",
                     "vars",
                     "step",
                     "bn",
@@ -299,6 +303,7 @@ bfitResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 visible="(outfit)",
                 rows="(vars1)",
                 clearWith=list(
+                    "mode",
                     "vars1",
                     "type",
                     "bn1",
@@ -328,6 +333,7 @@ bfitResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 visible="(infit)",
                 rows="(vars1)",
                 clearWith=list(
+                    "mode",
                     "vars1",
                     "type",
                     "bn1",

@@ -93,13 +93,13 @@ options:
       options:
         - title: BH
           name:  BH
-        - title: holm
+        - title: Holm
           name:  holm
-        - title: hochberg
+        - title: Hochberg
           name:  hochberg
-        - title: hommel
+        - title: Hommel
           name:  hommel
-        - title: bonferroni
+        - title: Bonferroni
           name:  bonferroni
         - title: BY
           name:  BY 

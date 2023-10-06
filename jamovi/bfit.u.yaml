@@ -123,10 +123,42 @@ children:
                 margin: large
                 children:
                   - type: Label
-                    label: Statistics
+                    label: 'Correction methods'
                     children:
-                      - type: ComboBox
-                        name: adj
+                      - type: RadioButton
+                        name: adj_BH
+                        optionName: adj
+                        optionPart: BH
+                      - type: RadioButton
+                        name: adj_holm
+                        optionName: adj
+                        optionPart: holm
+                      - type: RadioButton
+                        name: adj_hochberg
+                        optionName: adj
+                        optionPart: hochberg
+                      - type: RadioButton
+                        name: adj_hommel
+                        optionName: adj
+                        optionPart: hommel 
+                      - type: RadioButton
+                        name: adj_bonferroni
+                        optionName: adj
+                        optionPart: bonferroni
+                      - type: RadioButton
+                        name: adj_BY
+                        optionName: adj
+                        optionPart: BY
+              - type: LayoutBox
+                margin: large
+                cell:
+                  column: 1
+                  row: 0
+                stretchFactor: 1
+                children:
+                  - type: Label
+                    label: 'Tables'
+                    children:
                       - type: CheckBox
                         name: outfit
                       - type: CheckBox

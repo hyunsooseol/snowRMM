@@ -19,6 +19,7 @@ items:
           visible: (binfit)
           rows: (vars)
           clearWith:
+            - mode
             - vars
             - step
             - bn
@@ -46,6 +47,7 @@ items:
           visible: (boutfit)
           rows: (vars)
           clearWith:
+            - mode
             - vars
             - step
             - bn
@@ -75,6 +77,7 @@ items:
       visible: (inplot)
       renderFun: .inPlot
       clearWith:
+            - mode
             - vars
             - step
             - bn
@@ -88,6 +91,7 @@ items:
       visible: (outplot)
       renderFun: .outPlot
       clearWith:
+            - mode
             - vars
             - step
             - bn 
@@ -104,6 +108,7 @@ items:
       visible: (outfit)
       rows: (vars1)
       clearWith:
+        - mode
         - vars1
         - type
         - bn1
@@ -133,6 +138,7 @@ items:
       visible: (infit)
       rows: (vars1)
       clearWith:
+        - mode
         - vars1
         - type
         - bn1
