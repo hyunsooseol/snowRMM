@@ -34,16 +34,18 @@ children:
         stretchFactor: 1
         children:
           - type: Label
-            label: Table
+            label: 'Table'
             fitToGrid: true
             cell:
               column: 0
               row: 0
             children:
-              - type: ComboBox
-                name: design
               - type: CheckBox
                 name: con
+                children:
+                  - type: ComboBox
+                    name: design
+                    enable: (con)          
           - type: Label
             label: Plot
             fitToGrid: true

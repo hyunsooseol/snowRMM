@@ -34,6 +34,7 @@ options:
           name:  single
         - title: Equivalent
           name:  equivalent
+      default: single
 
     - name: con
       title: Concordance

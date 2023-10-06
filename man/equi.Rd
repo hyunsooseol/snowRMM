@@ -8,7 +8,7 @@ equi(
   data,
   ind,
   dep,
-  design,
+  design = "single",
   con = TRUE,
   contabx = FALSE,
   contaby = FALSE,

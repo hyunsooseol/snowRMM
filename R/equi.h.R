@@ -8,7 +8,7 @@ equiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         initialize = function(
             ind = NULL,
             dep = NULL,
-            design = NULL,
+            design = "single",
             con = TRUE,
             contabx = FALSE,
             contaby = FALSE,
@@ -39,7 +39,8 @@ equiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 design,
                 options=list(
                     "single",
-                    "equivalent"))
+                    "equivalent"),
+                default="single")
             private$..con <- jmvcore::OptionBool$new(
                 "con",
                 con,
@@ -224,7 +225,7 @@ equi <- function(
     data,
     ind,
     dep,
-    design,
+    design = "single",
     con = TRUE,
     contabx = FALSE,
     contaby = FALSE,
