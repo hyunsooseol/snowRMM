@@ -17,7 +17,6 @@ items:
       rows: 1
       visible: (lineq)
       clearWith:
-        - mode
         - ind
         - dep
       refs: equi 
@@ -37,7 +36,6 @@ items:
       type: Table
       visible: (contabx)
       clearWith:
-        - mode
         - ind
         - dep
       
@@ -52,7 +50,6 @@ items:
       type: Table
       visible: (contaby)
       clearWith:
-        - mode
         - ind
         - dep
       
@@ -72,7 +69,6 @@ items:
       height: 500
       renderFun: .plot
       clearWith:
-        - mode
         - ind
         - dep
 
@@ -82,7 +78,6 @@ items:
       varTitle: Linear
       measureType: nominal
       clearWith:
-        - mode
         - ind
         - dep
 
@@ -97,7 +92,6 @@ items:
       title: 'Concordance table'
       type: Table
       clearWith:
-        - mode
         - ind1
         - dep1
         - design
@@ -113,7 +107,6 @@ items:
       type: Table
       visible: (contabx1)
       clearWith:
-        - mode
         - ind1
         - dep1
       
@@ -128,7 +121,6 @@ items:
       type: Table
       visible: (contaby1)
       clearWith:
-        - mode
         - ind1
         - dep1
       
@@ -144,7 +136,6 @@ items:
       varTitle: Percent
       measureType: nominal
       clearWith:
-        - mode
         - ind1
         - dep1
   
@@ -157,7 +148,6 @@ items:
       height: 500
       renderFun: .plot1
       clearWith:
-        - mode
         - ind1
         - dep1
 

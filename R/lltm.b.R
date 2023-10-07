@@ -27,7 +27,6 @@ lltmClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             </head>
             <body>
             <div class='instructions'>
-            <h2><b>Instructions</b></h2>
             <p>____________________________________________________________________________________</p>
             <p>1. Performs Linear Logistic Test Model (LLTM) for binary item responses by using CML estimation.</p>
             <p>2. Design matrix(W matrix) for the LLTM will be computed by specifying <b>Vectors and Number of columns</b>.</p>

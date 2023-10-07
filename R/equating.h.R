@@ -197,7 +197,6 @@ equatingResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 rows=1,
                 visible="(lineq)",
                 clearWith=list(
-                    "mode",
                     "ind",
                     "dep"),
                 refs="equi",
@@ -219,7 +218,6 @@ equatingResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 title="Contingency table of form x",
                 visible="(contabx)",
                 clearWith=list(
-                    "mode",
                     "ind",
                     "dep"),
                 columns=list(
@@ -235,7 +233,6 @@ equatingResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 title="Contingency table of form y",
                 visible="(contaby)",
                 clearWith=list(
-                    "mode",
                     "ind",
                     "dep"),
                 columns=list(
@@ -256,7 +253,6 @@ equatingResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 height=500,
                 renderFun=".plot",
                 clearWith=list(
-                    "mode",
                     "ind",
                     "dep")))
             self$add(jmvcore::Output$new(
@@ -266,7 +262,6 @@ equatingResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 varTitle="Linear",
                 measureType="nominal",
                 clearWith=list(
-                    "mode",
                     "ind",
                     "dep")))
             self$add(jmvcore::Html$new(
@@ -281,7 +276,6 @@ equatingResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 name="con",
                 title="Concordance table",
                 clearWith=list(
-                    "mode",
                     "ind1",
                     "dep1",
                     "design"),
@@ -298,7 +292,6 @@ equatingResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 title="Contingency table of form x",
                 visible="(contabx1)",
                 clearWith=list(
-                    "mode",
                     "ind1",
                     "dep1"),
                 columns=list(
@@ -314,7 +307,6 @@ equatingResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 title="Contingency table of form y",
                 visible="(contaby1)",
                 clearWith=list(
-                    "mode",
                     "ind1",
                     "dep1"),
                 columns=list(
@@ -331,7 +323,6 @@ equatingResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 varTitle="Percent",
                 measureType="nominal",
                 clearWith=list(
-                    "mode",
                     "ind1",
                     "dep1")))
             self$add(jmvcore::Image$new(
@@ -344,7 +335,6 @@ equatingResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 height=500,
                 renderFun=".plot1",
                 clearWith=list(
-                    "mode",
                     "ind1",
                     "dep1")))}))
 

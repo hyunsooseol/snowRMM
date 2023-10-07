@@ -44,7 +44,6 @@ mixtureClass <- if (requireNamespace('jmvcore'))
             <body>
             <div class='instructions'>
            
-            <h2><b>Instructions</b></h2>
             <p>_____________________________________________________________________________________________</p>
             <p>1. Specify the number of <b>'Class', Step', and 'Type'</b> in the 'Analysis option'.</p>
             <p>2. Highlight the variables and click the arrow to move it across into the 'Variables' box.</p>

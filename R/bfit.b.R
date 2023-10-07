@@ -41,7 +41,6 @@ bfitClass <- if (requireNamespace('jmvcore'))
             </head>
             <body>
             <div class='instructions'>
-            <h2><b>Instructions</b></h2>
             <p>_____________________________________________________________________________________________</p>
             <p>1. The traditional Rasch model is performed by <b>mixRasch</b> R package using Jonint Maximum Liklihood(JML).</p>
             <p>2. Specify <b>'Step'(number of category-1) and 'Bootstrap N'</b> in the 'Analysis option'.</p>

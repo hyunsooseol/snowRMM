@@ -49,7 +49,6 @@ raschClass <- if (requireNamespace('jmvcore'))
             <body>
             <div class='instructions'>
             
-            <h2><b>Instructions</b></h2>
             <p>_____________________________________________________________________________________________</p>
             <p>1. The <b>MixRasch</b> R package was used for the Rasch model using joint maximum likelihood estimation(JMLE).</P>
             <p>2. Specify </b> the number of <b>Step</b> and model <b>Type</b> in the analysis option.</p>
