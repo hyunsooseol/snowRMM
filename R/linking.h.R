@@ -86,7 +86,8 @@ linkingResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 title="Concordance table",
                 refs="equate",
                 clearWith=list(
-                    "vars",
+                    "ind",
+                    "dep",
                     "method"),
                 columns=list(
                     list(
@@ -105,7 +106,8 @@ linkingResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 renderFun=".plot",
                 refs="equate",
                 clearWith=list(
-                    "vars",
+                    "ind",
+                    "dep",
                     "method")))}))
 
 linkingBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(

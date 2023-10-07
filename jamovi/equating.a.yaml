@@ -1,12 +1,22 @@
 ---
 name:  equating
-title: Linear Equating
+title: CTT Equating
 menuGroup: snowRMM
 menuSubgroup: Test Equating
 version: '1.0.0'
 jas: '1.2'
 
 options:
+    - name: mode
+      title: ""
+      type: List
+      options:
+            - name: simple
+              title: 'Linear'
+            - name: complex
+              title: 'Equipercentile'
+      default: simple
+
     - name: data
       type: Data
 
@@ -29,7 +39,7 @@ options:
     - name: lineq
       title: Linear equation 
       type: Bool
-      default: TRUE
+      default: false
 
     - name: contabx
       type: Bool
@@ -49,5 +59,54 @@ options:
     - name: escore
       title: Equating scores 
       type: Output
-      
+
+    - name: ind1
+      title: Form x
+      type: Variable
+      suggested:
+         - continuous
+      permitted:
+        - numeric
+
+    - name: dep1
+      title: Form y
+      type: Variable
+      suggested:
+         - continuous
+      permitted:
+        - numeric
+
+    - name: design
+      title: Design
+      type: List
+      options:
+        - title: Single
+          name:  single
+        - title: Equivalent
+          name:  equivalent
+      default: single
+
+    - name: con
+      title: Concordance
+      type: Bool
+      default: false
+
+    - name: contabx1
+      type: Bool
+      title: Form x
+      default: FALSE
+     
+    - name: contaby1
+      type: Bool
+      title: Form y
+      default: FALSE  
+
+    - name: escore1
+      title: Equating scores 
+      type: Output
+
+    - name: plot1
+      title: Smoothing plot 
+      type: Bool
+      default: FALSE             
 ...

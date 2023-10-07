@@ -26,8 +26,7 @@ linkingClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             </head>
             <body>
             <div class='instructions'>
-            
-            <h2><b>Instructions</b></h2>
+           
             <p>_____________________________________________________________________________________________</p>
             <p>1. This function creates a composite linking or equating.
             <p>2. The R package <b>equate</b>(Albano, 2018) is described in the <a href='https://cran.rstudio.com/web/packages/equate/equate.pdf' target = '_blank'>page.</a></p>

@@ -6,6 +6,10 @@
 #' @import equi
 #' @importFrom equi lin
 #' @importFrom equi cdfplot
+#' @importFrom equi equi
+#' @importFrom equi conttab
+#' @importFrom equi smoothtab
+#' @import ggplot2
 #' @export
 
 equatingClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
@@ -15,7 +19,9 @@ equatingClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
        
         .init = function() {
             
-            if (is.null(self$data) | is.null(self$options$ind)  | is.null(self$options$dep)) {
+          if(self$options$mode=='simple'){  
+          
+          if (is.null(self$data) | is.null(self$options$ind)  | is.null(self$options$dep)) {
                 
                 self$results$instructions$setVisible(visible = TRUE)
                 
@@ -28,7 +34,7 @@ equatingClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             <body>
             <div class='instructions'>
             
-            <h2><b>Instructions</b></h2>
+            <h2><b>Linear Equating</b></h2>
             <p>_____________________________________________________________________________________________</p>
             <p>1. The Form x is equated to the Form y with single group design.
             <p>2. The R package <b>equi</b>(Wolodzko, 2020) is described in the <a href='https://rdrr.io/github/twolodzko/equi/man/equi.html' target = '_blank'>page.</a></p>
@@ -46,12 +52,51 @@ equatingClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                     "Note",
                     " y = \u2026 + \u2026 x "
                 )
+         
+          }
+          
+          if(self$options$mode=='complex'){  
+          
+            if (is.null(self$data) | is.null(self$options$ind1)  | is.null(self$options$dep1)) {
+              
+              self$results$instructions1$setVisible(visible = TRUE)
+              
+            }
+            
+            self$results$instructions1$setContent(
+              "<html>
+            <head>
+            </head>
+            <body>
+            <div class='instructions1'>
+            
+            <h2><b>Equipercentile Equating</b></h2>
+            <p>_____________________________________________________________________________________________</p>
+            <p>1. The Form x is equated to the Form y.
+            <p>2. If an error message such as 'could not find function ns', please chang Form x and Form y variables.
+            <p>3. The R package <b>equi</b>(Wolodzko, 2020) is described in the <a href='https://rdrr.io/github/twolodzko/equi/man/equi.html' target = '_blank'>page.</a></p>
+            <p>4. Feature requests and bug reports can be made on the <a href='https://github.com/hyunsooseol/snowRMM/issues'  target = '_blank'>GitHub</a>.</p>
+            <p>5. This project has been supported by <a href='http://www.itsc-group.com' target = '_blank'>ITSC GROUP(G-TELP).</a></p>
+            <p>_____________________________________________________________________________________________</p>
+            
+            </div>
+            </body>
+            </html>"
+            )
+            
+          }  
+            
+            
             
             
         },
         
         
         .run = function() {
+          
+          
+          if(self$options$mode=='simple'){
+            
             
             
             if (length(self$options$ind)<1) return()
@@ -204,7 +249,134 @@ equatingClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             
             image <- self$results$plot
             image$setState(leq)
+          
+          }
+          
+          if(self$options$mode=='complex'){
             
+            
+            if (length(self$options$ind1)<1) return()
+            
+            if (length(self$options$dep1)<1) return()
+            
+            
+            #get the data--------
+            
+            data <- self$data
+            
+            ind1 <- self$options$ind1
+            
+            dep1 <- self$options$dep1
+            
+            design <- self$options$design
+            
+            # get the data
+            
+            data <- self$data
+            
+            # convert to appropriate data types
+            
+            data[[ind1]] <- jmvcore::toNumeric(data[[ind1]])
+            
+            data[[dep1]] <- jmvcore::toNumeric(data[[dep1]])
+            
+            
+            data <- na.omit(data)
+            
+            # Computing equipercentile equating--------
+            
+            # providing group design------
+            
+            if(self$options$design == 'single'){
+              
+              eq <- equi::equi(smoothtab(data[[ind1]],  data[[dep1]], presmoothing=TRUE))
+              
+            } else{
+              
+              eq <- equi::equi(smoothtab(data[[ind1]]), smoothtab(data[[dep1]]))
+              
+              
+            }
+            # making concordance-------
+            
+            table<- self$results$con
+            
+            tab <- as.data.frame(eq[[1]])
+            
+            
+            for (i in 1:nrow(tab)) {
+              
+              row <- list()
+              
+              row[['x']] <- tab[i,1]
+              row[['yx']] <- tab[i,2]
+              
+              table$addRow(rowKey = i, values = row)
+              
+            }
+            
+            # Contingency table of form x-----------
+            
+            conx <- equi::conttab(data[[ind1]])
+            
+            table<- self$results$contabx1
+            
+            tab <- data.frame(conx)
+            
+            
+            for (i in 1:nrow(tab)) {
+              
+              row <- list()
+              
+              row[['score']] <- tab[i,1]
+              row[['frequency']] <- tab[i,2]
+              
+              table$addRow(rowKey = i, values = row)
+              
+            }
+            
+            # Contingency table of form y-----------
+            
+            cony <- equi::conttab(data[[dep1]])
+            
+            table<- self$results$contaby1
+            
+            taby <- data.frame(cony)
+            
+            
+            for (i in 1:nrow(taby)) {
+              
+              row <- list()
+              
+              row[['score']] <- taby[i,1]
+              row[['frequency']] <- taby[i,2]
+              
+              table$addRow(rowKey = i, values = row)
+              
+            }
+            
+            # Equating score-------------
+            
+            table <- self$results$escore1
+            
+            
+            es <- equi::equi(data[[ind1]], eq)
+            
+            self$results$escore1$setRowNums(rownames(data))
+            self$results$escore1$setValues(es)
+            
+            ## Plot==================================================
+            
+            
+            image1 <- self$results$plot1
+            image1$setState(eq)
+          }
+            
+            
+            
+            
+            
+              
         },
         
         .plot = function(image, ggtheme, theme, ...) {
@@ -212,7 +384,11 @@ equatingClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             # if (length(self$options$vars) < 1)
             #     return()
             
-            # get the data--------
+          if (is.null(image$state))
+            return(FALSE)  
+          
+          
+          # get the data--------
             
             data <- self$data
             data <- jmvcore::naOmit(data)
@@ -234,6 +410,31 @@ equatingClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             print(plot)
             TRUE
             
+        },
+        
+        .plot1 = function(image1, ggtheme, theme, ...) {
+          
+          if (is.null(image1$state))
+            return(FALSE)
+          
+          # get the data--------
+          
+          data <- self$data
+          data <- jmvcore::naOmit(data)
+          
+          ind1 <- self$options$ind1
+          
+          dep1 <- self$options$dep1
+          
+          eq <- image1$state
+          
+          st <- smoothtab(data[[ind1]],data[[dep1]],presmoothing=TRUE, postsmoothing=TRUE)
+          
+          plot1<- plot(st)
+          
+          print(plot1)
+          TRUE
+          
         }
          
     )

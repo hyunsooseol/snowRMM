@@ -1,76 +1,158 @@
-title: Linear Equating
+title: CTT Equating
 name: equating
 jus: '3.0'
 stage: 0
 compilerMode: tame
 children:
-  - type: VariableSupplier
-    persistentItems: false
+  - type: ModeSelector
+    name: mode
     stretchFactor: 1
     children:
-      - type: TargetLayoutBox
-        label: Form x
+      - type: Content
+        name: simple
         children:
-          - type: VariablesListBox
-            name: ind
-            maxItemCount: 1
-            isTarget: true
-      - type: TargetLayoutBox
-        label: Form y
+          - type: LayoutBox
+            margin: large
+            stretchFactor: 1
+            children:
+              - type: VariableSupplier
+                persistentItems: false
+                stretchFactor: 1
+                children:
+                  - type: TargetLayoutBox
+                    label: Form x
+                    children:
+                      - type: VariablesListBox
+                        name: ind
+                        maxItemCount: 1
+                        isTarget: true
+                  - type: TargetLayoutBox
+                    label: Form y
+                    children:
+                      - type: VariablesListBox
+                        name: dep
+                        maxItemCount: 1
+                        isTarget: true
+          - type: LayoutBox
+            margin: large
+            stretchFactor: 1
+            children:
+              - type: LayoutBox
+                margin: large
+                cell:
+                  column: 0
+                  row: 0
+                stretchFactor: 1
+                children:
+                  - type: Label
+                    label: 'Model'
+                    fitToGrid: true
+                    cell:
+                      column: 0
+                      row: 0
+                    children:
+                      - type: CheckBox
+                        name: lineq
+                  - type: Label
+                    label: 'Plot'
+                    children:
+                      - type: CheckBox
+                        name: plot
+              - type: LayoutBox
+                stretchFactor: 1
+                margin: large
+                cell:
+                  column: 1
+                  row: 0
+                fitToGrid: true
+                children:
+                  - type: Label
+                    label: Contingency tables
+                    children:
+                      - type: CheckBox
+                        name: contabx
+                      - type: CheckBox
+                        name: contaby
+                  - type: Label
+                    label: Save
+                    children:
+                      - type: Output
+                        name: escore
+      - type: Content
+        name: complex
         children:
-          - type: VariablesListBox
-            name: dep
-            maxItemCount: 1
-            isTarget: true
-  - type: LayoutBox
-    margin: large
-    stretchFactor: 1
-    children:
-      - type: LayoutBox
-        margin: large
-        cell:
-          column: 0
-          row: 0
-        stretchFactor: 1
-        children:
-          - type: Label
-            label: Model
-            fitToGrid: true
-            cell:
-              column: 0
-              row: 0
+          - type: LayoutBox
+            margin: large
+            stretchFactor: 1
             children:
-              - type: CheckBox
-                name: lineq
-          - type: Label
-            label: Plot
-            fitToGrid: true
-            cell:
-              column: 0
-              row: 1
-            children:
-              - type: CheckBox
-                name: plot
-      - type: LayoutBox
-        stretchFactor: 1
-        margin: large
-        cell:
-          column: 1
-          row: 0
-        fitToGrid: true
-        children:
-          - type: Label
-            label: 'Contingency tables'
-            children:
-              - type: CheckBox
-                name: contabx
-              - type: CheckBox
-                name: contaby
-          - type: Label
-            label: 'Save'
-            children:
-              - type: Output
-                name: escore              
-
-
-
+              - type: VariableSupplier
+                persistentItems: false
+                stretchFactor: 1
+                children:
+                  - type: TargetLayoutBox
+                    label: Form x
+                    children:
+                      - type: VariablesListBox
+                        name: ind1
+                        maxItemCount: 1
+                        isTarget: true
+                  - type: TargetLayoutBox
+                    label: Form y
+                    children:
+                      - type: VariablesListBox
+                        name: dep1
+                        maxItemCount: 1
+                        isTarget: true
+              - type: LayoutBox
+                margin: large
+                stretchFactor: 1
+                children:
+                  - type: LayoutBox
+                    margin: large
+                    cell:
+                      column: 0
+                      row: 0
+                    stretchFactor: 1
+                    children:
+                      - type: Label
+                        label: 'Table'
+                        fitToGrid: true
+                        cell:
+                          column: 0
+                          row: 0
+                        children:
+                          - type: CheckBox
+                            name: con
+                            children:
+                              - type: ComboBox
+                                name: design
+                                enable: (con)          
+                      - type: Label
+                        label: 'Plot'
+                        fitToGrid: true
+                        cell:
+                          column: 0
+                          row: 1
+                        children:
+                          - type: CheckBox
+                            name: plot1
+                  - type: LayoutBox
+                    stretchFactor: 1
+                    margin: large
+                    cell:
+                      column: 1
+                      row: 0
+                    fitToGrid: true
+                    children:
+                      - type: Label
+                        label: 'Contingency tables'
+                        children:
+                          - type: CheckBox
+                            name: contabx1
+                          - type: CheckBox
+                            name: contaby1
+                      - type: Label
+                        label: 'Save'
+                        children:
+                          - type: Output
+                            name: escore1   

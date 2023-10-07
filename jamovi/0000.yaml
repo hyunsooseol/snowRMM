@@ -38,23 +38,18 @@ analyses:
     menuGroup: snowRMM
     menuTitle: Latent Class Analysis
     menuSubgroup: LCA
-  - title: Linear Equating
+  - title: CTT Equating
     name: equating
     ns: snowRMM
     menuGroup: snowRMM
-    menuTitle: Linear Equating
-    menuSubgroup: Test Equating
-  - title: Equipercentile Equating
-    name: equi
-    ns: snowRMM
-    menuGroup: snowRMM
-    menuTitle: Equipercentile Equating
+    menuTitle: CTT Equating
     menuSubgroup: Test Equating
   - title: Composite Linking
     name: linking
     ns: snowRMM
     menuGroup: snowRMM
     menuTitle: Composite Linking
+    menuSubgroup: Test Equating
   - title: Latent Profile Analysis
     name: lpa
     ns: snowRMM
@@ -110,12 +105,14 @@ datasets:
     path: lin.omv
     description: Linear equating
     tags:
-      - Linear Equating
+      - Linear
+      - Equipercentile
   - name: equipercentile
     path: percent.omv
     description: Equipercentile equating
     tags:
-      - Equipercentile equating
+      - Linear
+      - Equipercentile
   - name: lltm
     path: lltm.omv
     description: Linear logistic Test Model

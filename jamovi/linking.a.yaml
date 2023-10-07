@@ -2,6 +2,7 @@
 name:  linking
 title: Composite Linking
 menuGroup: snowRMM
+menuSubgroup: Test Equating
 version: '1.0.0'
 jas: '1.2'
 

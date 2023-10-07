@@ -6,12 +6,20 @@ equatingOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     inherit = jmvcore::Options,
     public = list(
         initialize = function(
+            mode = "simple",
             ind = NULL,
             dep = NULL,
-            lineq = TRUE,
+            lineq = FALSE,
             contabx = FALSE,
             contaby = FALSE,
-            plot = FALSE, ...) {
+            plot = FALSE,
+            ind1 = NULL,
+            dep1 = NULL,
+            design = "single",
+            con = FALSE,
+            contabx1 = FALSE,
+            contaby1 = FALSE,
+            plot1 = FALSE, ...) {
 
             super$initialize(
                 package="snowRMM",
@@ -19,6 +27,13 @@ equatingOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 requiresData=TRUE,
                 ...)
 
+            private$..mode <- jmvcore::OptionList$new(
+                "mode",
+                mode,
+                options=list(
+                    "simple",
+                    "complex"),
+                default="simple")
             private$..ind <- jmvcore::OptionVariable$new(
                 "ind",
                 ind,
@@ -36,7 +51,7 @@ equatingOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             private$..lineq <- jmvcore::OptionBool$new(
                 "lineq",
                 lineq,
-                default=TRUE)
+                default=FALSE)
             private$..contabx <- jmvcore::OptionBool$new(
                 "contabx",
                 contabx,
@@ -51,7 +66,47 @@ equatingOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 default=FALSE)
             private$..escore <- jmvcore::OptionOutput$new(
                 "escore")
+            private$..ind1 <- jmvcore::OptionVariable$new(
+                "ind1",
+                ind1,
+                suggested=list(
+                    "continuous"),
+                permitted=list(
+                    "numeric"))
+            private$..dep1 <- jmvcore::OptionVariable$new(
+                "dep1",
+                dep1,
+                suggested=list(
+                    "continuous"),
+                permitted=list(
+                    "numeric"))
+            private$..design <- jmvcore::OptionList$new(
+                "design",
+                design,
+                options=list(
+                    "single",
+                    "equivalent"),
+                default="single")
+            private$..con <- jmvcore::OptionBool$new(
+                "con",
+                con,
+                default=FALSE)
+            private$..contabx1 <- jmvcore::OptionBool$new(
+                "contabx1",
+                contabx1,
+                default=FALSE)
+            private$..contaby1 <- jmvcore::OptionBool$new(
+                "contaby1",
+                contaby1,
+                default=FALSE)
+            private$..escore1 <- jmvcore::OptionOutput$new(
+                "escore1")
+            private$..plot1 <- jmvcore::OptionBool$new(
+                "plot1",
+                plot1,
+                default=FALSE)
 
+            self$.addOption(private$..mode)
             self$.addOption(private$..ind)
             self$.addOption(private$..dep)
             self$.addOption(private$..lineq)
@@ -59,23 +114,49 @@ equatingOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..contaby)
             self$.addOption(private$..plot)
             self$.addOption(private$..escore)
+            self$.addOption(private$..ind1)
+            self$.addOption(private$..dep1)
+            self$.addOption(private$..design)
+            self$.addOption(private$..con)
+            self$.addOption(private$..contabx1)
+            self$.addOption(private$..contaby1)
+            self$.addOption(private$..escore1)
+            self$.addOption(private$..plot1)
         }),
     active = list(
+        mode = function() private$..mode$value,
         ind = function() private$..ind$value,
         dep = function() private$..dep$value,
         lineq = function() private$..lineq$value,
         contabx = function() private$..contabx$value,
         contaby = function() private$..contaby$value,
         plot = function() private$..plot$value,
-        escore = function() private$..escore$value),
+        escore = function() private$..escore$value,
+        ind1 = function() private$..ind1$value,
+        dep1 = function() private$..dep1$value,
+        design = function() private$..design$value,
+        con = function() private$..con$value,
+        contabx1 = function() private$..contabx1$value,
+        contaby1 = function() private$..contaby1$value,
+        escore1 = function() private$..escore1$value,
+        plot1 = function() private$..plot1$value),
     private = list(
+        ..mode = NA,
         ..ind = NA,
         ..dep = NA,
         ..lineq = NA,
         ..contabx = NA,
         ..contaby = NA,
         ..plot = NA,
-        ..escore = NA)
+        ..escore = NA,
+        ..ind1 = NA,
+        ..dep1 = NA,
+        ..design = NA,
+        ..con = NA,
+        ..contabx1 = NA,
+        ..contaby1 = NA,
+        ..escore1 = NA,
+        ..plot1 = NA)
 )
 
 equatingResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -87,27 +168,38 @@ equatingResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         contabx = function() private$.items[["contabx"]],
         contaby = function() private$.items[["contaby"]],
         plot = function() private$.items[["plot"]],
-        escore = function() private$.items[["escore"]]),
+        escore = function() private$.items[["escore"]],
+        instructions1 = function() private$.items[["instructions1"]],
+        con = function() private$.items[["con"]],
+        contabx1 = function() private$.items[["contabx1"]],
+        contaby1 = function() private$.items[["contaby1"]],
+        escore1 = function() private$.items[["escore1"]],
+        plot1 = function() private$.items[["plot1"]]),
     private = list(),
     public=list(
         initialize=function(options) {
             super$initialize(
                 options=options,
                 name="",
-                title="Linear Equating",
+                title="CTT Equating",
                 refs="snowRMM")
             self$add(jmvcore::Html$new(
                 options=options,
                 name="instructions",
                 title="Instructions",
-                visible=TRUE))
+                visible=TRUE,
+                clearWith=list(
+                    "mode")))
             self$add(jmvcore::Table$new(
                 options=options,
                 name="lineq",
                 title="Linear equation",
                 rows=1,
+                visible="(lineq)",
                 clearWith=list(
-                    "vars"),
+                    "mode",
+                    "ind",
+                    "dep"),
                 refs="equi",
                 columns=list(
                     list(
@@ -127,7 +219,9 @@ equatingResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 title="Contingency table of form x",
                 visible="(contabx)",
                 clearWith=list(
-                    "vars"),
+                    "mode",
+                    "ind",
+                    "dep"),
                 columns=list(
                     list(
                         `name`="score", 
@@ -141,7 +235,9 @@ equatingResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 title="Contingency table of form y",
                 visible="(contaby)",
                 clearWith=list(
-                    "vars"),
+                    "mode",
+                    "ind",
+                    "dep"),
                 columns=list(
                     list(
                         `name`="score", 
@@ -160,15 +256,97 @@ equatingResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 height=500,
                 renderFun=".plot",
                 clearWith=list(
-                    "vars")))
+                    "mode",
+                    "ind",
+                    "dep")))
             self$add(jmvcore::Output$new(
                 options=options,
                 name="escore",
                 title="Equating score",
-                varTitle="xz",
+                varTitle="Linear",
                 measureType="nominal",
                 clearWith=list(
-                    "vars")))}))
+                    "mode",
+                    "ind",
+                    "dep")))
+            self$add(jmvcore::Html$new(
+                options=options,
+                name="instructions1",
+                title="Instructions",
+                visible=TRUE,
+                clearWith=list(
+                    "mode")))
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="con",
+                title="Concordance table",
+                clearWith=list(
+                    "mode",
+                    "ind1",
+                    "dep1",
+                    "design"),
+                columns=list(
+                    list(
+                        `name`="x", 
+                        `type`="integer"),
+                    list(
+                        `name`="yx", 
+                        `type`="number"))))
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="contabx1",
+                title="Contingency table of form x",
+                visible="(contabx1)",
+                clearWith=list(
+                    "mode",
+                    "ind1",
+                    "dep1"),
+                columns=list(
+                    list(
+                        `name`="score", 
+                        `type`="integer"),
+                    list(
+                        `name`="frequency", 
+                        `type`="integer"))))
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="contaby1",
+                title="Contingency table of form y",
+                visible="(contaby1)",
+                clearWith=list(
+                    "mode",
+                    "ind1",
+                    "dep1"),
+                columns=list(
+                    list(
+                        `name`="score", 
+                        `type`="integer"),
+                    list(
+                        `name`="frequency", 
+                        `type`="integer"))))
+            self$add(jmvcore::Output$new(
+                options=options,
+                name="escore1",
+                title="Equating score",
+                varTitle="Percent",
+                measureType="nominal",
+                clearWith=list(
+                    "mode",
+                    "ind1",
+                    "dep1")))
+            self$add(jmvcore::Image$new(
+                options=options,
+                name="plot1",
+                title="Presmoothing and postsmoothing of empirical distribution",
+                requiresData=TRUE,
+                visible="(plot1)",
+                width=500,
+                height=500,
+                renderFun=".plot1",
+                clearWith=list(
+                    "mode",
+                    "ind1",
+                    "dep1")))}))
 
 equatingBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "equatingBase",
@@ -191,9 +369,10 @@ equatingBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 weightsSupport = 'none')
         }))
 
-#' Linear Equating
+#' CTT Equating
 #'
 #' 
+#' @param mode .
 #' @param data .
 #' @param ind .
 #' @param dep .
@@ -201,6 +380,13 @@ equatingBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param contabx .
 #' @param contaby .
 #' @param plot .
+#' @param ind1 .
+#' @param dep1 .
+#' @param design .
+#' @param con .
+#' @param contabx1 .
+#' @param contaby1 .
+#' @param plot1 .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
@@ -209,6 +395,12 @@ equatingBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$contaby} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$escore} \tab \tab \tab \tab \tab an output \cr
+#'   \code{results$instructions1} \tab \tab \tab \tab \tab a html \cr
+#'   \code{results$con} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$contabx1} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$contaby1} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$escore1} \tab \tab \tab \tab \tab an output \cr
+#'   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
 #' }
 #'
 #' Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
@@ -219,33 +411,53 @@ equatingBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'
 #' @export
 equating <- function(
+    mode = "simple",
     data,
     ind,
     dep,
-    lineq = TRUE,
+    lineq = FALSE,
     contabx = FALSE,
     contaby = FALSE,
-    plot = FALSE) {
+    plot = FALSE,
+    ind1,
+    dep1,
+    design = "single",
+    con = FALSE,
+    contabx1 = FALSE,
+    contaby1 = FALSE,
+    plot1 = FALSE) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("equating requires jmvcore to be installed (restart may be required)")
 
     if ( ! missing(ind)) ind <- jmvcore::resolveQuo(jmvcore::enquo(ind))
     if ( ! missing(dep)) dep <- jmvcore::resolveQuo(jmvcore::enquo(dep))
+    if ( ! missing(ind1)) ind1 <- jmvcore::resolveQuo(jmvcore::enquo(ind1))
+    if ( ! missing(dep1)) dep1 <- jmvcore::resolveQuo(jmvcore::enquo(dep1))
     if (missing(data))
         data <- jmvcore::marshalData(
             parent.frame(),
             `if`( ! missing(ind), ind, NULL),
-            `if`( ! missing(dep), dep, NULL))
+            `if`( ! missing(dep), dep, NULL),
+            `if`( ! missing(ind1), ind1, NULL),
+            `if`( ! missing(dep1), dep1, NULL))
 
 
     options <- equatingOptions$new(
+        mode = mode,
         ind = ind,
         dep = dep,
         lineq = lineq,
         contabx = contabx,
         contaby = contaby,
-        plot = plot)
+        plot = plot,
+        ind1 = ind1,
+        dep1 = dep1,
+        design = design,
+        con = con,
+        contabx1 = contabx1,
+        contaby1 = contaby1,
+        plot1 = plot1)
 
     analysis <- equatingClass$new(
         options = options,

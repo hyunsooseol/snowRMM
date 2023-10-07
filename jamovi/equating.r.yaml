@@ -1,6 +1,6 @@
 ---
 name:  equating
-title: Linear Equating
+title: CTT Equating
 jrs:   '1.1'
 refs: snowRMM
 items:
@@ -8,12 +8,18 @@ items:
       title: 'Instructions'
       type: Html
       visible: True
+      clearWith:
+        - mode
+
     - name: lineq
       title: 'Linear equation'
       type: Table
       rows: 1
+      visible: (lineq)
       clearWith:
-        - vars
+        - mode
+        - ind
+        - dep
       refs: equi 
 
       columns:
@@ -31,7 +37,9 @@ items:
       type: Table
       visible: (contabx)
       clearWith:
-        - vars
+        - mode
+        - ind
+        - dep
       
       columns:
         - name: score
@@ -44,7 +52,9 @@ items:
       type: Table
       visible: (contaby)
       clearWith:
-        - vars
+        - mode
+        - ind
+        - dep
       
       columns:
         - name: score
@@ -62,14 +72,94 @@ items:
       height: 500
       renderFun: .plot
       clearWith:
-        - vars
+        - mode
+        - ind
+        - dep
 
     - name: escore
       title: Equating score
       type: Output
-      varTitle: xz
+      varTitle: Linear
       measureType: nominal
       clearWith:
-        - vars
+        - mode
+        - ind
+        - dep
+
+    - name: instructions1
+      title: 'Instructions'
+      type: Html
+      visible: True
+      clearWith:
+        - mode
+    
+    - name: con
+      title: 'Concordance table'
+      type: Table
+      clearWith:
+        - mode
+        - ind1
+        - dep1
+        - design
+      
+      columns:
+        - name: x
+          type: integer
+        - name: yx
+          type: number
+
+    - name: contabx1
+      title: 'Contingency table of form x'
+      type: Table
+      visible: (contabx1)
+      clearWith:
+        - mode
+        - ind1
+        - dep1
+      
+      columns:
+        - name: score
+          type: integer
+        - name: frequency
+          type: integer       
+
+    - name: contaby1
+      title: 'Contingency table of form y'
+      type: Table
+      visible: (contaby1)
+      clearWith:
+        - mode
+        - ind1
+        - dep1
+      
+      columns:
+        - name: score
+          type: integer
+        - name: frequency
+          type: integer   
+
+    - name: escore1
+      title: Equating score
+      type: Output
+      varTitle: Percent
+      measureType: nominal
+      clearWith:
+        - mode
+        - ind1
+        - dep1
+  
+    - name:  plot1
+      title: Presmoothing and postsmoothing of empirical distribution
+      type:  Image
+      requiresData: true
+      visible: (plot1)
+      width: 500
+      height: 500
+      renderFun: .plot1
+      clearWith:
+        - mode
+        - ind1
+        - dep1
+
 
 ...
