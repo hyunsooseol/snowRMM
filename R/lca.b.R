@@ -361,8 +361,10 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         image2 <- self$results$plot2
         nvars <- length(vars)
+       
         width <- 700 + nvars * 40
         image2$setSize(width, 300)
+        
         image2$setState(profile )
         
         

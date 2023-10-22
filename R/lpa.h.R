@@ -305,8 +305,6 @@ lpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 name="plot",
                 title="Correlation plot for a mixture model",
                 visible="(plot)",
-                width=600,
-                height=600,
                 renderFun=".plot",
                 clearWith=list(
                     "vars",
@@ -318,8 +316,6 @@ lpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 name="plot1",
                 title="Latent profile plot",
                 visible="(plot1)",
-                width=600,
-                height=500,
                 refs="tidyLPA",
                 renderFun=".plot1",
                 clearWith=list(

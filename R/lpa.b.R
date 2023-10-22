@@ -237,15 +237,28 @@ lpaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             }
             
             
-            # plot----------
+            # correlation plot----------
             
             image <- self$results$plot
+            
+            nvars <- length(vars)
+            
+            width <- 700 + nvars * 30
+            image$setSize(width, 700)
+            
+            
             image$setState(res)
             
-            # plot----------
+            # Latent profile plot----------
             
-            image <- self$results$plot1
-            image$setState(res)
+            image1 <- self$results$plot1
+            
+            nvars <- length(vars)
+            
+            width <- 500 + nvars * 30
+            image1$setSize(width, 400)
+            
+            image1$setState(res)
             
             # elbow plot----------
             
@@ -300,14 +313,13 @@ lpaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         },
         
         
-        .plot1 = function(image, ggtheme, theme,...) {
+        .plot1 = function(image1, ggtheme, theme,...) {
             
-            # if (is.null(self$options$vars))
-            #     return()
-          if (is.null(image$state))
+         
+          if (is.null(image1$state))
             return(FALSE)
           
-            res <- image$state
+            res <- image1$state
             
             
             plot1 <- tidyLPA::plot_profiles(res,add_line = TRUE)
