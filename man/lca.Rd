@@ -15,6 +15,7 @@ lca(
   ip = FALSE,
   cf = FALSE,
   coef = FALSE,
+  r = FALSE,
   plot = FALSE,
   plot1 = FALSE,
   plot2 = FALSE,
@@ -43,6 +44,8 @@ lca(
 
 \item{coef}{.}
 
+\item{r}{.}
+
 \item{plot}{.}
 
 \item{plot1}{.}
@@ -58,7 +61,6 @@ where 0 degrees represents completely horizontal labels.}
 A results object containing:
 \tabular{llllll}{
   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
-  \code{results$text1} \tab \tab \tab \tab \tab a preformatted \cr
   \code{results$mf$fit} \tab \tab \tab \tab \tab a table \cr
   \code{results$mf$comp} \tab \tab \tab \tab \tab a table \cr
   \code{results$ip} \tab \tab \tab \tab \tab an array of tables \cr
@@ -70,6 +72,7 @@ A results object containing:
   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
   \code{results$plot2} \tab \tab \tab \tab \tab an image \cr
   \code{results$plot3} \tab \tab \tab \tab \tab an image \cr
+  \code{results$r} \tab \tab \tab \tab \tab a preformatted \cr
 }
 }
 \description{

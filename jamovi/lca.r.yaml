@@ -9,10 +9,6 @@ items:
       type: Html
       visible: True
 
-    - name:  text1
-      title: ''
-      type:  Preformatted
-
     - name: mf
       title: 'Model Fit'
       type: Group
@@ -226,4 +222,14 @@ items:
             - vars
             - nc 
             - covs 
+
+    - name:  r
+      title: 'Output from R'
+      type:  Preformatted
+      visible: (r)
+      refs: poLCA
+      clearWith:
+        - vars
+        - nc
+        - covs
 ...

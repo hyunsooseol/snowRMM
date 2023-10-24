@@ -172,6 +172,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         ############################################################### 
       
+      
         #if( !is.null(self$options$covs) ) {
         if(length(self$options$covs)>=1 && isTRUE(self$options$coef)){
           
@@ -198,7 +199,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           self$results$text$setContent(out)
         }          
          
-        
+       
         # Model Fit---------
         
         aic<- res$aic
@@ -372,6 +373,12 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         like<- res[["llik"]]
         
+        # R output----------------------
+        
+        if(isTRUE(self$options$r)){
+          
+          self$results$r$setContent(res)
+        }
        
         results <-
           list(

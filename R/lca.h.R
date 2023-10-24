@@ -15,6 +15,7 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             ip = FALSE,
             cf = FALSE,
             coef = FALSE,
+            r = FALSE,
             plot = FALSE,
             plot1 = FALSE,
             plot2 = FALSE,
@@ -70,6 +71,10 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "coef",
                 coef,
                 default=FALSE)
+            private$..r <- jmvcore::OptionBool$new(
+                "r",
+                r,
+                default=FALSE)
             private$..plot <- jmvcore::OptionBool$new(
                 "plot",
                 plot,
@@ -103,6 +108,7 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..cf)
             self$.addOption(private$..cm)
             self$.addOption(private$..coef)
+            self$.addOption(private$..r)
             self$.addOption(private$..plot)
             self$.addOption(private$..plot1)
             self$.addOption(private$..plot2)
@@ -120,6 +126,7 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         cf = function() private$..cf$value,
         cm = function() private$..cm$value,
         coef = function() private$..coef$value,
+        r = function() private$..r$value,
         plot = function() private$..plot$value,
         plot1 = function() private$..plot1$value,
         plot2 = function() private$..plot2$value,
@@ -136,6 +143,7 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..cf = NA,
         ..cm = NA,
         ..coef = NA,
+        ..r = NA,
         ..plot = NA,
         ..plot1 = NA,
         ..plot2 = NA,
@@ -148,7 +156,6 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     inherit = jmvcore::Group,
     active = list(
         instructions = function() private$.items[["instructions"]],
-        text1 = function() private$.items[["text1"]],
         mf = function() private$.items[["mf"]],
         ip = function() private$.items[["ip"]],
         pro = function() private$.items[["pro"]],
@@ -157,7 +164,8 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         plot = function() private$.items[["plot"]],
         plot1 = function() private$.items[["plot1"]],
         plot2 = function() private$.items[["plot2"]],
-        plot3 = function() private$.items[["plot3"]]),
+        plot3 = function() private$.items[["plot3"]],
+        r = function() private$.items[["r"]]),
     private = list(),
     public=list(
         initialize=function(options) {
@@ -171,10 +179,6 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 name="instructions",
                 title="Instructions",
                 visible=TRUE))
-            self$add(jmvcore::Preformatted$new(
-                options=options,
-                name="text1",
-                title=""))
             self$add(R6::R6Class(
                 inherit = jmvcore::Group,
                 active = list(
@@ -427,6 +431,16 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 clearWith=list(
                     "vars",
                     "nc",
+                    "covs")))
+            self$add(jmvcore::Preformatted$new(
+                options=options,
+                name="r",
+                title="Output from R",
+                visible="(r)",
+                refs="poLCA",
+                clearWith=list(
+                    "vars",
+                    "nc",
                     "covs")))}))
 
 lcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -463,6 +477,7 @@ lcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param ip .
 #' @param cf .
 #' @param coef .
+#' @param r .
 #' @param plot .
 #' @param plot1 .
 #' @param plot2 .
@@ -472,7 +487,6 @@ lcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
-#'   \code{results$text1} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$mf$fit} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$mf$comp} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$ip} \tab \tab \tab \tab \tab an array of tables \cr
@@ -484,6 +498,7 @@ lcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$plot2} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$plot3} \tab \tab \tab \tab \tab an image \cr
+#'   \code{results$r} \tab \tab \tab \tab \tab a preformatted \cr
 #' }
 #'
 #' @export
@@ -498,6 +513,7 @@ lca <- function(
     ip = FALSE,
     cf = FALSE,
     coef = FALSE,
+    r = FALSE,
     plot = FALSE,
     plot1 = FALSE,
     plot2 = FALSE,
@@ -526,6 +542,7 @@ lca <- function(
         ip = ip,
         cf = cf,
         coef = coef,
+        r = r,
         plot = plot,
         plot1 = plot1,
         plot2 = plot2,
