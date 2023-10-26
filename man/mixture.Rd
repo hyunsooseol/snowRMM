@@ -21,7 +21,9 @@ mixture(
   angle = 0,
   iplot = FALSE,
   plot3 = FALSE,
-  plot2 = TRUE
+  plot2 = TRUE,
+  width = 500,
+  height = 500
 )
 }
 \arguments{
@@ -59,6 +61,10 @@ where 0 degrees represents completely horizontal labels.}
 \item{plot3}{.}
 
 \item{plot2}{.}
+
+\item{width}{.}
+
+\item{height}{.}
 }
 \value{
 A results object containing:

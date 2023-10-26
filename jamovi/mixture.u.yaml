@@ -47,7 +47,7 @@ children:
         margin: large
         children:
           - type: Label
-            label: Statistics
+            label: Tables
             children:
               - type: CheckBox
                 name: imean
@@ -75,7 +75,7 @@ children:
               - type: CheckBox
                 name: fit
           - type: Label
-            label: Plot
+            label: Plots
             children:
               - type: CheckBox
                 name: plot2
@@ -89,7 +89,15 @@ children:
                     suggestedValues:
                       - value: 0
                       - value: 45
-                      - value: 90  
+                      - value: 90
+                  - type: TextBox
+                    name: width
+                    format: number
+                    enable: (iplot)
+                  - type: TextBox
+                    name: height
+                    format: number
+                    enable: (iplot)
   - type: CollapseBox
     label: Person Analysis
     margin: normal
@@ -100,7 +108,7 @@ children:
         margin: large
         children:
           - type: Label
-            label: Statistics
+            label: Tables
             fitToGrid: true
             cell:
               column: 0
@@ -113,7 +121,7 @@ children:
               - type: Output
                 name: pinfit
               - type: Output
-                name: poutfit      
+                name: poutfit
               - type: Output
                 name: pmember
               - type: CheckBox
@@ -127,10 +135,8 @@ children:
         fitToGrid: true
         children:
           - type: Label
-            label: 'Plot'
+            label: Plot
             children:
               - type: CheckBox
                 name: plot3
-
-
  

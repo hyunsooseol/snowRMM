@@ -870,8 +870,8 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
   
   plot2 <- ggplot2::ggplot(profile,aes(x = Variable, y = value, group = Class))+
     facet_wrap(~ Level)+
-    geom_line(aes(color=Class), size=1.2)+
-    geom_point(aes(color=Class),size=1.5)
+    geom_line(aes(color=Class), size=1.1)+
+    geom_point(aes(color=Class),size=3)
   
     plot2 <- plot2+ggtheme
   

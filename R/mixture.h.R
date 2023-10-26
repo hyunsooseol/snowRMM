@@ -21,7 +21,9 @@ mixtureOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             angle = 0,
             iplot = FALSE,
             plot3 = FALSE,
-            plot2 = TRUE, ...) {
+            plot2 = TRUE,
+            width = 500,
+            height = 500, ...) {
 
             super$initialize(
                 package="snowRMM",
@@ -115,6 +117,14 @@ mixtureOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "pinfit")
             private$..poutfit <- jmvcore::OptionOutput$new(
                 "poutfit")
+            private$..width <- jmvcore::OptionInteger$new(
+                "width",
+                width,
+                default=500)
+            private$..height <- jmvcore::OptionInteger$new(
+                "height",
+                height,
+                default=500)
 
             self$.addOption(private$..vars)
             self$.addOption(private$..nc)
@@ -137,6 +147,8 @@ mixtureOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..pse)
             self$.addOption(private$..pinfit)
             self$.addOption(private$..poutfit)
+            self$.addOption(private$..width)
+            self$.addOption(private$..height)
         }),
     active = list(
         vars = function() private$..vars$value,
@@ -159,7 +171,9 @@ mixtureOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         pmeasure = function() private$..pmeasure$value,
         pse = function() private$..pse$value,
         pinfit = function() private$..pinfit$value,
-        poutfit = function() private$..poutfit$value),
+        poutfit = function() private$..poutfit$value,
+        width = function() private$..width$value,
+        height = function() private$..height$value),
     private = list(
         ..vars = NA,
         ..nc = NA,
@@ -181,7 +195,9 @@ mixtureOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..pmeasure = NA,
         ..pse = NA,
         ..pinfit = NA,
-        ..poutfit = NA)
+        ..poutfit = NA,
+        ..width = NA,
+        ..height = NA)
 )
 
 mixtureResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -438,8 +454,6 @@ mixtureResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 name="iplot",
                 title="Item Plot",
                 visible="(iplot)",
-                width=600,
-                height=450,
                 refs="snowRMM",
                 renderFun=".itemPlot",
                 clearWith=list(
@@ -447,7 +461,9 @@ mixtureResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "nc",
                     "step",
                     "type",
-                    "angle")))
+                    "angle",
+                    "width",
+                    "height")))
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot3",
@@ -570,6 +586,8 @@ mixtureBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param iplot .
 #' @param plot3 .
 #' @param plot2 .
+#' @param width .
+#' @param height .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
@@ -609,7 +627,9 @@ mixture <- function(
     angle = 0,
     iplot = FALSE,
     plot3 = FALSE,
-    plot2 = TRUE) {
+    plot2 = TRUE,
+    width = 500,
+    height = 500) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("mixture requires jmvcore to be installed (restart may be required)")
@@ -637,7 +657,9 @@ mixture <- function(
         angle = angle,
         iplot = iplot,
         plot3 = plot3,
-        plot2 = plot2)
+        plot2 = plot2,
+        width = width,
+        height = height)
 
     analysis <- mixtureClass$new(
         options = options,
