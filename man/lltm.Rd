@@ -16,7 +16,9 @@ lltm(
   eta = FALSE,
   beta = FALSE,
   plot = FALSE,
-  comp = FALSE
+  comp = FALSE,
+  width = 500,
+  height = 500
 )
 }
 \arguments{
@@ -43,6 +45,10 @@ lltm(
 \item{plot}{.}
 
 \item{comp}{.}
+
+\item{width}{.}
+
+\item{height}{.}
 }
 \value{
 A results object containing:

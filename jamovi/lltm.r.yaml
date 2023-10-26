@@ -239,11 +239,11 @@ items:
       title: "Comparison of item easiness parameters "
       type:  Image
       visible: (plot)
-      width: 500
-      height: 500
       renderFun: .plot 
       clearWith:
         - vars
         - mat
-        - col          
+        - col
+        - width
+        - height
 ...

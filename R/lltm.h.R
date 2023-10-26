@@ -16,7 +16,9 @@ lltmOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             eta = FALSE,
             beta = FALSE,
             plot = FALSE,
-            comp = FALSE, ...) {
+            comp = FALSE,
+            width = 500,
+            height = 500, ...) {
 
             super$initialize(
                 package="snowRMM",
@@ -73,6 +75,14 @@ lltmOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "comp",
                 comp,
                 default=FALSE)
+            private$..width <- jmvcore::OptionInteger$new(
+                "width",
+                width,
+                default=500)
+            private$..height <- jmvcore::OptionInteger$new(
+                "height",
+                height,
+                default=500)
 
             self$.addOption(private$..vars)
             self$.addOption(private$..mat)
@@ -85,6 +95,8 @@ lltmOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..beta)
             self$.addOption(private$..plot)
             self$.addOption(private$..comp)
+            self$.addOption(private$..width)
+            self$.addOption(private$..height)
         }),
     active = list(
         vars = function() private$..vars$value,
@@ -97,7 +109,9 @@ lltmOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         eta = function() private$..eta$value,
         beta = function() private$..beta$value,
         plot = function() private$..plot$value,
-        comp = function() private$..comp$value),
+        comp = function() private$..comp$value,
+        width = function() private$..width$value,
+        height = function() private$..height$value),
     private = list(
         ..vars = NA,
         ..mat = NA,
@@ -109,7 +123,9 @@ lltmOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..eta = NA,
         ..beta = NA,
         ..plot = NA,
-        ..comp = NA)
+        ..comp = NA,
+        ..width = NA,
+        ..height = NA)
 )
 
 lltmResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -389,13 +405,13 @@ lltmResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 name="plot",
                 title="Comparison of item easiness parameters ",
                 visible="(plot)",
-                width=500,
-                height=500,
                 renderFun=".plot",
                 clearWith=list(
                     "vars",
                     "mat",
-                    "col")))}))
+                    "col",
+                    "width",
+                    "height")))}))
 
 lltmBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "lltmBase",
@@ -433,6 +449,8 @@ lltmBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param beta .
 #' @param plot .
 #' @param comp .
+#' @param width .
+#' @param height .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
@@ -459,7 +477,9 @@ lltm <- function(
     eta = FALSE,
     beta = FALSE,
     plot = FALSE,
-    comp = FALSE) {
+    comp = FALSE,
+    width = 500,
+    height = 500) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("lltm requires jmvcore to be installed (restart may be required)")
@@ -482,7 +502,9 @@ lltm <- function(
         eta = eta,
         beta = beta,
         plot = plot,
-        comp = comp)
+        comp = comp,
+        width = width,
+        height = height)
 
     analysis <- lltmClass$new(
         options = options,
