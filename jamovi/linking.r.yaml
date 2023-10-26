@@ -28,14 +28,14 @@ items:
       title: Equating Plot
       type:  Image
       visible: (plot)
-      width: 500
-      height: 500
       renderFun: .plot
       refs: equate
       clearWith:
         - ind
         - dep
         - method
+        - width
+        - height
 
 
 

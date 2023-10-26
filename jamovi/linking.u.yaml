@@ -56,4 +56,13 @@ children:
             children:
               - type: CheckBox
                 name: plot
-
+                style: list-inline
+                children:
+                  - type: TextBox
+                    name: width
+                    format: number
+                    enable: (plot)
+                  - type: TextBox
+                    name: height
+                    format: number
+                    enable: (plot)

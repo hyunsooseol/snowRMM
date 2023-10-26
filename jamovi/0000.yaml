@@ -107,12 +107,11 @@ datasets:
     tags:
       - Linear
       - Equipercentile
-  - name: equipercentile
-    path: percent.omv
-    description: Equipercentile equating
+  - name: linking
+    path: composite.omv
+    description: Composite Linking
     tags:
-      - Linear
-      - Equipercentile
+      - Linking
   - name: lltm
     path: lltm.omv
     description: Linear logistic Test Model

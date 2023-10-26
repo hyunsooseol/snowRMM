@@ -19,7 +19,11 @@ equating(
   con = FALSE,
   contabx1 = FALSE,
   contaby1 = FALSE,
-  plot1 = FALSE
+  plot1 = FALSE,
+  width = 500,
+  height = 500,
+  width1 = 500,
+  height1 = 500
 )
 }
 \arguments{
@@ -52,6 +56,14 @@ equating(
 \item{contaby1}{.}
 
 \item{plot1}{.}
+
+\item{width}{.}
+
+\item{height}{.}
+
+\item{width1}{.}
+
+\item{height1}{.}
 }
 \value{
 A results object containing:

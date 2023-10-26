@@ -65,12 +65,12 @@ items:
       requiresData: true
       refs: snowRMM
       visible: (plot)
-      width: 500
-      height: 500
       renderFun: .plot
       clearWith:
         - ind
         - dep
+        - width
+        - height
 
     - name: escore
       title: Equating score
@@ -144,12 +144,11 @@ items:
       type:  Image
       requiresData: true
       visible: (plot1)
-      width: 500
-      height: 500
       renderFun: .plot1
       clearWith:
         - ind1
         - dep1
-
+        - width1
+        - height1
 
 ...
