@@ -23,7 +23,11 @@ mixtureOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             plot3 = FALSE,
             plot2 = TRUE,
             width = 500,
-            height = 500, ...) {
+            height = 500,
+            width1 = 500,
+            height1 = 500,
+            width2 = 500,
+            height2 = 500, ...) {
 
             super$initialize(
                 package="snowRMM",
@@ -125,6 +129,22 @@ mixtureOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "height",
                 height,
                 default=500)
+            private$..width1 <- jmvcore::OptionInteger$new(
+                "width1",
+                width1,
+                default=500)
+            private$..height1 <- jmvcore::OptionInteger$new(
+                "height1",
+                height1,
+                default=500)
+            private$..width2 <- jmvcore::OptionInteger$new(
+                "width2",
+                width2,
+                default=500)
+            private$..height2 <- jmvcore::OptionInteger$new(
+                "height2",
+                height2,
+                default=500)
 
             self$.addOption(private$..vars)
             self$.addOption(private$..nc)
@@ -149,6 +169,10 @@ mixtureOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..poutfit)
             self$.addOption(private$..width)
             self$.addOption(private$..height)
+            self$.addOption(private$..width1)
+            self$.addOption(private$..height1)
+            self$.addOption(private$..width2)
+            self$.addOption(private$..height2)
         }),
     active = list(
         vars = function() private$..vars$value,
@@ -173,7 +197,11 @@ mixtureOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         pinfit = function() private$..pinfit$value,
         poutfit = function() private$..poutfit$value,
         width = function() private$..width$value,
-        height = function() private$..height$value),
+        height = function() private$..height$value,
+        width1 = function() private$..width1$value,
+        height1 = function() private$..height1$value,
+        width2 = function() private$..width2$value,
+        height2 = function() private$..height2$value),
     private = list(
         ..vars = NA,
         ..nc = NA,
@@ -197,7 +225,11 @@ mixtureOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..pinfit = NA,
         ..poutfit = NA,
         ..width = NA,
-        ..height = NA)
+        ..height = NA,
+        ..width1 = NA,
+        ..height1 = NA,
+        ..width2 = NA,
+        ..height2 = NA)
 )
 
 mixtureResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -469,15 +501,15 @@ mixtureResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 name="plot3",
                 title="Person distributions across class",
                 visible="(plot3)",
-                width=600,
-                height=450,
                 refs="snowRMM",
                 renderFun=".plot3",
                 clearWith=list(
                     "vars",
                     "nc",
                     "step",
-                    "type")))
+                    "type",
+                    "width2",
+                    "height2")))
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot2",
@@ -491,7 +523,9 @@ mixtureResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "vars",
                     "nc",
                     "step",
-                    "type")))
+                    "type",
+                    "width1",
+                    "height1")))
             self$add(jmvcore::Output$new(
                 options=options,
                 name="pmember",
@@ -588,6 +622,10 @@ mixtureBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param plot2 .
 #' @param width .
 #' @param height .
+#' @param width1 .
+#' @param height1 .
+#' @param width2 .
+#' @param height2 .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
@@ -629,7 +667,11 @@ mixture <- function(
     plot3 = FALSE,
     plot2 = TRUE,
     width = 500,
-    height = 500) {
+    height = 500,
+    width1 = 500,
+    height1 = 500,
+    width2 = 500,
+    height2 = 500) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("mixture requires jmvcore to be installed (restart may be required)")
@@ -659,7 +701,11 @@ mixture <- function(
         plot3 = plot3,
         plot2 = plot2,
         width = width,
-        height = height)
+        height = height,
+        width1 = width1,
+        height1 = height1,
+        width2 = width2,
+        height2 = height2)
 
     analysis <- mixtureClass$new(
         options = options,

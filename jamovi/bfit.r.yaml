@@ -92,8 +92,8 @@ items:
             - step
             - bn 
             - angle
-            - width1
-            - height1
+            - width
+            - height
 
     - name: instructions1
       title: 'Bootstrap Item Fit with P values'

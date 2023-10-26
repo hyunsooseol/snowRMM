@@ -222,8 +222,6 @@ items:
       title: 'Person distributions across class'
       type: Image
       visible: (plot3)
-      width: 600
-      height: 450
       refs: snowRMM
       renderFun: .plot3
       clearWith:
@@ -231,6 +229,8 @@ items:
             - nc
             - step
             - type
+            - width2
+            - height2
  
     - name: plot2
       title: 'Elbow plot'
@@ -245,6 +245,8 @@ items:
             - nc
             - step
             - type
+            - width1
+            - height1
 
     - name: pmember
       title: Class membership

@@ -43,6 +43,9 @@ children:
                 name: fit
               - type: CheckBox
                 name: comp
+          - type: Label
+            label: 'Plots'
+            children:
               - type: CheckBox
                 name: plot3  
                 style: list-inline
@@ -55,9 +58,6 @@ children:
                     name: height3
                     format: number
                     enable: (plot3) 
-          - type: Label
-            label: 'Plots'
-            children:
               - type: CheckBox
                 name: plot
                 style: list-inline
@@ -129,7 +129,7 @@ children:
               - type: CheckBox
                 name: coef
           - type: Label
-            label: Output from R (Optional)
+            label: Output from R(Optional)
             children:
               - type: CheckBox
                 name: r
