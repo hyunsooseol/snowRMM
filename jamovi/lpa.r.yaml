@@ -144,6 +144,8 @@ items:
         - nc
         - variances
         - covariances
+        - width
+        - height
             
     - name: plot1
       title: 'Latent profile plot'
@@ -156,27 +158,27 @@ items:
         - nc
         - variances
         - covariances     
+        - width1
+        - height1
             
     - name: plot3
       title: 'Density plot'
       type: Image
       visible: (plot3)
-      width: 700
-      height: 500
       refs: tidyLPA
       renderFun: .plot3
       clearWith:
         - vars
         - nc
         - variances
-        - covariances    
+        - covariances
+        - width2
+        - height2
 
     - name: plot2
       title: 'Elbow plot'
       type: Image
       visible: (plot2)
-      width: 600
-      height: 450
       refs: snowRMM
       renderFun: .plot2
       clearWith:
@@ -184,6 +186,8 @@ items:
         - nc
         - variances
         - covariances    
+        - width3
+        - height3
 
             
 ...

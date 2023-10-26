@@ -49,7 +49,38 @@ lpaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             </html>"
             )
             
+            if(isTRUE(self$options$plot)){
+              
+              width <- self$options$width
+              height <- self$options$height
+              
+              self$results$plot$setSize(width, height)
+            }  
             
+            if(isTRUE(self$options$plot1)){
+              
+              width <- self$options$width1
+              height <- self$options$height1
+              
+              self$results$plot1$setSize(width, height)
+            }  
+            
+            if(isTRUE(self$options$plot3)){
+              
+              width <- self$options$width2
+              height <- self$options$height2
+              
+              self$results$plot3$setSize(width, height)
+            }  
+            
+            if(isTRUE(self$options$plot2)){
+              
+              width <- self$options$width3
+              height <- self$options$height3
+              
+              self$results$plot2$setSize(width, height)
+            }  
+             
         },
         
         
@@ -241,10 +272,9 @@ lpaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             
             image <- self$results$plot
             
-            nvars <- length(vars)
-            
-            width <- 700 + nvars * 30
-            image$setSize(width, 700)
+            # nvars <- length(vars)
+            # width <- 700 + nvars * 30
+            #image$setSize(width, 700)
             
             
             image$setState(res)
@@ -253,10 +283,9 @@ lpaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             
             image1 <- self$results$plot1
             
-            nvars <- length(vars)
-            
-            width <- 500 + nvars * 30
-            image1$setSize(width, 400)
+            # nvars <- length(vars)
+            # width <- 500 + nvars * 30
+            # image1$setSize(width, 400)
             
             image1$setState(res)
             
