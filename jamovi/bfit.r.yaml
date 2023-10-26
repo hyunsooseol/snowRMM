@@ -72,8 +72,6 @@ items:
     - name: inplot
       title: 'Confidence interval for infit'
       type: Image
-      width:  500
-      height: 500
       visible: (inplot)
       renderFun: .inPlot
       clearWith:
@@ -81,12 +79,12 @@ items:
             - step
             - bn
             - angle
+            - width
+            - height
 
     - name: outplot
       title: 'Confidence interval for outfit'
       type: Image
-      width:  500
-      height: 500
       visible: (outplot)
       renderFun: .outPlot
       clearWith:
@@ -94,6 +92,8 @@ items:
             - step
             - bn 
             - angle
+            - width1
+            - height1
 
     - name: instructions1
       title: 'Bootstrap Item Fit with P values'

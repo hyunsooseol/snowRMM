@@ -53,6 +53,24 @@ bfitClass <- if (requireNamespace('jmvcore'))
             </html>"
         )
         
+        if(isTRUE(self$options$inplot)){
+          
+          width <- self$options$width
+          height <- self$options$height
+         
+          self$results$inplot$setSize(width, height)
+        }
+        
+        
+        if(isTRUE(self$options$outplot)){
+          
+          width <- self$options$width
+          height <- self$options$height
+         
+          self$results$outplot$setSize(width, height)
+        }
+        
+        
         }
         
         if(self$options$mode=="complex"){

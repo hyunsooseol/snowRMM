@@ -20,7 +20,11 @@ bfit(
   adj = "BH",
   bn1 = 100,
   outfit = FALSE,
-  infit = FALSE
+  infit = FALSE,
+  width = 500,
+  height = 500,
+  width1 = 500,
+  height1 = 500
 )
 }
 \arguments{
@@ -55,6 +59,14 @@ bfit(
 \item{outfit}{.}
 
 \item{infit}{.}
+
+\item{width}{.}
+
+\item{height}{.}
+
+\item{width1}{.}
+
+\item{height1}{.}
 }
 \value{
 A results object containing:
