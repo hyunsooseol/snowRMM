@@ -175,21 +175,19 @@ items:
       title: 'LCA Plot'
       type: Image
       visible: (plot)
-      width: 600
-      height: 450
       renderFun: .plot
       refs: poLCA
       clearWith:
             - vars
             - nc 
             - covs
+            - width
+            - height
 
     - name: plot1
       title: 'Item by class'
       type: Image
       visible: (plot1)
-      width: 650
-      height: 650
       renderFun: .plot1
       refs: snowRMM
       clearWith:
@@ -197,7 +195,9 @@ items:
             - nc 
             - covs 
             - angle
-
+            - width1
+            - height1
+            
     - name: plot2
       title: 'Profile Plot'
       type: Image
@@ -209,19 +209,21 @@ items:
             - nc 
             - covs 
             - angle
+            - width2
+            - height2            
 
     - name: plot3
       title: 'Elbow Plot'
       type: Image
       visible: (plot3)
-      width: 600
-      height: 450
       refs: snowRMM
       renderFun: .plot3
       clearWith:
             - vars
             - nc 
-            - covs 
+            - covs
+            - width3
+            - height3  
 
     - name:  r
       title: 'Output from R'
