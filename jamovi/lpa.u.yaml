@@ -31,7 +31,6 @@ children:
             name: variances
           - type: ComboBox
             name: covariances
-
   - type: CollapseBox
     label: Analysis
     margin: normal
@@ -42,12 +41,19 @@ children:
         stretchFactor: 1
         children:
           - type: Label
-            label: Model fit
+            label: 'Model fit'
             children:
               - type: CheckBox
                 name: fit
               - type: CheckBox
                 name: best
+          - type: Label
+            label: 'Additional outputs'
+            children:
+              - type: CheckBox
+                name: est
+              - type: Output
+                name: pc      
       - type: LayoutBox
         stretchFactor: 1
         margin: large
@@ -77,15 +83,6 @@ children:
               - type: CheckBox
                 name: plot2
 
-  - type: CollapseBox
-    label: Additional Outputs
-    margin: normal
-    collapsed: true
-    children:
-      - type: CheckBox
-        name: est
-      - type: Output
-        name: pc
 
 
 
