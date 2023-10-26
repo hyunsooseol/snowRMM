@@ -137,7 +137,7 @@ children:
                     name: tlab
                     enable: (gofplot)
   - type: CollapseBox
-    label: Plots
+    label: 'Plots'
     margin: normal
     collapsed: true
     children:
@@ -166,6 +166,13 @@ children:
                 name: plot2
               - type: CheckBox
                 name: plot3
+          - type: Label
+            label: 'Map'
+            children:
+              - type: CheckBox
+                name: wrightmap
+              - type: CheckBox
+                name: piplot
       - type: LayoutBox
         stretchFactor: 1
         margin: large
@@ -188,13 +195,12 @@ children:
                   - value: 0
                   - value: 45
                   - value: 90
-          - type: Label
-            label: Map
-            children:
-              - type: CheckBox
-                name: wrightmap
-              - type: CheckBox
-                name: piplot
+              - type: TextBox
+                name: width
+                format: number
+              - type: TextBox
+                name: height
+                format: number
   - type: CollapseBox
     label: Person Analysis
     margin: normal
@@ -226,7 +232,7 @@ children:
         fitToGrid: true
         children:
           - type: Label
-            label: Person fit
+            label: 'Person fit'
             children:
               - type: Output
                 name: pinfit
@@ -234,6 +240,16 @@ children:
                 name: poutfit
               - type: CheckBox
                 name: plot4
+                style: list-inline
+                children:
+                  - type: TextBox
+                    name: width1
+                    format: number
+                    enable: (plot4)
+                  - type: TextBox
+                    name: height1
+                    format: number
+                    enable: (plot4) 
   - type: CollapseBox
     label: Additional Outputs
     margin: normal
@@ -267,9 +283,17 @@ children:
                   - type: ComboBox
                     name: res
                     enable: (plot5)
+                  - type: TextBox
+                    name: width2
+                    format: number
+                    enable: (plot5)
+                  - type: TextBox
+                    name: height2
+                    format: number
+                    enable: (plot5)
               - type: CheckBox
                 name: q3
                 children:
                   - type: ComboBox
                     name: res1
-                    enable: (q3)        
+                    enable: (q3)

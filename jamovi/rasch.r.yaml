@@ -235,8 +235,6 @@ items:
     - name: inplot
       title: 'Item Infit plot'
       type: Image
-      width:  500
-      height: 500
       visible: (inplot)
       renderFun: .inPlot
       clearWith:
@@ -244,12 +242,12 @@ items:
         - step
         - type
         - angle
+        - width
+        - height
 
     - name: outplot
       title: 'Item Outfit plot'
       type: Image
-      width:  500
-      height: 500
       visible: (outplot)
       renderFun: .outPlot
       clearWith:
@@ -257,6 +255,8 @@ items:
         - step
         - type
         - angle
+        - width
+        - height
 
     - name: ptotal
       title: Total
@@ -423,26 +423,26 @@ items:
       type:  Image
       requiresData: true
       visible: (plot4)
-      width: 600
-      height: 400
       renderFun: .plot4
       refs: snowRMM 
       clearWith:
             - vars
+            - width1
+            - height1
 
     - name:  plot5
       title: 'Rasch Residual Factor Plot'
       type:  Image
       requiresData: true
       visible: (plot5)
-      width: 500
-      height: 500
       renderFun: .plot5
       refs: pairwise
       clearWith:
             - vars
             - res
-
+            - width2
+            - height2
+    
     - name: q3
       title: 'Q3 statistic based on pearson correlation'
       type: Table

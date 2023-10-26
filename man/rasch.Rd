@@ -43,7 +43,13 @@ rasch(
   plot5 = FALSE,
   res = "stdr",
   q3 = FALSE,
-  res1 = "stdr"
+  res1 = "stdr",
+  width = 500,
+  height = 500,
+  width1 = 500,
+  height1 = 500,
+  width2 = 500,
+  height2 = 500
 )
 }
 \arguments{
@@ -125,6 +131,18 @@ where 0 degrees represents completely horizontal labels.}
 \item{q3}{.}
 
 \item{res1}{.}
+
+\item{width}{.}
+
+\item{height}{.}
+
+\item{width1}{.}
+
+\item{height1}{.}
+
+\item{width2}{.}
+
+\item{height2}{.}
 }
 \value{
 A results object containing:

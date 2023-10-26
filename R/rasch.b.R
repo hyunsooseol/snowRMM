@@ -93,6 +93,39 @@ raschClass <- if (requireNamespace('jmvcore'))
            
           )
         
+        if(isTRUE(self$options$inplot)){
+          
+          width <- self$options$width
+          height <- self$options$height
+          
+          self$results$inplot$setSize(width, height)
+        }
+        
+        
+        if(isTRUE(self$options$outplot)){
+          
+          width <- self$options$width
+          height <- self$options$height
+          
+          self$results$outplot$setSize(width, height)
+        }
+        
+        if(isTRUE(self$options$plot4)){
+          
+          width <- self$options$width1
+          height <- self$options$height1
+          
+          self$results$plot4$setSize(width, height)
+        }
+        
+        if(isTRUE(self$options$plot5)){
+          
+          width <- self$options$width2
+          height <- self$options$height2
+          
+          self$results$plot5$setSize(width, height)
+        }
+        
         
         
         if (length(self$options$vars) <= 1)

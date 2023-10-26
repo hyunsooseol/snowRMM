@@ -43,7 +43,13 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             plot5 = FALSE,
             res = "stdr",
             q3 = FALSE,
-            res1 = "stdr", ...) {
+            res1 = "stdr",
+            width = 500,
+            height = 500,
+            width1 = 500,
+            height1 = 500,
+            width2 = 500,
+            height2 = 500, ...) {
 
             super$initialize(
                 package="snowRMM",
@@ -246,6 +252,30 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "stdr",
                     "sr"),
                 default="stdr")
+            private$..width <- jmvcore::OptionInteger$new(
+                "width",
+                width,
+                default=500)
+            private$..height <- jmvcore::OptionInteger$new(
+                "height",
+                height,
+                default=500)
+            private$..width1 <- jmvcore::OptionInteger$new(
+                "width1",
+                width1,
+                default=500)
+            private$..height1 <- jmvcore::OptionInteger$new(
+                "height1",
+                height1,
+                default=500)
+            private$..width2 <- jmvcore::OptionInteger$new(
+                "width2",
+                width2,
+                default=500)
+            private$..height2 <- jmvcore::OptionInteger$new(
+                "height2",
+                height2,
+                default=500)
 
             self$.addOption(private$..vars)
             self$.addOption(private$..num)
@@ -290,6 +320,12 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..res)
             self$.addOption(private$..q3)
             self$.addOption(private$..res1)
+            self$.addOption(private$..width)
+            self$.addOption(private$..height)
+            self$.addOption(private$..width1)
+            self$.addOption(private$..height1)
+            self$.addOption(private$..width2)
+            self$.addOption(private$..height2)
         }),
     active = list(
         vars = function() private$..vars$value,
@@ -334,7 +370,13 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         plot5 = function() private$..plot5$value,
         res = function() private$..res$value,
         q3 = function() private$..q3$value,
-        res1 = function() private$..res1$value),
+        res1 = function() private$..res1$value,
+        width = function() private$..width$value,
+        height = function() private$..height$value,
+        width1 = function() private$..width1$value,
+        height1 = function() private$..height1$value,
+        width2 = function() private$..width2$value,
+        height2 = function() private$..height2$value),
     private = list(
         ..vars = NA,
         ..num = NA,
@@ -378,7 +420,13 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..plot5 = NA,
         ..res = NA,
         ..q3 = NA,
-        ..res1 = NA)
+        ..res1 = NA,
+        ..width = NA,
+        ..height = NA,
+        ..width1 = NA,
+        ..height1 = NA,
+        ..width2 = NA,
+        ..height2 = NA)
 )
 
 raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -674,28 +722,28 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 options=options,
                 name="inplot",
                 title="Item Infit plot",
-                width=500,
-                height=500,
                 visible="(inplot)",
                 renderFun=".inPlot",
                 clearWith=list(
                     "vars",
                     "step",
                     "type",
-                    "angle")))
+                    "angle",
+                    "width",
+                    "height")))
             self$add(jmvcore::Image$new(
                 options=options,
                 name="outplot",
                 title="Item Outfit plot",
-                width=500,
-                height=500,
                 visible="(outplot)",
                 renderFun=".outPlot",
                 clearWith=list(
                     "vars",
                     "step",
                     "type",
-                    "angle")))
+                    "angle",
+                    "width",
+                    "height")))
             self$add(jmvcore::Output$new(
                 options=options,
                 name="ptotal",
@@ -881,25 +929,25 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 title="Person Fit Plot",
                 requiresData=TRUE,
                 visible="(plot4)",
-                width=600,
-                height=400,
                 renderFun=".plot4",
                 refs="snowRMM",
                 clearWith=list(
-                    "vars")))
+                    "vars",
+                    "width1",
+                    "height1")))
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot5",
                 title="Rasch Residual Factor Plot",
                 requiresData=TRUE,
                 visible="(plot5)",
-                width=500,
-                height=500,
                 renderFun=".plot5",
                 refs="pairwise",
                 clearWith=list(
                     "vars",
-                    "res")))
+                    "res",
+                    "width2",
+                    "height2")))
             self$add(jmvcore::Table$new(
                 options=options,
                 name="q3",
@@ -997,6 +1045,12 @@ raschBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param res .
 #' @param q3 .
 #' @param res1 .
+#' @param width .
+#' @param height .
+#' @param width1 .
+#' @param height1 .
+#' @param width2 .
+#' @param height2 .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
@@ -1075,7 +1129,13 @@ rasch <- function(
     plot5 = FALSE,
     res = "stdr",
     q3 = FALSE,
-    res1 = "stdr") {
+    res1 = "stdr",
+    width = 500,
+    height = 500,
+    width1 = 500,
+    height1 = 500,
+    width2 = 500,
+    height2 = 500) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("rasch requires jmvcore to be installed (restart may be required)")
@@ -1125,7 +1185,13 @@ rasch <- function(
         plot5 = plot5,
         res = res,
         q3 = q3,
-        res1 = res1)
+        res1 = res1,
+        width = width,
+        height = height,
+        width1 = width1,
+        height1 = height1,
+        width2 = width2,
+        height2 = height2)
 
     analysis <- raschClass$new(
         options = options,
