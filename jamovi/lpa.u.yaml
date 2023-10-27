@@ -80,6 +80,9 @@ children:
               - type: CheckBox
                 name: plot1
                 children:
+                  - type: ComboBox
+                    name: line
+                    enable: (plot1)
                   - type: TextBox
                     name: angle
                     format: number

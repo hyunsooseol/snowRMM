@@ -18,6 +18,7 @@ lpaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             plot3 = FALSE,
             plot2 = FALSE,
             angle = 0,
+            line = "FALSE",
             width = 500,
             height = 500,
             width1 = 500,
@@ -96,6 +97,13 @@ lpaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 min=0,
                 max=90,
                 default=0)
+            private$..line <- jmvcore::OptionList$new(
+                "line",
+                line,
+                options=list(
+                    "FALSE",
+                    "TRUE"),
+                default="FALSE")
             private$..width <- jmvcore::OptionInteger$new(
                 "width",
                 width,
@@ -142,6 +150,7 @@ lpaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..plot3)
             self$.addOption(private$..plot2)
             self$.addOption(private$..angle)
+            self$.addOption(private$..line)
             self$.addOption(private$..width)
             self$.addOption(private$..height)
             self$.addOption(private$..width1)
@@ -165,6 +174,7 @@ lpaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         plot3 = function() private$..plot3$value,
         plot2 = function() private$..plot2$value,
         angle = function() private$..angle$value,
+        line = function() private$..line$value,
         width = function() private$..width$value,
         height = function() private$..height$value,
         width1 = function() private$..width1$value,
@@ -187,6 +197,7 @@ lpaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..plot3 = NA,
         ..plot2 = NA,
         ..angle = NA,
+        ..line = NA,
         ..width = NA,
         ..height = NA,
         ..width1 = NA,
@@ -390,7 +401,8 @@ lpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "variances",
                     "covariances",
                     "width1",
-                    "height1")))
+                    "height1",
+                    "line")))
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot3",
@@ -458,6 +470,7 @@ lpaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param plot2 .
 #' @param angle a number from 0 to 90 defining the angle of the x-axis labels,
 #'   where 0 degrees represents completely horizontal labels.
+#' @param line .
 #' @param width .
 #' @param height .
 #' @param width1 .
@@ -500,6 +513,7 @@ lpa <- function(
     plot3 = FALSE,
     plot2 = FALSE,
     angle = 0,
+    line = "FALSE",
     width = 500,
     height = 500,
     width1 = 500,
@@ -532,6 +546,7 @@ lpa <- function(
         plot3 = plot3,
         plot2 = plot2,
         angle = angle,
+        line = line,
         width = width,
         height = height,
         width1 = width1,

@@ -160,6 +160,7 @@ items:
         - covariances     
         - width1
         - height1
+        - line
             
     - name: plot3
       title: 'Density plot'

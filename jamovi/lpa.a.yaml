@@ -91,6 +91,15 @@ options:
             a number from 0 to 90 defining the angle of the x-axis labels, 
             where 0 degrees represents completely horizontal labels.
 
+    - name: line
+      title: 'Add line'
+      type: List
+      options:
+        - title: 'FALSE'
+          name:  'FALSE'
+        - title: 'TRUE'
+          name:  'TRUE'
+      default: 'FALSE'    
 
     - name: width
       type: Integer

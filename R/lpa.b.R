@@ -350,8 +350,18 @@ lpaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           
             res <- image1$state
             
+            line <- self$options$line
             
-            plot1 <- tidyLPA::plot_profiles(res,add_line = TRUE)
+            plot1 <- tidyLPA::plot_profiles(res,
+                                            add_line = FALSE,
+                                            rawdata = FALSE)
+            
+            if(line=='TRUE'){
+              plot1 <- tidyLPA::plot_profiles(res,
+                                              add_line = TRUE,
+                                              rawdata = FALSE)
+            } 
+            
             
             
             if (self$options$angle > 0) {
