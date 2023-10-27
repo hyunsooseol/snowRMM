@@ -41,17 +41,17 @@ children:
         stretchFactor: 1
         children:
           - type: Label
-            label: 'Model fit'
+            label: 'Tables'
             children:
               - type: CheckBox
                 name: fit
               - type: CheckBox
                 name: best
-          - type: Label
-            label: 'Additional outputs'
-            children:
               - type: CheckBox
                 name: est
+          - type: Label
+            label: 'Save'
+            children:
               - type: Output
                 name: pc      
       - type: LayoutBox
