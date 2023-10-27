@@ -148,8 +148,6 @@ items:
     - name: plot
       title: 'Wright Map'
       type: Image
-      width: 500
-      height: 500
       visible: (wrightmap)
       renderFun: .plot
       requiresData: TRUE
@@ -158,12 +156,12 @@ items:
         - vars
         - step
         - type
+        - width3
+        - height3
 
     - name: piplot
       title: 'Person-Item Map for Partial Credit Model '
       type: Image
-      width:  500
-      height: 500
       visible: (piplot)
       renderFun: .piPlot
       refs: eRm
@@ -171,12 +169,12 @@ items:
         - vars
         - step
         - type
+        - width4
+        - height4
 
     - name: gofplot
       title: 'Goodness-of-Fit for LR test'
       type: Image
-      width: 500
-      height: 500
       visible: (gofplot)
       renderFun: .gofplot
       refs: eRm
@@ -186,12 +184,12 @@ items:
         - type
         - lrsplit
         - tlab
+        - width7
+        - height7       
 
     - name: plot1
       title: 'ICC for Dichotomous Item'
       type: Image
-      width: 500
-      height: 500
       visible: (plot1)
       renderFun: .plot1
       requiresData: TRUE
@@ -201,12 +199,12 @@ items:
         - step
         - type
         - num
+        - width6
+        - height6       
  
     - name: plot2
       title: 'Category for Rating Scale Model'
       type: Image
-      width: 500
-      height: 500
       visible: (plot2)
       renderFun: .plot2
       requiresData: TRUE
@@ -216,12 +214,12 @@ items:
         - step
         - type
         - num
-
+        - width5
+        - height5
+        
     - name: plot3
       title: 'Category for Partial Credit Model'
       type: Image
-      width: 500
-      height: 500
       visible: (plot3)
       renderFun: .plot3
       requiresData: TRUE
@@ -231,7 +229,9 @@ items:
         - step
         - type 
         - num
- 
+        - width5
+        - height5
+        
     - name: inplot
       title: 'Item Infit plot'
       type: Image

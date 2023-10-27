@@ -225,10 +225,10 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         pro = function() private$.items[["pro"]],
         text = function() private$.items[["text"]],
         cm = function() private$.items[["cm"]],
+        plot3 = function() private$.items[["plot3"]],
         plot = function() private$.items[["plot"]],
         plot1 = function() private$.items[["plot1"]],
         plot2 = function() private$.items[["plot2"]],
-        plot3 = function() private$.items[["plot3"]],
         r = function() private$.items[["r"]]),
     private = list(),
     public=list(
@@ -446,6 +446,19 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "covs")))
             self$add(jmvcore::Image$new(
                 options=options,
+                name="plot3",
+                title="Elbow Plot",
+                visible="(plot3)",
+                refs="snowRMM",
+                renderFun=".plot3",
+                clearWith=list(
+                    "vars",
+                    "nc",
+                    "covs",
+                    "width3",
+                    "height3")))
+            self$add(jmvcore::Image$new(
+                options=options,
                 name="plot",
                 title="LCA Plot",
                 visible="(plot)",
@@ -485,19 +498,6 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "angle",
                     "width2",
                     "height2")))
-            self$add(jmvcore::Image$new(
-                options=options,
-                name="plot3",
-                title="Elbow Plot",
-                visible="(plot3)",
-                refs="snowRMM",
-                renderFun=".plot3",
-                clearWith=list(
-                    "vars",
-                    "nc",
-                    "covs",
-                    "width3",
-                    "height3")))
             self$add(jmvcore::Preformatted$new(
                 options=options,
                 name="r",
@@ -568,10 +568,10 @@ lcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$pro$cf} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$cm} \tab \tab \tab \tab \tab an output \cr
+#'   \code{results$plot3} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$plot2} \tab \tab \tab \tab \tab an image \cr
-#'   \code{results$plot3} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$r} \tab \tab \tab \tab \tab a preformatted \cr
 #' }
 #'

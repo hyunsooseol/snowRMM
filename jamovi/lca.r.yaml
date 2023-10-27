@@ -171,6 +171,19 @@ items:
         - nc
         - covs
 
+    - name: plot3
+      title: 'Elbow Plot'
+      type: Image
+      visible: (plot3)
+      refs: snowRMM
+      renderFun: .plot3
+      clearWith:
+            - vars
+            - nc 
+            - covs
+            - width3
+            - height3  
+
     - name: plot
       title: 'LCA Plot'
       type: Image
@@ -211,19 +224,6 @@ items:
             - angle
             - width2
             - height2            
-
-    - name: plot3
-      title: 'Elbow Plot'
-      type: Image
-      visible: (plot3)
-      refs: snowRMM
-      renderFun: .plot3
-      clearWith:
-            - vars
-            - nc 
-            - covs
-            - width3
-            - height3  
 
     - name:  r
       title: 'Output from R'

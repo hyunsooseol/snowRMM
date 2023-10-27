@@ -100,7 +100,7 @@ options:
       default: FALSE
 
     - name: wrightmap
-      title: Wright map
+      title: 'Wright map'
       type: Bool
       default: TRUE
 
@@ -226,7 +226,7 @@ options:
       default: FALSE   
 
     - name: piplot
-      title: Person-item map for PCM 
+      title: 'Person-item map for PCM' 
       type: Bool
       default: FALSE
 
@@ -294,4 +294,54 @@ options:
       type: Integer
       title: "Height"
       default: 500      
+
+    - name: width3
+      type: Integer
+      title: "Size: "
+      default: 500
+      
+    - name: height3
+      type: Integer
+      title: "X"
+      default: 500
+
+    - name: width4
+      type: Integer
+      title: "Size: "
+      default: 500
+      
+    - name: height4
+      type: Integer
+      title: "X"
+      default: 500
+
+    - name: width5
+      type: Integer
+      title: "Width "
+      default: 500
+      
+    - name: height5
+      type: Integer
+      title: "Height"
+      default: 500    
+
+    - name: width6
+      type: Integer
+      title: "Size: "
+      default: 500
+      
+    - name: height6
+      type: Integer
+      title: "X"
+      default: 500
+
+    - name: width7
+      type: Integer
+      title: "Width "
+      default: 500
+      
+    - name: height7
+      type: Integer
+      title: "Height"
+      default: 500    
 ...

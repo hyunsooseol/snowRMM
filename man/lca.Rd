@@ -92,10 +92,10 @@ A results object containing:
   \code{results$pro$cf} \tab \tab \tab \tab \tab a table \cr
   \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
   \code{results$cm} \tab \tab \tab \tab \tab an output \cr
+  \code{results$plot3} \tab \tab \tab \tab \tab an image \cr
   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
   \code{results$plot2} \tab \tab \tab \tab \tab an image \cr
-  \code{results$plot3} \tab \tab \tab \tab \tab an image \cr
   \code{results$r} \tab \tab \tab \tab \tab a preformatted \cr
 }
 }

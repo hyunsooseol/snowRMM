@@ -127,6 +127,57 @@ raschClass <- if (requireNamespace('jmvcore'))
         }
         
         
+        if(isTRUE(self$options$wrightmap)){
+          
+          width <- self$options$width3
+          height <- self$options$height3
+          
+          self$results$plot$setSize(width, height)
+        }
+        
+        if(isTRUE(self$options$piplot)){
+          
+          width <- self$options$width4
+          height <- self$options$height4
+          
+          self$results$piplot$setSize(width, height)
+        }
+        
+       
+        
+        if(isTRUE(self$options$plot2)){
+          
+          width <- self$options$width5
+          height <- self$options$height5
+          
+          self$results$plot2$setSize(width, height)
+        }
+        
+        if(isTRUE(self$options$plot3)){
+          
+          width <- self$options$width5
+          height <- self$options$height5
+          
+          self$results$plot3$setSize(width, height)
+        }
+        
+        if(isTRUE(self$options$plot1)){
+          
+          width <- self$options$width6
+          height <- self$options$height6
+          
+          self$results$plot1$setSize(width, height)
+        }
+         
+        
+        if(isTRUE(self$options$gofplot)){
+          
+          width <- self$options$width7
+          height <- self$options$height7
+          
+          self$results$gofplot$setSize(width, height)
+        }
+        
         
         if (length(self$options$vars) <= 1)
           self$setStatus('complete')
