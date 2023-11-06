@@ -4,7 +4,7 @@
 \alias{dif}
 \title{Differential Item Functioning}
 \usage{
-dif(data, vars, facs, z = TRUE)
+dif(data, vars, facs, z = TRUE, plot1 = FALSE, width1 = 500, height1 = 500)
 }
 \arguments{
 \item{data}{The data as a data frame.}
@@ -14,6 +14,12 @@ dif(data, vars, facs, z = TRUE)
 \item{facs}{.}
 
 \item{z}{.}
+
+\item{plot1}{.}
+
+\item{width1}{.}
+
+\item{height1}{.}
 }
 \value{
 A results object containing:
@@ -21,6 +27,7 @@ A results object containing:
   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
   \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
   \code{results$z} \tab \tab \tab \tab \tab a table \cr
+  \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
 }
 
 Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:

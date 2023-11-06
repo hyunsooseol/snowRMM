@@ -41,6 +41,13 @@ difClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
       
         #https://bookdown.org/chua/new_rasch_demo2/DIF.html
         
+        if(isTRUE(self$options$plot1)){
+          width <- self$options$width1
+          height <- self$options$height1
+          self$results$plot1$setSize(width, height)
+        }  
+        
+        
         
         if (length(self$options$vars) <= 1)
           self$setStatus('complete')
@@ -99,12 +106,74 @@ difClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
               
               sub <- eRm::Waldtest(dicho, splitcr = data[[groupVarName]])
                
-              self$results$text$setContent(sub) 
+              #self$results$text$setContent(sub) 
               
                
-               
+              table <- self$results$z
+              items <- self$options$vars
+              
+              # get result---
+              
+              z <- as.vector(sub$coef.table)
+              p <- as.vector(sub$coef.table[,2])
+              
+              
+              for (i in seq_along(items)) {
+                row <- list()
+                
+                row[["zstat"]] <- z[i]
+                
+                row[["p"]] <- p[i]
                
                 
-       
-        })
+                table$setRow(rowKey = items[i], values = row)
+              }
+              
+               
+              #---------------
+              
+              # Create objects for subgroup-specific item difficulties:
+               sub1 <- sub$betapar1
+               sub2 <- sub$betapar2
+              
+               # #store results from item comparisons in an object called "comparisons"
+               comparison <- as.data.frame(sub$coef.table)
+              
+               #self$results$text$setContent(comparison)
+              
+               # plot1---------
+               
+               image1 <- self$results$plot1
+               image1$setState(comparison)
+               
+               
+             },
+      
+      .plot1 = function(image1,ggtheme, theme, ...) {     
+        
+        
+        if (is.null(image1$state))
+          return(FALSE)
+        
+        comparisons <- image1$state
+        
+        
+        min.y <- ifelse(ceiling(min(comparisons$`z-statistic`)) > -3, -3, 
+                        ceiling(min(comparisons$`z-statistic`)))
+        
+        max.y <- ifelse(ceiling(max(comparisons$`z-statistic`)) < 3, 3, 
+                        ceiling(max(comparisons$`z-statistic`)))
+        
+        plot(comparisons$`z-statistic`, ylim = c(min.y, max.y),
+             ylab = "Z", xlab = "Item", main = "Test Statistics for Item Comparisons \nbetween Subgroup 1 and Subgroup 2")
+        abline(h=2, col = "red", lty = 2)
+        abline(h=-2, col = "red", lty = 2)
+        
+        legend("topright", c("Z Statistic", "Boundaries for Significant Difference"),
+               pch = c(1, NA), lty = c(NA, 2), col = c("black", "red"), cex = .7)   
+               
+               
+      
+        }
+      )
 )

@@ -35,4 +35,18 @@ items:
         - name: p
           title: p
           format: zto,pvalue
+
+    - name: plot1
+      title: 'Item comparisons'
+      type:  Image
+      visible: (plot1)
+      renderFun: .plot1
+      refs: iarm
+      clearWith:
+        - vars
+        - group
+        - width1
+        - height1
+
+
 ...

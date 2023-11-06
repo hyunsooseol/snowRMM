@@ -8,7 +8,10 @@ difOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         initialize = function(
             vars = NULL,
             facs = NULL,
-            z = TRUE, ...) {
+            z = TRUE,
+            plot1 = FALSE,
+            width1 = 500,
+            height1 = 500, ...) {
 
             super$initialize(
                 package="snowRMM",
@@ -34,19 +37,40 @@ difOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "z",
                 z,
                 default=TRUE)
+            private$..plot1 <- jmvcore::OptionBool$new(
+                "plot1",
+                plot1,
+                default=FALSE)
+            private$..width1 <- jmvcore::OptionInteger$new(
+                "width1",
+                width1,
+                default=500)
+            private$..height1 <- jmvcore::OptionInteger$new(
+                "height1",
+                height1,
+                default=500)
 
             self$.addOption(private$..vars)
             self$.addOption(private$..facs)
             self$.addOption(private$..z)
+            self$.addOption(private$..plot1)
+            self$.addOption(private$..width1)
+            self$.addOption(private$..height1)
         }),
     active = list(
         vars = function() private$..vars$value,
         facs = function() private$..facs$value,
-        z = function() private$..z$value),
+        z = function() private$..z$value,
+        plot1 = function() private$..plot1$value,
+        width1 = function() private$..width1$value,
+        height1 = function() private$..height1$value),
     private = list(
         ..vars = NA,
         ..facs = NA,
-        ..z = NA)
+        ..z = NA,
+        ..plot1 = NA,
+        ..width1 = NA,
+        ..height1 = NA)
 )
 
 difResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -55,7 +79,8 @@ difResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     active = list(
         instructions = function() private$.items[["instructions"]],
         text = function() private$.items[["text"]],
-        z = function() private$.items[["z"]]),
+        z = function() private$.items[["z"]],
+        plot1 = function() private$.items[["plot1"]]),
     private = list(),
     public=list(
         initialize=function(options) {
@@ -94,7 +119,19 @@ difResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     list(
                         `name`="p", 
                         `title`="p", 
-                        `format`="zto,pvalue"))))}))
+                        `format`="zto,pvalue"))))
+            self$add(jmvcore::Image$new(
+                options=options,
+                name="plot1",
+                title="Item comparisons",
+                visible="(plot1)",
+                renderFun=".plot1",
+                refs="iarm",
+                clearWith=list(
+                    "vars",
+                    "group",
+                    "width1",
+                    "height1")))}))
 
 difBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "difBase",
@@ -124,11 +161,15 @@ difBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param vars .
 #' @param facs .
 #' @param z .
+#' @param plot1 .
+#' @param width1 .
+#' @param height1 .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
 #'   \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$z} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
 #' }
 #'
 #' Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
@@ -142,7 +183,10 @@ dif <- function(
     data,
     vars,
     facs,
-    z = TRUE) {
+    z = TRUE,
+    plot1 = FALSE,
+    width1 = 500,
+    height1 = 500) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("dif requires jmvcore to be installed (restart may be required)")
@@ -160,7 +204,10 @@ dif <- function(
     options <- difOptions$new(
         vars = vars,
         facs = facs,
-        z = z)
+        z = z,
+        plot1 = plot1,
+        width1 = width1,
+        height1 = height1)
 
     analysis <- difClass$new(
         options = options,

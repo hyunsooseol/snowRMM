@@ -2,7 +2,7 @@ title: Differential Item Functioning
 name: dif
 jus: '3.0'
 stage: 0
-compilerMode: aggressive
+compilerMode: tame
 children:
   - type: VariableSupplier
     persistentItems: false
@@ -26,3 +26,15 @@ children:
     children:
       - type: CheckBox
         name: z
+      - type: CheckBox
+        name: plot1
+        style: list-inline
+        children:
+          - type: TextBox
+            name: width1
+            format: number
+            enable: (plot1)
+          - type: TextBox
+            name: height1
+            format: number
+            enable: (plot1)  
