@@ -39,7 +39,6 @@ difClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             </html>"
         )      
       
-        #https://bookdown.org/chua/new_rasch_demo2/DIF.html
         
         if(isTRUE(self$options$plot1)){
           width <- self$options$width1
@@ -48,6 +47,11 @@ difClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         }  
         
         
+        if(isTRUE(self$options$plot2)){
+          width <- self$options$width2
+          height <- self$options$height2
+          self$results$plot2$setSize(width, height)
+        }  
         
         if (length(self$options$vars) <= 1)
           self$setStatus('complete')
@@ -87,7 +91,8 @@ difClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
               # exclude rows with missings in the grouping variable
                data <- data[!is.na(data[[groupVarName]]), ]
 
-            # Example
+            # Example----------------------------------------------
+            #https://bookdown.org/chua/new_rasch_demo2/DIF.html   
                # dichot_model <- RM(raschdat1)
                # # Create subgroup classifications:
                # subgroups <- sample(1:2, 100, replace = TRUE)
@@ -104,7 +109,7 @@ difClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
               
                dicho <- eRm::RM(data[,-1])
               
-              sub <- eRm::Waldtest(dicho, splitcr = data[[groupVarName]])
+               subgroup_diffs <- eRm::Waldtest(dicho, splitcr = data[[groupVarName]])
                
               #self$results$text$setContent(sub) 
               
@@ -114,8 +119,8 @@ difClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
               
               # get result---
               
-              z <- as.vector(sub$coef.table)
-              p <- as.vector(sub$coef.table[,2])
+              z <- as.vector(subgroup_diffs$coef.table)
+              p <- as.vector(subgroup_diffs$coef.table[,2])
               
               
               for (i in seq_along(items)) {
@@ -129,23 +134,32 @@ difClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 table$setRow(rowKey = items[i], values = row)
               }
               
-               
-              #---------------
-              
-              # Create objects for subgroup-specific item difficulties:
-               sub1 <- sub$betapar1
-               sub2 <- sub$betapar2
-              
-               # #store results from item comparisons in an object called "comparisons"
-               comparison <- as.data.frame(sub$coef.table)
-              
-               #self$results$text$setContent(comparison)
               
                # plot1---------
-               
+                comparison <- as.data.frame(subgroup_diffs$coef.table)
+              
                image1 <- self$results$plot1
                image1$setState(comparison)
+             
+               # Plot2(item parameters by Group)----------
+               # Create objects for subgroup-specific item difficulties:
+               subgroup_1_diffs <- subgroup_diffs$betapar1
+               subgroup_2_diffs <- subgroup_diffs$betapar2
                
+               comp <- data.frame(self$options$vars,subgroup_1_diffs, subgroup_2_diffs )
+               
+               # Name the columns of the results
+               names(comp) <- c("item","group1", "group2")
+                                        
+               p <- reshape2::melt(comp, id.vars=c('item'))
+               colnames(p) <- c("Item","Group","Value")
+               
+               self$results$text$setContent(comp)
+                
+               # Line plot---------
+               image2   <-  self$results$plot2
+               image2$setState(p)
+                 
                
              },
       
@@ -172,8 +186,41 @@ difClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         legend("topright", c("Z Statistic", "Boundaries for Significant Difference"),
                pch = c(1, NA), lty = c(NA, 2), col = c("black", "red"), cex = .7)   
                
-               
+           
+        },
       
+      .plot2 = function(image2, ggtheme, theme, ...) {
+        
+        
+        if (is.null(image2$state))
+          return(FALSE)
+        
+        p <- image2$state
+        
+        plot2<-ggplot2::ggplot(p, 
+                               ggplot2::aes(x=Item, 
+                                            y=Value, 
+                                            group=Group))+
+          ggplot2::geom_line(size=1.2,ggplot2::aes(color=factor(Group)))+
+          ggplot2::geom_point(size=4,ggplot2::aes(color=factor(Group)))+
+          ggplot2::xlab("Item") +
+          ggplot2::ylab("Value") +  
+          ggplot2::labs(color = "Group")+
+          ggtheme
+        
+        
+        if (self$options$angle > 0) {
+          plot2 <- plot2 + ggplot2::theme(
+            axis.text.x = ggplot2::element_text(
+              angle = self$options$angle, hjust = 1
+            )
+          )
         }
+        
+        print(plot2)
+        TRUE
+        
+      }
+      
       )
 )

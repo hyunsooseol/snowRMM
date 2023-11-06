@@ -41,12 +41,23 @@ items:
       type:  Image
       visible: (plot1)
       renderFun: .plot1
-      refs: iarm
+      refs: eRm
       clearWith:
         - vars
         - group
         - width1
         - height1
 
-
+    - name: plot2
+      title: 'Line plot'
+      type:  Image
+      visible: (plot2)
+      renderFun: .plot2
+      refs: snowRMM
+      clearWith:
+        - vars
+        - group
+        - width2
+        - height2
+        - angle
 ...

@@ -48,4 +48,25 @@ options:
       title: "X"
       default: 500
 
+    - name: plot2
+      title: Line plot
+      type: Bool
+      default: FALSE
+
+    - name: angle
+      title: Angle of x-axis labels
+      type: Number
+      min: 0
+      max: 90
+      default: 0
+      
+    - name: width2
+      type: Integer
+      title: "Width "
+      default: 500
+      
+    - name: height2
+      type: Integer
+      title: "Height"
+      default: 500      
 ...
