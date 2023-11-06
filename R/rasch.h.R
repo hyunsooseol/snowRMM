@@ -1013,6 +1013,8 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 refs="snowRMM",
                 clearWith=list(
                     "vars",
+                    "step",
+                    "type",
                     "width1",
                     "height1")))
             self$add(jmvcore::Image$new(
@@ -1025,6 +1027,8 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 refs="pairwise",
                 clearWith=list(
                     "vars",
+                    "step",
+                    "type",
                     "res",
                     "width2",
                     "height2")))
@@ -1035,6 +1039,8 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 rows=1,
                 clearWith=list(
                     "vars",
+                    "step",
+                    "type",
                     "res1"),
                 refs="pairwise",
                 columns=list(

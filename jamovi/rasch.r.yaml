@@ -427,6 +427,8 @@ items:
       refs: snowRMM 
       clearWith:
             - vars
+            - step
+            - type
             - width1
             - height1
 
@@ -439,6 +441,8 @@ items:
       refs: pairwise
       clearWith:
             - vars
+            - step
+            - type
             - res
             - width2
             - height2
@@ -449,6 +453,8 @@ items:
       rows: 1
       clearWith:
         - vars
+        - step
+        - type
         - res1
       refs: pairwise    
 

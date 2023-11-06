@@ -1,0 +1,38 @@
+---
+name:  dif
+title: Differential Item Functioning
+jrs:   '1.1'
+
+items:
+    - name: instructions
+      title: Instructions
+      type: Html
+      visible: True
+
+    - name:  text
+      title: ''
+      type:  Preformatted
+
+    - name: z
+      title:  'Z statistics'
+      type: Table
+      visible: (z)
+      rows: (vars)
+      clearWith:
+        - vars
+        - group
+      refs: eRm
+
+      columns:
+        - name: name
+          title: ''
+          type: 'text'
+          content: ($key)
+
+        - name: zstat
+          title: Statistic
+          
+        - name: p
+          title: p
+          format: zto,pvalue
+...

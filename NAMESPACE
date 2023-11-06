@@ -2,6 +2,8 @@
 
 export(bfit)
 export(bfitClass)
+export(dif)
+export(difClass)
 export(equating)
 export(equatingClass)
 export(lca)

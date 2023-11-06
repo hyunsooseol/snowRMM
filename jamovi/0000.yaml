@@ -1,7 +1,7 @@
 ---
 title: 'Rasch Mixture, LCA, and Test Equating Analysis'
 name: snowRMM
-version: 5.6.9
+version: 5.7.0
 jms: '1.0'
 authors:
   - Hyunsoo Seol
@@ -62,6 +62,11 @@ analyses:
     menuGroup: snowRMM
     menuTitle: Linear Logisitic Test Model
     menuSubgroup: Mixture
+  - title: Differential Item Functioning
+    name: dif
+    ns: snowRMM
+    menuGroup: snowRMM
+    menuTitle: Differential Item Functioning
 datasets:
   - name: Rasch
     path: rasch.omv

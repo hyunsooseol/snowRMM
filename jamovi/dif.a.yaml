@@ -1,0 +1,35 @@
+---
+name:  dif
+title: Differential Item Functioning
+menuGroup: snowRMM
+version: '1.0.0'
+jas: '1.2'
+
+options:
+    - name: data
+      type: Data
+      description:
+          R: >
+            The data as a data frame.
+            
+    - name: vars
+      title: Variables
+      type: Variables
+      suggested:
+         - continuous
+      permitted:
+        - numeric        
+
+    - name: facs
+      title: Grouping Variable
+      type: Variable
+      suggested:
+         - nominal
+      permitted:
+        - factor
+
+    - name: z
+      title: 'Z statistics'  
+      type: Bool
+      default: TRUE  
+...
