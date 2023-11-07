@@ -53,6 +53,19 @@ difClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           self$results$plot2$setSize(width, height)
         }  
         
+        if(isTRUE(self$options$plot3)){
+          width <- self$options$width3
+          height <- self$options$height3
+          self$results$plot3$setSize(width, height)
+        }  
+        
+        # if(isTRUE(self$options$plot4)){
+        #   width <- self$options$width4
+        #   height <- self$options$height4
+        #   self$results$plot4$setSize(width, height)
+        # }  
+        
+        
         if (length(self$options$vars) <= 1)
           self$setStatus('complete')
         
@@ -107,9 +120,10 @@ difClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                # comparisons <- as.data.frame(subgroup_diffs$coef.table)
                # 
               
+               ##########################################################################
                dicho <- eRm::RM(data[,-1])
                subgroup_diffs <- eRm::Waldtest(dicho, splitcr = data[[groupVarName]])
-               
+               ##########################################################################
              
               # Z statistic table--------------
               table <- self$results$z
@@ -180,12 +194,28 @@ difClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                p <- reshape2::melt(comp1, id.vars=c('item'))
                colnames(p) <- c("Item","Group","Value")
                
-               self$results$text$setContent(comp)
+              # self$results$text$setContent(comp)
                 
                # Line plot---------
                image2   <-  self$results$plot2
                image2$setState(p)
+             
+               # Scatterplot of item difference-----------
+               # Create objects for subgroup-specific item difficulties:
+             
+                   subgroup_1_diffs <- subgroup_diffs$betapar1
+                 subgroup_2_diffs <- subgroup_diffs$betapar2
                  
+                 se1<- subgroup_diffs$se.beta1
+                 se2 <- subgroup_diffs$se.beta2
+                
+                 state <- list(subgroup_1_diffs, subgroup_2_diffs,se1,se2)
+                
+                image3 <- self$results$plot3
+                image3$setState(state)
+                 
+               
+               
                
              },
       
@@ -245,6 +275,63 @@ difClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         print(plot2)
         TRUE
+        
+      },
+      
+      .plot3 = function(image3, ggtheme, theme, ...) {
+        
+        if (is.null(image3$state))
+          return(FALSE)
+        
+        subgroup_1_diffs <- image3$state[[1]]
+        subgroup_2_diffs <- image3$state[[2]]
+        se1 <- image3$state[[3]]
+        se2<- image3$state[[4]]
+        
+        ## First, calculate values for constructing the confidence bands:
+        
+     #   cf <- self$options$ci
+        
+        mean.1.2 <- ((subgroup_1_diffs - mean(subgroup_1_diffs))/2*sd(subgroup_1_diffs) +
+                       (subgroup_2_diffs - mean(subgroup_2_diffs))/2*sd(subgroup_2_diffs))
+        
+        joint.se <- sqrt((se1^2/sd(subgroup_1_diffs)) +
+                           (se2^2/sd(subgroup_2_diffs)))
+        
+        
+        upper.group.1 <- mean(subgroup_1_diffs) + ((mean.1.2 - joint.se )*sd(subgroup_1_diffs))
+        upper.group.2 <- mean(subgroup_2_diffs) + ((mean.1.2 + joint.se )*sd(subgroup_2_diffs))
+        
+        lower.group.1 <- mean(subgroup_1_diffs) + ((mean.1.2 + joint.se )*sd(subgroup_1_diffs))
+        lower.group.2 <- mean(subgroup_2_diffs) + ((mean.1.2 - joint.se )*sd(subgroup_2_diffs))
+        
+        
+        upper <- cbind.data.frame(upper.group.1, upper.group.2)
+        upper <- upper[order(upper$upper.group.1, decreasing = FALSE),]
+        
+        
+        lower <- cbind.data.frame(lower.group.1, lower.group.2)
+        lower <- lower[order(lower$lower.group.1, decreasing = FALSE),]
+        
+        ## make the scatterplot:
+        
+      plot3 <-  plot(subgroup_1_diffs, subgroup_2_diffs, xlim = c(-2, 2), ylim = c(-2, 2),
+             xlab = "Group 1", ylab = "Group 2", main = "Group 1 Measures \n plotted against \n Group 2 Measures")
+        abline(a = 0, b = 1, col = "purple")
+        
+        par(new = T)
+        
+        lines(upper$upper.group.1, upper$upper.group.2, lty = 2, col = "red")
+        
+        lines(lower$lower.group.1, lower$lower.group.2, lty = 2, col = "red")
+        
+        legend("bottomright", c("Item Location", "Identity Line", "95% Confidence Band"),
+               pch = c(1, NA, NA), lty = c(NA, 1, 2), col = c("black", "purple", "red"))
+        
+        
+        print(plot3)
+        TRUE
+        
         
       }
       

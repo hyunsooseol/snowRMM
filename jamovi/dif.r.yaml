@@ -84,5 +84,18 @@ items:
         - height2
         - angle
 
+    - name: plot3
+      title: 'Scatterplot of item difference'
+      type:  Image
+      visible: (plot3)
+      renderFun: .plot3
+      refs: snowRMM
+      clearWith:
+        - vars
+        - facs
+        - width3
+        - height3
+        - ci
+
 
 ...

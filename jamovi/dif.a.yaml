@@ -49,7 +49,7 @@ options:
       default: 500
 
     - name: comp
-      title: 'Group comparison'  
+      title: 'Item difficulty'  
       type: Bool
       default: false
 
@@ -71,6 +71,26 @@ options:
       default: 500
       
     - name: height2
+      type: Integer
+      title: "Height"
+      default: 500      
+
+    - name: plot3
+      title: 'Scatterplot of item difference'
+      type: Bool
+      default: FALSE
+
+    - name: ci
+      title: 'Confidence interval'
+      type: Number
+      default: 95
+
+    - name: width3
+      type: Integer
+      title: "Width "
+      default: 500
+      
+    - name: height3
       type: Integer
       title: "Height"
       default: 500      
