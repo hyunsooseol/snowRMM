@@ -12,6 +12,7 @@ dif(
   plot1 = FALSE,
   width1 = 500,
   height1 = 500,
+  comp = FALSE,
   plot2 = FALSE,
   angle = 0,
   width2 = 500,
@@ -33,6 +34,8 @@ dif(
 
 \item{height1}{.}
 
+\item{comp}{.}
+
 \item{plot2}{.}
 
 \item{angle}{.}
@@ -48,6 +51,7 @@ A results object containing:
   \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
   \code{results$z} \tab \tab \tab \tab \tab a table \cr
   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
+  \code{results$comp} \tab \tab \tab \tab \tab a table \cr
   \code{results$plot2} \tab \tab \tab \tab \tab an image \cr
 }
 

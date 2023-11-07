@@ -34,7 +34,7 @@ options:
       default: TRUE 
       
     - name: plot1
-      title: 'Item comparison'
+      title: 'Z plot'
       type: Bool
       default: false       
 
@@ -48,8 +48,13 @@ options:
       title: "X"
       default: 500
 
+    - name: comp
+      title: 'Group comparison'  
+      type: Bool
+      default: false
+
     - name: plot2
-      title: Line plot
+      title: 'Comparison plot'
       type: Bool
       default: FALSE
 

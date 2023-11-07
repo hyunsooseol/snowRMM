@@ -12,6 +12,7 @@ difOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             plot1 = FALSE,
             width1 = 500,
             height1 = 500,
+            comp = FALSE,
             plot2 = FALSE,
             angle = 0,
             width2 = 500,
@@ -53,6 +54,10 @@ difOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "height1",
                 height1,
                 default=500)
+            private$..comp <- jmvcore::OptionBool$new(
+                "comp",
+                comp,
+                default=FALSE)
             private$..plot2 <- jmvcore::OptionBool$new(
                 "plot2",
                 plot2,
@@ -78,6 +83,7 @@ difOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..plot1)
             self$.addOption(private$..width1)
             self$.addOption(private$..height1)
+            self$.addOption(private$..comp)
             self$.addOption(private$..plot2)
             self$.addOption(private$..angle)
             self$.addOption(private$..width2)
@@ -90,6 +96,7 @@ difOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         plot1 = function() private$..plot1$value,
         width1 = function() private$..width1$value,
         height1 = function() private$..height1$value,
+        comp = function() private$..comp$value,
         plot2 = function() private$..plot2$value,
         angle = function() private$..angle$value,
         width2 = function() private$..width2$value,
@@ -101,6 +108,7 @@ difOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..plot1 = NA,
         ..width1 = NA,
         ..height1 = NA,
+        ..comp = NA,
         ..plot2 = NA,
         ..angle = NA,
         ..width2 = NA,
@@ -115,6 +123,7 @@ difResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         text = function() private$.items[["text"]],
         z = function() private$.items[["z"]],
         plot1 = function() private$.items[["plot1"]],
+        comp = function() private$.items[["comp"]],
         plot2 = function() private$.items[["plot2"]]),
     private = list(),
     public=list(
@@ -140,7 +149,7 @@ difResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 rows="(vars)",
                 clearWith=list(
                     "vars",
-                    "group"),
+                    "facs"),
                 refs="eRm",
                 columns=list(
                     list(
@@ -158,25 +167,49 @@ difResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot1",
-                title="Item comparisons",
+                title="Z plot",
                 visible="(plot1)",
                 renderFun=".plot1",
                 refs="eRm",
                 clearWith=list(
                     "vars",
-                    "group",
+                    "facs",
                     "width1",
                     "height1")))
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="comp",
+                title="Comparison of item difficulties",
+                visible="(z)",
+                rows="(vars)",
+                clearWith=list(
+                    "vars",
+                    "facs"),
+                refs="eRm",
+                columns=list(
+                    list(
+                        `name`="name", 
+                        `title`="", 
+                        `type`="text", 
+                        `content`="($key)"),
+                    list(
+                        `name`="g1", 
+                        `title`="Group1", 
+                        `type`="number"),
+                    list(
+                        `name`="g2", 
+                        `title`="Group2", 
+                        `type`="number"))))
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot2",
-                title="Line plot",
+                title="Comparison plot",
                 visible="(plot2)",
                 renderFun=".plot2",
                 refs="snowRMM",
                 clearWith=list(
                     "vars",
-                    "group",
+                    "facs",
                     "width2",
                     "height2",
                     "angle")))}))
@@ -212,6 +245,7 @@ difBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param plot1 .
 #' @param width1 .
 #' @param height1 .
+#' @param comp .
 #' @param plot2 .
 #' @param angle .
 #' @param width2 .
@@ -222,6 +256,7 @@ difBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$z} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
+#'   \code{results$comp} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$plot2} \tab \tab \tab \tab \tab an image \cr
 #' }
 #'
@@ -240,6 +275,7 @@ dif <- function(
     plot1 = FALSE,
     width1 = 500,
     height1 = 500,
+    comp = FALSE,
     plot2 = FALSE,
     angle = 0,
     width2 = 500,
@@ -265,6 +301,7 @@ dif <- function(
         plot1 = plot1,
         width1 = width1,
         height1 = height1,
+        comp = comp,
         plot2 = plot2,
         angle = angle,
         width2 = width2,

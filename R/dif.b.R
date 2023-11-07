@@ -108,17 +108,14 @@ difClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                # 
               
                dicho <- eRm::RM(data[,-1])
-              
                subgroup_diffs <- eRm::Waldtest(dicho, splitcr = data[[groupVarName]])
                
-              #self$results$text$setContent(sub) 
-              
-               
+             
+              # Z statistic table--------------
               table <- self$results$z
               items <- self$options$vars
               
               # get result---
-              
               z <- as.vector(subgroup_diffs$coef.table)
               p <- as.vector(subgroup_diffs$coef.table[,2])
               
@@ -146,12 +143,41 @@ difClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                subgroup_1_diffs <- subgroup_diffs$betapar1
                subgroup_2_diffs <- subgroup_diffs$betapar2
                
-               comp <- data.frame(self$options$vars,subgroup_1_diffs, subgroup_2_diffs )
+               comp <- data.frame(subgroup_1_diffs, subgroup_2_diffs )
                
                # Name the columns of the results
-               names(comp) <- c("item","group1", "group2")
-                                        
-               p <- reshape2::melt(comp, id.vars=c('item'))
+               names(comp) <- c("group1", "group2")
+               
+               # Comparison table---------
+               
+               table <- self$results$comp
+               items <- self$options$vars
+               
+               # get result---
+               g1 <- comp[,1]
+               g2 <- comp[,2]
+               
+               
+               for (i in seq_along(items)) {
+                 row <- list()
+                 
+                 row[["g1"]] <- g1[i]
+                 
+                 row[["g2"]] <- g2[i]
+                 
+                 
+                 table$setRow(rowKey = items[i], values = row)
+               }
+               
+              
+              # Melting for plot--------------------------
+              
+              comp1 <- data.frame(self$options$vars,subgroup_1_diffs, subgroup_2_diffs )
+              
+              # Name the columns of the results
+              names(comp1) <- c("item","group1", "group2")
+              
+               p <- reshape2::melt(comp1, id.vars=c('item'))
                colnames(p) <- c("Item","Group","Value")
                
                self$results$text$setContent(comp)

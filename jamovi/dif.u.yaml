@@ -39,6 +39,8 @@ children:
             format: number
             enable: (plot1)  
       - type: CheckBox
+        name: comp      
+      - type: CheckBox
         name: plot2
         children:
           - type: TextBox

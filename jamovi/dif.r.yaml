@@ -20,7 +20,7 @@ items:
       rows: (vars)
       clearWith:
         - vars
-        - group
+        - facs
       refs: eRm
 
       columns:
@@ -37,27 +37,52 @@ items:
           format: zto,pvalue
 
     - name: plot1
-      title: 'Item comparisons'
+      title: 'Z plot'
       type:  Image
       visible: (plot1)
       renderFun: .plot1
       refs: eRm
       clearWith:
         - vars
-        - group
+        - facs
         - width1
         - height1
 
+    - name: comp
+      title:  'Comparison of item difficulties'
+      type: Table
+      visible: (z)
+      rows: (vars)
+      clearWith:
+        - vars
+        - facs
+      refs: eRm
+
+      columns:
+        - name: name
+          title: ''
+          type: 'text'
+          content: ($key)
+        - name: g1
+          title: 'Group1'
+          type: number
+        - name: g2
+          title: 'Group2'
+          type: number
+
+
     - name: plot2
-      title: 'Line plot'
+      title: 'Comparison plot'
       type:  Image
       visible: (plot2)
       renderFun: .plot2
       refs: snowRMM
       clearWith:
         - vars
-        - group
+        - facs
         - width2
         - height2
         - angle
+
+
 ...
