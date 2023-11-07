@@ -21,6 +21,7 @@ items:
       clearWith:
         - vars
         - facs
+        - model
       refs: eRm
 
       columns:
@@ -47,6 +48,7 @@ items:
         - facs
         - width1
         - height1
+        - model
 
     - name: comp
       title:  'Comparison of item difficulties'
@@ -56,6 +58,7 @@ items:
       clearWith:
         - vars
         - facs
+        - model
       refs: eRm
 
       columns:
@@ -70,7 +73,6 @@ items:
           title: 'Group2'
           type: number
 
-
     - name: plot2
       title: 'Comparison plot'
       type:  Image
@@ -83,6 +85,7 @@ items:
         - width2
         - height2
         - angle
+        - model
 
     - name: plot3
       title: 'Scatterplot of item difference'
@@ -95,6 +98,7 @@ items:
         - facs
         - width3
         - height3
+        - model
 
     - name: plot4
       title: 'Bar plot of item difference'
@@ -107,5 +111,55 @@ items:
         - facs
         - width4
         - height4
-        
+        - model
+
+    - name: plot5
+      title: 'Z plot'
+      type:  Image
+      visible: (plot5)
+      renderFun: .plot5
+      refs: eRm
+      clearWith:
+        - vars
+        - facs
+        - width5
+        - height5
+        - model        
+
+    - name: comp1
+      title:  'Comparison of item difficulties'
+      type: Table
+      visible: (comp1)
+      rows: (vars)
+      clearWith:
+        - vars
+        - facs
+        - model
+      refs: eRm
+
+      columns:
+        - name: name
+          title: ''
+          type: 'text'
+          content: ($key)
+        - name: g1
+          title: 'Group1'
+          type: number
+        - name: g2
+          title: 'Group2'
+          type: number
+
+    - name: plot6
+      title: 'Comparison plot'
+      type:  Image
+      visible: (plot6)
+      renderFun: .plot6
+      refs: snowRMM
+      clearWith:
+        - vars
+        - facs
+        - width6
+        - height6
+        - angle1
+        - model
 ...

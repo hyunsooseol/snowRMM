@@ -8,6 +8,7 @@
 #' @import eRm
 #' @importFrom eRm RM
 #' @importFrom eRm Waldtest
+#' @importFrom eRm RSM
 #' @export
 
 
@@ -65,6 +66,20 @@ difClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           self$results$plot4$setSize(width, height)
         }
 
+        if(isTRUE(self$options$plot5)){
+          width <- self$options$width5
+          height <- self$options$height5
+          self$results$plot5$setSize(width, height)
+        }
+        
+        if(isTRUE(self$options$plot6)){
+          width <- self$options$width6
+          height <- self$options$height6
+          self$results$plot6$setSize(width, height)
+        }
+        
+        
+        
         
         if (length(self$options$vars) <= 1)
           self$setStatus('complete')
@@ -120,10 +135,12 @@ difClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                # comparisons <- as.data.frame(subgroup_diffs$coef.table)
                # 
               
-               ##########################################################################
+               
+               if(self$options$model=='dicho'){
+               
                dicho <- eRm::RM(data[,-1])
                subgroup_diffs <- eRm::Waldtest(dicho, splitcr = data[[groupVarName]])
-               ##########################################################################
+               
              
               # Z statistic table--------------
               table <- self$results$z
@@ -229,8 +246,140 @@ difClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 
                 state <- list(item_dif,subgroup_1_diffs)
                 image4$setState(state) 
+               }
+                ###########################################################
                 
-             },
+                if(self$options$model=='partial'){
+                  
+                  PC_model<- eRm::PCM(data[,-1])
+                  #subgroup_diffs <- eRm::Waldtest(PC_model, splitcr = data[[groupVarName]])
+                  
+                  #- First, get overall item difficulties specific to each subgroup:
+                  group1_item.diffs.overall <- NULL
+                  group2_item.diffs.overall <- NULL
+                  
+                  responses <- data[,-1] 
+                  responses.g <- cbind.data.frame(data[[groupVarName]], responses)
+                  
+                  #------------------------------
+                  responses.g1 <- subset(responses.g, data[[groupVarName]] == 1)
+                  responses.g2 <- subset(responses.g, data[[groupVarName]] == 2)
+                  
+                  ## Compare thresholds between groups:
+                  subgroup_diffs <- Waldtest(PC_model, splitcr = data[[groupVarName]])
+                  
+                  
+                  for(item.number in 1:ncol(responses)){
+                    
+                    n.thresholds.g1 <-  length(table(responses.g1[, item.number+1]))-1
+                    
+                    group1_item.diffs.overall[item.number] <- mean(subgroup_diffs$betapar1[((item.number*(n.thresholds.g1))-(n.thresholds.g1-1)): 
+                                                                                             (item.number*(n.thresholds.g1))])*-1
+                    
+                    n.thresholds.g2 <-  length(table(responses.g2[, item.number+1]))-1
+                    
+                    group2_item.diffs.overall[item.number] <- mean(subgroup_diffs$betapar2[((item.number*(n.thresholds.g2))-(n.thresholds.g2-1)): 
+                                                                                             (item.number*(n.thresholds.g2))])*-1
+                  }
+                  
+                  #self$results$text$setContent(group1_item.diffs.overall)
+                  ## Get overall item SE values:
+                  
+                  #- First, get overall SEs specific to each subgroup:
+                  
+                  group1_item.se.overall <- NULL
+                  group2_item.se.overall <- NULL
+                  
+                  responses <- data[,-1] 
+                  responses.g <- cbind.data.frame(data[[groupVarName]], responses)
+                  
+                  responses.g1 <- subset(responses.g, data[[groupVarName]] == 1)
+                  responses.g2 <- subset(responses.g, data[[groupVarName]] == 2)
+                  
+                  ## Compare thresholds between groups:
+                  subgroup_diffs <- Waldtest(PC_model, splitcr = data[[groupVarName]])
+                  
+                  
+                  for(item.number in 1:ncol(responses)){
+                    
+                    n.thresholds.g1 <-  length(table(responses.g1[, item.number+1]))-1
+                    
+                    group1_item.se.overall[item.number] <- mean(subgroup_diffs$se.beta1[((item.number*(n.thresholds.g1))-(n.thresholds.g1-1)): 
+                                                                                          (item.number*(n.thresholds.g1))])
+                    
+                    n.thresholds.g2 <-  length(table(responses.g2[, item.number+1]))-1
+                    
+                    group2_item.se.overall[item.number] <- mean(subgroup_diffs$se.beta2[((item.number*(n.thresholds.g2))-(n.thresholds.g2-1)): 
+                                                                                          (item.number*(n.thresholds.g2))])
+                  }
+                  
+                  
+                  # Calculate test statistics for item comparisons:
+                  z <- (group1_item.diffs.overall - group2_item.diffs.overall)/
+                    sqrt(group1_item.se.overall^2 + group2_item.se.overall^2)
+                  
+                  # plot5-------------
+                  
+                  image5 <- self$results$plot5
+                  image5$setState(z)
+                  
+                  ### Item difficulty table--------
+                  
+                  comp1 <- data.frame(group1_item.diffs.overall, group2_item.diffs.overall )
+                  
+                  # Name the columns of the results
+                  names(comp1) <- c("group1", "group2")
+                  
+                  
+                  # Comparison table---------
+                  table <- self$results$comp1
+                  items <- self$options$vars
+                  
+                  # get result---
+                  g1 <- comp1[,1]
+                  g2 <- comp1[,2]
+                  
+                  
+                  for (i in seq_along(items)) {
+                    row <- list()
+                    
+                    row[["g1"]] <- g1[i]
+                    
+                    row[["g2"]] <- g2[i]
+                    
+                    
+                    table$setRow(rowKey = items[i], values = row)
+                  }
+                  
+                  # Melting for plot--------------------------
+                  
+                  comp2 <- data.frame(self$options$vars,group1_item.diffs.overall, group2_item.diffs.overall )
+                  
+                  # Name the columns of the results
+                  names(comp2) <- c("item","group1", "group2")
+                  
+                  par <- reshape2::melt(comp2, id.vars=c('item'))
+                  colnames(par) <- c("Item","Group","Value")
+                 
+                  # Line plot---------
+                  image6  <-  self$results$plot6
+                  image6$setState(par)
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                }
+                
+               },
       
       .plot1 = function(image1,ggtheme, theme, ...) {     
         
@@ -398,6 +547,77 @@ difClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         print(plot4)
         TRUE
         
+      },
+      
+      .plot5 = function(image5,ggtheme, theme, ...) {     
+        
+        
+        if (is.null(image5$state))
+          return(FALSE)
+        
+        z <- image5$state
+        
+        # Plot the test statistics:
+        min.y <- ifelse(ceiling(min(z)) > -3, -3, 
+                        ceiling(min(z)))
+        
+        max.y <- ifelse(ceiling(max(z)) < 3, 3, 
+                        ceiling(max(z)))
+        
+        plot5<- plot(z, ylim = c(min.y, max.y),
+             ylab = "Z", xlab = "Item", main = "Test Statistics for Item Comparisons \nbetween Subgroup 1 and Subgroup 2",
+             axes=FALSE)
+        axis(1, at = c(1, 2, 3, 4), labels = c(1, 2, 3, 4))
+        axis(2)
+        abline(h=2, col = "red", lty = 2)
+        abline(h=-2, col = "red", lty = 2)
+        
+        legend("topright", c("Z Statistic", "Boundaries for Significant Difference"),
+               pch = c(1, NA), lty = c(NA, 2), col = c("black", "red"), cex = .7)
+        
+        print(plot5)
+        TRUE
+        
+      },
+      
+      .plot6 = function(image6, ggtheme, theme, ...) {
+        
+        
+        if (is.null(image6$state))
+          return(FALSE)
+        
+        p <- image6$state
+        
+        plot6<-ggplot2::ggplot(p, 
+                               ggplot2::aes(x=Item, 
+                                            y=Value, 
+                                            group=Group))+
+          ggplot2::geom_line(size=1.2,ggplot2::aes(color=factor(Group)))+
+          ggplot2::geom_point(size=4,ggplot2::aes(color=factor(Group)))+
+          ggplot2::xlab("Item") +
+          ggplot2::ylab("Value") +  
+          ggplot2::labs(color = "Group")+
+          ggtheme
+        
+        
+        if (self$options$angle1 > 0) {
+          plot6 <- plot6 + ggplot2::theme(
+            axis.text.x = ggplot2::element_text(
+              angle = self$options$angle1, hjust = 1
+            )
+          )
+        }
+        
+        print(plot6)
+        TRUE
+        
       }
+      
+      
+      
+      
+      
+      
+      
       )
 )

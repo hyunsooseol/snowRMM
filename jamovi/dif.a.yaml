@@ -28,6 +28,16 @@ options:
       permitted:
         - factor
 
+    - name: model
+      title: 'Data format'
+      type: List
+      options:
+        - title: 'Dichotomous'
+          name:  'dicho'
+        - title: 'Partial credit'
+          name: 'partial'
+      default: 'dicho'
+
     - name: z
       title: 'Z statistics'  
       type: Bool
@@ -104,4 +114,47 @@ options:
       type: Integer
       title: "X"
       default: 500
+
+    - name: plot5
+      title: 'Z plot'
+      type: Bool
+      default: false   
+
+    - name: width5
+      type: Integer
+      title: "Size: "
+      default: 500
+      
+    - name: height5
+      type: Integer
+      title: "X"
+      default: 500
+
+    - name: comp1
+      title: 'Item difficulty'  
+      type: Bool
+      default: false
+
+    - name: plot6
+      title: 'Comparison plot'
+      type: Bool
+      default: FALSE
+
+    - name: angle1
+      title: Angle of x-axis labels
+      type: Number
+      min: 0
+      max: 90
+      default: 0
+      
+    - name: width6
+      type: Integer
+      title: "Width "
+      default: 500
+      
+    - name: height6
+      type: Integer
+      title: "Height"
+      default: 500      
+
 ...

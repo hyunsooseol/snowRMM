@@ -8,6 +8,7 @@ dif(
   data,
   vars,
   facs,
+  model = "dicho",
   z = TRUE,
   plot1 = FALSE,
   width1 = 500,
@@ -22,7 +23,15 @@ dif(
   height3 = 500,
   plot4 = FALSE,
   width4 = 500,
-  height4 = 500
+  height4 = 500,
+  plot5 = FALSE,
+  width5 = 500,
+  height5 = 500,
+  comp1 = FALSE,
+  plot6 = FALSE,
+  angle1 = 0,
+  width6 = 500,
+  height6 = 500
 )
 }
 \arguments{
@@ -31,6 +40,8 @@ dif(
 \item{vars}{.}
 
 \item{facs}{.}
+
+\item{model}{.}
 
 \item{z}{.}
 
@@ -61,6 +72,22 @@ dif(
 \item{width4}{.}
 
 \item{height4}{.}
+
+\item{plot5}{.}
+
+\item{width5}{.}
+
+\item{height5}{.}
+
+\item{comp1}{.}
+
+\item{plot6}{.}
+
+\item{angle1}{.}
+
+\item{width6}{.}
+
+\item{height6}{.}
 }
 \value{
 A results object containing:
@@ -73,6 +100,9 @@ A results object containing:
   \code{results$plot2} \tab \tab \tab \tab \tab an image \cr
   \code{results$plot3} \tab \tab \tab \tab \tab an image \cr
   \code{results$plot4} \tab \tab \tab \tab \tab an image \cr
+  \code{results$plot5} \tab \tab \tab \tab \tab an image \cr
+  \code{results$comp1} \tab \tab \tab \tab \tab a table \cr
+  \code{results$plot6} \tab \tab \tab \tab \tab an image \cr
 }
 
 Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:

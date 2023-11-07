@@ -23,22 +23,32 @@ children:
             isTarget: true
   - type: LayoutBox
     margin: large
-    stretchFactor: 1
+    children:
+      - type: ComboBox
+        name: model
+  - type: CollapseBox
+    label: Dichotomous Rasch model
+    margin: normal
+    collapsed: true
     children:
       - type: LayoutBox
         margin: large
-        cell:
-          column: 0
-          row: 0
         stretchFactor: 1
         children:
-          - type: Label
-            label: 'Tables'
+          - type: LayoutBox
+            margin: large
+            cell:
+              column: 0
+              row: 0
+            stretchFactor: 1
             children:
-              - type: CheckBox
-                name: z
-              - type: CheckBox
-                name: comp   
+              - type: Label
+                label: Tables
+                children:
+                  - type: CheckBox
+                    name: z
+                  - type: CheckBox
+                    name: comp
       - type: LayoutBox
         margin: large
         cell:
@@ -47,7 +57,7 @@ children:
         stretchFactor: 1
         children:
           - type: Label
-            label: 'Plots'
+            label: Plots
             children:
               - type: CheckBox
                 name: plot1
@@ -60,7 +70,7 @@ children:
                   - type: TextBox
                     name: height1
                     format: number
-                    enable: (plot1)  
+                    enable: (plot1)
               - type: CheckBox
                 name: plot2
                 children:
@@ -71,7 +81,7 @@ children:
                     suggestedValues:
                       - value: 0
                       - value: 45
-                      - value: 90         
+                      - value: 90
                   - type: TextBox
                     name: width2
                     format: number
@@ -79,7 +89,7 @@ children:
                   - type: TextBox
                     name: height2
                     format: number
-                    enable: (plot2)        
+                    enable: (plot2)
               - type: CheckBox
                 name: plot3
                 style: list-inline
@@ -91,7 +101,7 @@ children:
                   - type: TextBox
                     name: height3
                     format: number
-                    enable: (plot3)           
+                    enable: (plot3)
               - type: CheckBox
                 name: plot4
                 style: list-inline
@@ -103,4 +113,57 @@ children:
                   - type: TextBox
                     name: height4
                     format: number
-                    enable: (plot4)    
+                    enable: (plot4)
+  - type: CollapseBox
+    label: Partial credit model
+    margin: normal
+    collapsed: true
+    children:
+      - type: LayoutBox
+        margin: large
+        stretchFactor: 1
+        children:
+          - type: LayoutBox
+            margin: large
+            cell:
+              column: 0
+              row: 0
+            stretchFactor: 1
+            children:
+              - type: CheckBox
+                name: comp1
+              - type: Label
+                label: 'Plots'
+                children:
+                  - type: CheckBox
+                    name: plot5
+                    style: list-inline
+                    children:
+                      - type: TextBox
+                        name: width5
+                        format: number
+                        enable: (plot5)
+                      - type: TextBox
+                        name: height5
+                        format: number
+                        enable: (plot5)
+                  - type: CheckBox
+                    name: plot6
+                    children:
+                      - type: TextBox
+                        name: angle1
+                        format: number
+                        enable: (plot6)
+                        suggestedValues:
+                          - value: 0
+                          - value: 45
+                          - value: 90
+                      - type: TextBox
+                        name: width6
+                        format: number
+                        enable: (plot6)
+                      - type: TextBox
+                        name: height6
+                        format: number
+                        enable: (plot6)
+ 
