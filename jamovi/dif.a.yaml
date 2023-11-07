@@ -80,18 +80,28 @@ options:
       type: Bool
       default: FALSE
 
-    - name: ci
-      title: 'Confidence interval'
-      type: Number
-      default: 95
-
     - name: width3
       type: Integer
-      title: "Width "
+      title: "Size: "
       default: 500
       
     - name: height3
       type: Integer
-      title: "Height"
-      default: 500      
+      title: "X"
+      default: 500
+
+    - name: plot4
+      title: 'Bar plot of item difference'
+      type: Bool
+      default: FALSE
+
+    - name: width4
+      type: Integer
+      title: "Size: "
+      default: 500
+      
+    - name: height4
+      type: Integer
+      title: "X"
+      default: 500
 ...

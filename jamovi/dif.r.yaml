@@ -51,7 +51,7 @@ items:
     - name: comp
       title:  'Comparison of item difficulties'
       type: Table
-      visible: (z)
+      visible: (comp)
       rows: (vars)
       clearWith:
         - vars
@@ -95,7 +95,17 @@ items:
         - facs
         - width3
         - height3
-        - ci
 
-
+    - name: plot4
+      title: 'Bar plot of item difference'
+      type:  Image
+      visible: (plot4)
+      renderFun: .plot4
+      refs: snowRMM
+      clearWith:
+        - vars
+        - facs
+        - width4
+        - height4
+        
 ...

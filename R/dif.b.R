@@ -59,12 +59,12 @@ difClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           self$results$plot3$setSize(width, height)
         }  
         
-        # if(isTRUE(self$options$plot4)){
-        #   width <- self$options$width4
-        #   height <- self$options$height4
-        #   self$results$plot4$setSize(width, height)
-        # }  
-        
+        if(isTRUE(self$options$plot4)){
+          width <- self$options$width4
+          height <- self$options$height4
+          self$results$plot4$setSize(width, height)
+        }
+
         
         if (length(self$options$vars) <= 1)
           self$setStatus('complete')
@@ -203,7 +203,7 @@ difClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                # Scatterplot of item difference-----------
                # Create objects for subgroup-specific item difficulties:
              
-                   subgroup_1_diffs <- subgroup_diffs$betapar1
+                 subgroup_1_diffs <- subgroup_diffs$betapar1
                  subgroup_2_diffs <- subgroup_diffs$betapar2
                  
                  se1<- subgroup_diffs$se.beta1
@@ -214,9 +214,22 @@ difClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 image3 <- self$results$plot3
                 image3$setState(state)
                  
+              # Bar plot of item difference-----------
+                
+                # First, calculate difference in difficulty between subgroups
+                # Note that I multiplied by -1 to reflect item difficulty rather than easiness (eRm quirk):
+                item_dif <- (subgroup_1_diffs*-1)-(subgroup_2_diffs*-1)
                
-               
-               
+                
+                # Bar plot code:
+                item_dif <- as.vector(item_dif)
+                subgroup_1_diffs <- subgroup_diffs$betapar1
+                
+                image4 <- self$results$plot4
+                
+                state <- list(item_dif,subgroup_1_diffs)
+                image4$setState(state) 
+                
              },
       
       .plot1 = function(image1,ggtheme, theme, ...) {     
@@ -290,7 +303,7 @@ difClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         ## First, calculate values for constructing the confidence bands:
         
-     #   cf <- self$options$ci
+       # cf <- self$options$ci
         
         mean.1.2 <- ((subgroup_1_diffs - mean(subgroup_1_diffs))/2*sd(subgroup_1_diffs) +
                        (subgroup_2_diffs - mean(subgroup_2_diffs))/2*sd(subgroup_2_diffs))
@@ -316,7 +329,7 @@ difClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         ## make the scatterplot:
         
       plot3 <-  plot(subgroup_1_diffs, subgroup_2_diffs, xlim = c(-2, 2), ylim = c(-2, 2),
-             xlab = "Group 1", ylab = "Group 2", main = "Group 1 Measures \n plotted against \n Group 2 Measures")
+             xlab = "Group 1", ylab = "Group 2", main = "")
         abline(a = 0, b = 1, col = "purple")
         
         par(new = T)
@@ -331,9 +344,60 @@ difClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         print(plot3)
         TRUE
+       
+      },
+      
+      .plot4 = function(image4,ggtheme, theme, ...) {     
         
+        
+        if (is.null(image4$state))
+          return(FALSE)
+        
+        item_dif <- image4$state[[1]]
+        subgroup_1_diffs <- image4$state[[2]]
+        
+        # Code to use different colors to highlight items with differences >= .5 logits:
+        colors <- NULL
+        
+        for (item.number in 1:30){
+          
+          colors[item.number] <- ifelse(abs(item_dif[item.number]) > .5, "dark blue", "light green")
+          
+        }
+      
+        plot4 <- barplot(item_dif, horiz = TRUE, xlim = c(-2, 2), 
+                     col = colors,
+                     ylim = c(1,40), 
+                     xlab = "Logit Difference")
+        
+        # code to add labels to the plot:
+        
+        dif_labs <- NULL
+        
+        for (i in 1:length(subgroup_1_diffs)) {
+          dif_labs[i] <- ifelse(item_dif[i] < 0, item_dif[i] - .2,
+                                item_dif[i] + .2)
+        }
+        
+       plot4<- text(dif_labs, plot4, labels = c(1:length(subgroup_1_diffs)),
+             xlim = c(-1.5, 1.5), cex = .8)
+        
+        # add vertical lines to highlight .5 logit differences:
+      abline(v = .5, lty = 3)
+      abline(v = -.5, lty = 3)
+        
+        # add additional text to help with interpretation:
+        
+      text(-1, 40, "Easier to Endorse for Group 1", cex = .8)
+      text(1, 40, "Easier to Endorse for Group 2", cex = .8)
+       
+      legend("bottomright", c("Diff >= .5 logits", "Diff < .5 logits"),
+        pch = 15, col = c("dark blue", "light green"), cex = .7 )
+        
+        
+        print(plot4)
+        TRUE
         
       }
-      
       )
 )

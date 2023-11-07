@@ -18,9 +18,11 @@ dif(
   width2 = 500,
   height2 = 500,
   plot3 = FALSE,
-  ci = 95,
   width3 = 500,
-  height3 = 500
+  height3 = 500,
+  plot4 = FALSE,
+  width4 = 500,
+  height4 = 500
 )
 }
 \arguments{
@@ -50,11 +52,15 @@ dif(
 
 \item{plot3}{.}
 
-\item{ci}{.}
-
 \item{width3}{.}
 
 \item{height3}{.}
+
+\item{plot4}{.}
+
+\item{width4}{.}
+
+\item{height4}{.}
 }
 \value{
 A results object containing:
@@ -66,6 +72,7 @@ A results object containing:
   \code{results$comp} \tab \tab \tab \tab \tab a table \cr
   \code{results$plot2} \tab \tab \tab \tab \tab an image \cr
   \code{results$plot3} \tab \tab \tab \tab \tab an image \cr
+  \code{results$plot4} \tab \tab \tab \tab \tab an image \cr
 }
 
 Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
