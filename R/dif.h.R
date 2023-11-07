@@ -31,7 +31,13 @@ difOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             plot6 = FALSE,
             angle1 = 0,
             width6 = 500,
-            height6 = 500, ...) {
+            height6 = 500,
+            plot7 = FALSE,
+            width7 = 500,
+            height7 = 500,
+            plot8 = FALSE,
+            width8 = 500,
+            height8 = 500, ...) {
 
             super$initialize(
                 package="snowRMM",
@@ -156,6 +162,30 @@ difOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "height6",
                 height6,
                 default=500)
+            private$..plot7 <- jmvcore::OptionBool$new(
+                "plot7",
+                plot7,
+                default=FALSE)
+            private$..width7 <- jmvcore::OptionInteger$new(
+                "width7",
+                width7,
+                default=500)
+            private$..height7 <- jmvcore::OptionInteger$new(
+                "height7",
+                height7,
+                default=500)
+            private$..plot8 <- jmvcore::OptionBool$new(
+                "plot8",
+                plot8,
+                default=FALSE)
+            private$..width8 <- jmvcore::OptionInteger$new(
+                "width8",
+                width8,
+                default=500)
+            private$..height8 <- jmvcore::OptionInteger$new(
+                "height8",
+                height8,
+                default=500)
 
             self$.addOption(private$..vars)
             self$.addOption(private$..facs)
@@ -183,6 +213,12 @@ difOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..angle1)
             self$.addOption(private$..width6)
             self$.addOption(private$..height6)
+            self$.addOption(private$..plot7)
+            self$.addOption(private$..width7)
+            self$.addOption(private$..height7)
+            self$.addOption(private$..plot8)
+            self$.addOption(private$..width8)
+            self$.addOption(private$..height8)
         }),
     active = list(
         vars = function() private$..vars$value,
@@ -210,7 +246,13 @@ difOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         plot6 = function() private$..plot6$value,
         angle1 = function() private$..angle1$value,
         width6 = function() private$..width6$value,
-        height6 = function() private$..height6$value),
+        height6 = function() private$..height6$value,
+        plot7 = function() private$..plot7$value,
+        width7 = function() private$..width7$value,
+        height7 = function() private$..height7$value,
+        plot8 = function() private$..plot8$value,
+        width8 = function() private$..width8$value,
+        height8 = function() private$..height8$value),
     private = list(
         ..vars = NA,
         ..facs = NA,
@@ -237,7 +279,13 @@ difOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..plot6 = NA,
         ..angle1 = NA,
         ..width6 = NA,
-        ..height6 = NA)
+        ..height6 = NA,
+        ..plot7 = NA,
+        ..width7 = NA,
+        ..height7 = NA,
+        ..plot8 = NA,
+        ..width8 = NA,
+        ..height8 = NA)
 )
 
 difResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -254,7 +302,9 @@ difResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         plot4 = function() private$.items[["plot4"]],
         plot5 = function() private$.items[["plot5"]],
         comp1 = function() private$.items[["comp1"]],
-        plot6 = function() private$.items[["plot6"]]),
+        plot6 = function() private$.items[["plot6"]],
+        plot7 = function() private$.items[["plot7"]],
+        plot8 = function() private$.items[["plot8"]]),
     private = list(),
     public=list(
         initialize=function(options) {
@@ -424,6 +474,32 @@ difResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "width6",
                     "height6",
                     "angle1",
+                    "model")))
+            self$add(jmvcore::Image$new(
+                options=options,
+                name="plot7",
+                title="Scatterplot of item difference",
+                visible="(plot7)",
+                renderFun=".plot7",
+                refs="snowRMM",
+                clearWith=list(
+                    "vars",
+                    "facs",
+                    "width7",
+                    "height7",
+                    "model")))
+            self$add(jmvcore::Image$new(
+                options=options,
+                name="plot8",
+                title="Bar plot of item difference",
+                visible="(plot8)",
+                renderFun=".plot8",
+                refs="snowRMM",
+                clearWith=list(
+                    "vars",
+                    "facs",
+                    "width8",
+                    "height8",
                     "model")))}))
 
 difBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -477,6 +553,12 @@ difBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param angle1 .
 #' @param width6 .
 #' @param height6 .
+#' @param plot7 .
+#' @param width7 .
+#' @param height7 .
+#' @param plot8 .
+#' @param width8 .
+#' @param height8 .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
@@ -490,6 +572,8 @@ difBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$plot5} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$comp1} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$plot6} \tab \tab \tab \tab \tab an image \cr
+#'   \code{results$plot7} \tab \tab \tab \tab \tab an image \cr
+#'   \code{results$plot8} \tab \tab \tab \tab \tab an image \cr
 #' }
 #'
 #' Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
@@ -526,7 +610,13 @@ dif <- function(
     plot6 = FALSE,
     angle1 = 0,
     width6 = 500,
-    height6 = 500) {
+    height6 = 500,
+    plot7 = FALSE,
+    width7 = 500,
+    height7 = 500,
+    plot8 = FALSE,
+    width8 = 500,
+    height8 = 500) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("dif requires jmvcore to be installed (restart may be required)")
@@ -567,7 +657,13 @@ dif <- function(
         plot6 = plot6,
         angle1 = angle1,
         width6 = width6,
-        height6 = height6)
+        height6 = height6,
+        plot7 = plot7,
+        width7 = width7,
+        height7 = height7,
+        plot8 = plot8,
+        width8 = width8,
+        height8 = height8)
 
     analysis <- difClass$new(
         options = options,

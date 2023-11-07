@@ -78,8 +78,17 @@ difClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           self$results$plot6$setSize(width, height)
         }
         
+        if(isTRUE(self$options$plot7)){
+          width <- self$options$width7
+          height <- self$options$height7
+          self$results$plot7$setSize(width, height)
+        }
         
-        
+        if(isTRUE(self$options$plot8)){
+          width <- self$options$width8
+          height <- self$options$height8
+          self$results$plot8$setSize(width, height)
+        }
         
         if (length(self$options$vars) <= 1)
           self$setStatus('complete')
@@ -226,10 +235,9 @@ difClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                  se1<- subgroup_diffs$se.beta1
                  se2 <- subgroup_diffs$se.beta2
                 
-                 state <- list(subgroup_1_diffs, subgroup_2_diffs,se1,se2)
-                
-                image3 <- self$results$plot3
-                image3$setState(state)
+               state <- list(subgroup_1_diffs, subgroup_2_diffs,se1,se2)
+               image3 <- self$results$plot3
+               image3$setState(state)
                  
               # Bar plot of item difference-----------
                 
@@ -366,14 +374,34 @@ difClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                   image6$setState(par)
                   
                   
+              # Scatter plot for partial credit model------------------    
+                  
+                total <- cbind.data.frame(c(1:length(group1_item.diffs.overall)),
+                                                         group1_item.diffs.overall, group1_item.se.overall,
+                                                         group2_item.diffs.overall, group2_item.se.overall)
+                                                        
+                  
+                  group1_item.diffs.overall <- total$group1_item.diffs.overall
+                  group2_item.diffs.overall <- total$group2_item.diffs.overall  
+                
+                  se1<-  group1_item.se.overall
+                  se2 <- group2_item.se.overall
+                  
+                  state <- list( group1_item.diffs.overall, group2_item.diffs.overall,se1,se2)
+                  image7 <- self$results$plot7
+                  image7$setState(state)
                   
                   
+                  # Bar plot of item difference-----------
+                  
+                  item_dif <- group1_item.diffs.overall - group2_item.diffs.overall
+                  
+                  item_dif <- as.vector(item_dif)
                   
                   
-                  
-                  
-                  
-                  
+                  image8 <- self$results$plot8
+                  state <- list(item_dif, group1_item.diffs.overall)
+                  image8$setState(state) 
                   
                   
                   
@@ -505,10 +533,12 @@ difClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         item_dif <- image4$state[[1]]
         subgroup_1_diffs <- image4$state[[2]]
         
+        
+        nvars <- length(self$options$vars)
         # Code to use different colors to highlight items with differences >= .5 logits:
         colors <- NULL
         
-        for (item.number in 1:30){
+        for (item.number in 1:nvars){
           
           colors[item.number] <- ifelse(abs(item_dif[item.number]) > .5, "dark blue", "light green")
           
@@ -611,13 +641,111 @@ difClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         print(plot6)
         TRUE
         
+      },
+      
+      .plot7 = function(image7, ggtheme, theme, ...) {
+        
+        if (is.null(image7$state))
+          return(FALSE)
+        
+        group1_item.diffs.overall <- image7$state[[1]]
+        group2_item.diffs.overall <- image7$state[[2]]
+        group1_item.se.overall <- image7$state[[3]]
+        group2_item.se.overall<- image7$state[[4]]
+      
+        mean.1.2 <- ((group1_item.diffs.overall - mean(group1_item.diffs.overall))/2*sd(group1_item.diffs.overall) +
+                       (group2_item.diffs.overall - mean(group2_item.diffs.overall))/2*sd(group2_item.diffs.overall))
+        
+        joint.se <- sqrt((group1_item.se.overall^2/sd(group1_item.diffs.overall)) +
+                           (group2_item.se.overall^2/sd(group2_item.diffs.overall)))
+        
+        
+        upper.group.1 <- mean(group1_item.diffs.overall) + ((mean.1.2 - joint.se )*sd(group1_item.diffs.overall))
+        upper.group.2 <- mean(group2_item.diffs.overall) + ((mean.1.2 + joint.se )*sd(group2_item.diffs.overall))
+        
+        lower.group.1 <- mean(group1_item.diffs.overall) + ((mean.1.2 + joint.se )*sd(group1_item.diffs.overall))
+        lower.group.2 <- mean(group2_item.diffs.overall) + ((mean.1.2 - joint.se )*sd(group1_item.diffs.overall))
+        
+        
+        upper <- cbind.data.frame(upper.group.1, upper.group.2)
+        upper <- upper[order(upper$upper.group.1, decreasing = FALSE),]
+        
+        
+        lower <- cbind.data.frame(lower.group.1, lower.group.2)
+        lower <- lower[order(lower$lower.group.1, decreasing = FALSE),]
+        
+        
+        ## make the scatterplot:
+        
+        plot7<- plot(group1_item.diffs.overall, group2_item.diffs.overall, xlim = c(-3, 3), ylim = c(-3, 3),
+             xlab = "Group 1", ylab = "Group 2", main = "")
+        abline(a = 0, b = 1, col = "purple")
+        
+        par(new = T)
+        
+        lines(upper$upper.group.1, upper$upper.group.2, lty = 2, col = "red")
+        
+        lines(lower$lower.group.1, lower$lower.group.2, lty = 2, col = "red")
+        
+        legend("bottomright", c("Item Location", "Identity Line", "95% Confidence Band"),
+               pch = c(1, NA, NA), lty = c(NA, 1, 2), col = c("black", "purple", "red"))
+        
+        
+        print(plot7)
+        TRUE
+        
+      },
+      
+      .plot8 = function(image8,ggtheme, theme, ...) {     
+        
+        
+        if (is.null(image8$state))
+          return(FALSE)
+        
+        item_dif <- image8$state[[1]] 
+        group1_item.diffs.overall <- image8$state[[2]]
+       
+      
+        nvars <- length(self$options$vars)
+        # Code to use different colors to highlight items with differences >= .5 logits:
+        colors <- NULL
+        
+        for (item.number in 1:nvars){
+          colors[item.number] <- ifelse(abs(item_dif[item.number]) > .5, "dark blue", "light green")
+        }
+      
+       plot8 <- barplot(item_dif, horiz = TRUE, xlim = c(-2, 2), 
+                     col = colors,
+                     #=ylim = c(1,4), 
+                     xlab = "Logit Difference")
+        
+        # code to add labels to the plot:
+        
+        dif_labs <- NULL
+        
+        for (i in 1:length(group1_item.diffs.overall)) {
+          dif_labs[i] <- ifelse(item_dif[i] < 0, item_dif[i] - .2,
+                                item_dif[i] + .2)
+        }
+        
+        text(dif_labs, plot8, labels = c(1:length(group1_item.diffs.overall)),
+             xlim = c(-1.5, 1.5), cex = .8)
+        
+        # add vertical lines to highlight .5 logit differences:
+        abline(v = .5, lty = 3)
+        abline(v = -.5, lty = 3)
+        
+        # add additional text to help with interpretation:
+        
+        text(-1, 4.5, "Easier to Endorse for Group 1", cex = .8)
+        text(1, 4.5, "Easier to Endorse for Group 2", cex = .8)
+        
+        legend("bottomright", c("Diff >= .5 logits", "Diff < .5 logits"),
+               pch = 15, col = c("dark blue", "light green"), cex = .7 )
+        
+        print(plot8)
+        TRUE
+        
       }
-      
-      
-      
-      
-      
-      
-      
       )
 )

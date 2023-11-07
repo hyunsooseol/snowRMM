@@ -157,4 +157,34 @@ options:
       title: "Height"
       default: 500      
 
+    - name: plot7
+      title: 'Scatterplot of item difference'
+      type: Bool
+      default: FALSE
+
+    - name: width7
+      type: Integer
+      title: "Size: "
+      default: 500
+      
+    - name: height7
+      type: Integer
+      title: "X"
+      default: 500
+
+    - name: plot8
+      title: 'Bar plot of item difference'
+      type: Bool
+      default: FALSE
+
+    - name: width8
+      type: Integer
+      title: "Size: "
+      default: 500
+      
+    - name: height8
+      type: Integer
+      title: "X"
+      default: 500
+
 ...

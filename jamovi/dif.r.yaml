@@ -162,4 +162,30 @@ items:
         - height6
         - angle1
         - model
+
+    - name: plot7
+      title: 'Scatterplot of item difference'
+      type:  Image
+      visible: (plot7)
+      renderFun: .plot7
+      refs: snowRMM
+      clearWith:
+        - vars
+        - facs
+        - width7
+        - height7
+        - model
+
+    - name: plot8
+      title: 'Bar plot of item difference'
+      type:  Image
+      visible: (plot8)
+      renderFun: .plot8
+      refs: snowRMM
+      clearWith:
+        - vars
+        - facs
+        - width8
+        - height8
+        - model
 ...

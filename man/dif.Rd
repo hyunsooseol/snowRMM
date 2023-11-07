@@ -31,7 +31,13 @@ dif(
   plot6 = FALSE,
   angle1 = 0,
   width6 = 500,
-  height6 = 500
+  height6 = 500,
+  plot7 = FALSE,
+  width7 = 500,
+  height7 = 500,
+  plot8 = FALSE,
+  width8 = 500,
+  height8 = 500
 )
 }
 \arguments{
@@ -88,6 +94,18 @@ dif(
 \item{width6}{.}
 
 \item{height6}{.}
+
+\item{plot7}{.}
+
+\item{width7}{.}
+
+\item{height7}{.}
+
+\item{plot8}{.}
+
+\item{width8}{.}
+
+\item{height8}{.}
 }
 \value{
 A results object containing:
@@ -103,6 +121,8 @@ A results object containing:
   \code{results$plot5} \tab \tab \tab \tab \tab an image \cr
   \code{results$comp1} \tab \tab \tab \tab \tab a table \cr
   \code{results$plot6} \tab \tab \tab \tab \tab an image \cr
+  \code{results$plot7} \tab \tab \tab \tab \tab an image \cr
+  \code{results$plot8} \tab \tab \tab \tab \tab an image \cr
 }
 
 Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
