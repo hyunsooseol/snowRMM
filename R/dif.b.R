@@ -210,7 +210,7 @@ difClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                }
                
               
-              # Melting for plot--------------------------
+              # Melting for line plot--------------------------
               
               comp1 <- data.frame(self$options$vars,subgroup_1_diffs, subgroup_2_diffs )
               
@@ -265,6 +265,8 @@ difClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                   #- First, get overall item difficulties specific to each subgroup:
                   group1_item.diffs.overall <- NULL
                   group2_item.diffs.overall <- NULL
+                  group_item.diffs.overall <- NULL
+                  
                   
                   responses <- data[,-1] 
                   responses.g <- cbind.data.frame(data[[groupVarName]], responses)
@@ -290,7 +292,18 @@ difClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                                                                                              (item.number*(n.thresholds.g2))])*-1
                   }
                   
-                  #self$results$text$setContent(group1_item.diffs.overall)
+                  # Overal difficulties-----------
+                  
+                  for(item.number in 1:ncol(responses)){
+                    
+                    n.thresholds.g1 <-  length(table(responses.g[, item.number+1]))-1
+                    
+                    group_item.diffs.overall[item.number] <- mean(PC_model$betapar[((item.number*(n.thresholds.g1))-(n.thresholds.g1-1)): 
+                                                                                             (item.number*(n.thresholds.g1))])*-1
+                  }
+                  
+                  self$results$text$setContent(group_item.diffs.overall)
+                  
                   ## Get overall item SE values:
                   
                   #- First, get overall SEs specific to each subgroup:

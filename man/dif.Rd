@@ -9,7 +9,7 @@ dif(
   vars,
   facs,
   model = "dicho",
-  z = TRUE,
+  z = FALSE,
   plot1 = FALSE,
   width1 = 500,
   height1 = 500,

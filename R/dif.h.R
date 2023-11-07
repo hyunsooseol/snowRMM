@@ -9,7 +9,7 @@ difOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             vars = NULL,
             facs = NULL,
             model = "dicho",
-            z = TRUE,
+            z = FALSE,
             plot1 = FALSE,
             width1 = 500,
             height1 = 500,
@@ -69,7 +69,7 @@ difOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             private$..z <- jmvcore::OptionBool$new(
                 "z",
                 z,
-                default=TRUE)
+                default=FALSE)
             private$..plot1 <- jmvcore::OptionBool$new(
                 "plot1",
                 plot1,
@@ -588,7 +588,7 @@ dif <- function(
     vars,
     facs,
     model = "dicho",
-    z = TRUE,
+    z = FALSE,
     plot1 = FALSE,
     width1 = 500,
     height1 = 500,

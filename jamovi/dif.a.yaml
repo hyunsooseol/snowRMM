@@ -41,7 +41,7 @@ options:
     - name: z
       title: 'Z statistics'  
       type: Bool
-      default: TRUE 
+      default: false
       
     - name: plot1
       title: 'Z plot'
