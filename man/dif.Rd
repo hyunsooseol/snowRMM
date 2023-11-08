@@ -28,6 +28,7 @@ dif(
   width5 = 500,
   height5 = 500,
   comp1 = FALSE,
+  z1 = FALSE,
   plot6 = FALSE,
   angle1 = 0,
   width6 = 500,
@@ -87,6 +88,8 @@ dif(
 
 \item{comp1}{.}
 
+\item{z1}{.}
+
 \item{plot6}{.}
 
 \item{angle1}{.}
@@ -112,14 +115,15 @@ A results object containing:
 \tabular{llllll}{
   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
   \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
+  \code{results$comp} \tab \tab \tab \tab \tab a table \cr
   \code{results$z} \tab \tab \tab \tab \tab a table \cr
   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
-  \code{results$comp} \tab \tab \tab \tab \tab a table \cr
   \code{results$plot2} \tab \tab \tab \tab \tab an image \cr
   \code{results$plot3} \tab \tab \tab \tab \tab an image \cr
   \code{results$plot4} \tab \tab \tab \tab \tab an image \cr
-  \code{results$plot5} \tab \tab \tab \tab \tab an image \cr
   \code{results$comp1} \tab \tab \tab \tab \tab a table \cr
+  \code{results$z1} \tab \tab \tab \tab \tab a table \cr
+  \code{results$plot5} \tab \tab \tab \tab \tab an image \cr
   \code{results$plot6} \tab \tab \tab \tab \tab an image \cr
   \code{results$plot7} \tab \tab \tab \tab \tab an image \cr
   \code{results$plot8} \tab \tab \tab \tab \tab an image \cr
@@ -127,9 +131,9 @@ A results object containing:
 
 Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
 
-\code{results$z$asDF}
+\code{results$comp$asDF}
 
-\code{as.data.frame(results$z)}
+\code{as.data.frame(results$comp)}
 }
 \description{
 Differential Item Functioning

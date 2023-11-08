@@ -119,21 +119,8 @@ items:
         - height4
         - model
 
-    - name: plot5
-      title: 'Z plot'
-      type:  Image
-      visible: (plot5)
-      renderFun: .plot5
-      refs: eRm
-      clearWith:
-        - vars
-        - facs
-        - width5
-        - height5
-        - model        
-
     - name: comp1
-      title:  'Comparison of item difficulties'
+      title:  'Item measure'
       type: Table
       visible: (comp1)
       rows: (vars)
@@ -148,6 +135,9 @@ items:
           title: ''
           type: 'text'
           content: ($key)
+        - name: over
+          title: 'Overall'
+          type: number
         - name: g1
           title: 'Group1'
           type: number
@@ -155,8 +145,41 @@ items:
           title: 'Group2'
           type: number
 
+    - name: z1
+      title:  'Z statistics'
+      type: Table
+      visible: (z1)
+      rows: (vars)
+      clearWith:
+        - vars
+        - facs
+        - model
+      refs: eRm
+
+      columns:
+        - name: name
+          title: ''
+          type: 'text'
+          content: ($key)
+
+        - name: zstat
+          title: Statistic
+
+    - name: plot5
+      title: 'Z plot'
+      type:  Image
+      visible: (plot5)
+      renderFun: .plot5
+      refs: eRm
+      clearWith:
+        - vars
+        - facs
+        - width5
+        - height5
+        - model        
+
     - name: plot6
-      title: 'Comparison plot'
+      title: 'Item comparison'
       type:  Image
       visible: (plot6)
       renderFun: .plot6

@@ -135,6 +135,11 @@ options:
       type: Bool
       default: false
 
+    - name: z1
+      title: 'Z statistics'  
+      type: Bool
+      default: false
+ 
     - name: plot6
       title: 'Item comparison'
       type: Bool

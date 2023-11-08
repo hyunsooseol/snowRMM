@@ -27,7 +27,7 @@ children:
       - type: ComboBox
         name: model
   - type: CollapseBox
-    label: 'Dichotomous Rasch model'
+    label: 'Dichotomous model'
     margin: normal
     collapsed: true
     children:
@@ -135,6 +135,8 @@ children:
                 children:
                   - type: CheckBox
                     name: comp1
+                  - type: CheckBox
+                    name: z1
       - type: LayoutBox
         margin: large
         cell:

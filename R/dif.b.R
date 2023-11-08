@@ -31,8 +31,8 @@ difClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             <body>
             <div class='instructions'>
             <p>____________________________________________________________________________________</p>
-            <p>1. Performs DIF detection using <b>eRm</b> R package.
-            <P>2. For Raju and MH method, the focal group should be coded as <b>1</b>.</P>
+            <p>1. Performs DIF analysis using <b>eRm</b> R package.
+            <p>2. For partial credit model, the grouping variable should be coded as <b>1 and 2</b>. </p>
             <p>3. Feature requests and bug reports can be made on my <a href='https://github.com/hyunsooseol/snowIRT/issues'  target = '_blank'>GitHub.</a></p>
             <p>____________________________________________________________________________________</p>
             </div>
@@ -172,8 +172,10 @@ difClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
               }
               
               
-               # plot1---------
-                comparison <- as.data.frame(subgroup_diffs$coef.table)
+               # z plot1---------
+                
+              
+               comparison <- as.data.frame(subgroup_diffs$coef.table)
               
                image1 <- self$results$plot1
                image1$setState(comparison)
@@ -264,7 +266,7 @@ difClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 if(self$options$model=='partial'){
                   
                   PC_model<- eRm::PCM(data[,-1])
-                  #subgroup_diffs <- eRm::Waldtest(PC_model, splitcr = data[[groupVarName]])
+                
                   
                   #- First, get overall item difficulties specific to each subgroup:
                   group1_item.diffs.overall <- NULL
@@ -279,7 +281,7 @@ difClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                   responses.g1 <- subset(responses.g, data[[groupVarName]] == 1)
                   responses.g2 <- subset(responses.g, data[[groupVarName]] == 2)
                   
-                  ## Compare thresholds between groups:
+                  ## Compare thresholds between groups----------------
                   subgroup_diffs <- Waldtest(PC_model, splitcr = data[[groupVarName]])
                   
                   
@@ -300,13 +302,13 @@ difClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                   
                   for(item.number in 1:ncol(responses)){
                     
-                    n.thresholds.g1 <-  length(table(responses.g[, item.number+1]))-1
+                    n.thresholds.g <-  length(table(responses.g[, item.number+1]))-1
                     
-                    group_item.diffs.overall[item.number] <- mean(PC_model$betapar[((item.number*(n.thresholds.g1))-(n.thresholds.g1-1)): 
-                                                                                             (item.number*(n.thresholds.g1))])*-1
+                    group_item.diffs.overall[item.number] <- mean(PC_model$betapar[((item.number*(n.thresholds.g))-(n.thresholds.g-1)): 
+                                                                                             (item.number*(n.thresholds.g))])*-1
                   }
                   
-                  self$results$text$setContent(group_item.diffs.overall)
+                  # self$results$text$setContent(group_item.diffs.overall)
                   
                   ## Get overall item SE values:
                   
@@ -340,20 +342,35 @@ difClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                   
                   
                   # Calculate test statistics for item comparisons:
-                  z <- (group1_item.diffs.overall - group2_item.diffs.overall)/
+                  z1 <- (group1_item.diffs.overall - group2_item.diffs.overall)/
                     sqrt(group1_item.se.overall^2 + group2_item.se.overall^2)
+                  
+                  # z table------------
+                  table <- self$results$z1
+                  items <- self$options$vars
+                  
+                 
+                  for (i in seq_along(items)) {
+                     
+                    row <- list()
+                    
+                    row[["zstat"]] <- z1[i]
+                   
+                    table$setRow(rowKey = items[i], values = row)
+                  }
+                  
                   
                   # plot5-------------
                   
                   image5 <- self$results$plot5
-                  image5$setState(z)
+                  image5$setState(z1)
                   
                   ### Item difficulty table--------
                   
-                  comp1 <- data.frame(group1_item.diffs.overall, group2_item.diffs.overall )
+                  comp1 <- data.frame(group_item.diffs.overall,group1_item.diffs.overall, group2_item.diffs.overall )
                   
                   # Name the columns of the results
-                  names(comp1) <- c("group1", "group2")
+                 # names(comp1) <- c("group1", "group2")
                   
                   
                   # Comparison table---------
@@ -361,15 +378,16 @@ difClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                   items <- self$options$vars
                   
                   # get result---
-                  g1 <- comp1[,1]
-                  g2 <- comp1[,2]
+                  over <- comp1[,1]
+                  g1 <- comp1[,2]
+                  g2 <- comp1[,3]
                   
                   
                   for (i in seq_along(items)) {
                     row <- list()
                     
+                    row[["over"]] <- over[i]
                     row[["g1"]] <- g1[i]
-                    
                     row[["g2"]] <- g2[i]
                     
                     
@@ -441,8 +459,8 @@ difClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         max.y <- ifelse(ceiling(max(comparisons$`z-statistic`)) < 3, 3, 
                         ceiling(max(comparisons$`z-statistic`)))
         
-        plot(comparisons$`z-statistic`, ylim = c(min.y, max.y),
-             ylab = "Z", xlab = "Item", main = "Test Statistics for Item Comparisons \nbetween Subgroup 1 and Subgroup 2")
+        plot1<- plot(comparisons$`z-statistic`, ylim = c(min.y, max.y),
+             ylab = "Z", xlab = "Item", main = "")
         abline(h=2, col = "red", lty = 2)
         abline(h=-2, col = "red", lty = 2)
         
@@ -450,6 +468,9 @@ difClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                pch = c(1, NA), lty = c(NA, 2), col = c("black", "red"), cex = .7)   
                
            
+        print(plot1)
+        TRUE
+        
         },
       
       .plot2 = function(image2, ggtheme, theme, ...) {
@@ -604,6 +625,9 @@ difClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         z <- image5$state
         
+        if (is.null(image5$state))
+          return(FALSE)
+        
         # Plot the test statistics:
         min.y <- ifelse(ceiling(min(z)) > -3, -3, 
                         ceiling(min(z)))
@@ -611,16 +635,18 @@ difClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         max.y <- ifelse(ceiling(max(z)) < 3, 3, 
                         ceiling(max(z)))
         
-        plot5<- plot(z, ylim = c(min.y, max.y),
-             ylab = "Z", xlab = "Item", main = "Test Statistics for Item Comparisons \nbetween Subgroup 1 and Subgroup 2",
-             axes=FALSE)
-        axis(1, at = c(1, 2, 3, 4), labels = c(1, 2, 3, 4))
-        axis(2)
+       plot5<- plot(z, ylim = c(min.y, max.y),
+             ylab = "Z", xlab = "Item", main = " ", pch = 4, cex=1.3)
+             
+       #  # axis(1, at = c(1, 2, 3, 4), labels = c(1, 2, 3, 4))
+       # axis(1)  
+       # axis(2)
+        
         abline(h=2, col = "red", lty = 2)
         abline(h=-2, col = "red", lty = 2)
         
         legend("topright", c("Z Statistic", "Boundaries for Significant Difference"),
-               pch = c(1, NA), lty = c(NA, 2), col = c("black", "red"), cex = .7)
+               pch = c(4, NA), lty = c(NA, 2), col = c("black", "red"), cex = 0.8)
         
         print(plot5)
         TRUE

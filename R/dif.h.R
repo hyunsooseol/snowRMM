@@ -28,6 +28,7 @@ difOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             width5 = 500,
             height5 = 500,
             comp1 = FALSE,
+            z1 = FALSE,
             plot6 = FALSE,
             angle1 = 0,
             width6 = 500,
@@ -144,6 +145,10 @@ difOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "comp1",
                 comp1,
                 default=FALSE)
+            private$..z1 <- jmvcore::OptionBool$new(
+                "z1",
+                z1,
+                default=FALSE)
             private$..plot6 <- jmvcore::OptionBool$new(
                 "plot6",
                 plot6,
@@ -209,6 +214,7 @@ difOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..width5)
             self$.addOption(private$..height5)
             self$.addOption(private$..comp1)
+            self$.addOption(private$..z1)
             self$.addOption(private$..plot6)
             self$.addOption(private$..angle1)
             self$.addOption(private$..width6)
@@ -243,6 +249,7 @@ difOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         width5 = function() private$..width5$value,
         height5 = function() private$..height5$value,
         comp1 = function() private$..comp1$value,
+        z1 = function() private$..z1$value,
         plot6 = function() private$..plot6$value,
         angle1 = function() private$..angle1$value,
         width6 = function() private$..width6$value,
@@ -276,6 +283,7 @@ difOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..width5 = NA,
         ..height5 = NA,
         ..comp1 = NA,
+        ..z1 = NA,
         ..plot6 = NA,
         ..angle1 = NA,
         ..width6 = NA,
@@ -300,8 +308,9 @@ difResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         plot2 = function() private$.items[["plot2"]],
         plot3 = function() private$.items[["plot3"]],
         plot4 = function() private$.items[["plot4"]],
-        plot5 = function() private$.items[["plot5"]],
         comp1 = function() private$.items[["comp1"]],
+        z1 = function() private$.items[["z1"]],
+        plot5 = function() private$.items[["plot5"]],
         plot6 = function() private$.items[["plot6"]],
         plot7 = function() private$.items[["plot7"]],
         plot8 = function() private$.items[["plot8"]]),
@@ -431,23 +440,10 @@ difResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "width4",
                     "height4",
                     "model")))
-            self$add(jmvcore::Image$new(
-                options=options,
-                name="plot5",
-                title="Z plot",
-                visible="(plot5)",
-                renderFun=".plot5",
-                refs="eRm",
-                clearWith=list(
-                    "vars",
-                    "facs",
-                    "width5",
-                    "height5",
-                    "model")))
             self$add(jmvcore::Table$new(
                 options=options,
                 name="comp1",
-                title="Comparison of item difficulties",
+                title="Item measure",
                 visible="(comp1)",
                 rows="(vars)",
                 clearWith=list(
@@ -462,6 +458,10 @@ difResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         `type`="text", 
                         `content`="($key)"),
                     list(
+                        `name`="over", 
+                        `title`="Overall", 
+                        `type`="number"),
+                    list(
                         `name`="g1", 
                         `title`="Group1", 
                         `type`="number"),
@@ -469,10 +469,43 @@ difResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         `name`="g2", 
                         `title`="Group2", 
                         `type`="number"))))
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="z1",
+                title="Z statistics",
+                visible="(z1)",
+                rows="(vars)",
+                clearWith=list(
+                    "vars",
+                    "facs",
+                    "model"),
+                refs="eRm",
+                columns=list(
+                    list(
+                        `name`="name", 
+                        `title`="", 
+                        `type`="text", 
+                        `content`="($key)"),
+                    list(
+                        `name`="zstat", 
+                        `title`="Statistic"))))
+            self$add(jmvcore::Image$new(
+                options=options,
+                name="plot5",
+                title="Z plot",
+                visible="(plot5)",
+                renderFun=".plot5",
+                refs="eRm",
+                clearWith=list(
+                    "vars",
+                    "facs",
+                    "width5",
+                    "height5",
+                    "model")))
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot6",
-                title="Comparison plot",
+                title="Item comparison",
                 visible="(plot6)",
                 renderFun=".plot6",
                 refs="snowRMM",
@@ -557,6 +590,7 @@ difBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param width5 .
 #' @param height5 .
 #' @param comp1 .
+#' @param z1 .
 #' @param plot6 .
 #' @param angle1 .
 #' @param width6 .
@@ -577,8 +611,9 @@ difBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$plot2} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$plot3} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$plot4} \tab \tab \tab \tab \tab an image \cr
-#'   \code{results$plot5} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$comp1} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$z1} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$plot5} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$plot6} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$plot7} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$plot8} \tab \tab \tab \tab \tab an image \cr
@@ -615,6 +650,7 @@ dif <- function(
     width5 = 500,
     height5 = 500,
     comp1 = FALSE,
+    z1 = FALSE,
     plot6 = FALSE,
     angle1 = 0,
     width6 = 500,
@@ -662,6 +698,7 @@ dif <- function(
         width5 = width5,
         height5 = height5,
         comp1 = comp1,
+        z1 = z1,
         plot6 = plot6,
         angle1 = angle1,
         width6 = width6,
