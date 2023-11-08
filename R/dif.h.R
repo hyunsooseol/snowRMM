@@ -294,9 +294,9 @@ difResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     active = list(
         instructions = function() private$.items[["instructions"]],
         text = function() private$.items[["text"]],
+        comp = function() private$.items[["comp"]],
         z = function() private$.items[["z"]],
         plot1 = function() private$.items[["plot1"]],
-        comp = function() private$.items[["comp"]],
         plot2 = function() private$.items[["plot2"]],
         plot3 = function() private$.items[["plot3"]],
         plot4 = function() private$.items[["plot4"]],
@@ -321,6 +321,39 @@ difResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 options=options,
                 name="text",
                 title=""))
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="comp",
+                title="Item measure for grouping variable",
+                visible="(comp)",
+                rows="(vars)",
+                clearWith=list(
+                    "vars",
+                    "facs",
+                    "model"),
+                refs="eRm",
+                columns=list(
+                    list(
+                        `name`="name", 
+                        `title`="", 
+                        `type`="text", 
+                        `content`="($key)"),
+                    list(
+                        `name`="g1", 
+                        `title`="Group1", 
+                        `type`="number"),
+                    list(
+                        `name`="se1", 
+                        `title`="SE1", 
+                        `type`="number"),
+                    list(
+                        `name`="g2", 
+                        `title`="Group2", 
+                        `type`="number"),
+                    list(
+                        `name`="se2", 
+                        `title`="SE2", 
+                        `type`="number"))))
             self$add(jmvcore::Table$new(
                 options=options,
                 name="z",
@@ -358,35 +391,10 @@ difResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "width1",
                     "height1",
                     "model")))
-            self$add(jmvcore::Table$new(
-                options=options,
-                name="comp",
-                title="Comparison of item difficulties",
-                visible="(comp)",
-                rows="(vars)",
-                clearWith=list(
-                    "vars",
-                    "facs",
-                    "model"),
-                refs="eRm",
-                columns=list(
-                    list(
-                        `name`="name", 
-                        `title`="", 
-                        `type`="text", 
-                        `content`="($key)"),
-                    list(
-                        `name`="g1", 
-                        `title`="Group1", 
-                        `type`="number"),
-                    list(
-                        `name`="g2", 
-                        `title`="Group2", 
-                        `type`="number"))))
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot2",
-                title="Comparison plot",
+                title="Item Comparison",
                 visible="(plot2)",
                 renderFun=".plot2",
                 refs="snowRMM",
@@ -563,9 +571,9 @@ difBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
 #'   \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
+#'   \code{results$comp} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$z} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
-#'   \code{results$comp} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$plot2} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$plot3} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$plot4} \tab \tab \tab \tab \tab an image \cr
@@ -578,9 +586,9 @@ difBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'
 #' Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
 #'
-#' \code{results$z$asDF}
+#' \code{results$comp$asDF}
 #'
-#' \code{as.data.frame(results$z)}
+#' \code{as.data.frame(results$comp)}
 #'
 #' @export
 dif <- function(

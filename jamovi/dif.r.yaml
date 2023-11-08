@@ -13,6 +13,35 @@ items:
       title: ''
       type:  Preformatted
 
+    - name: comp
+      title:  'Item measure for grouping variable'
+      type: Table
+      visible: (comp)
+      rows: (vars)
+      clearWith:
+        - vars
+        - facs
+        - model
+      refs: eRm
+
+      columns:
+        - name: name
+          title: ''
+          type: 'text'
+          content: ($key)
+        - name: g1
+          title: 'Group1'
+          type: number
+        - name: se1
+          title: 'SE1'
+          type: number
+        - name: g2
+          title: 'Group2'
+          type: number
+        - name: se2
+          title: 'SE2'
+          type: number
+
     - name: z
       title:  'Z statistics'
       type: Table
@@ -50,31 +79,8 @@ items:
         - height1
         - model
 
-    - name: comp
-      title:  'Comparison of item difficulties'
-      type: Table
-      visible: (comp)
-      rows: (vars)
-      clearWith:
-        - vars
-        - facs
-        - model
-      refs: eRm
-
-      columns:
-        - name: name
-          title: ''
-          type: 'text'
-          content: ($key)
-        - name: g1
-          title: 'Group1'
-          type: number
-        - name: g2
-          title: 'Group2'
-          type: number
-
     - name: plot2
-      title: 'Comparison plot'
+      title: 'Item Comparison'
       type:  Image
       visible: (plot2)
       renderFun: .plot2

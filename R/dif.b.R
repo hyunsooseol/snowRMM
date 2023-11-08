@@ -183,10 +183,13 @@ difClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                subgroup_1_diffs <- subgroup_diffs$betapar1
                subgroup_2_diffs <- subgroup_diffs$betapar2
                
-               comp <- data.frame(subgroup_1_diffs, subgroup_2_diffs )
+               se1<- subgroup_diffs$se.beta1
+               se2 <- subgroup_diffs$se.beta2
+               
+               comp <- data.frame(subgroup_1_diffs,se1, subgroup_2_diffs,se2)
                
                # Name the columns of the results
-               names(comp) <- c("group1", "group2")
+             #  names(comp) <- c("group1", "group2")
                
                # Comparison table---------
                
@@ -195,16 +198,17 @@ difClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                
                # get result---
                g1 <- comp[,1]
-               g2 <- comp[,2]
-               
+               se1 <- comp[,2]
+               g2 <- comp[,3]
+               se2 <- comp[,4]
                
                for (i in seq_along(items)) {
                  row <- list()
                  
                  row[["g1"]] <- g1[i]
-                 
+                 row[["se1"]] <- se1[i]
                  row[["g2"]] <- g2[i]
-                 
+                 row[["se2"]] <- se2[i]
                  
                  table$setRow(rowKey = items[i], values = row)
                }

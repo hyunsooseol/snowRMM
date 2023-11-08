@@ -32,6 +32,12 @@ analyses:
     menuGroup: snowRMM
     menuTitle: Bootstrap Item Fit
     menuSubgroup: Rasch
+  - title: Differential Item Functioning
+    name: dif
+    ns: snowRMM
+    menuGroup: snowRMM
+    menuTitle: Differential Item Functioning
+    menuSubgroup: Rasch
   - title: Latent Class Analysis
     name: lca
     ns: snowRMM
@@ -62,11 +68,6 @@ analyses:
     menuGroup: snowRMM
     menuTitle: Linear Logisitic Test Model
     menuSubgroup: Mixture
-  - title: Differential Item Functioning
-    name: dif
-    ns: snowRMM
-    menuGroup: snowRMM
-    menuTitle: Differential Item Functioning
 datasets:
   - name: Rasch
     path: rasch.omv
