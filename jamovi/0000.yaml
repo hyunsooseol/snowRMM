@@ -87,14 +87,14 @@ datasets:
     description: Bootstrap Item Fit
     tags:
       - Bootstrap
-  - name: dichotomous
+  - name: bidif
     path: bidif.omv
-    description: Dichotomous DIF
+    description: Binary DIF
     tags:
       - DIF
   - name: partial
     path: partial.omv
-    description: Partial DIF
+    description: Partial credit DIF
     tags:
       - DIF
   - name: alzheimer

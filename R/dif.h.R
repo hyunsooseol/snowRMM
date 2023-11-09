@@ -443,7 +443,7 @@ difResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Table$new(
                 options=options,
                 name="comp1",
-                title="Item measure",
+                title="Item difficulty",
                 visible="(comp1)",
                 rows="(vars)",
                 clearWith=list(

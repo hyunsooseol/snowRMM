@@ -460,12 +460,12 @@ difClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                         ceiling(max(comparisons$`z-statistic`)))
         
         plot1<- plot(comparisons$`z-statistic`, ylim = c(min.y, max.y),
-             ylab = "Z", xlab = "Item", main = "")
+             ylab = "Z", xlab = "Item", main = "", pch=19)
         abline(h=2, col = "red", lty = 2)
         abline(h=-2, col = "red", lty = 2)
         
         legend("topright", c("Z Statistic", "Boundaries for Significant Difference"),
-               pch = c(1, NA), lty = c(NA, 2), col = c("black", "red"), cex = .7)   
+               pch = c(19, NA), lty = c(NA, 2), col = c("black", "red"), cex = .7)   
                
            
         print(plot1)
@@ -544,7 +544,7 @@ difClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         ## make the scatterplot:
         
       plot3 <-  plot(subgroup_1_diffs, subgroup_2_diffs, xlim = c(-2, 2), ylim = c(-2, 2),
-             xlab = "Group 1", ylab = "Group 2", main = "")
+             xlab = "Group 1", ylab = "Group 2", main = "", pch=19)
         abline(a = 0, b = 1, col = "purple")
         
         par(new = T)
@@ -554,7 +554,7 @@ difClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         lines(lower$lower.group.1, lower$lower.group.2, lty = 2, col = "red")
         
         legend("bottomright", c("Item Location", "Identity Line", "95% Confidence Band"),
-               pch = c(1, NA, NA), lty = c(NA, 1, 2), col = c("black", "purple", "red"))
+               pch = c(19, NA, NA), lty = c(NA, 1, 2), col = c("black", "purple", "red"))
         
         
         print(plot3)
@@ -636,7 +636,7 @@ difClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                         ceiling(max(z)))
         
        plot5<- plot(z, ylim = c(min.y, max.y),
-             ylab = "Z", xlab = "Item", main = " ", pch = 4, cex=1.3)
+             ylab = "Z", xlab = "Item", main = " ", pch = 19)
              
        #  # axis(1, at = c(1, 2, 3, 4), labels = c(1, 2, 3, 4))
        # axis(1)  
@@ -646,7 +646,7 @@ difClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         abline(h=-2, col = "red", lty = 2)
         
         legend("topright", c("Z Statistic", "Boundaries for Significant Difference"),
-               pch = c(4, NA), lty = c(NA, 2), col = c("black", "red"), cex = 0.8)
+               pch = c(19, NA), lty = c(NA, 2), col = c("black", "red"), cex = 0.8)
         
         print(plot5)
         TRUE
@@ -721,7 +721,7 @@ difClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         ## make the scatterplot:
         
         plot7<- plot(group1_item.diffs.overall, group2_item.diffs.overall, xlim = c(-3, 3), ylim = c(-3, 3),
-             xlab = "Group 1", ylab = "Group 2", main = "")
+             xlab = "Group 1", ylab = "Group 2", main = "", pch=19)
         abline(a = 0, b = 1, col = "purple")
         
         par(new = T)
@@ -731,7 +731,7 @@ difClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         lines(lower$lower.group.1, lower$lower.group.2, lty = 2, col = "red")
         
         legend("bottomright", c("Item Location", "Identity Line", "95% Confidence Band"),
-               pch = c(1, NA, NA), lty = c(NA, 1, 2), col = c("black", "purple", "red"))
+               pch = c(19, NA, NA), lty = c(NA, 1, 2), col = c("black", "purple", "red"))
         
         
         print(plot7)

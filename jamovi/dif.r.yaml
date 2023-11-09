@@ -120,7 +120,7 @@ items:
         - model
 
     - name: comp1
-      title:  'Item measure'
+      title:  'Item difficulty'
       type: Table
       visible: (comp1)
       rows: (vars)

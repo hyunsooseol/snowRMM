@@ -131,7 +131,7 @@ options:
       default: 500
 
     - name: comp1
-      title: 'Item measure'  
+      title: 'Item difficulty'  
       type: Bool
       default: false
 
