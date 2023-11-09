@@ -14,7 +14,7 @@ items:
       type:  Preformatted
 
     - name: comp
-      title:  'Item measure for grouping variable'
+      title:  'Item measure'
       type: Table
       visible: (comp)
       rows: (vars)
@@ -29,6 +29,12 @@ items:
           title: ''
           type: 'text'
           content: ($key)
+        - name: over
+          title: 'Overall'
+          type: number
+        - name: se
+          title: 'SE'
+          type: number          
         - name: g1
           title: 'Group1'
           type: number

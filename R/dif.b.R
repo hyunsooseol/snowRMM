@@ -181,6 +181,11 @@ difClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                image1$setState(comparison)
              
                # Plot2(item parameters by Group)----------
+               
+               # Overall difficulty--------
+               over<- as.vector(dicho$betapar)
+               se <- as.vector(dicho$se.beta)
+               
                # Create objects for subgroup-specific item difficulties:
                subgroup_1_diffs <- subgroup_diffs$betapar1
                subgroup_2_diffs <- subgroup_diffs$betapar2
@@ -188,7 +193,7 @@ difClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                se1<- subgroup_diffs$se.beta1
                se2 <- subgroup_diffs$se.beta2
                
-               comp <- data.frame(subgroup_1_diffs,se1, subgroup_2_diffs,se2)
+               comp <- data.frame(over, se, subgroup_1_diffs,se1, subgroup_2_diffs,se2)
                
                # Name the columns of the results
              #  names(comp) <- c("group1", "group2")
@@ -199,14 +204,20 @@ difClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                items <- self$options$vars
                
                # get result---
-               g1 <- comp[,1]
-               se1 <- comp[,2]
-               g2 <- comp[,3]
-               se2 <- comp[,4]
+               
+               over <- comp[,1]
+               se <- comp[,2]
+               g1 <- comp[,3]
+               se1 <- comp[,4]
+               g2 <- comp[,5]
+               se2 <- comp[,6]
                
                for (i in seq_along(items)) {
                  row <- list()
                  
+                 
+                 row[["over"]] <- over[i]
+                 row[["se"]] <- se[i]
                  row[["g1"]] <- g1[i]
                  row[["se1"]] <- se1[i]
                  row[["g2"]] <- g2[i]
@@ -218,10 +229,10 @@ difClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
               
               # Melting for line plot--------------------------
               
-              comp1 <- data.frame(self$options$vars,subgroup_1_diffs, subgroup_2_diffs )
+              comp1 <- data.frame(self$options$vars,over, subgroup_1_diffs, subgroup_2_diffs )
               
               # Name the columns of the results
-              names(comp1) <- c("item","group1", "group2")
+              names(comp1) <- c("item", "Overall", "group1", "group2")
               
                p <- reshape2::melt(comp1, id.vars=c('item'))
                colnames(p) <- c("Item","Group","Value")
@@ -396,10 +407,10 @@ difClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                   
                   # Melting for plot--------------------------
                   
-                  comp2 <- data.frame(self$options$vars,group1_item.diffs.overall, group2_item.diffs.overall )
+                  comp2 <- data.frame(self$options$vars,group_item.diffs.overall, group1_item.diffs.overall, group2_item.diffs.overall )
                   
                   # Name the columns of the results
-                  names(comp2) <- c("item","group1", "group2")
+                  names(comp2) <- c("item", "overall", "group1", "group2")
                   
                   par <- reshape2::melt(comp2, id.vars=c('item'))
                   colnames(par) <- c("Item","Group","Value")

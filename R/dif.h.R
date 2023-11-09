@@ -333,7 +333,7 @@ difResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Table$new(
                 options=options,
                 name="comp",
-                title="Item measure for grouping variable",
+                title="Item measure",
                 visible="(comp)",
                 rows="(vars)",
                 clearWith=list(
@@ -347,6 +347,14 @@ difResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         `title`="", 
                         `type`="text", 
                         `content`="($key)"),
+                    list(
+                        `name`="over", 
+                        `title`="Overall", 
+                        `type`="number"),
+                    list(
+                        `name`="se", 
+                        `title`="SE", 
+                        `type`="number"),
                     list(
                         `name`="g1", 
                         `title`="Group1", 
