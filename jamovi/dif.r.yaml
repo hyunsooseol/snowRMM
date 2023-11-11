@@ -14,7 +14,7 @@ items:
       type:  Preformatted
 
     - name: comp
-      title:  'Item measure'
+      title:  'Item difficulty and standard error'
       type: Table
       visible: (comp)
       rows: (vars)
@@ -86,7 +86,7 @@ items:
         - model
 
     - name: plot2
-      title: 'Item Comparison'
+      title:  'Comparison of item difficulty'
       type:  Image
       visible: (plot2)
       renderFun: .plot2
@@ -170,6 +170,9 @@ items:
 
         - name: zstat
           title: Statistic
+        - name: p
+          title: p
+          format: zto,pvalue          
 
     - name: plot5
       title: 'Z plot'
@@ -185,7 +188,7 @@ items:
         - model        
 
     - name: plot6
-      title: 'Item comparison'
+      title:  'Comparison of item difficulty'
       type:  Image
       visible: (plot6)
       renderFun: .plot6

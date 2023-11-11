@@ -64,7 +64,7 @@ options:
       default: false
 
     - name: plot2
-      title: 'Item Comparison'
+      title: 'Comparison of item difficulty'
       type: Bool
       default: FALSE
 
@@ -141,7 +141,7 @@ options:
       default: false
  
     - name: plot6
-      title: 'Item comparison'
+      title:  'Comparison of item difficulty'
       type: Bool
       default: FALSE
 

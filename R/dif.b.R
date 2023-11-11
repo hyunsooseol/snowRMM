@@ -356,6 +356,8 @@ difClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                   z1 <- (group1_item.diffs.overall - group2_item.diffs.overall)/
                     sqrt(group1_item.se.overall^2 + group2_item.se.overall^2)
                   
+                  p <- 2 * pnorm(-abs(z1))
+                  
                   # z table------------
                   table <- self$results$z1
                   items <- self$options$vars
@@ -366,6 +368,7 @@ difClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                     row <- list()
                     
                     row[["zstat"]] <- z1[i]
+                    row[["p"]] <- p[i]
                    
                     table$setRow(rowKey = items[i], values = row)
                   }

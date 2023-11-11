@@ -333,7 +333,7 @@ difResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Table$new(
                 options=options,
                 name="comp",
-                title="Item measure",
+                title="Item difficulty and standard error",
                 visible="(comp)",
                 rows="(vars)",
                 clearWith=list(
@@ -411,7 +411,7 @@ difResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot2",
-                title="Item Comparison",
+                title="Comparison of item difficulty",
                 visible="(plot2)",
                 renderFun=".plot2",
                 refs="snowRMM",
@@ -496,7 +496,11 @@ difResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         `content`="($key)"),
                     list(
                         `name`="zstat", 
-                        `title`="Statistic"))))
+                        `title`="Statistic"),
+                    list(
+                        `name`="p", 
+                        `title`="p", 
+                        `format`="zto,pvalue"))))
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot5",
@@ -513,7 +517,7 @@ difResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot6",
-                title="Item comparison",
+                title="Comparison of item difficulty",
                 visible="(plot6)",
                 renderFun=".plot6",
                 refs="snowRMM",
