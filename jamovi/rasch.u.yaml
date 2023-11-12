@@ -302,6 +302,7 @@ children:
                 format: number
               - type: CheckBox
                 name: plot8
+                style: list-inline
                 children:
                   - type: TextBox
                     name: width8
