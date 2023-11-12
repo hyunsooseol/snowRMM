@@ -1057,7 +1057,7 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 title="Plot of standardized residuals",
                 visible="(plot8)",
                 renderFun=".plot8",
-                refs="pairwise",
+                refs="snowRMM",
                 clearWith=list(
                     "vars",
                     "step",

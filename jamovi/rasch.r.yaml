@@ -437,7 +437,7 @@ items:
       type:  Image
       visible: (plot8)
       renderFun: .plot8
-      refs: pairwise
+      refs: snowRMM
       clearWith:
             - vars
             - step
