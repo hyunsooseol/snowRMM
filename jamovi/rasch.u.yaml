@@ -246,7 +246,7 @@ children:
                 name: height
                 format: number
   - type: CollapseBox
-    label: Person Analysis
+    label: 'Person Analysis'
     margin: normal
     collapsed: true
     children:
@@ -255,7 +255,7 @@ children:
         margin: large
         children:
           - type: Label
-            label: Person measures
+            label: 'Person measures'
             fitToGrid: true
             cell:
               column: 0
@@ -267,16 +267,8 @@ children:
                 name: pmeasure
               - type: Output
                 name: pse
-      - type: LayoutBox
-        stretchFactor: 1
-        margin: large
-        cell:
-          column: 1
-          row: 0
-        fitToGrid: true
-        children:
           - type: Label
-            label: Person fit
+            label: 'Person fit'
             children:
               - type: Output
                 name: pinfit
@@ -294,6 +286,31 @@ children:
                     name: height1
                     format: number
                     enable: (plot4)
+      - type: LayoutBox
+        stretchFactor: 1
+        margin: large
+        cell:
+          column: 1
+          row: 0
+        fitToGrid: true
+        children:
+          - type: Label
+            label: 'Standardized residuals(eRm R package)'
+            children:
+              - type: TextBox
+                name: num1
+                format: number
+              - type: CheckBox
+                name: plot8
+                children:
+                  - type: TextBox
+                    name: width8
+                    format: number
+                    enable: (plot8)
+                  - type: TextBox
+                    name: height8
+                    format: number
+                    enable: (plot8)
   - type: CollapseBox
     label: Additional Outputs
     margin: normal

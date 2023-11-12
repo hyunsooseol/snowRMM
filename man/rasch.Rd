@@ -59,7 +59,11 @@ rasch(
   width6 = 500,
   height6 = 500,
   width7 = 500,
-  height7 = 500
+  height7 = 500,
+  plot8 = FALSE,
+  num1 = 1,
+  width8 = 500,
+  height8 = 500
 )
 }
 \arguments{
@@ -173,6 +177,14 @@ where 0 degrees represents completely horizontal labels.}
 \item{width7}{.}
 
 \item{height7}{.}
+
+\item{plot8}{.}
+
+\item{num1}{.}
+
+\item{width8}{.}
+
+\item{height8}{.}
 }
 \value{
 A results object containing:
@@ -202,6 +214,7 @@ A results object containing:
   \code{results$tm$ml1} \tab \tab \tab \tab \tab a table \cr
   \code{results$tm$wald} \tab \tab \tab \tab \tab a table \cr
   \code{results$plot4} \tab \tab \tab \tab \tab an image \cr
+  \code{results$plot8} \tab \tab \tab \tab \tab an image \cr
   \code{results$plot5} \tab \tab \tab \tab \tab an image \cr
   \code{results$q3} \tab \tab \tab \tab \tab a table \cr
   \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr

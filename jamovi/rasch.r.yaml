@@ -432,6 +432,20 @@ items:
             - width1
             - height1
 
+    - name:  plot8
+      title: 'Plot of standardized residuals'
+      type:  Image
+      visible: (plot8)
+      renderFun: .plot8
+      refs: pairwise
+      clearWith:
+            - vars
+            - step
+            - type
+            - num1
+            - width8
+            - height8
+
     - name:  plot5
       title: 'Rasch Residual Factor Plot'
       type:  Image

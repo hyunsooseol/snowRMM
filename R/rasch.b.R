@@ -178,6 +178,15 @@ raschClass <- if (requireNamespace('jmvcore'))
           self$results$gofplot$setSize(width, height)
         }
         
+        if(isTRUE(self$options$plot8)){
+          
+          width <- self$options$width8
+          height <- self$options$height8
+          
+          self$results$plot8$setSize(width, height)
+        }
+        
+        
         
         if (length(self$options$vars) <= 1)
           self$setStatus('complete')
@@ -700,6 +709,50 @@ raschClass <- if (requireNamespace('jmvcore'))
            
         }
       
+        if(isTRUE(self$options$plot8)){
+          
+          # Rasch model, estimation of item and person parameters
+          # Using eRm package
+          # res <- RM(raschdat2)
+          # p.res <- person.parameter(res)
+          # item.fit <- eRm::itemfit(p.res)
+          # std.resids <- item.fit$st.res
+          
+          if(self$options$step==1 && self$options$type=='RSM'){
+            
+            res <- eRm::RM(data)
+            p.res <- person.parameter(res)
+            
+            item.fit <- eRm::itemfit(p.res)
+            std.resids <- item.fit$st.res
+          
+          } 
+          
+          if(self$options$step>1 && self$options$type=='RSM'){
+            
+            res <- eRm::RSM(data)
+            p.res <- person.parameter(res)
+            
+            item.fit <- eRm::itemfit(p.res)
+            std.resids <- item.fit$st.res
+          }
+          
+          if(self$options$step>1 && self$options$type=='PCM'){  
+            
+            res <- eRm::PCM(data)
+            p.res <- person.parameter(res)
+            
+            item.fit <- eRm::itemfit(p.res)
+            std.resids <- item.fit$st.res
+            
+          }
+          
+          image8 <- self$results$plot8
+          image8$setState(std.resids)
+        
+        }
+         
+          
         ############################################
         results <-
           list(
@@ -903,87 +956,43 @@ raschClass <- if (requireNamespace('jmvcore'))
         }
         
       },
+       
+      # Plot of standardized residuals using eRm package------
+      
+      .plot8 = function(image8,...) {
+        
+        
+        if (is.null(image8$state))
+          return(FALSE)
+      
+        item.number <- self$options$num1
+        std.resids <- image8$state
+        
+        
+        # Before constructing the plots, find the maximum and minimum values of the standardized residuals to set limits for the axes:
+        max.resid <- ceiling(max(std.resids))
+        min.resid <- ceiling(min(std.resids))
+        
+        # The code below will produce standardized residual plots for each of the items:
+       
+          plot8<- plot(std.resids[, item.number], ylim = c(min.resid, max.resid),
+               main = paste("Standardized Residuals for Item ", item.number, sep = ""),
+               ylab = "Standardized Residual", xlab = "Person Index")
+          abline(h = 0, col = "blue")
+          abline(h=2, lty = 2, col = "red")
+          abline(h=-2, lty = 2, col = "red")
+          
+          legend("topright", c("Std. Residual", "Observed = Expected", "+/- 2 SD"), pch = c(1, NA, NA), 
+                 lty = c(NA, 1, 2),
+                 col = c("black", "blue", "red"), cex = .8)
+          
+       
+      print(plot8)
+      TRUE 
+      },
       
       
-      # ##### person statistics -------------------
-      # 
-      # 
-      # .populatePtotalOutputs= function(results) {
-      # 
-      #   ptotal <- results$ptotal
-      #   
-      #   
-      #   if (self$options$ptotal&& self$results$ptotal$isNotFilled()){
-      # 
-      #    
-      #     self$results$ptotal$setRowNums(rownames(data))
-      #     self$results$ptotal$setValues(ptotal)
-      # 
-      #   }
-      # },
-      # 
-      #   
-      #   .populatePmeasureOutputs= function(results) {
-      #     
-      #     pmeasure <- results$pmeasure
-      #     
-      #     
-      #     if (self$options$pmeasure&& self$results$pmeasure$isNotFilled()){
-      #       
-      #       
-      #       self$results$pmeasure$setRowNums(rownames(data))
-      #       self$results$pmeasure$setValues(pmeasure)
-      #       
-      #     }
-      # 
-      #   },
-      #   
-      # .populatePseOutputs= function(results) {
-      #   
-      #   pse<- results$pse
-      #   
-      #   
-      #   if (self$options$pse&& self$results$pse$isNotFilled()){
-      #     
-      #     
-      #     self$results$pse$setRowNums(rownames(data))
-      #     self$results$pse$setValues(pse)
-      #     
-      #   }
-      #   
-      # },
-      #   
-      # .populatePinfitOutputs= function(results) {
-      #   
-      #   pinfit<- results$pinfit
-      #   
-      #   
-      #   if (self$options$pinfit&& self$results$pinfit$isNotFilled()){
-      #     
-      #     
-      #     self$results$pinfit$setRowNums(rownames(data))
-      #     self$results$pinfit$setValues(pinfit)
-      #     
-      #   }
-      #   
-      # },
-      # 
-      # .populatePoutfitOutputs= function(results) {
-      #   
-      #   poutfit<- results$poutfit
-      #   
-      #   
-      #   if (self$options$poutfit&& self$results$poutfit$isNotFilled()){
-      #     
-      #     
-      #     self$results$poutfit$setRowNums(rownames(data))
-      #     self$results$poutfit$setValues(poutfit)
-      #     
-      #   }
-      #   
-      # },
-      # 
-      # 
+      
       ### wrightmap Plot functions -----------
       
       

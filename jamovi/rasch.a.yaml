@@ -344,4 +344,26 @@ options:
       type: Integer
       title: "Height"
       default: 500    
+
+    - name: plot8
+      title: 'Plot of std. residuals'
+      type: Bool
+      default: false  
+
+    - name: num1
+      title: Item number
+      default: 1
+      type: Integer
+      min: 1
+
+    - name: width8
+      type: Integer
+      title: "Width "
+      default: 500
+      
+    - name: height8
+      type: Integer
+      title: "Height"
+      default: 500    
+
 ...
