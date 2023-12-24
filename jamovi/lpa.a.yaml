@@ -66,7 +66,7 @@ options:
       default: FALSE  
       
     - name: plot1
-      title: 'Latent profile'
+      title: 'Box plot'
       type: Bool
       default: FALSE        
 
@@ -76,7 +76,12 @@ options:
       default: FALSE
 
     - name: plot2
-      title: 'Elbow plot'
+      title: 'Elbow'
+      type: Bool
+      default: FALSE
+
+    - name: plot4
+      title: 'Line plot'
       type: Bool
       default: FALSE
 
@@ -140,4 +145,14 @@ options:
       type: Integer
       title: "X"
       default: 500            
+
+    - name: width4  
+      type: Integer
+      title: "Size: "
+      default: 500
+      
+    - name: height4
+      type: Integer
+      title: "X"
+      default: 500     
 ...

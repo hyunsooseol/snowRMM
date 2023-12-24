@@ -32,7 +32,7 @@ children:
           - type: ComboBox
             name: covariances
   - type: CollapseBox
-    label: Analysis
+    label: 'Statistics'
     margin: normal
     collapsed: true
     children:
@@ -49,11 +49,6 @@ children:
                 name: best
               - type: CheckBox
                 name: est
-          - type: Label
-            label: 'Save'
-            children:
-              - type: Output
-                name: pc      
       - type: LayoutBox
         stretchFactor: 1
         margin: large
@@ -63,7 +58,21 @@ children:
         fitToGrid: true
         children:
           - type: Label
-            label: Plots
+            label: 'Save'
+            children:
+              - type: Output
+                name: pc      
+  - type: CollapseBox
+    label: 'Plots'
+    margin: normal
+    collapsed: true
+    children:
+      - type: LayoutBox
+        margin: large
+        stretchFactor: 1
+        children:
+          - type: Label
+            label: 'Plots'
             children:
               - type: CheckBox
                 name: plot
@@ -77,28 +86,6 @@ children:
                     name: height
                     format: number
                     enable: (plot) 
-              - type: CheckBox
-                name: plot1
-                children:
-                  - type: ComboBox
-                    name: line
-                    enable: (plot1)
-                  - type: TextBox
-                    name: angle
-                    format: number
-                    enable: (plot1)
-                    suggestedValues:
-                      - value: 0
-                      - value: 45
-                      - value: 90
-                  - type: TextBox
-                    name: width1
-                    format: number
-                    enable: (plot1)
-                  - type: TextBox
-                    name: height1
-                    format: number
-                    enable: (plot1) 
               - type: CheckBox
                 name: plot3
                 style: list-inline
@@ -123,6 +110,47 @@ children:
                     name: height3
                     format: number
                     enable: (plot2) 
-
-
-
+      - type: LayoutBox
+        stretchFactor: 1
+        margin: large
+        cell:
+          column: 1
+          row: 0
+        fitToGrid: true
+        children:
+          - type: Label
+            label: 'Latent profile'
+            children:
+              - type: TextBox
+                name: angle
+                format: number
+                suggestedValues:
+                  - value: 0
+                  - value: 45
+                  - value: 90
+              - type: CheckBox
+                name: plot1
+                children:
+                  - type: ComboBox
+                    name: line
+                    enable: (plot1)
+                  - type: TextBox
+                    name: width1
+                    format: number
+                    enable: (plot1)
+                  - type: TextBox
+                    name: height1
+                    format: number
+                    enable: (plot1) 
+              - type: CheckBox
+                name: plot4
+                style: list-inline
+                children:
+                  - type: TextBox
+                    name: width4
+                    format: number
+                    enable: (plot4)
+                  - type: TextBox
+                    name: height4
+                    format: number
+                    enable: (plot4) 

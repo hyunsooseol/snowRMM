@@ -40,8 +40,7 @@ lpaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             <p>_____________________________________________________________________________________________</p>
             <p>1. <b>tidyLPA</b> R package is described in the <a href='https://cran.r-project.org/web/packages/tidyLPA/vignettes/Introduction_to_tidyLPA.html' target = '_blank'>page</a>.</p>
             <p>2. Four models(1,2,3,6) are specified using <b>mclust</b> R package.</p>
-            <p>3. <b>Person membership</b> will be shown in the datasheet.</p>
-            <p>4. Feature requests and bug reports can be made on the <a href='https://github.com/hyunsooseol/snowRMM/issues'  target = '_blank'>GitHub</a>.</p>
+            <p>3. Feature requests and bug reports can be made on the <a href='https://github.com/hyunsooseol/snowRMM/issues'  target = '_blank'>GitHub</a>.</p>
             <p>_____________________________________________________________________________________________</p>
             
             </div>
@@ -81,6 +80,15 @@ lpaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
               self$results$plot2$setSize(width, height)
             }  
              
+            if(isTRUE(self$options$plot4)){
+              
+              width <- self$options$width4
+              height <- self$options$height4
+              
+              self$results$plot4$setSize(width, height)
+            }  
+            
+            
         },
         
         
@@ -279,15 +287,16 @@ lpaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             
             image$setState(res)
             
-            # Latent profile plot----------
+            # Latent profile plot(Box plot)----------
             
             image1 <- self$results$plot1
-            
-            # nvars <- length(vars)
-            # width <- 500 + nvars * 30
-            # image1$setSize(width, 400)
-            
             image1$setState(res)
+            
+            # Latent profile plot(Line plot)----------
+            
+            image4 <- self$results$plot4
+            image4$setState(res)
+            
             
             # elbow plot----------
             
@@ -341,45 +350,6 @@ lpaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 
         },
         
-        
-        .plot1 = function(image1, ggtheme, theme,...) {
-            
-         
-          if (is.null(image1$state))
-            return(FALSE)
-          
-            res <- image1$state
-            
-            line <- self$options$line
-            
-            plot1 <- tidyLPA::plot_profiles(res,
-                                            add_line = FALSE,
-                                            rawdata = FALSE)
-            
-            if(line=='TRUE'){
-              plot1 <- tidyLPA::plot_profiles(res,
-                                              add_line = TRUE,
-                                              rawdata = FALSE)
-            } 
-            
-            
-            
-            if (self$options$angle > 0) {
-              plot1 <- plot1 + ggplot2::theme(
-                axis.text.x = ggplot2::element_text(
-                  angle = self$options$angle, hjust = 1
-                )
-              )
-            }
-            
-            print(plot1)
-            TRUE
-        
-        
-        
-        
-        },
-
 
 .plot3 = function(image, ggtheme, theme,...) {
   
@@ -425,7 +395,70 @@ lpaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
   print(plot2)
   TRUE
   
+},
+
+      .plot1 = function(image1, ggtheme, theme,...) {
+            
+         
+          if (is.null(image1$state))
+            return(FALSE)
+          
+            res <- image1$state
+            
+            line <- self$options$line
+            
+            plot1 <- tidyLPA::plot_profiles(res,
+                                            add_line = FALSE,
+                                            rawdata = FALSE)
+            
+            if(line=='TRUE'){
+              plot1 <- tidyLPA::plot_profiles(res,
+                                              add_line = TRUE,
+                                              rawdata = FALSE)
+            } 
+            
+            
+            
+            if (self$options$angle > 0) {
+              plot1 <- plot1 + ggplot2::theme(
+                axis.text.x = ggplot2::element_text(
+                  angle = self$options$angle, hjust = 1
+                )
+              )
+            }
+            
+            print(plot1)
+            TRUE
+         },
+
+
+.plot4 = function(image4, ggtheme, theme,...) {
+  
+  
+  if (is.null(image4$state))
+    return(FALSE)
+  
+  res <- image4$state
+ 
+  plot4 <- tidyLPA::plot_profiles(res,
+                                  ci=NULL,
+                                  sd=FALSE,
+                                  add_line = TRUE,
+                                  rawdata = FALSE)
+ 
+  if (self$options$angle > 0) {
+    plot4 <- plot4 + ggplot2::theme(
+      axis.text.x = ggplot2::element_text(
+        angle = self$options$angle, hjust = 1
+      )
+    )
+  }
+  
+  print(plot4)
+  TRUE
+
 }
+
 
 )
 )

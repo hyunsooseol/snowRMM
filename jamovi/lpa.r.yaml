@@ -146,22 +146,7 @@ items:
         - covariances
         - width
         - height
-            
-    - name: plot1
-      title: 'Latent profile plot'
-      type: Image
-      visible: (plot1)
-      refs: tidyLPA
-      renderFun: .plot1
-      clearWith:
-        - vars
-        - nc
-        - variances
-        - covariances     
-        - width1
-        - height1
-        - line
-            
+ 
     - name: plot3
       title: 'Density plot'
       type: Image
@@ -189,6 +174,39 @@ items:
         - covariances    
         - width3
         - height3
+
+    - name: plot1
+      title: 'Latent profile: Box plot'
+      type: Image
+      visible: (plot1)
+      refs: tidyLPA
+      renderFun: .plot1
+      clearWith:
+        - vars
+        - nc
+        - variances
+        - covariances     
+        - width1
+        - height1
+        - line
+        - angle
+ 
+    - name: plot4
+      title: 'Latent profile: Line plot'
+      type: Image
+      visible: (plot4)
+      refs: tidyLPA
+      renderFun: .plot4
+      clearWith:
+        - vars
+        - nc
+        - variances
+        - covariances     
+        - width4
+        - height4
+        - line
+        - angle
+ 
 
             
 ...

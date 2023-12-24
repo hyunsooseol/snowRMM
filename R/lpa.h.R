@@ -17,6 +17,7 @@ lpaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             plot1 = FALSE,
             plot3 = FALSE,
             plot2 = FALSE,
+            plot4 = FALSE,
             angle = 0,
             line = "FALSE",
             width = 500,
@@ -26,7 +27,9 @@ lpaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             width2 = 500,
             height2 = 500,
             width3 = 500,
-            height3 = 500, ...) {
+            height3 = 500,
+            width4 = 500,
+            height4 = 500, ...) {
 
             super$initialize(
                 package="snowRMM",
@@ -91,6 +94,10 @@ lpaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "plot2",
                 plot2,
                 default=FALSE)
+            private$..plot4 <- jmvcore::OptionBool$new(
+                "plot4",
+                plot4,
+                default=FALSE)
             private$..angle <- jmvcore::OptionNumber$new(
                 "angle",
                 angle,
@@ -136,6 +143,14 @@ lpaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "height3",
                 height3,
                 default=500)
+            private$..width4 <- jmvcore::OptionInteger$new(
+                "width4",
+                width4,
+                default=500)
+            private$..height4 <- jmvcore::OptionInteger$new(
+                "height4",
+                height4,
+                default=500)
 
             self$.addOption(private$..vars)
             self$.addOption(private$..nc)
@@ -149,6 +164,7 @@ lpaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..plot1)
             self$.addOption(private$..plot3)
             self$.addOption(private$..plot2)
+            self$.addOption(private$..plot4)
             self$.addOption(private$..angle)
             self$.addOption(private$..line)
             self$.addOption(private$..width)
@@ -159,6 +175,8 @@ lpaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..height2)
             self$.addOption(private$..width3)
             self$.addOption(private$..height3)
+            self$.addOption(private$..width4)
+            self$.addOption(private$..height4)
         }),
     active = list(
         vars = function() private$..vars$value,
@@ -173,6 +191,7 @@ lpaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         plot1 = function() private$..plot1$value,
         plot3 = function() private$..plot3$value,
         plot2 = function() private$..plot2$value,
+        plot4 = function() private$..plot4$value,
         angle = function() private$..angle$value,
         line = function() private$..line$value,
         width = function() private$..width$value,
@@ -182,7 +201,9 @@ lpaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         width2 = function() private$..width2$value,
         height2 = function() private$..height2$value,
         width3 = function() private$..width3$value,
-        height3 = function() private$..height3$value),
+        height3 = function() private$..height3$value,
+        width4 = function() private$..width4$value,
+        height4 = function() private$..height4$value),
     private = list(
         ..vars = NA,
         ..nc = NA,
@@ -196,6 +217,7 @@ lpaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..plot1 = NA,
         ..plot3 = NA,
         ..plot2 = NA,
+        ..plot4 = NA,
         ..angle = NA,
         ..line = NA,
         ..width = NA,
@@ -205,7 +227,9 @@ lpaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..width2 = NA,
         ..height2 = NA,
         ..width3 = NA,
-        ..height3 = NA)
+        ..height3 = NA,
+        ..width4 = NA,
+        ..height4 = NA)
 )
 
 lpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -218,9 +242,10 @@ lpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         est = function() private$.items[["est"]],
         pc = function() private$.items[["pc"]],
         plot = function() private$.items[["plot"]],
-        plot1 = function() private$.items[["plot1"]],
         plot3 = function() private$.items[["plot3"]],
-        plot2 = function() private$.items[["plot2"]]),
+        plot2 = function() private$.items[["plot2"]],
+        plot1 = function() private$.items[["plot1"]],
+        plot4 = function() private$.items[["plot4"]]),
     private = list(),
     public=list(
         initialize=function(options) {
@@ -390,21 +415,6 @@ lpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "height")))
             self$add(jmvcore::Image$new(
                 options=options,
-                name="plot1",
-                title="Latent profile plot",
-                visible="(plot1)",
-                refs="tidyLPA",
-                renderFun=".plot1",
-                clearWith=list(
-                    "vars",
-                    "nc",
-                    "variances",
-                    "covariances",
-                    "width1",
-                    "height1",
-                    "line")))
-            self$add(jmvcore::Image$new(
-                options=options,
                 name="plot3",
                 title="Density plot",
                 visible="(plot3)",
@@ -430,7 +440,39 @@ lpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "variances",
                     "covariances",
                     "width3",
-                    "height3")))}))
+                    "height3")))
+            self$add(jmvcore::Image$new(
+                options=options,
+                name="plot1",
+                title="Latent profile: Box plot",
+                visible="(plot1)",
+                refs="tidyLPA",
+                renderFun=".plot1",
+                clearWith=list(
+                    "vars",
+                    "nc",
+                    "variances",
+                    "covariances",
+                    "width1",
+                    "height1",
+                    "line",
+                    "angle")))
+            self$add(jmvcore::Image$new(
+                options=options,
+                name="plot4",
+                title="Latent profile: Line plot",
+                visible="(plot4)",
+                refs="tidyLPA",
+                renderFun=".plot4",
+                clearWith=list(
+                    "vars",
+                    "nc",
+                    "variances",
+                    "covariances",
+                    "width4",
+                    "height4",
+                    "line",
+                    "angle")))}))
 
 lpaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "lpaBase",
@@ -468,6 +510,7 @@ lpaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param plot1 .
 #' @param plot3 .
 #' @param plot2 .
+#' @param plot4 .
 #' @param angle a number from 0 to 90 defining the angle of the x-axis labels,
 #'   where 0 degrees represents completely horizontal labels.
 #' @param line .
@@ -479,6 +522,8 @@ lpaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param height2 .
 #' @param width3 .
 #' @param height3 .
+#' @param width4 .
+#' @param height4 .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
@@ -487,9 +532,10 @@ lpaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$est} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$pc} \tab \tab \tab \tab \tab an output \cr
 #'   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
-#'   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$plot3} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$plot2} \tab \tab \tab \tab \tab an image \cr
+#'   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
+#'   \code{results$plot4} \tab \tab \tab \tab \tab an image \cr
 #' }
 #'
 #' Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
@@ -512,6 +558,7 @@ lpa <- function(
     plot1 = FALSE,
     plot3 = FALSE,
     plot2 = FALSE,
+    plot4 = FALSE,
     angle = 0,
     line = "FALSE",
     width = 500,
@@ -521,7 +568,9 @@ lpa <- function(
     width2 = 500,
     height2 = 500,
     width3 = 500,
-    height3 = 500) {
+    height3 = 500,
+    width4 = 500,
+    height4 = 500) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("lpa requires jmvcore to be installed (restart may be required)")
@@ -545,6 +594,7 @@ lpa <- function(
         plot1 = plot1,
         plot3 = plot3,
         plot2 = plot2,
+        plot4 = plot4,
         angle = angle,
         line = line,
         width = width,
@@ -554,7 +604,9 @@ lpa <- function(
         width2 = width2,
         height2 = height2,
         width3 = width3,
-        height3 = height3)
+        height3 = height3,
+        width4 = width4,
+        height4 = height4)
 
     analysis <- lpaClass$new(
         options = options,
