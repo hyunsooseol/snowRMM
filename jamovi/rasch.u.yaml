@@ -34,7 +34,7 @@ children:
           - type: ComboBox
             name: type
   - type: CollapseBox
-    label: Item Analysis using mixRasch R package
+    label: 'Item Analysis(mixRasch R package)'
     margin: normal
     collapsed: true
     children:
@@ -81,7 +81,7 @@ children:
               - type: CheckBox
                 name: pbis
   - type: CollapseBox
-    label: Testing model using eRm R package
+    label: 'Testing model(eRm R package)'
     margin: normal
     collapsed: true
     children:
@@ -313,7 +313,7 @@ children:
                     format: number
                     enable: (plot8)
   - type: CollapseBox
-    label: Additional Outputs
+    label: 'Additional Outputs'
     margin: normal
     collapsed: true
     children:
@@ -322,7 +322,7 @@ children:
         margin: large
         children:
           - type: Label
-            label: Thresholds(eRm R package)
+            label: 'Thresholds(eRm R package)'
             fitToGrid: true
             cell:
               column: 0
@@ -333,7 +333,7 @@ children:
               - type: CheckBox
                 name: pcm
           - type: Label
-            label: Residual analysis(pairwise R package)
+            label: 'Residual analysis(pairwise R package)'
             fitToGrid: true
             cell:
               column: 1
