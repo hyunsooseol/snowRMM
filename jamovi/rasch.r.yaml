@@ -465,6 +465,7 @@ items:
       title: 'Q3 statistic based on pearson correlation'
       type: Table
       rows: 1
+      visible: (q3)
       clearWith:
         - vars
         - step

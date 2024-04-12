@@ -1085,6 +1085,7 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 name="q3",
                 title="Q3 statistic based on pearson correlation",
                 rows=1,
+                visible="(q3)",
                 clearWith=list(
                     "vars",
                     "step",

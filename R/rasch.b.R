@@ -503,8 +503,8 @@ raschClass <- if (requireNamespace('jmvcore'))
           
         }
         
-      
-        if(self$options$rsm==TRUE || self$options$mlsplit1==TRUE || self$options$plot2==TRUE){
+        if(self$options$step >1){
+       # if(self$options$rsm==TRUE || self$options$mlsplit1==TRUE || self$options$plot2==TRUE){
      
        ########################################
         
