@@ -53,7 +53,7 @@ options:
     - name: binfit
       title: Infit
       type: Bool
-      default: false
+      default: TRUE
       
     - name: boutfit
       title: Outfit

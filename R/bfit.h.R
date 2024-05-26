@@ -11,7 +11,7 @@ bfitOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             vars1 = NULL,
             step = 1,
             bn = 100,
-            binfit = FALSE,
+            binfit = TRUE,
             boutfit = FALSE,
             inplot = FALSE,
             outplot = FALSE,
@@ -64,7 +64,7 @@ bfitOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             private$..binfit <- jmvcore::OptionBool$new(
                 "binfit",
                 binfit,
-                default=FALSE)
+                default=TRUE)
             private$..boutfit <- jmvcore::OptionBool$new(
                 "boutfit",
                 boutfit,
@@ -231,7 +231,7 @@ bfitResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                             columns=list(
                                 list(
                                     `name`="name", 
-                                    `title`="", 
+                                    `title`="Item", 
                                     `type`="text", 
                                     `content`="($key)"),
                                 list(
@@ -262,7 +262,7 @@ bfitResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                             columns=list(
                                 list(
                                     `name`="name", 
-                                    `title`="", 
+                                    `title`="Item", 
                                     `type`="text", 
                                     `content`="($key)"),
                                 list(
@@ -327,7 +327,7 @@ bfitResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 columns=list(
                     list(
                         `name`="name", 
-                        `title`="", 
+                        `title`="Item", 
                         `type`="text", 
                         `content`="($key)"),
                     list(
@@ -356,7 +356,7 @@ bfitResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 columns=list(
                     list(
                         `name`="name", 
-                        `title`="", 
+                        `title`="Item", 
                         `type`="text", 
                         `content`="($key)"),
                     list(
@@ -439,7 +439,7 @@ bfit <- function(
     vars1,
     step = 1,
     bn = 100,
-    binfit = FALSE,
+    binfit = TRUE,
     boutfit = FALSE,
     inplot = FALSE,
     outplot = FALSE,

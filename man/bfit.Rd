@@ -11,7 +11,7 @@ bfit(
   vars1,
   step = 1,
   bn = 100,
-  binfit = FALSE,
+  binfit = TRUE,
   boutfit = FALSE,
   inplot = FALSE,
   outplot = FALSE,
@@ -19,7 +19,7 @@ bfit(
   type = "bi",
   adj = "BH",
   bn1 = 100,
-  outfit = FALSE,
+  outfit = TRUE,
   infit = FALSE,
   width = 500,
   height = 500

@@ -27,7 +27,7 @@ items:
             - angle
           columns:
             - name: name
-              title: ''
+              title: 'Item'
               type: 'text'
               content: ($key)
             - name: infit
@@ -54,7 +54,7 @@ items:
             - angle
           columns:
             - name: name
-              title: ''
+              title: 'Item'
               type: 'text'
               content: ($key)
             - name: outfit
@@ -116,7 +116,7 @@ items:
         
       columns:
         - name: name
-          title: ''
+          title: 'Item'
           type: 'text'
           content: ($key)
 
@@ -145,7 +145,7 @@ items:
         
       columns:
         - name: name
-          title: ''
+          title: 'Item'
           type: 'text'
           content: ($key)
 
