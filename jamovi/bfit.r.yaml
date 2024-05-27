@@ -160,4 +160,52 @@ items:
           title: Adj.p
           format: zto,pvalue
 
+    - name: noutfit
+      title:  'Bootstrap Outfit Statistics: No correction'
+      type: Table
+      visible: (noutfit)
+      rows: (vars1)
+      clearWith:
+        - vars1
+        - type
+        - bn1
+      refs: iarm
+        
+      columns:
+        - name: name
+          title: 'Item'
+          type: 'text'
+          content: ($key)
+
+        - name: fit
+          title: Outfit
+        
+        - name: p
+          title: p
+          format: zto,pvalue
+ 
+    - name: ninfit
+      title: 'Bootstrap Infit Statistics: No correction'
+      type: Table
+      visible: (ninfit)
+      rows: (vars1)
+      clearWith:
+        - vars1
+        - type
+        - bn1
+      refs: iarm
+        
+      columns:
+        - name: name
+          title: 'Item'
+          type: 'text'
+          content: ($key)
+
+        - name: fit
+          title: Infit
+        
+        - name: p
+          title: p
+          format: zto,pvalue
+          
 ...

@@ -17,10 +17,13 @@ bfit(
   outplot = FALSE,
   angle = 0,
   type = "bi",
-  adj = "BH",
+  adj,
   bn1 = 100,
-  outfit = TRUE,
+  outfit = FALSE,
   infit = FALSE,
+  noc = TRUE,
+  noutfit = TRUE,
+  ninfit = FALSE,
   width = 500,
   height = 500
 )
@@ -58,6 +61,12 @@ bfit(
 
 \item{infit}{.}
 
+\item{noc}{.}
+
+\item{noutfit}{.}
+
+\item{ninfit}{.}
+
 \item{width}{.}
 
 \item{height}{.}
@@ -73,6 +82,8 @@ A results object containing:
   \code{results$instructions1} \tab \tab \tab \tab \tab a html \cr
   \code{results$outfit} \tab \tab \tab \tab \tab a table \cr
   \code{results$infit} \tab \tab \tab \tab \tab a table \cr
+  \code{results$noutfit} \tab \tab \tab \tab \tab a table \cr
+  \code{results$ninfit} \tab \tab \tab \tab \tab a table \cr
 }
 
 Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:

@@ -88,7 +88,7 @@ options:
       default: bi
 
     - name: adj
-      title: Correction method
+      title: 'Methods'
       type: List
       options:
         - title: BH
@@ -103,8 +103,7 @@ options:
           name:  bonferroni
         - title: BY
           name:  BY 
-      default: BH
- 
+
     - name: bn1
       title: Bootstrap N
       type: Integer
@@ -117,6 +116,21 @@ options:
       default: false
 
     - name: infit
+      title: Infit
+      type: Bool
+      default: false
+
+    - name: noc 
+      title: 'No correction'
+      type: Bool
+      default: TRUE
+
+    - name: noutfit 
+      title: Outfit
+      type: Bool
+      default: TRUE
+
+    - name: ninfit
       title: Infit
       type: Bool
       default: false

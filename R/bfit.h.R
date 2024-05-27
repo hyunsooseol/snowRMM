@@ -17,10 +17,13 @@ bfitOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             outplot = FALSE,
             angle = 0,
             type = "bi",
-            adj = "BH",
+            adj = NULL,
             bn1 = 100,
             outfit = FALSE,
             infit = FALSE,
+            noc = TRUE,
+            noutfit = TRUE,
+            ninfit = FALSE,
             width = 500,
             height = 500, ...) {
 
@@ -99,8 +102,7 @@ bfitOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "hochberg",
                     "hommel",
                     "bonferroni",
-                    "BY"),
-                default="BH")
+                    "BY"))
             private$..bn1 <- jmvcore::OptionInteger$new(
                 "bn1",
                 bn1,
@@ -113,6 +115,18 @@ bfitOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             private$..infit <- jmvcore::OptionBool$new(
                 "infit",
                 infit,
+                default=FALSE)
+            private$..noc <- jmvcore::OptionBool$new(
+                "noc",
+                noc,
+                default=TRUE)
+            private$..noutfit <- jmvcore::OptionBool$new(
+                "noutfit",
+                noutfit,
+                default=TRUE)
+            private$..ninfit <- jmvcore::OptionBool$new(
+                "ninfit",
+                ninfit,
                 default=FALSE)
             private$..width <- jmvcore::OptionInteger$new(
                 "width",
@@ -138,6 +152,9 @@ bfitOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..bn1)
             self$.addOption(private$..outfit)
             self$.addOption(private$..infit)
+            self$.addOption(private$..noc)
+            self$.addOption(private$..noutfit)
+            self$.addOption(private$..ninfit)
             self$.addOption(private$..width)
             self$.addOption(private$..height)
         }),
@@ -157,6 +174,9 @@ bfitOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         bn1 = function() private$..bn1$value,
         outfit = function() private$..outfit$value,
         infit = function() private$..infit$value,
+        noc = function() private$..noc$value,
+        noutfit = function() private$..noutfit$value,
+        ninfit = function() private$..ninfit$value,
         width = function() private$..width$value,
         height = function() private$..height$value),
     private = list(
@@ -175,6 +195,9 @@ bfitOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..bn1 = NA,
         ..outfit = NA,
         ..infit = NA,
+        ..noc = NA,
+        ..noutfit = NA,
+        ..ninfit = NA,
         ..width = NA,
         ..height = NA)
 )
@@ -189,7 +212,9 @@ bfitResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         outplot = function() private$.items[["outplot"]],
         instructions1 = function() private$.items[["instructions1"]],
         outfit = function() private$.items[["outfit"]],
-        infit = function() private$.items[["infit"]]),
+        infit = function() private$.items[["infit"]],
+        noutfit = function() private$.items[["noutfit"]],
+        ninfit = function() private$.items[["ninfit"]]),
     private = list(),
     public=list(
         initialize=function(options) {
@@ -369,6 +394,54 @@ bfitResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     list(
                         `name`="adp", 
                         `title`="Adj.p", 
+                        `format`="zto,pvalue"))))
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="noutfit",
+                title="Bootstrap Outfit Statistics: No correction",
+                visible="(noutfit)",
+                rows="(vars1)",
+                clearWith=list(
+                    "vars1",
+                    "type",
+                    "bn1"),
+                refs="iarm",
+                columns=list(
+                    list(
+                        `name`="name", 
+                        `title`="Item", 
+                        `type`="text", 
+                        `content`="($key)"),
+                    list(
+                        `name`="fit", 
+                        `title`="Outfit"),
+                    list(
+                        `name`="p", 
+                        `title`="p", 
+                        `format`="zto,pvalue"))))
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="ninfit",
+                title="Bootstrap Infit Statistics: No correction",
+                visible="(ninfit)",
+                rows="(vars1)",
+                clearWith=list(
+                    "vars1",
+                    "type",
+                    "bn1"),
+                refs="iarm",
+                columns=list(
+                    list(
+                        `name`="name", 
+                        `title`="Item", 
+                        `type`="text", 
+                        `content`="($key)"),
+                    list(
+                        `name`="fit", 
+                        `title`="Infit"),
+                    list(
+                        `name`="p", 
+                        `title`="p", 
                         `format`="zto,pvalue"))))}))
 
 bfitBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -411,6 +484,9 @@ bfitBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param bn1 .
 #' @param outfit .
 #' @param infit .
+#' @param noc .
+#' @param noutfit .
+#' @param ninfit .
 #' @param width .
 #' @param height .
 #' @return A results object containing:
@@ -423,6 +499,8 @@ bfitBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$instructions1} \tab \tab \tab \tab \tab a html \cr
 #'   \code{results$outfit} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$infit} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$noutfit} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$ninfit} \tab \tab \tab \tab \tab a table \cr
 #' }
 #'
 #' Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
@@ -445,10 +523,13 @@ bfit <- function(
     outplot = FALSE,
     angle = 0,
     type = "bi",
-    adj = "BH",
+    adj,
     bn1 = 100,
     outfit = FALSE,
     infit = FALSE,
+    noc = TRUE,
+    noutfit = TRUE,
+    ninfit = FALSE,
     width = 500,
     height = 500) {
 
@@ -480,6 +561,9 @@ bfit <- function(
         bn1 = bn1,
         outfit = outfit,
         infit = infit,
+        noc = noc,
+        noutfit = noutfit,
+        ninfit = ninfit,
         width = width,
         height = height)
 

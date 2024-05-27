@@ -54,23 +54,17 @@ bfitClass <- if (requireNamespace('jmvcore'))
         )
         
         if(isTRUE(self$options$inplot)){
-          
           width <- self$options$width
           height <- self$options$height
-         
           self$results$inplot$setSize(width, height)
         }
-        
-        
+
         if(isTRUE(self$options$outplot)){
-          
           width <- self$options$width
           height <- self$options$height
-         
           self$results$outplot$setSize(width, height)
         }
-        
-        
+
         }
         
         if(self$options$mode=="complex"){
@@ -123,35 +117,77 @@ bfitClass <- if (requireNamespace('jmvcore'))
           
           if (is.null(self$options$vars1) |
               length(self$options$vars1) < 2) return()
-         
-          
+
           data <- self$data
           data <- na.omit(data)
-          
           vars1 <- self$options$vars1
-          
           bn1 <- self$options$bn1
-          
           type <- self$options$type
-          
           adj <- self$options$adj
-          
-          # boot fit with RM an PCM ------
+          noc <- self$options$noc
+
+if(type=='bi'){
+  obj<- eRm::RM(data)
+} 
+if(type=='ra'){
+  obj<- eRm::PCM(data)
+}
+
+if(noc== TRUE){
+  
+  fit<- iarm::boot_fit(obj,B=bn1,p.adj='none')
+  
+  #Outfit-----------------
+  table <- self$results$noutfit
+  
+  outfit<- fit[[1]][,1]
+  outfit<- as.vector(outfit)
+  
+  pvalue<- fit[[1]][,2]
+  pvalue<- as.vector(pvalue)
+ 
+  for(i in seq_along(vars1)){
+    row <- list()
+    row[["fit"]] <- outfit[i]
+    row[["p"]] <- pvalue[i]
+    table$setRow(rowKey = vars1[i], values = row)
+  }
+  
+# Infit-------------
+  table <- self$results$ninfit
+  
+  infit<- fit[[1]][,3]
+  infit<- as.vector(infit)
+  
+  pvalue<- fit[[1]][,4]
+  pvalue<- as.vector(pvalue)
+  
+ for(i in seq_along(vars1)){
+    
+    row <- list()
+    row[["fit"]] <- infit[i]
+    row[["p"]] <- pvalue[i]
+    table$setRow(rowKey = vars1[i], values = row)
+  }
+
+}          
+ 
+
+###################################################################          
+# Correction methods was made------------------------------------
           
           if(self$options$type=='bi'){ 
             
             obj<- eRm::RM(data)
-            
             fit<- iarm::boot_fit(obj,B=bn1,p.adj=adj)
             
-          }else{
+          } else{
             
             obj<- eRm::PCM(data)
-            
             fit<- iarm::boot_fit(obj,B=bn1,p.adj=adj)
           }
           
-          # cREATING TABLE------------
+          # Outfit------------
           
           table <- self$results$outfit
           
@@ -163,23 +199,16 @@ bfitClass <- if (requireNamespace('jmvcore'))
           
           padj<- fit[[1]][,3]
           padj<- as.vector(padj)
-          
-          
+
           for(i in seq_along(vars1)){
-            
             row <- list()
-            
             row[["fit"]] <- outfit[i]
-            
             row[["p"]] <- pvalue[i]
-            
             row[["adp"]] <- padj[i]
-            
             table$setRow(rowKey = vars1[i], values = row)
-            
           }
           
-          
+        # Infit table-------------          
           table <- self$results$infit
           
           infit<- fit[[1]][,4]
@@ -190,25 +219,18 @@ bfitClass <- if (requireNamespace('jmvcore'))
           
           padj<- fit[[1]][,6]
           padj<- as.vector(padj)
-          
-          
+
           for(i in seq_along(vars1)){
-            
             row <- list()
-            
             row[["fit"]] <- infit[i]
-            
             row[["p"]] <- pvalue[i]
-            
             row[["adp"]] <- padj[i]
-            
             table$setRow(rowKey = vars1[i], values = row)
-            
           }
-          
-          
-          
+
         }
+        
+        
         
         ### Caution ####
         
@@ -218,10 +240,8 @@ bfitClass <- if (requireNamespace('jmvcore'))
         # get variables-------
         
         data <- self$data
-        
         vars <- self$options$vars
-        
-        
+
         # Ready--------
         
         ready <- TRUE
@@ -234,20 +254,14 @@ bfitClass <- if (requireNamespace('jmvcore'))
         if (ready) {
           
           data <- private$.cleanData()
-          
           results <- private$.compute(data)
-          
-          
+
           # populate Boot Fit table-------------
-          
           private$.populateInTable(results)
-          
           private$.populateOutTable(results)
           
           # plot------
-          
           private$.prepareInPlot(results)
-          
           private$.prepareOutPlot(results)
         }
       },
@@ -255,17 +269,11 @@ bfitClass <- if (requireNamespace('jmvcore'))
       .compute = function(data) {
         
         # get variables--------
-        
         # data <- self$data
-        
         vars <- self$options$vars
-        
         step <- self$options$step
-        
         bn <- self$options$bn
-        
-        #######################
-        
+
         # Define bootstrapped infit and outfit statistic functions
         boot.stat <- function(data, indices, stat) {
           d = data[indices,]
@@ -482,21 +490,16 @@ bfitClass <- if (requireNamespace('jmvcore'))
       
       
       # Populate boot table------------
-      
       .populateInTable = function(results) {
-        
+
         table <- self$results$item$binfit
-        
         vars <- self$options$vars
-        
         bn <- self$options$bn
         
         # results------
-        
         infit <- results$infit
         infitlow <- results$infitlow
         infithigh <- results$infithigh
-        
         
         for (i in seq_along(vars)) {
           row <- list()
@@ -504,25 +507,19 @@ bfitClass <- if (requireNamespace('jmvcore'))
           row[["infit"]] <- infit[i]
           row[["infitlow"]] <- infitlow[i]
           row[["infithigh"]] <- infithigh[i]
-          
-          
+
           table$setRow(rowKey = vars[i], values = row)
           
         }
       },
       
-      
-      
       .populateOutTable = function(results) {
         
         table <- self$results$item$boutfit
-        
         vars <- self$options$vars
-        
         outfit <- results$outfit
         outfitlow <- results$outfitlow
         outfithigh <- results$outfithigh
-        
         
         for (i in seq_along(vars)) {
           row <- list()
@@ -530,20 +527,16 @@ bfitClass <- if (requireNamespace('jmvcore'))
           row[["outfit"]] <- outfit[i]
           row[['outfitlow']] <- outfitlow[i]
           row[['outfithigh']] <- outfithigh[i]
-          
-          
+
           table$setRow(rowKey = vars[i], values = row)
-          
         }
       },
-      
       
       # prepare confidence interval plot-----------
       
       .prepareInPlot = function(results) {
         
         inplot <- self$results$inplot
-        
         item <- self$options$vars
         
         infit <- results$infit
@@ -551,19 +544,13 @@ bfitClass <- if (requireNamespace('jmvcore'))
         infithigh <- results$infithigh
         
         infit1 <- data.frame(item,infit, infitlow, infithigh)
-        
-        
         #  self$results$text1$setContent(infit1) 
-        
-        
         image <- self$results$inplot
         image$setState(infit1)
-        
-        
+
       },
       
       .inPlot = function(image, ggtheme, theme,...) {
-        
         
         inplot <- self$options$inplot
         
@@ -586,8 +573,7 @@ bfitClass <- if (requireNamespace('jmvcore'))
             )
           )
         }
-        
-        
+
         print(plot)
         TRUE
         
@@ -611,8 +597,7 @@ bfitClass <- if (requireNamespace('jmvcore'))
         
         image <- self$results$outplot
         image$setState(outfit1)
-        
-        
+
       },
       
       .outPlot = function(image, ggtheme, theme,...) {
