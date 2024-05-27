@@ -17,9 +17,9 @@ options:
       type: List
       options:
             - name: simple
-              title: 'Item Fit'
+              title: 'Item fit'
             - name: complex
-              title: 'With P values'
+              title: 'With p values'
       default: simple
 
     - name: vars

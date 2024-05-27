@@ -80,17 +80,17 @@ A results object containing:
   \code{results$inplot} \tab \tab \tab \tab \tab an image \cr
   \code{results$outplot} \tab \tab \tab \tab \tab an image \cr
   \code{results$instructions1} \tab \tab \tab \tab \tab a html \cr
-  \code{results$outfit} \tab \tab \tab \tab \tab a table \cr
-  \code{results$infit} \tab \tab \tab \tab \tab a table \cr
   \code{results$noutfit} \tab \tab \tab \tab \tab a table \cr
   \code{results$ninfit} \tab \tab \tab \tab \tab a table \cr
+  \code{results$outfit} \tab \tab \tab \tab \tab a table \cr
+  \code{results$infit} \tab \tab \tab \tab \tab a table \cr
 }
 
 Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
 
-\code{results$outfit$asDF}
+\code{results$noutfit$asDF}
 
-\code{as.data.frame(results$outfit)}
+\code{as.data.frame(results$noutfit)}
 }
 \description{
 Bootstrap Item Fit

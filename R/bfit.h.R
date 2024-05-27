@@ -211,10 +211,10 @@ bfitResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         inplot = function() private$.items[["inplot"]],
         outplot = function() private$.items[["outplot"]],
         instructions1 = function() private$.items[["instructions1"]],
-        outfit = function() private$.items[["outfit"]],
-        infit = function() private$.items[["infit"]],
         noutfit = function() private$.items[["noutfit"]],
-        ninfit = function() private$.items[["ninfit"]]),
+        ninfit = function() private$.items[["ninfit"]],
+        outfit = function() private$.items[["outfit"]],
+        infit = function() private$.items[["infit"]]),
     private = list(),
     public=list(
         initialize=function(options) {
@@ -333,10 +333,58 @@ bfitResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Html$new(
                 options=options,
                 name="instructions1",
-                title="Bootstrap Item Fit with P values",
+                title="Bootstrap Item Fit with p values",
                 visible=TRUE,
                 clearWith=list(
                     "mode")))
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="noutfit",
+                title="Bootstrap Outfit Statistics: No correction",
+                visible="(noutfit)",
+                rows="(vars1)",
+                clearWith=list(
+                    "vars1",
+                    "type",
+                    "bn1"),
+                refs="iarm",
+                columns=list(
+                    list(
+                        `name`="name", 
+                        `title`="Item", 
+                        `type`="text", 
+                        `content`="($key)"),
+                    list(
+                        `name`="fit", 
+                        `title`="Outfit"),
+                    list(
+                        `name`="p", 
+                        `title`="p", 
+                        `format`="zto,pvalue"))))
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="ninfit",
+                title="Bootstrap Infit Statistics: No correction",
+                visible="(ninfit)",
+                rows="(vars1)",
+                clearWith=list(
+                    "vars1",
+                    "type",
+                    "bn1"),
+                refs="iarm",
+                columns=list(
+                    list(
+                        `name`="name", 
+                        `title`="Item", 
+                        `type`="text", 
+                        `content`="($key)"),
+                    list(
+                        `name`="fit", 
+                        `title`="Infit"),
+                    list(
+                        `name`="p", 
+                        `title`="p", 
+                        `format`="zto,pvalue"))))
             self$add(jmvcore::Table$new(
                 options=options,
                 name="outfit",
@@ -394,54 +442,6 @@ bfitResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     list(
                         `name`="adp", 
                         `title`="Adj.p", 
-                        `format`="zto,pvalue"))))
-            self$add(jmvcore::Table$new(
-                options=options,
-                name="noutfit",
-                title="Bootstrap Outfit Statistics: No correction",
-                visible="(noutfit)",
-                rows="(vars1)",
-                clearWith=list(
-                    "vars1",
-                    "type",
-                    "bn1"),
-                refs="iarm",
-                columns=list(
-                    list(
-                        `name`="name", 
-                        `title`="Item", 
-                        `type`="text", 
-                        `content`="($key)"),
-                    list(
-                        `name`="fit", 
-                        `title`="Outfit"),
-                    list(
-                        `name`="p", 
-                        `title`="p", 
-                        `format`="zto,pvalue"))))
-            self$add(jmvcore::Table$new(
-                options=options,
-                name="ninfit",
-                title="Bootstrap Infit Statistics: No correction",
-                visible="(ninfit)",
-                rows="(vars1)",
-                clearWith=list(
-                    "vars1",
-                    "type",
-                    "bn1"),
-                refs="iarm",
-                columns=list(
-                    list(
-                        `name`="name", 
-                        `title`="Item", 
-                        `type`="text", 
-                        `content`="($key)"),
-                    list(
-                        `name`="fit", 
-                        `title`="Infit"),
-                    list(
-                        `name`="p", 
-                        `title`="p", 
                         `format`="zto,pvalue"))))}))
 
 bfitBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -497,17 +497,17 @@ bfitBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$inplot} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$outplot} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$instructions1} \tab \tab \tab \tab \tab a html \cr
-#'   \code{results$outfit} \tab \tab \tab \tab \tab a table \cr
-#'   \code{results$infit} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$noutfit} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$ninfit} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$outfit} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$infit} \tab \tab \tab \tab \tab a table \cr
 #' }
 #'
 #' Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
 #'
-#' \code{results$outfit$asDF}
+#' \code{results$noutfit$asDF}
 #'
-#' \code{as.data.frame(results$outfit)}
+#' \code{as.data.frame(results$noutfit)}
 #'
 #' @export
 bfit <- function(

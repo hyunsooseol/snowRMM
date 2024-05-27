@@ -171,18 +171,18 @@ if(noc== TRUE){
   }
 
 }          
- 
+
 
 ###################################################################          
 # Correction methods was made------------------------------------
           
-          if(self$options$type=='bi'){ 
-            
+          if(self$options$type=='bi'){
+
             obj<- eRm::RM(data)
             fit<- iarm::boot_fit(obj,B=bn1,p.adj=adj)
-            
+
           } else{
-            
+
             obj<- eRm::PCM(data)
             fit<- iarm::boot_fit(obj,B=bn1,p.adj=adj)
           }
@@ -207,7 +207,6 @@ if(noc== TRUE){
             row[["adp"]] <- padj[i]
             table$setRow(rowKey = vars1[i], values = row)
           }
-          
         # Infit table-------------          
           table <- self$results$infit
           
@@ -230,19 +229,19 @@ if(noc== TRUE){
 
         }
         
+         
         
+ ### Caution ####
         
-        ### Caution ####
+ # When the estimates  do not converged(for example, all 0 or 1)
+ # The error message will be shown (number of items to replace is not a multiple of replacement length)
         
-        # When the estimates  do not converged(for example, all 0 or 1)
-        # The error message will be shown (number of items to replace is not a multiple of replacement length)
-        
-        # get variables-------
+ # get variables-------
         
         data <- self$data
         vars <- self$options$vars
 
-        # Ready--------
+ # Ready--------
         
         ready <- TRUE
         
