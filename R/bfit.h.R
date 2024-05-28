@@ -17,11 +17,11 @@ bfitOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             outplot = FALSE,
             angle = 0,
             type = "bi",
+            co = "yes",
             adj = NULL,
             bn1 = 100,
             outfit = FALSE,
             infit = FALSE,
-            noc = TRUE,
             noutfit = TRUE,
             ninfit = FALSE,
             width = 500,
@@ -93,6 +93,13 @@ bfitOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "bi",
                     "ra"),
                 default="bi")
+            private$..co <- jmvcore::OptionList$new(
+                "co",
+                co,
+                options=list(
+                    "yes",
+                    "no"),
+                default="yes")
             private$..adj <- jmvcore::OptionList$new(
                 "adj",
                 adj,
@@ -116,10 +123,6 @@ bfitOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "infit",
                 infit,
                 default=FALSE)
-            private$..noc <- jmvcore::OptionBool$new(
-                "noc",
-                noc,
-                default=TRUE)
             private$..noutfit <- jmvcore::OptionBool$new(
                 "noutfit",
                 noutfit,
@@ -148,11 +151,11 @@ bfitOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..outplot)
             self$.addOption(private$..angle)
             self$.addOption(private$..type)
+            self$.addOption(private$..co)
             self$.addOption(private$..adj)
             self$.addOption(private$..bn1)
             self$.addOption(private$..outfit)
             self$.addOption(private$..infit)
-            self$.addOption(private$..noc)
             self$.addOption(private$..noutfit)
             self$.addOption(private$..ninfit)
             self$.addOption(private$..width)
@@ -170,11 +173,11 @@ bfitOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         outplot = function() private$..outplot$value,
         angle = function() private$..angle$value,
         type = function() private$..type$value,
+        co = function() private$..co$value,
         adj = function() private$..adj$value,
         bn1 = function() private$..bn1$value,
         outfit = function() private$..outfit$value,
         infit = function() private$..infit$value,
-        noc = function() private$..noc$value,
         noutfit = function() private$..noutfit$value,
         ninfit = function() private$..ninfit$value,
         width = function() private$..width$value,
@@ -191,11 +194,11 @@ bfitOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..outplot = NA,
         ..angle = NA,
         ..type = NA,
+        ..co = NA,
         ..adj = NA,
         ..bn1 = NA,
         ..outfit = NA,
         ..infit = NA,
-        ..noc = NA,
         ..noutfit = NA,
         ..ninfit = NA,
         ..width = NA,
@@ -346,7 +349,8 @@ bfitResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 clearWith=list(
                     "vars1",
                     "type",
-                    "bn1"),
+                    "bn1",
+                    "co"),
                 refs="iarm",
                 columns=list(
                     list(
@@ -370,7 +374,8 @@ bfitResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 clearWith=list(
                     "vars1",
                     "type",
-                    "bn1"),
+                    "bn1",
+                    "co"),
                 refs="iarm",
                 columns=list(
                     list(
@@ -480,11 +485,11 @@ bfitBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param outplot .
 #' @param angle .
 #' @param type .
+#' @param co .
 #' @param adj .
 #' @param bn1 .
 #' @param outfit .
 #' @param infit .
-#' @param noc .
 #' @param noutfit .
 #' @param ninfit .
 #' @param width .
@@ -523,11 +528,11 @@ bfit <- function(
     outplot = FALSE,
     angle = 0,
     type = "bi",
+    co = "yes",
     adj,
     bn1 = 100,
     outfit = FALSE,
     infit = FALSE,
-    noc = TRUE,
     noutfit = TRUE,
     ninfit = FALSE,
     width = 500,
@@ -557,11 +562,11 @@ bfit <- function(
         outplot = outplot,
         angle = angle,
         type = type,
+        co = co,
         adj = adj,
         bn1 = bn1,
         outfit = outfit,
         infit = infit,
-        noc = noc,
         noutfit = noutfit,
         ninfit = ninfit,
         width = width,

@@ -111,6 +111,7 @@ items:
         - vars1
         - type
         - bn1
+        - co
       refs: iarm
         
       columns:
@@ -135,6 +136,7 @@ items:
         - vars1
         - type
         - bn1
+        - co
       refs: iarm
         
       columns:

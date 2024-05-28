@@ -124,7 +124,7 @@ bfitClass <- if (requireNamespace('jmvcore'))
           bn1 <- self$options$bn1
           type <- self$options$type
           adj <- self$options$adj
-          noc <- self$options$noc
+          co <- self$options$co
 
 if(type=='bi'){
   obj<- eRm::RM(data)
@@ -133,7 +133,9 @@ if(type=='ra'){
   obj<- eRm::PCM(data)
 }
 
-if(noc== TRUE){
+if(co== 'yes'){
+  
+  if(self$options$co=='no') return()
   
   fit<- iarm::boot_fit(obj,B=bn1,p.adj='none')
   

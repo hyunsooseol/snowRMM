@@ -87,6 +87,16 @@ options:
         title: 'Rating'
       default: bi
 
+    - name: co
+      title: 'Correction'
+      type: List
+      options:
+      - name: yes
+        title: 'yes'
+      - name: no
+        title: 'no'
+      default: yes
+
     - name: adj
       title: 'Methods'
       type: List
@@ -119,11 +129,6 @@ options:
       title: Infit
       type: Bool
       default: false
-
-    - name: noc 
-      title: 'No correction'
-      type: Bool
-      default: TRUE
 
     - name: noutfit 
       title: Outfit

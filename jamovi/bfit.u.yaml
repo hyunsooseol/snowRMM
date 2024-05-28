@@ -129,40 +129,14 @@ children:
                 margin: large
                 children:
                   - type: Label
-                    label: 'No correction'
+                    label: No correction
                     children:
-                      - type: CheckBox
-                        name: noc
+                      - type: ComboBox
+                        name: co
                       - type: CheckBox
                         name: noutfit
                       - type: CheckBox
                         name: ninfit
-
-                      # - type: RadioButton
-                      #   name: adj_BH
-                      #   optionName: adj
-                      #   optionPart: BH
-                      # - type: RadioButton
-                      #   name: adj_holm
-                      #   optionName: adj
-                      #   optionPart: holm
-                      # - type: RadioButton
-                      #   name: adj_hochberg
-                      #   optionName: adj
-                      #   optionPart: hochberg
-                      # - type: RadioButton
-                      #   name: adj_hommel
-                      #   optionName: adj
-                      #   optionPart: hommel
-                      # - type: RadioButton
-                      #   name: adj_bonferroni
-                      #   optionName: adj
-                      #   optionPart: bonferroni
-                      # - type: RadioButton
-                      #   name: adj_BY
-                      #   optionName: adj
-                      #   optionPart: BY
-
               - type: LayoutBox
                 margin: large
                 cell:
@@ -171,7 +145,7 @@ children:
                 stretchFactor: 1
                 children:
                   - type: Label
-                    label: 'Correction'
+                    label: Correction
                     children:
                       - type: ComboBox
                         name: adj
@@ -179,3 +153,4 @@ children:
                         name: outfit
                       - type: CheckBox
                         name: infit
+ 

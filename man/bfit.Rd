@@ -17,11 +17,11 @@ bfit(
   outplot = FALSE,
   angle = 0,
   type = "bi",
+  co = "yes",
   adj,
   bn1 = 100,
   outfit = FALSE,
   infit = FALSE,
-  noc = TRUE,
   noutfit = TRUE,
   ninfit = FALSE,
   width = 500,
@@ -53,6 +53,8 @@ bfit(
 
 \item{type}{.}
 
+\item{co}{.}
+
 \item{adj}{.}
 
 \item{bn1}{.}
@@ -60,8 +62,6 @@ bfit(
 \item{outfit}{.}
 
 \item{infit}{.}
-
-\item{noc}{.}
 
 \item{noutfit}{.}
 
