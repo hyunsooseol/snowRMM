@@ -30,7 +30,7 @@ children:
                 style: inline
                 children:
                   - type: Label
-                    label: Analysis option
+                    label: Analysis options
                     margin: large
                     style: list-inline
                     children:
@@ -52,7 +52,7 @@ children:
                     margin: large
                     children:
                       - type: Label
-                        label: Fit Measure
+                        label: Fit Measures
                         fitToGrid: true
                         cell:
                           column: 0
@@ -109,7 +109,7 @@ children:
             style: inline
             children:
               - type: Label
-                label: Analysis option
+                label: Analysis options
                 margin: large
                 style: list-inline
                 children:

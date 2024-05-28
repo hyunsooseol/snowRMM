@@ -17,9 +17,9 @@ options:
       type: List
       options:
             - name: simple
-              title: 'Item fit'
+              title: 'Confidence Interval'
             - name: complex
-              title: 'With p values'
+              title: 'p value'
       default: simple
 
     - name: vars
