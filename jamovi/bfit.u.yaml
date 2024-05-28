@@ -129,14 +129,17 @@ children:
                 margin: large
                 children:
                   - type: Label
-                    label: No correction
+                    label: 'No correction'
                     children:
-                      - type: ComboBox
-                        name: co
                       - type: CheckBox
-                        name: noutfit
-                      - type: CheckBox
-                        name: ninfit
+                        name: nco
+                        children:
+                          - type: CheckBox
+                            name: noutfit
+                            enable: (nco)
+                          - type: CheckBox
+                            name: ninfit
+                            enable: (nco)
               - type: LayoutBox
                 margin: large
                 cell:
@@ -145,7 +148,7 @@ children:
                 stretchFactor: 1
                 children:
                   - type: Label
-                    label: Correction
+                    label: 'Correction'
                     children:
                       - type: ComboBox
                         name: adj

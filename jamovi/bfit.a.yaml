@@ -19,7 +19,7 @@ options:
             - name: simple
               title: 'Confidence Interval'
             - name: complex
-              title: 'p value'
+              title: 'p Value'
       default: simple
 
     - name: vars
@@ -87,18 +87,8 @@ options:
         title: 'Rating'
       default: bi
 
-    - name: co
-      title: 'Correction'
-      type: List
-      options:
-      - name: yes
-        title: 'yes'
-      - name: no
-        title: 'no'
-      default: yes
-
     - name: adj
-      title: 'Methods'
+      title: 'Correction methods'
       type: List
       options:
         - title: BH
@@ -129,6 +119,11 @@ options:
       title: Infit
       type: Bool
       default: false
+
+    - name: nco
+      title: 'Run'
+      type: Bool
+      default: TRUE  
 
     - name: noutfit 
       title: Outfit

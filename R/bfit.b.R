@@ -124,19 +124,15 @@ bfitClass <- if (requireNamespace('jmvcore'))
           bn1 <- self$options$bn1
           type <- self$options$type
           adj <- self$options$adj
-          co <- self$options$co
+          nco <- self$options$nco
 
 if(type=='bi'){
   obj<- eRm::RM(data)
-} 
-if(type=='ra'){
+} else if(type=='ra'){
   obj<- eRm::PCM(data)
 }
 
-if(co== 'yes'){
-  
-  if(self$options$co=='no') return()
-  
+if(nco== TRUE){
   fit<- iarm::boot_fit(obj,B=bn1,p.adj='none')
   
   #Outfit-----------------
@@ -172,22 +168,22 @@ if(co== 'yes'){
     table$setRow(rowKey = vars1[i], values = row)
   }
 
-}          
+} else{        
 
-
+  fit<- iarm::boot_fit(obj,B=bn1,p.adj=adj)
 ###################################################################          
 # Correction methods was made------------------------------------
           
-          if(self$options$type=='bi'){
-
-            obj<- eRm::RM(data)
-            fit<- iarm::boot_fit(obj,B=bn1,p.adj=adj)
-
-          } else{
-
-            obj<- eRm::PCM(data)
-            fit<- iarm::boot_fit(obj,B=bn1,p.adj=adj)
-          }
+          # if(type=='bi'){
+          # 
+          #   obj<- eRm::RM(data)
+          #   fit<- iarm::boot_fit(obj,B=bn1,p.adj=adj)
+          # 
+          # } else{
+          # 
+          #   obj<- eRm::PCM(data)
+          #   fit<- iarm::boot_fit(obj,B=bn1,p.adj=adj)
+          # }
           
           # Outfit------------
           
@@ -228,7 +224,7 @@ if(co== 'yes'){
             row[["adp"]] <- padj[i]
             table$setRow(rowKey = vars1[i], values = row)
           }
-
+}
         }
         
          
