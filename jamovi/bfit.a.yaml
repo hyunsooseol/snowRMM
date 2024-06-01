@@ -113,27 +113,27 @@ options:
     - name: outfit 
       title: Outfit
       type: Bool
-      default: false
+      default: TRUE
 
     - name: infit
       title: Infit
       type: Bool
-      default: false
+      default: TRUE
 
     - name: nco
       title: 'Run'
       type: Bool
-      default: TRUE  
+      default: FALSE  
 
     - name: noutfit 
       title: Outfit
       type: Bool
-      default: TRUE
+      default: FALSE
 
     - name: ninfit
       title: Infit
       type: Bool
-      default: false
+      default: FALSE
 
     - name: width
       type: Integer

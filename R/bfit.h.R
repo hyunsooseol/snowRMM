@@ -19,10 +19,10 @@ bfitOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             type = "bi",
             adj = NULL,
             bn1 = 100,
-            outfit = FALSE,
-            infit = FALSE,
-            nco = TRUE,
-            noutfit = TRUE,
+            outfit = TRUE,
+            infit = TRUE,
+            nco = FALSE,
+            noutfit = FALSE,
             ninfit = FALSE,
             width = 500,
             height = 500, ...) {
@@ -111,19 +111,19 @@ bfitOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             private$..outfit <- jmvcore::OptionBool$new(
                 "outfit",
                 outfit,
-                default=FALSE)
+                default=TRUE)
             private$..infit <- jmvcore::OptionBool$new(
                 "infit",
                 infit,
-                default=FALSE)
+                default=TRUE)
             private$..nco <- jmvcore::OptionBool$new(
                 "nco",
                 nco,
-                default=TRUE)
+                default=FALSE)
             private$..noutfit <- jmvcore::OptionBool$new(
                 "noutfit",
                 noutfit,
-                default=TRUE)
+                default=FALSE)
             private$..ninfit <- jmvcore::OptionBool$new(
                 "ninfit",
                 ninfit,
@@ -525,10 +525,10 @@ bfit <- function(
     type = "bi",
     adj,
     bn1 = 100,
-    outfit = FALSE,
-    infit = FALSE,
-    nco = TRUE,
-    noutfit = TRUE,
+    outfit = TRUE,
+    infit = TRUE,
+    nco = FALSE,
+    noutfit = FALSE,
     ninfit = FALSE,
     width = 500,
     height = 500) {
