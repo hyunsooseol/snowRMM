@@ -241,7 +241,7 @@ bfitResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         super$initialize(
                             options=options,
                             name="item",
-                            title="Bootstrap Analysis")
+                            title="")
                         self$add(jmvcore::Table$new(
                             options=options,
                             name="binfit",

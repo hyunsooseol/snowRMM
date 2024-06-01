@@ -41,10 +41,12 @@ bfitClass <- if (requireNamespace('jmvcore'))
             </head>
             <body>
             <div class='instructions'>
+            
+            <h2><b>Item Fit with Confidence interval</b></h2>
             <p>_____________________________________________________________________________________________</p>
             <p>1. The traditional Rasch model is performed by <b>mixRasch</b> R package using Jonint Maximum Liklihood(JML).</p>
-            <p>2. Specify <b>'Step'(number of category-1) and 'Bootstrap N'</b> in the 'Analysis option'.</p>
-            <p>3. Please, be patient. The bootstrapped confidence interval is <b>quite time-consuming !</b></p>
+            <p>2. Specify <b>'Step'(number of category-1) and 'Bootstrap N'</b> in the 'Analysis options'.</p>
+            <p>3. Please, be patient. The bootstrapped confidence interval is quite time-consuming.</p>
             <p>4. Feature requests and bug reports can be made on my <a href='https://github.com/hyunsooseol/snowRMM/issues'  target = '_blank'>GitHub</a>.</p>
             <p>_____________________________________________________________________________________________</p>
             
@@ -84,8 +86,8 @@ bfitClass <- if (requireNamespace('jmvcore'))
 
             <h2><b>Item Fit with P values</b></h2>
             <p>_____________________________________________________________________________________________</p>
-            <p>1. This analysis computes Bootstrapping P Values for Outfit and Infit Statistics.</p>
-            <p>2. Specify <b>Type and Bootstrap N</b> in the Analysis option.</p>
+            <p>1. Specify <b>Type and Bootstrap N</b> in the Analysis options.</p>
+            <p>2. To use the <b>correction methods</b>, uncheck the <b>Run</b> checkbox.</p>
             <p>3. A fitted Rasch model or Partial Credit Model in R package <b>eRm</b> is used to compute bootstrap fit statistics.</p>
             <p>4. Feature requests and bug reports can be made on my <a href='https://github.com/hyunsooseol/snowRMM/issues'  target = '_blank'>GitHub</a>.</p>
             <p>_____________________________________________________________________________________________</p>

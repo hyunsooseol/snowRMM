@@ -12,7 +12,7 @@ items:
         - mode
       
     - name: item
-      title: Bootstrap Analysis
+      title: ''
       type: Group
       items:
         - name: binfit
