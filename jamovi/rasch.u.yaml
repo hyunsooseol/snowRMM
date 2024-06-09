@@ -34,7 +34,7 @@ children:
           - type: ComboBox
             name: type
   - type: CollapseBox
-    label: 'Item Analysis(mixRasch R package)'
+    label: Item Analysis(mixRasch R package)
     margin: normal
     collapsed: true
     children:
@@ -81,7 +81,7 @@ children:
               - type: CheckBox
                 name: pbis
   - type: CollapseBox
-    label: 'Testing model(eRm R package)'
+    label: Testing model(eRm R package)
     margin: normal
     collapsed: true
     children:
@@ -128,7 +128,7 @@ children:
                     name: mlsplit1
                     enable: (ml1)
           - type: Label
-            label: 'Plot(Step=1)'
+            label: Plot(Step=1)
             children:
               - type: CheckBox
                 name: gofplot
@@ -145,7 +145,7 @@ children:
                     format: number
                     enable: (gofplot)
   - type: CollapseBox
-    label: 'Plots'
+    label: Plots
     margin: normal
     collapsed: true
     children:
@@ -161,7 +161,7 @@ children:
                 name: num
                 format: number
           - type: Label
-            label: 'Item Characteristic Curve(ICC)'
+            label: Item Characteristic Curve(ICC)
             fitToGrid: true
             children:
               - type: CheckBox
@@ -177,7 +177,7 @@ children:
                     format: number
                     enable: (plot1)
           - type: Label
-            label: "Category(Step>1)"
+            label: Category(Step>1)
             fitToGrid: true
             children:
               - type: CheckBox
@@ -199,7 +199,7 @@ children:
         fitToGrid: true
         children:
           - type: Label
-            label: 'Map'
+            label: Map
             children:
               - type: CheckBox
                 name: wrightmap
@@ -226,7 +226,7 @@ children:
                     format: number
                     enable: (piplot)
           - type: Label
-            label: 'Fit'
+            label: Fit
             children:
               - type: CheckBox
                 name: inplot
@@ -246,7 +246,7 @@ children:
                 name: height
                 format: number
   - type: CollapseBox
-    label: 'Person Analysis'
+    label: Person Analysis
     margin: normal
     collapsed: true
     children:
@@ -255,7 +255,7 @@ children:
         margin: large
         children:
           - type: Label
-            label: 'Person measures'
+            label: Person measures
             fitToGrid: true
             cell:
               column: 0
@@ -268,7 +268,7 @@ children:
               - type: Output
                 name: pse
           - type: Label
-            label: 'Person fit'
+            label: Person fit
             children:
               - type: Output
                 name: pinfit
@@ -295,7 +295,7 @@ children:
         fitToGrid: true
         children:
           - type: Label
-            label: 'Standardized residuals(eRm R package)'
+            label: Standardized residuals(eRm R package)
             children:
               - type: TextBox
                 name: num1
@@ -313,7 +313,7 @@ children:
                     format: number
                     enable: (plot8)
   - type: CollapseBox
-    label: 'Additional Outputs'
+    label: Additional Outputs
     margin: normal
     collapsed: true
     children:
@@ -322,7 +322,7 @@ children:
         margin: large
         children:
           - type: Label
-            label: 'Thresholds(eRm R package)'
+            label: Thresholds(eRm R package)
             fitToGrid: true
             cell:
               column: 0
@@ -333,7 +333,7 @@ children:
               - type: CheckBox
                 name: pcm
           - type: Label
-            label: 'Residual analysis(pairwise R package)'
+            label: Residual analysis(pairwise R package)
             fitToGrid: true
             cell:
               column: 1
@@ -359,3 +359,28 @@ children:
                   - type: ComboBox
                     name: res1
                     enable: (q3)
+  - type: CollapseBox
+    label: Nonparametric Rasch Model Tests
+    margin: normal
+    collapsed: true
+    children:
+      - type: LayoutBox
+        stretchFactor: 1
+        margin: large
+        children:
+          - type: Label
+            label: 'eRm-NP test(Step=1)'
+            fitToGrid: true
+            cell:
+              column: 0
+              row: 0
+            children:
+              - type: TextBox
+                name: matrix
+                format: number
+              - type: ComboBox
+                name: npmethod
+              - type: CheckBox
+                name: nptest
+
+

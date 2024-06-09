@@ -488,9 +488,11 @@ items:
           type: number  
   
     - name:  text
-      title: Rasch residual factor analysis
+      title: 'Rasch residual factor analysis'
       type:  Preformatted
 
-  
+    - name:  text1
+      title: 'Nonparametric Rasch Model Tests'
+      type:  Preformatted  
       
 ...

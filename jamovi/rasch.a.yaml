@@ -366,4 +366,26 @@ options:
       title: "X"
       default: 500
 
+    - name: nptest
+      title: 'NP test'
+      type: Bool
+      default: false
+
+    - name: matrix
+      title: 'Num. of matrices'
+      type: Integer
+      min: 100
+      default: 500
+
+    - name: npmethod
+      title: 'Method'
+      type: List
+      options:
+      - name: T1
+        title: 'Local dependence'
+      - name: T1m
+        title: 'Multidimensionality'
+      - name: T11
+        title: 'Global test for local dependency'
+      default: T11
 ...

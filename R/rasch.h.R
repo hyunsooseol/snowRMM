@@ -63,7 +63,10 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             plot8 = FALSE,
             num1 = 1,
             width8 = 500,
-            height8 = 500, ...) {
+            height8 = 500,
+            nptest = FALSE,
+            matrix = 500,
+            npmethod = "T11", ...) {
 
             super$initialize(
                 package="snowRMM",
@@ -347,6 +350,23 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "height8",
                 height8,
                 default=500)
+            private$..nptest <- jmvcore::OptionBool$new(
+                "nptest",
+                nptest,
+                default=FALSE)
+            private$..matrix <- jmvcore::OptionInteger$new(
+                "matrix",
+                matrix,
+                min=100,
+                default=500)
+            private$..npmethod <- jmvcore::OptionList$new(
+                "npmethod",
+                npmethod,
+                options=list(
+                    "T1",
+                    "T1m",
+                    "T11"),
+                default="T11")
 
             self$.addOption(private$..vars)
             self$.addOption(private$..num)
@@ -411,6 +431,9 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..num1)
             self$.addOption(private$..width8)
             self$.addOption(private$..height8)
+            self$.addOption(private$..nptest)
+            self$.addOption(private$..matrix)
+            self$.addOption(private$..npmethod)
         }),
     active = list(
         vars = function() private$..vars$value,
@@ -475,7 +498,10 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         plot8 = function() private$..plot8$value,
         num1 = function() private$..num1$value,
         width8 = function() private$..width8$value,
-        height8 = function() private$..height8$value),
+        height8 = function() private$..height8$value,
+        nptest = function() private$..nptest$value,
+        matrix = function() private$..matrix$value,
+        npmethod = function() private$..npmethod$value),
     private = list(
         ..vars = NA,
         ..num = NA,
@@ -539,7 +565,10 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..plot8 = NA,
         ..num1 = NA,
         ..width8 = NA,
-        ..height8 = NA)
+        ..height8 = NA,
+        ..nptest = NA,
+        ..matrix = NA,
+        ..npmethod = NA)
 )
 
 raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -570,7 +599,8 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         plot8 = function() private$.items[["plot8"]],
         plot5 = function() private$.items[["plot5"]],
         q3 = function() private$.items[["q3"]],
-        text = function() private$.items[["text"]]),
+        text = function() private$.items[["text"]],
+        text1 = function() private$.items[["text1"]]),
     private = list(),
     public=list(
         initialize=function(options) {
@@ -1114,7 +1144,11 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Preformatted$new(
                 options=options,
                 name="text",
-                title="Rasch residual factor analysis"))}))
+                title="Rasch residual factor analysis"))
+            self$add(jmvcore::Preformatted$new(
+                options=options,
+                name="text1",
+                title="Nonparametric Rasch Model Tests"))}))
 
 raschBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "raschBase",
@@ -1200,6 +1234,9 @@ raschBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param num1 .
 #' @param width8 .
 #' @param height8 .
+#' @param nptest .
+#' @param matrix .
+#' @param npmethod .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
@@ -1231,6 +1268,7 @@ raschBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$plot5} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$q3} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
+#'   \code{results$text1} \tab \tab \tab \tab \tab a preformatted \cr
 #' }
 #'
 #' Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
@@ -1299,7 +1337,10 @@ rasch <- function(
     plot8 = FALSE,
     num1 = 1,
     width8 = 500,
-    height8 = 500) {
+    height8 = 500,
+    nptest = FALSE,
+    matrix = 500,
+    npmethod = "T11") {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("rasch requires jmvcore to be installed (restart may be required)")
@@ -1369,7 +1410,10 @@ rasch <- function(
         plot8 = plot8,
         num1 = num1,
         width8 = width8,
-        height8 = height8)
+        height8 = height8,
+        nptest = nptest,
+        matrix = matrix,
+        npmethod = npmethod)
 
     analysis <- raschClass$new(
         options = options,

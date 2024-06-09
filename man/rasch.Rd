@@ -63,7 +63,10 @@ rasch(
   plot8 = FALSE,
   num1 = 1,
   width8 = 500,
-  height8 = 500
+  height8 = 500,
+  nptest = FALSE,
+  matrix = 500,
+  npmethod = "T11"
 )
 }
 \arguments{
@@ -185,6 +188,12 @@ where 0 degrees represents completely horizontal labels.}
 \item{width8}{.}
 
 \item{height8}{.}
+
+\item{nptest}{.}
+
+\item{matrix}{.}
+
+\item{npmethod}{.}
 }
 \value{
 A results object containing:
@@ -218,6 +227,7 @@ A results object containing:
   \code{results$plot5} \tab \tab \tab \tab \tab an image \cr
   \code{results$q3} \tab \tab \tab \tab \tab a table \cr
   \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
+  \code{results$text1} \tab \tab \tab \tab \tab a preformatted \cr
 }
 
 Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:

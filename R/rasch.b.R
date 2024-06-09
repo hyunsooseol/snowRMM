@@ -750,7 +750,17 @@ raschClass <- if (requireNamespace('jmvcore'))
           image8$setState(std.resids)
         
         }
-         
+        
+        if(isTRUE(self$options$nptest)){
+          
+          n <- self$options$matrix
+          method <- self$options$npmethod    
+          
+          rmat <- as.matrix(data)
+          res <- NPtest(rmat, n = n, method = method)
+          
+          self$results$text1$setContent(res)
+        } 
           
         ############################################
         results <-
