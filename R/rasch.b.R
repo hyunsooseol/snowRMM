@@ -23,6 +23,7 @@
 #' @importFrom  pairwise pers
 #' @importFrom  pairwise rfa
 #' @importFrom pairwise q3
+#' @importFrom eRm NPtest
 #' @import RColorBrewer
 #' @import ggplot2
 #' @export
@@ -757,7 +758,7 @@ raschClass <- if (requireNamespace('jmvcore'))
           method <- self$options$npmethod    
           
           rmat <- as.matrix(data)
-          res <- NPtest(rmat, n = n, method = method)
+          res <- eRm::NPtest(rmat, n = n, method = method)
           
           self$results$text1$setContent(res)
         } 
