@@ -463,7 +463,11 @@ if(isTRUE(self$options$plot2)){
                                   ci=NULL,
                                   sd=FALSE,
                                   add_line = TRUE,
-                                  rawdata = FALSE)
+                                  rawdata = FALSE) +
+    aes(linetype = 'solid', linewidth = 1.3) +
+    scale_linewidth_identity() +
+    scale_linetype_identity()
+                                 
  
   if (self$options$angle > 0) {
     plot4 <- plot4 + ggplot2::theme(
