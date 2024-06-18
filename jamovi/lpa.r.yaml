@@ -9,32 +9,15 @@ items:
       title: 'Instructions'
       type: Html
       visible: True
+
+    - name:  text
+      title: ''
+      type:  Preformatted
       
-    - name: fit
-      title: 'Model fit'
+    - name: overall
+      title: 'Overall model fit'
       type: Table
-      visible: (fit)
-      clearWith:
-        - vars
-        - nc
-        - variances
-        - covariances
- 
-      refs: tidyLPA 
-
-      columns:
-        - name: name
-          title: ''
-          type: 'text'
-          content: ($key)
-
-        - name: value
-          title: 'Values'
- 
-    - name: best
-      title: 'Class comparison'
-      type: Table
-      visible: (best)
+      visible: (overall)
       refs: tidyLPA 
       clearWith:
         - vars
@@ -43,12 +26,11 @@ items:
         - covariances
 
       columns:
-        - name: name
-          title: 'Class'
-          type: 'text'
-          content: ($key)
         - name: model
           title: Model
+          type: integer
+        - name: classes
+          title: Classes
           type: integer
         - name: log
           title: LogLik 
@@ -80,6 +62,27 @@ items:
         - name: entropy
           title: Entropy
           type: number      
+
+    - name: fit
+      title: 'Model fit'
+      type: Table
+      visible: (fit)
+      clearWith:
+        - vars
+        - nc
+        - variances
+        - covariances
+ 
+      refs: tidyLPA 
+
+      columns:
+        - name: name
+          title: ''
+          type: 'text'
+          content: ($key)
+
+        - name: value
+          title: 'Values'
 
     - name: est
       title: 'Estimates'
@@ -153,6 +156,7 @@ items:
       visible: (plot3)
       refs: tidyLPA
       renderFun: .plot3
+      requiresData: TRUE
       clearWith:
         - vars
         - nc

@@ -10,8 +10,8 @@ lpa(
   nc = 2,
   variances = "equal",
   covariances = "zero",
+  overall = FALSE,
   fit = TRUE,
-  best = FALSE,
   est = FALSE,
   plot = FALSE,
   plot1 = FALSE,
@@ -43,9 +43,9 @@ lpa(
 
 \item{covariances}{.}
 
-\item{fit}{.}
+\item{overall}{.}
 
-\item{best}{.}
+\item{fit}{.}
 
 \item{est}{.}
 
@@ -88,8 +88,9 @@ where 0 degrees represents completely horizontal labels.}
 A results object containing:
 \tabular{llllll}{
   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
+  \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
+  \code{results$overall} \tab \tab \tab \tab \tab a table \cr
   \code{results$fit} \tab \tab \tab \tab \tab a table \cr
-  \code{results$best} \tab \tab \tab \tab \tab a table \cr
   \code{results$est} \tab \tab \tab \tab \tab a table \cr
   \code{results$pc} \tab \tab \tab \tab \tab an output \cr
   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
@@ -101,9 +102,9 @@ A results object containing:
 
 Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
 
-\code{results$fit$asDF}
+\code{results$overall$asDF}
 
-\code{as.data.frame(results$fit)}
+\code{as.data.frame(results$overall)}
 }
 \description{
 Latent Profile Analysis

@@ -41,18 +41,18 @@ options:
         - varying
       default: zero      
 
-    - name: fit
-      title: Fit measures
-      type: Bool
-      default: TRUE
-
-    - name: best
-      title: Class comparison
+    - name: overall
+      title: 'Overall Model Fit'
       type: Bool
       default: FALSE
 
+    - name: fit
+      title: 'Fit'
+      type: Bool
+      default: TRUE
+
     - name: est
-      title: Estimates
+      title: 'Estimates'
       type: Bool
       default: FALSE
 
@@ -155,4 +155,6 @@ options:
       type: Integer
       title: "X"
       default: 500     
+
+
 ...

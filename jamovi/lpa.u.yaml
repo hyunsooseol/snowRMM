@@ -41,12 +41,15 @@ children:
         stretchFactor: 1
         children:
           - type: Label
-            label: 'Tables'
+            label: ''
+            children:
+              - type: CheckBox
+                name: overall
+          - type: Label
+            label: 'Model'
             children:
               - type: CheckBox
                 name: fit
-              - type: CheckBox
-                name: best
               - type: CheckBox
                 name: est
       - type: LayoutBox

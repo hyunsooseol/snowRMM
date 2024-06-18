@@ -10,8 +10,8 @@ lpaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             nc = 2,
             variances = "equal",
             covariances = "zero",
+            overall = FALSE,
             fit = TRUE,
-            best = FALSE,
             est = FALSE,
             plot = FALSE,
             plot1 = FALSE,
@@ -64,14 +64,14 @@ lpaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "equal",
                     "varying"),
                 default="zero")
+            private$..overall <- jmvcore::OptionBool$new(
+                "overall",
+                overall,
+                default=FALSE)
             private$..fit <- jmvcore::OptionBool$new(
                 "fit",
                 fit,
                 default=TRUE)
-            private$..best <- jmvcore::OptionBool$new(
-                "best",
-                best,
-                default=FALSE)
             private$..est <- jmvcore::OptionBool$new(
                 "est",
                 est,
@@ -156,8 +156,8 @@ lpaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..nc)
             self$.addOption(private$..variances)
             self$.addOption(private$..covariances)
+            self$.addOption(private$..overall)
             self$.addOption(private$..fit)
-            self$.addOption(private$..best)
             self$.addOption(private$..est)
             self$.addOption(private$..pc)
             self$.addOption(private$..plot)
@@ -183,8 +183,8 @@ lpaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         nc = function() private$..nc$value,
         variances = function() private$..variances$value,
         covariances = function() private$..covariances$value,
+        overall = function() private$..overall$value,
         fit = function() private$..fit$value,
-        best = function() private$..best$value,
         est = function() private$..est$value,
         pc = function() private$..pc$value,
         plot = function() private$..plot$value,
@@ -209,8 +209,8 @@ lpaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..nc = NA,
         ..variances = NA,
         ..covariances = NA,
+        ..overall = NA,
         ..fit = NA,
-        ..best = NA,
         ..est = NA,
         ..pc = NA,
         ..plot = NA,
@@ -237,8 +237,9 @@ lpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     inherit = jmvcore::Group,
     active = list(
         instructions = function() private$.items[["instructions"]],
+        text = function() private$.items[["text"]],
+        overall = function() private$.items[["overall"]],
         fit = function() private$.items[["fit"]],
-        best = function() private$.items[["best"]],
         est = function() private$.items[["est"]],
         pc = function() private$.items[["pc"]],
         plot = function() private$.items[["plot"]],
@@ -259,31 +260,15 @@ lpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 name="instructions",
                 title="Instructions",
                 visible=TRUE))
+            self$add(jmvcore::Preformatted$new(
+                options=options,
+                name="text",
+                title=""))
             self$add(jmvcore::Table$new(
                 options=options,
-                name="fit",
-                title="Model fit",
-                visible="(fit)",
-                clearWith=list(
-                    "vars",
-                    "nc",
-                    "variances",
-                    "covariances"),
-                refs="tidyLPA",
-                columns=list(
-                    list(
-                        `name`="name", 
-                        `title`="", 
-                        `type`="text", 
-                        `content`="($key)"),
-                    list(
-                        `name`="value", 
-                        `title`="Values"))))
-            self$add(jmvcore::Table$new(
-                options=options,
-                name="best",
-                title="Class comparison",
-                visible="(best)",
+                name="overall",
+                title="Overall model fit",
+                visible="(overall)",
                 refs="tidyLPA",
                 clearWith=list(
                     "vars",
@@ -291,14 +276,13 @@ lpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "variances",
                     "covariances"),
                 columns=list(
-                    list(
-                        `name`="name", 
-                        `title`="Class", 
-                        `type`="text", 
-                        `content`="($key)"),
                     list(
                         `name`="model", 
                         `title`="Model", 
+                        `type`="integer"),
+                    list(
+                        `name`="classes", 
+                        `title`="Classes", 
                         `type`="integer"),
                     list(
                         `name`="log", 
@@ -340,6 +324,26 @@ lpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         `name`="entropy", 
                         `title`="Entropy", 
                         `type`="number"))))
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="fit",
+                title="Model fit",
+                visible="(fit)",
+                clearWith=list(
+                    "vars",
+                    "nc",
+                    "variances",
+                    "covariances"),
+                refs="tidyLPA",
+                columns=list(
+                    list(
+                        `name`="name", 
+                        `title`="", 
+                        `type`="text", 
+                        `content`="($key)"),
+                    list(
+                        `name`="value", 
+                        `title`="Values"))))
             self$add(jmvcore::Table$new(
                 options=options,
                 name="est",
@@ -420,6 +424,7 @@ lpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 visible="(plot3)",
                 refs="tidyLPA",
                 renderFun=".plot3",
+                requiresData=TRUE,
                 clearWith=list(
                     "vars",
                     "nc",
@@ -503,8 +508,8 @@ lpaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param nc .
 #' @param variances .
 #' @param covariances .
+#' @param overall .
 #' @param fit .
-#' @param best .
 #' @param est .
 #' @param plot .
 #' @param plot1 .
@@ -527,8 +532,9 @@ lpaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
+#'   \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
+#'   \code{results$overall} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$fit} \tab \tab \tab \tab \tab a table \cr
-#'   \code{results$best} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$est} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$pc} \tab \tab \tab \tab \tab an output \cr
 #'   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
@@ -540,9 +546,9 @@ lpaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'
 #' Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
 #'
-#' \code{results$fit$asDF}
+#' \code{results$overall$asDF}
 #'
-#' \code{as.data.frame(results$fit)}
+#' \code{as.data.frame(results$overall)}
 #'
 #' @export
 lpa <- function(
@@ -551,8 +557,8 @@ lpa <- function(
     nc = 2,
     variances = "equal",
     covariances = "zero",
+    overall = FALSE,
     fit = TRUE,
-    best = FALSE,
     est = FALSE,
     plot = FALSE,
     plot1 = FALSE,
@@ -587,8 +593,8 @@ lpa <- function(
         nc = nc,
         variances = variances,
         covariances = covariances,
+        overall = overall,
         fit = fit,
-        best = best,
         est = est,
         plot = plot,
         plot1 = plot1,
