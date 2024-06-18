@@ -44,12 +44,12 @@ options:
     - name: overall
       title: 'Overall Model Fit'
       type: Bool
-      default: FALSE
+      default: TRUE
 
     - name: fit
       title: 'Fit'
       type: Bool
-      default: TRUE
+      default: FALSE
 
     - name: est
       title: 'Estimates'
