@@ -253,7 +253,7 @@ if(isTRUE(self$options$pc)){
             
 base::options(max.print = .Machine$integer.max)
             
-pc<- tidyLPA:: get_data(res)
+pc<- tidyLPA:: get_data(all$res)
 pc<- pc$Class
             
 pc <- as.factor(pc)
