@@ -48,14 +48,14 @@ lpaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             </html>"
             )
             
-            if(isTRUE(self$options$plot)){
-              
-              width <- self$options$width
-              height <- self$options$height
-              
-              self$results$plot$setSize(width, height)
-            }  
-            
+            # if(isTRUE(self$options$plot)){
+            #   
+            #   width <- self$options$width
+            #   height <- self$options$height
+            #   
+            #   self$results$plot$setSize(width, height)
+            # }  
+            # 
             if(isTRUE(self$options$plot1)){
               
               width <- self$options$width1
@@ -266,12 +266,14 @@ pc <- as.factor(pc)
             }
 }            
             
-# correlation plot----------
-if(isTRUE(self$options$plot)){          
-
-image <- self$results$plot
-image$setState(all$res)
-}
+# #https://github.com/data-edu/tidyLPA/issues/198
+# # Not resolved yet.
+# # correlation plot----------
+# if(isTRUE(self$options$plot)){          
+# 
+# image <- self$results$plot
+# image$setState(all$res)
+# }
 
 # Latent profile plot(Box plot)----------
 
@@ -369,18 +371,18 @@ if(isTRUE(self$options$plot2)){
         },
         
 # pLOT---
-
- .plot = function(image, ggtheme, theme,...) {
-
-          if (is.null(image$state))
-            return(FALSE)
-
-            res <- image$state
-
-         plot <- tidyLPA::plot_bivariate(res)
-         print(plot)
-         TRUE
-        },
+# Not resolved yet !!!
+ # .plot = function(image, ggtheme, theme,...) {
+ # 
+ #          if (is.null(image$state))
+ #            return(FALSE)
+ # 
+ #            res <- image$state
+ # 
+ #         plot <- tidyLPA::plot_bivariate(res)
+ #         print(plot)
+ #         TRUE
+ #        },
         
 
 .plot3 = function(image, ggtheme, theme,...) {

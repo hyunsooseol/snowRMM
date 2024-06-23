@@ -13,15 +13,12 @@ lpaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             overall = TRUE,
             fit = FALSE,
             est = FALSE,
-            plot = FALSE,
             plot1 = FALSE,
             plot3 = FALSE,
             plot2 = FALSE,
             plot4 = FALSE,
             angle = 0,
             line = "FALSE",
-            width = 500,
-            height = 500,
             width1 = 500,
             height1 = 500,
             width2 = 500,
@@ -78,10 +75,6 @@ lpaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 default=FALSE)
             private$..pc <- jmvcore::OptionOutput$new(
                 "pc")
-            private$..plot <- jmvcore::OptionBool$new(
-                "plot",
-                plot,
-                default=FALSE)
             private$..plot1 <- jmvcore::OptionBool$new(
                 "plot1",
                 plot1,
@@ -111,14 +104,6 @@ lpaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "FALSE",
                     "TRUE"),
                 default="FALSE")
-            private$..width <- jmvcore::OptionInteger$new(
-                "width",
-                width,
-                default=500)
-            private$..height <- jmvcore::OptionInteger$new(
-                "height",
-                height,
-                default=500)
             private$..width1 <- jmvcore::OptionInteger$new(
                 "width1",
                 width1,
@@ -160,15 +145,12 @@ lpaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..fit)
             self$.addOption(private$..est)
             self$.addOption(private$..pc)
-            self$.addOption(private$..plot)
             self$.addOption(private$..plot1)
             self$.addOption(private$..plot3)
             self$.addOption(private$..plot2)
             self$.addOption(private$..plot4)
             self$.addOption(private$..angle)
             self$.addOption(private$..line)
-            self$.addOption(private$..width)
-            self$.addOption(private$..height)
             self$.addOption(private$..width1)
             self$.addOption(private$..height1)
             self$.addOption(private$..width2)
@@ -187,15 +169,12 @@ lpaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         fit = function() private$..fit$value,
         est = function() private$..est$value,
         pc = function() private$..pc$value,
-        plot = function() private$..plot$value,
         plot1 = function() private$..plot1$value,
         plot3 = function() private$..plot3$value,
         plot2 = function() private$..plot2$value,
         plot4 = function() private$..plot4$value,
         angle = function() private$..angle$value,
         line = function() private$..line$value,
-        width = function() private$..width$value,
-        height = function() private$..height$value,
         width1 = function() private$..width1$value,
         height1 = function() private$..height1$value,
         width2 = function() private$..width2$value,
@@ -213,15 +192,12 @@ lpaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..fit = NA,
         ..est = NA,
         ..pc = NA,
-        ..plot = NA,
         ..plot1 = NA,
         ..plot3 = NA,
         ..plot2 = NA,
         ..plot4 = NA,
         ..angle = NA,
         ..line = NA,
-        ..width = NA,
-        ..height = NA,
         ..width1 = NA,
         ..height1 = NA,
         ..width2 = NA,
@@ -242,7 +218,6 @@ lpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         fit = function() private$.items[["fit"]],
         est = function() private$.items[["est"]],
         pc = function() private$.items[["pc"]],
-        plot = function() private$.items[["plot"]],
         plot3 = function() private$.items[["plot3"]],
         plot2 = function() private$.items[["plot2"]],
         plot1 = function() private$.items[["plot1"]],
@@ -406,19 +381,6 @@ lpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "covariances")))
             self$add(jmvcore::Image$new(
                 options=options,
-                name="plot",
-                title="Correlation plot for a mixture model",
-                visible="(plot)",
-                renderFun=".plot",
-                clearWith=list(
-                    "vars",
-                    "nc",
-                    "variances",
-                    "covariances",
-                    "width",
-                    "height")))
-            self$add(jmvcore::Image$new(
-                options=options,
                 name="plot3",
                 title="Density plot",
                 visible="(plot3)",
@@ -511,7 +473,6 @@ lpaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param overall .
 #' @param fit .
 #' @param est .
-#' @param plot .
 #' @param plot1 .
 #' @param plot3 .
 #' @param plot2 .
@@ -519,8 +480,6 @@ lpaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param angle a number from 0 to 90 defining the angle of the x-axis labels,
 #'   where 0 degrees represents completely horizontal labels.
 #' @param line .
-#' @param width .
-#' @param height .
 #' @param width1 .
 #' @param height1 .
 #' @param width2 .
@@ -537,7 +496,6 @@ lpaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$fit} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$est} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$pc} \tab \tab \tab \tab \tab an output \cr
-#'   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$plot3} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$plot2} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
@@ -560,15 +518,12 @@ lpa <- function(
     overall = TRUE,
     fit = FALSE,
     est = FALSE,
-    plot = FALSE,
     plot1 = FALSE,
     plot3 = FALSE,
     plot2 = FALSE,
     plot4 = FALSE,
     angle = 0,
     line = "FALSE",
-    width = 500,
-    height = 500,
     width1 = 500,
     height1 = 500,
     width2 = 500,
@@ -596,15 +551,12 @@ lpa <- function(
         overall = overall,
         fit = fit,
         est = est,
-        plot = plot,
         plot1 = plot1,
         plot3 = plot3,
         plot2 = plot2,
         plot4 = plot4,
         angle = angle,
         line = line,
-        width = width,
-        height = height,
         width1 = width1,
         height1 = height1,
         width2 = width2,

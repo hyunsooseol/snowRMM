@@ -60,10 +60,10 @@ options:
       title: Person Membership
       type: Output
       
-    - name: plot
-      title: 'Correlation'
-      type: Bool
-      default: FALSE  
+    # - name: plot
+    #   title: 'Correlation'
+    #   type: Bool
+    #   default: FALSE  
       
     - name: plot1
       title: 'Box plot'
@@ -105,16 +105,6 @@ options:
         - title: 'TRUE'
           name:  'TRUE'
       default: 'FALSE'    
-
-    - name: width
-      type: Integer
-      title: "Size: "
-      default: 500
-      
-    - name: height
-      type: Integer
-      title: "X"
-      default: 500
 
     - name: width1
       type: Integer

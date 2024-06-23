@@ -137,18 +137,18 @@ items:
         - variances
         - covariances
 
-    - name: plot
-      title: 'Correlation plot for a mixture model'
-      type: Image
-      visible: (plot)
-      renderFun: .plot
-      clearWith:
-        - vars
-        - nc
-        - variances
-        - covariances
-        - width
-        - height
+    # - name: plot
+    #   title: 'Correlation plot for a mixture model'
+    #   type: Image
+    #   visible: (plot)
+    #   renderFun: .plot
+    #   clearWith:
+    #     - vars
+    #     - nc
+    #     - variances
+    #     - covariances
+    #     - width
+    #     - height
  
     - name: plot3
       title: 'Density plot'
