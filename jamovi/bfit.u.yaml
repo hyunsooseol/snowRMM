@@ -71,7 +71,7 @@ children:
                     fitToGrid: true
                     children:
                       - type: Label
-                        label: Plots
+                        label: '95% CI Plots'
                         children:
                           - type: CheckBox
                             name: inplot

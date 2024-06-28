@@ -7,7 +7,7 @@
         `author`="Seol, H.", 
         `year`=2024, 
         `title`="snowRMM: Rasch Mixture, LCA, and Test Equating Analysis", 
-        `publisher`="(Version 5.7.8) [jamovi module]. URL https://github.com/hyunsooseol/snowRMM", 
+        `publisher`="(Version 5.7.9) [jamovi module]. URL https://github.com/hyunsooseol/snowRMM", 
         `url`="https://github.com/hyunsooseol/snowRMM"), 
     `mixRasch`=list(
         `type`="software", 

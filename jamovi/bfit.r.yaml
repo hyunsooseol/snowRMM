@@ -11,6 +11,10 @@ items:
       clearWith:
         - mode
       
+    - name:  text
+      title: ''
+      type:  Preformatted
+
     - name: item
       title: ''
       type: Group

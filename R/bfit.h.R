@@ -207,6 +207,7 @@ bfitResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     inherit = jmvcore::Group,
     active = list(
         instructions = function() private$.items[["instructions"]],
+        text = function() private$.items[["text"]],
         item = function() private$.items[["item"]],
         inplot = function() private$.items[["inplot"]],
         outplot = function() private$.items[["outplot"]],
@@ -230,6 +231,10 @@ bfitResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 visible=TRUE,
                 clearWith=list(
                     "mode")))
+            self$add(jmvcore::Preformatted$new(
+                options=options,
+                name="text",
+                title=""))
             self$add(R6::R6Class(
                 inherit = jmvcore::Group,
                 active = list(
@@ -492,6 +497,7 @@ bfitBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
+#'   \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$item$binfit} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$item$boutfit} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$inplot} \tab \tab \tab \tab \tab an image \cr

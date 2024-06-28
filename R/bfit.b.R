@@ -543,7 +543,8 @@ if(nco== TRUE){
         infithigh <- results$infithigh
         
         infit1 <- data.frame(item,infit, infitlow, infithigh)
-        #  self$results$text1$setContent(infit1) 
+        #self$results$text$setContent(infit1) 
+        
         image <- self$results$inplot
         image$setState(infit1)
 
@@ -558,10 +559,16 @@ if(nco== TRUE){
         
         infit1 <- image$state
         
-        plot <- ggplot(infit1, aes(item, infit)) +        
-          geom_point() +
-          geom_errorbar(aes(ymin = infitlow, ymax = infithigh)) +
-          geom_hline(yintercept = 1, color = "red", linetype = "dotted", size = 1.5)
+        plot<- ggplot(infit1, aes(x = item, y = infit, color = item)) +
+          geom_point(size = 3) + 
+          geom_errorbar(aes(ymin = infitlow, ymax = infithigh), width = 0.3) + 
+          geom_hline(yintercept = 1, linetype = "dashed", color = "red") + 
+          labs(title = "",
+               x = "Item",
+               y = "Infit") +
+          scale_color_brewer(palette = "Set1") + 
+          theme_minimal(base_size = 15) + 
+          guides(color = "none") # 범례 제거
         
         plot<- plot+ggtheme
         
@@ -589,11 +596,7 @@ if(nco== TRUE){
         outfithigh <- results$outfithigh
         
         outfit1 <- data.frame(item, outfit, outfitlow, outfithigh)
-        
-        
-        # self$results$text1$setContent(infit1) 
-        
-        
+   
         image <- self$results$outplot
         image$setState(outfit1)
 
@@ -609,11 +612,17 @@ if(nco== TRUE){
         
         outfit1 <- image$state
         
-        plot <- ggplot(outfit1, aes(item, outfit)) +        
-          geom_point() +
-          geom_errorbar(aes(ymin = outfitlow, ymax = outfithigh))+
-          geom_hline(yintercept = 1, color = "red", linetype = "dotted", size = 1.5)
-        
+        plot<- ggplot(outfit1, aes(x = item, y = outfit, color = item)) +
+          geom_point(size = 3) + 
+          geom_errorbar(aes(ymin = outfitlow, ymax = outfithigh), width = 0.3) + 
+          geom_hline(yintercept = 1, linetype = "dashed", color = "red") + 
+          labs(title = "",
+               x = "Item",
+               y = "Outfit") +
+          scale_color_brewer(palette = "Set1") + 
+          theme_minimal(base_size = 15) + 
+          guides(color = "none") # 범례 제거
+       
         plot<- plot+ggtheme
         
         if (self$options$angle > 0) {

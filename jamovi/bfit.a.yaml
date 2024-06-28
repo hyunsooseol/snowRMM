@@ -61,12 +61,12 @@ options:
       default: FALSE
       
     - name: inplot
-      title: CI for Infit
+      title: 'Infit'
       type: Bool
       default: false
 
     - name: outplot
-      title: CI for Outfit
+      title: 'Outfit'
       type: Bool
       default: false 
 
