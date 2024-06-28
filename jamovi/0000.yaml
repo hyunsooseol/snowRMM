@@ -81,6 +81,10 @@ datasets:
     tags:
       - Polytomous
       - Mixture
+  - name: bootfit
+    path: bootfit.omv
+    description: Bootstrap Item Fit
+    tags:
       - Bootstrap
   - name: binary
     path: boot.omv
