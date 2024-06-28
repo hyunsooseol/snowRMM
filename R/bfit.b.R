@@ -135,6 +135,8 @@ if(type=='bi'){
 }
 
 if(nco== TRUE){
+  
+  set.seed(1234)
   fit<- iarm::boot_fit(obj,B=bn1,p.adj='none')
   
   #Outfit-----------------
@@ -172,6 +174,7 @@ if(nco== TRUE){
 
 } else{        
 
+  set.seed(1234)
   fit<- iarm::boot_fit(obj,B=bn1,p.adj=adj)
 ###################################################################          
 # Correction methods was made------------------------------------
@@ -273,6 +276,8 @@ if(nco== TRUE){
         step <- self$options$step
         bn <- self$options$bn
 
+        
+        set.seed(1234)
         # Define bootstrapped infit and outfit statistic functions
         boot.stat <- function(data, indices, stat) {
           d = data[indices,]
