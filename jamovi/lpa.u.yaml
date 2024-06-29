@@ -75,8 +75,20 @@ children:
         stretchFactor: 1
         children:
           - type: Label
-            label: Plots
+            label: 'Plots'
             children:
+              - type: CheckBox
+                name: plot
+                style: list-inline
+                children:
+                  - type: TextBox
+                    name: width
+                    format: number
+                    enable: (plot)
+                  - type: TextBox
+                    name: height
+                    format: number
+                    enable: (plot)
               - type: CheckBox
                 name: plot3
                 style: list-inline

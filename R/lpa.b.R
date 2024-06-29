@@ -48,14 +48,14 @@ lpaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             </html>"
             )
             
-            # if(isTRUE(self$options$plot)){
-            #   
-            #   width <- self$options$width
-            #   height <- self$options$height
-            #   
-            #   self$results$plot$setSize(width, height)
-            # }  
-            # 
+            if(isTRUE(self$options$plot)){
+
+              width <- self$options$width
+              height <- self$options$height
+
+              self$results$plot$setSize(width, height)
+            }
+
             if(isTRUE(self$options$plot1)){
               
               width <- self$options$width1
@@ -264,6 +264,11 @@ pc <- as.factor(pc)
                 self$results$pc$setValues(pc)
                 self$results$pc$setRowNums(rownames(data))
             }
+
+image <- self$results$plot
+image$setState(pc)
+
+
 }            
             
 # #https://github.com/data-edu/tidyLPA/issues/198
@@ -371,18 +376,30 @@ if(isTRUE(self$options$plot2)){
         },
         
 # pLOT---
-# Not resolved yet !!!
- # .plot = function(image, ggtheme, theme,...) {
- # 
- #          if (is.null(image$state))
- #            return(FALSE)
- # 
- #            res <- image$state
- # 
- #         plot <- tidyLPA::plot_bivariate(res)
- #         print(plot)
- #         TRUE
- #        },
+# Percentage of class
+.plot = function(image, ggtheme, theme,...) {
+
+         if (is.null(image$state))
+           return(FALSE)
+
+           Class <- image$state
+
+           freq_table <- as.data.frame(table(Class))
+           freq_table$Percentage <- (freq_table$Freq / sum(freq_table$Freq)) * 100
+           freq_table$Label <- sprintf("%d (%.1f%%)", freq_table$Freq, freq_table$Percentage)
+          
+           plot<- ggplot(freq_table, aes(x = Class, y = Freq)) +
+             geom_bar(stat = "identity", fill= "deepskyblue") +
+             geom_text(aes(label = Label, vjust = -0.5)) +  
+             labs(title = "",
+                  x = "Class",
+                  y = "Frequency") +
+             theme_minimal()      
+
+           plot <- plot+ggtheme
+           print(plot)
+           TRUE
+         },
         
 
 .plot3 = function(image, ggtheme, theme,...) {
@@ -513,7 +530,11 @@ if(isTRUE(self$options$plot2)){
   best <-  tidyLPA::estimate_profiles(data,
                                       n_profiles = 2:nc,
                                       models = c(1, 2, 3, 6))
-                                   
+  
+  # Compare solution
+  sol<- tidyLPA::compare_solutions(best)                                   
+  self$results$text$setContent(sol)
+  
   allfit<- tidyLPA::get_fit(best)
   bestfit<- as.data.frame(allfit)
   
