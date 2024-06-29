@@ -131,7 +131,7 @@ children:
             stretchFactor: 1
             children:  
               - type: Label
-                label: 'Table'
+                label: 'Tables'
                 children:
                   - type: CheckBox
                     name: comp1
