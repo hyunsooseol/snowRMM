@@ -26,6 +26,30 @@ options:
       template:
           type: String
 
+    - name: nc
+      title: Class
+      type: Integer
+      min: 2
+      default: 2    
+
+    - name: type
+      title: 'Data type'
+      type: List
+      options:
+      - name: conti
+        title: 'Continuous'
+      - name: ordi
+        title: 'Ordinal'
+      default: conti
+
+    - name: variance
+      title: 'Individual variance'
+      type: List
+      options:
+        - equal
+        - varying
+      default: equal  
+
     - name: fit
       title: Fit
       type: Bool

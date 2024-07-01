@@ -4,7 +4,15 @@
 \alias{lcgm}
 \title{Latent Class Growth Modeling}
 \usage{
-lcgm(data, vars, model = list(), fit = TRUE)
+lcgm(
+  data,
+  vars,
+  model = list(),
+  nc = 2,
+  type = "conti",
+  variance = "equal",
+  fit = TRUE
+)
 }
 \arguments{
 \item{data}{.}
@@ -12,6 +20,12 @@ lcgm(data, vars, model = list(), fit = TRUE)
 \item{vars}{.}
 
 \item{model}{.}
+
+\item{nc}{.}
+
+\item{type}{.}
+
+\item{variance}{.}
 
 \item{fit}{.}
 }

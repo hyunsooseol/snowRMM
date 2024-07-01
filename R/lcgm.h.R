@@ -8,6 +8,9 @@ lcgmOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         initialize = function(
             vars = NULL,
             model = list(),
+            nc = 2,
+            type = "conti",
+            variance = "equal",
             fit = TRUE, ...) {
 
             super$initialize(
@@ -32,6 +35,25 @@ lcgmOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 template=jmvcore::OptionString$new(
                     "model",
                     NULL))
+            private$..nc <- jmvcore::OptionInteger$new(
+                "nc",
+                nc,
+                min=2,
+                default=2)
+            private$..type <- jmvcore::OptionList$new(
+                "type",
+                type,
+                options=list(
+                    "conti",
+                    "ordi"),
+                default="conti")
+            private$..variance <- jmvcore::OptionList$new(
+                "variance",
+                variance,
+                options=list(
+                    "equal",
+                    "varying"),
+                default="equal")
             private$..fit <- jmvcore::OptionBool$new(
                 "fit",
                 fit,
@@ -39,15 +61,24 @@ lcgmOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 
             self$.addOption(private$..vars)
             self$.addOption(private$..model)
+            self$.addOption(private$..nc)
+            self$.addOption(private$..type)
+            self$.addOption(private$..variance)
             self$.addOption(private$..fit)
         }),
     active = list(
         vars = function() private$..vars$value,
         model = function() private$..model$value,
+        nc = function() private$..nc$value,
+        type = function() private$..type$value,
+        variance = function() private$..variance$value,
         fit = function() private$..fit$value),
     private = list(
         ..vars = NA,
         ..model = NA,
+        ..nc = NA,
+        ..type = NA,
+        ..variance = NA,
         ..fit = NA)
 )
 
@@ -95,6 +126,9 @@ lcgmBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param data .
 #' @param vars .
 #' @param model .
+#' @param nc .
+#' @param type .
+#' @param variance .
 #' @param fit .
 #' @return A results object containing:
 #' \tabular{llllll}{
@@ -106,6 +140,9 @@ lcgm <- function(
     data,
     vars,
     model = list(),
+    nc = 2,
+    type = "conti",
+    variance = "equal",
     fit = TRUE) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
@@ -121,6 +158,9 @@ lcgm <- function(
     options <- lcgmOptions$new(
         vars = vars,
         model = model,
+        nc = nc,
+        type = type,
+        variance = variance,
         fit = fit)
 
     analysis <- lcgmClass$new(

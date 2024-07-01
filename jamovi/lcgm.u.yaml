@@ -17,8 +17,25 @@ children:
           - type: VariablesListBox
             name: vars
             isTarget: true
+  - type: LayoutBox
+    margin: large
+    style: inline
+    children:
+      - type: Label
+        label: 'Model options'
+        margin: large
+        style: list-inline
+        children:
+          - name: nc
+            type: TextBox
+            label: Class
+            format: number
+          - type: ComboBox
+            name: type
+          - type: ComboBox
+            name: variance
   - type: CollapseBox
-    label: 'Analysis'
+    label: 'Custom model settings'
     collapsed: true
     stretchFactor: 1
     children:
@@ -35,7 +52,7 @@ children:
                   - type: ListBox
                     name: model
                     height: large
-                    addButton: Add directive
+                    addButton: Add 
                     selectable: true
                     templateName: linreg-block-template
                     template:
@@ -50,18 +67,23 @@ children:
                           borderless: true
                           height: auto
                           ghostText: drag term here
-          - type: LayoutBox
-            margin: large
-            style: inline
+  - type: CollapseBox
+    label: 'Analysis'
+    collapsed: true
+    stretchFactor: 1
+    children:
+      - type: LayoutBox
+        margin: large
+        stretchFactor: 1
+        children:
+          - type: Label
+            label: 'Fit measures'
             children:
-              - type: Label
-                label: 'Fit measures'
+              - type: LayoutBox
+                margin: large
                 children:
-                  - type: LayoutBox
-                    margin: large
-                    children:
-                      - type: CheckBox
-                        name: fit
+                  - type: CheckBox
+                    name: fit
 
             
  
