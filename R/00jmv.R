@@ -7,7 +7,7 @@
         `author`="Seol, H.", 
         `year`=2024, 
         `title`="snowRMM: Rasch Mixture, LCA, and Test Equating Analysis", 
-        `publisher`="(Version 5.7.9) [jamovi module]. URL https://github.com/hyunsooseol/snowRMM", 
+        `publisher`="(Version 5.8.0) [jamovi module]. URL https://github.com/hyunsooseol/snowRMM", 
         `url`="https://github.com/hyunsooseol/snowRMM"), 
     `mixRasch`=list(
         `type`="software", 
@@ -80,4 +80,10 @@
         `author`="Heine,J-H.", 
         `year`=2023, 
         `title`="pairwise: Rasch Model Parameters by Pairwise Algorithm", 
-        `publisher`="[R package]. URL https://CRAN.R-project.org/package=pairwise"))
+        `publisher`="[R package]. URL https://CRAN.R-project.org/package=pairwise"), 
+    `tidySEM`=list(
+        `type`="software", 
+        `author`="van Lissa, C., Garnier-Villarreal, M., Gootjes, F.", 
+        `year`=2024, 
+        `title`="tidySEM: Tidy Structural Equation Modeling", 
+        `publisher`="[R package]. URL https://CRAN.R-project.org/package=tidySEM"))

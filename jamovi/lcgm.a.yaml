@@ -1,0 +1,37 @@
+---
+name:  lcgm
+title: Latent Class Growth Modeling
+menuGroup: snowRMM
+version: '1.0.0'
+jas: '1.2'
+
+options:
+    - name: data
+      type: Data
+
+    - name: vars
+      title: Variables
+      type: Variables
+      suggested:
+         - ordinal
+         - continuous
+      permitted:
+        - factor
+        - numeric
+    
+    - name: model
+      title: 'Insert model formula'
+      type: Array
+      default: []
+      template:
+          type: String
+
+    - name: fit
+      title: Fit
+      type: Bool
+      default: true
+
+
+
+
+...

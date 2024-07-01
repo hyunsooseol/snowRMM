@@ -1,0 +1,11 @@
+---
+name:  lcgm
+title: Latent Class Growth Modeling
+jrs:   '1.1'
+
+items:
+    - name:  text
+      title: Latent Class Growth Modeling
+      type:  Preformatted
+
+...

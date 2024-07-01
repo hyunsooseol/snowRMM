@@ -1,7 +1,7 @@
 ---
 title: Rasch Mixture, LCA, and Test Equating Analysis
 name: snowRMM
-version: 5.7.9
+version: 5.8.0
 jms: '1.0'
 authors:
   - Hyunsoo Seol
@@ -68,6 +68,11 @@ analyses:
     menuGroup: snowRMM
     menuTitle: Linear Logisitic Test Model
     menuSubgroup: Mixture
+  - title: Latent Class Growth Modeling
+    name: lcgm
+    ns: snowRMM
+    menuGroup: snowRMM
+    menuTitle: Latent Class Growth Modeling
 datasets:
   - name: Rasch
     path: rasch.omv
@@ -121,6 +126,11 @@ datasets:
     description: World Happiness Report 2021
     tags:
       - Latent Profile
+  - name: empathy
+    path: empathy.omv
+    description: LCGM with constraints
+    tags:
+      - LCGM
   - name: linear
     path: lin.omv
     description: Linear equating
