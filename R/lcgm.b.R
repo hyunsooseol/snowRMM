@@ -23,15 +23,17 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
            
           vars <- self$options$vars
           model <- self$options$model
+          nc <- self$options$nc
+          type <- self$options$type
+          variance <- self$options$variance  
           
           data <- self$data
           data <- na.omit(data)
           data <- as.data.frame(data)
           
           library(tidySEM)
-          
           res <- tidySEM::mx_growth_mixture(model = model,
-                                     classes = 3,
+                                     classes = nc,
                                      data = data)
 
           # Get fit table fit
