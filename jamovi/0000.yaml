@@ -44,6 +44,18 @@ analyses:
     menuGroup: snowRMM
     menuTitle: Latent Class Analysis
     menuSubgroup: LCA
+  - title: Latent Profile Analysis
+    name: lpa
+    ns: snowRMM
+    menuGroup: snowRMM
+    menuTitle: Latent Profile Analysis
+    menuSubgroup: LCA
+  - title: Latent Class Growth Modeling
+    name: lcgm
+    ns: snowRMM
+    menuGroup: snowRMM
+    menuTitle: Latent Class Growth Modeling
+    menuSubgroup: LCA
   - title: CTT Equating
     name: equating
     ns: snowRMM
@@ -56,23 +68,12 @@ analyses:
     menuGroup: snowRMM
     menuTitle: Composite Linking
     menuSubgroup: Test Equating
-  - title: Latent Profile Analysis
-    name: lpa
-    ns: snowRMM
-    menuGroup: snowRMM
-    menuTitle: Latent Profile Analysis
-    menuSubgroup: LCA
   - title: Linear Logisitic Test Model
     name: lltm
     ns: snowRMM
     menuGroup: snowRMM
     menuTitle: Linear Logisitic Test Model
     menuSubgroup: Mixture
-  - title: Latent Class Growth Modeling
-    name: lcgm
-    ns: snowRMM
-    menuGroup: snowRMM
-    menuTitle: Latent Class Growth Modeling
 datasets:
   - name: Rasch
     path: rasch.omv
