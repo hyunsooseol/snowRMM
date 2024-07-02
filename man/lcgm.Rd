@@ -12,6 +12,7 @@ lcgm(
   type = "conti",
   variance = "equal",
   fit = TRUE,
+  est = FALSE,
   plot = FALSE,
   raw = "FALSE",
   width = 500,
@@ -33,6 +34,8 @@ lcgm(
 
 \item{fit}{.}
 
+\item{est}{.}
+
 \item{plot}{.}
 
 \item{raw}{.}
@@ -47,6 +50,7 @@ A results object containing:
   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
   \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
   \code{results$fit} \tab \tab \tab \tab \tab a table \cr
+  \code{results$est} \tab \tab \tab \tab \tab a table \cr
   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
 }
 

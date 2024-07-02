@@ -55,6 +55,11 @@ options:
       type: Bool
       default: true
 
+    - name: est
+      title: 'Estimates'
+      type: Bool
+      default: FALSE
+
     - name: plot
       title: 'Trajectory plot'
       type: Bool

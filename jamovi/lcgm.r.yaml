@@ -35,6 +35,46 @@ items:
         - name: value
           title: 'Values'
 
+    - name: est
+      title: 'Estimated parameters'
+      type: Table
+      visible: (est)
+      clearWith:
+        - vars
+        - model
+        - nc
+        - type
+        - variance
+ 
+      refs: tidySEM
+
+      columns:
+        - name: name
+          title: ''
+          type: 'text'
+          content: ($key)
+        - name: cat
+          title: Category
+          type: 'text'
+        - name: lhs 
+          title: lhs  
+          type: 'text' 
+        - name: est
+          title: Estimate 
+          type: number
+        - name: se
+          title: SE 
+          type: number
+        - name: p
+          title: p 
+          format: zto,pvalue
+        - name: ci
+          title: Confidence Interval
+          type: number
+        - name: na
+          title: name
+          type: 'text'
+
     - name: plot
       title: 'Trajectory plot'
       type: Image

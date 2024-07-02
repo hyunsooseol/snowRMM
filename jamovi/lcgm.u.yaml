@@ -85,16 +85,29 @@ children:
                   - type: CheckBox
                     name: fit
                   - type: CheckBox
-                    name: plot
-                    children:
-                      - type: ComboBox
-                        name: raw
-                        enable: (plot)
-                      - type: TextBox
-                        name: width
-                        format: number
-                        enable: (plot)
-                      - type: TextBox
-                        name: height
-                        format: number
-                        enable: (plot)
+                    name: est
+      - type: LayoutBox
+        stretchFactor: 1
+        margin: large
+        cell:
+          column: 1
+          row: 0
+        fitToGrid: true
+        children:
+          - type: Label
+            label: 'Plot'
+            children:
+              - type: CheckBox
+                name: plot
+                children:
+                  - type: ComboBox
+                    name: raw
+                    enable: (plot)
+                  - type: TextBox
+                    name: width
+                    format: number
+                    enable: (plot)
+                  - type: TextBox
+                    name: height
+                    format: number
+                    enable: (plot)

@@ -93,11 +93,37 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             }
           }
           
-          # Trajectory plot---
+          # parameter estimates---
           
+          if(isTRUE(self$options$est)){
+            
+            table <- self$results$est
+            
+            e<- retlist$para
+            
+            e<- data.frame(e)
+            names<- dimnames(e)[[1]]
+            
+            for (name in names) {
+              row <- list()
+              
+              row[['cat']] <- e[name, 1]
+              row[['lhs']] <- e[name, 2]
+              row[['est']] <- e[name, 3]
+              row[['se']] <- e[name, 4]
+              row[['p']] <- e[name, 5]
+              row[['ci']] <- e[name, 6]
+              row[['na']] <- e[name, 7]
+             
+              table$addRow(rowKey=name, values=row)
+            }
+          }
+ 
+          if(isTRUE(self$options$plot)){
+          # Trajectory plot---
           image <- self$results$plot
           image$setState(retlist$res)
-          
+          }
 
         },
 
@@ -118,7 +144,6 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           TRUE
           
         },        
-        
 
         .computeFIT = function() {
           
@@ -136,15 +161,19 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           
           set.seed(1234)
           res <- tidySEM::mx_growth_mixture(model = model,
-                                     classes = nc,
-                                     data = data)
+                                            classes = nc,
+                                            data = data)
          
           }
           
           # Get fit table 
           fit <- tidySEM::table_fit(res)
-         
-        retlist <- list(res=res, fit=fit)
+          
+          # Get parameter estimates
+          para <- tidySEM::table_results(res, columns = NULL)
+          para <- para[para$Category %in% c("Means", "Variances"), c("Category", "lhs", "est", "se", "pval", "confint", "name")]
+           
+        retlist <- list(res=res, fit=fit, para=para)
         return(retlist)
         
         } 

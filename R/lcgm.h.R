@@ -12,6 +12,7 @@ lcgmOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             type = "conti",
             variance = "equal",
             fit = TRUE,
+            est = FALSE,
             plot = FALSE,
             raw = "FALSE",
             width = 500,
@@ -62,6 +63,10 @@ lcgmOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "fit",
                 fit,
                 default=TRUE)
+            private$..est <- jmvcore::OptionBool$new(
+                "est",
+                est,
+                default=FALSE)
             private$..plot <- jmvcore::OptionBool$new(
                 "plot",
                 plot,
@@ -88,6 +93,7 @@ lcgmOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..type)
             self$.addOption(private$..variance)
             self$.addOption(private$..fit)
+            self$.addOption(private$..est)
             self$.addOption(private$..plot)
             self$.addOption(private$..raw)
             self$.addOption(private$..width)
@@ -100,6 +106,7 @@ lcgmOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         type = function() private$..type$value,
         variance = function() private$..variance$value,
         fit = function() private$..fit$value,
+        est = function() private$..est$value,
         plot = function() private$..plot$value,
         raw = function() private$..raw$value,
         width = function() private$..width$value,
@@ -111,6 +118,7 @@ lcgmOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..type = NA,
         ..variance = NA,
         ..fit = NA,
+        ..est = NA,
         ..plot = NA,
         ..raw = NA,
         ..width = NA,
@@ -124,6 +132,7 @@ lcgmResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         instructions = function() private$.items[["instructions"]],
         text = function() private$.items[["text"]],
         fit = function() private$.items[["fit"]],
+        est = function() private$.items[["est"]],
         plot = function() private$.items[["plot"]]),
     private = list(),
     public=list(
@@ -162,6 +171,52 @@ lcgmResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     list(
                         `name`="value", 
                         `title`="Values"))))
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="est",
+                title="Estimated parameters",
+                visible="(est)",
+                clearWith=list(
+                    "vars",
+                    "model",
+                    "nc",
+                    "type",
+                    "variance"),
+                refs="tidySEM",
+                columns=list(
+                    list(
+                        `name`="name", 
+                        `title`="", 
+                        `type`="text", 
+                        `content`="($key)"),
+                    list(
+                        `name`="cat", 
+                        `title`="Category", 
+                        `type`="text"),
+                    list(
+                        `name`="lhs", 
+                        `title`="lhs", 
+                        `type`="text"),
+                    list(
+                        `name`="est", 
+                        `title`="Estimate", 
+                        `type`="number"),
+                    list(
+                        `name`="se", 
+                        `title`="SE", 
+                        `type`="number"),
+                    list(
+                        `name`="p", 
+                        `title`="p", 
+                        `format`="zto,pvalue"),
+                    list(
+                        `name`="ci", 
+                        `title`="Confidence Interval", 
+                        `type`="number"),
+                    list(
+                        `name`="na", 
+                        `title`="name", 
+                        `type`="text"))))
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot",
@@ -209,6 +264,7 @@ lcgmBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param type .
 #' @param variance .
 #' @param fit .
+#' @param est .
 #' @param plot .
 #' @param raw .
 #' @param width .
@@ -218,6 +274,7 @@ lcgmBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
 #'   \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$fit} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$est} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
 #' }
 #'
@@ -236,6 +293,7 @@ lcgm <- function(
     type = "conti",
     variance = "equal",
     fit = TRUE,
+    est = FALSE,
     plot = FALSE,
     raw = "FALSE",
     width = 500,
@@ -258,6 +316,7 @@ lcgm <- function(
         type = type,
         variance = variance,
         fit = fit,
+        est = est,
         plot = plot,
         raw = raw,
         width = width,
