@@ -22,7 +22,7 @@ children:
     style: inline
     children:
       - type: Label
-        label: 'Model options'
+        label: Model options
         margin: large
         style: list-inline
         children:
@@ -35,7 +35,7 @@ children:
           - type: ComboBox
             name: variance
   - type: CollapseBox
-    label: 'Custom model settings'
+    label: Custom model settings
     collapsed: true
     stretchFactor: 1
     children:
@@ -52,7 +52,7 @@ children:
                   - type: ListBox
                     name: model
                     height: large
-                    addButton: Add 
+                    addButton: Add
                     selectable: true
                     templateName: linreg-block-template
                     template:
@@ -68,7 +68,7 @@ children:
                           height: auto
                           ghostText: drag term here
   - type: CollapseBox
-    label: 'Analysis'
+    label: Analysis
     collapsed: true
     stretchFactor: 1
     children:
@@ -77,7 +77,7 @@ children:
         stretchFactor: 1
         children:
           - type: Label
-            label: 'Fit measures'
+            label: Fit measures
             children:
               - type: LayoutBox
                 margin: large
@@ -89,5 +89,12 @@ children:
                     children:
                       - type: ComboBox
                         name: raw
-                        enable: (plot)            
- 
+                        enable: (plot)
+                      - type: TextBox
+                        name: width
+                        format: number
+                        enable: (plot)
+                      - type: TextBox
+                        name: height
+                        format: number
+                        enable: (plot)

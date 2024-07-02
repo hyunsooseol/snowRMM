@@ -13,7 +13,9 @@ lcgm(
   variance = "equal",
   fit = TRUE,
   plot = FALSE,
-  raw = "FALSE"
+  raw = "FALSE",
+  width = 500,
+  height = 500
 )
 }
 \arguments{
@@ -34,10 +36,15 @@ lcgm(
 \item{plot}{.}
 
 \item{raw}{.}
+
+\item{width}{.}
+
+\item{height}{.}
 }
 \value{
 A results object containing:
 \tabular{llllll}{
+  \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
   \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
   \code{results$fit} \tab \tab \tab \tab \tab a table \cr
   \code{results$plot} \tab \tab \tab \tab \tab an image \cr

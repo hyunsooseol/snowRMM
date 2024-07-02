@@ -4,8 +4,13 @@ title: Latent Class Growth Modeling
 jrs:   '1.1'
 
 items:
+    - name: instructions
+      title: 'Instructions'
+      type: Html
+      visible: True
+      
     - name:  text
-      title: Latent Class Growth Modeling
+      title: ''
       type:  Preformatted
 
     - name: fit
@@ -42,6 +47,8 @@ items:
         - type
         - variance
         - raw
+        - width
+        - height
 
 
 

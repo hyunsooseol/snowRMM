@@ -15,7 +15,47 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
     "lcgmClass",
     inherit = lcgmBase,
     private = list(
-        .run = function() {
+
+      .init = function() {
+        
+        if (is.null(self$data) | is.null(self$options$vars)) {
+          
+          self$results$instructions$setVisible(visible = TRUE)
+          
+        }
+        
+        self$results$instructions$setContent(
+          "<html>
+            <head>
+            </head>
+            <body>
+            <div class='instructions'>
+            
+            <p>_____________________________________________________________________________________________</p>
+            <p>1. <b>tidyLPA</b> R package is described in the <a href='https://cran.r-project.org/web/packages/tidyLPA/vignettes/Introduction_to_tidyLPA.html' target = '_blank'>page</a>.</p>
+            <p>2. Four models(1,2,3,6) are specified using <b>mclust</b> R package.</p>
+            <p>3. Feature requests and bug reports can be made on the <a href='https://github.com/hyunsooseol/snowRMM/issues'  target = '_blank'>GitHub</a>.</p>
+            <p>_____________________________________________________________________________________________</p>
+            
+            </div>
+            </body>
+            </html>"
+        )
+        
+        if(isTRUE(self$options$plot)){
+          
+          width <- self$options$width
+          height <- self$options$height
+          
+          self$results$plot$setSize(width, height)
+        }      
+      
+      
+      },
+      
+ #---------     
+      
+   .run = function() {
 
           
           if (is.null(self$options$vars) ||
