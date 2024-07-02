@@ -147,6 +147,30 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
         .computeFIT = function() {
           
+          
+          # R example---
+          # data <- read.csv("empathy.csv")
+          # set.seed(1234)
+          # res<- tidySEM::mx_growth_mixture(model = "i =~ 1*ec1 + 1*ec2 + 1*ec3 +1*ec4 +1*ec5 +1*ec6
+          #                  s =~ 0*ec1 + 1*ec2 + 2*ec3 +3*ec4 +4*ec5 +5*ec6
+          #                  ec1 ~~ vec1*ec1
+          #                  ec2 ~~ vec2*ec2
+          #                  ec3 ~~ vec3*ec3
+          #                  ec4 ~~ vec4*ec4
+          #                  ec5 ~~ vec5*ec5
+          #                  ec6 ~~ vec6*ec6
+          #                   i ~~ 0*i
+          #                   s ~~ 0*s
+          #                   i ~~ 0*s
+          #                        
+          #                  # i ~~ i_var*i
+          #                  # s ~~ s_var*s
+          #                  # i ~~ s_cov*s
+          #                        ",
+          #                                  classes = 3,
+          #                                  data = data) 
+          # 
+          
           vars <- self$options$vars
           model <- self$options$model
           nc <- self$options$nc
