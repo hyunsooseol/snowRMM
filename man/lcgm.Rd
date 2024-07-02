@@ -12,7 +12,8 @@ lcgm(
   type = "conti",
   variance = "equal",
   fit = TRUE,
-  plot = FALSE
+  plot = FALSE,
+  raw = "FALSE"
 )
 }
 \arguments{
@@ -31,6 +32,8 @@ lcgm(
 \item{fit}{.}
 
 \item{plot}{.}
+
+\item{raw}{.}
 }
 \value{
 A results object containing:
