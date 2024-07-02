@@ -8,4 +8,41 @@ items:
       title: Latent Class Growth Modeling
       type:  Preformatted
 
+    - name: fit
+      title: 'Model fit'
+      type: Table
+      visible: (fit)
+      clearWith:
+        - vars
+        - model
+        - nc
+        - type
+        - variance
+        
+      refs: tidySEM 
+
+      columns:
+        - name: name
+          title: ''
+          type: 'text'
+          content: ($key)
+
+        - name: value
+          title: 'Values'
+
+    - name: plot
+      title: 'Trajectory plot'
+      type: Image
+      visible: (plot)
+      renderFun: .plot
+      clearWith:
+        - vars
+        - model
+        - nc
+        - type
+        - variance
+        - raw
+
+
+
 ...

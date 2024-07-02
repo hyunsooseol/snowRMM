@@ -8,7 +8,7 @@ Description: This module provides Latent Class Analysis based on poLCA R package
 License: GPL3
 LazyData: TRUE
 Encoding: UTF-8
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2
 Imports:
     jmvcore (>= 0.8.5), 
     R6,
@@ -30,8 +30,8 @@ Imports:
     pairwise,
     reshape2,
     ltm,
-    OpenMx,
-Remotes: twolodzko/equi,
+    tidySEM,
+    blavaan,
+Remotes: twolodzko/equi
          cran/mixRasch
-         ecmerkle/blavaan
-         cjvanlissa/tidySEM
+ 

@@ -51,11 +51,22 @@ options:
       default: equal  
 
     - name: fit
-      title: Fit
+      title: 'Model fit'
       type: Bool
       default: true
 
+    - name: plot
+      title: 'Trajectory plot'
+      type: Bool
+      default: FALSE  
 
-
-
+    - name: raw
+      title: 'Raw data'
+      type: List
+      options:
+        - title: 'FALSE'
+          name:  'FALSE'
+        - title: 'TRUE'
+          name:  'TRUE'
+      default: 'FALSE'  
 ...

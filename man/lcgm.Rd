@@ -11,7 +11,8 @@ lcgm(
   nc = 2,
   type = "conti",
   variance = "equal",
-  fit = TRUE
+  fit = TRUE,
+  plot = FALSE
 )
 }
 \arguments{
@@ -28,12 +29,22 @@ lcgm(
 \item{variance}{.}
 
 \item{fit}{.}
+
+\item{plot}{.}
 }
 \value{
 A results object containing:
 \tabular{llllll}{
   \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
+  \code{results$fit} \tab \tab \tab \tab \tab a table \cr
+  \code{results$plot} \tab \tab \tab \tab \tab an image \cr
 }
+
+Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
+
+\code{results$fit$asDF}
+
+\code{as.data.frame(results$fit)}
 }
 \description{
 Latent Class Growth Modeling

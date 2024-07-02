@@ -84,6 +84,10 @@ children:
                 children:
                   - type: CheckBox
                     name: fit
-
-            
+                  - type: CheckBox
+                    name: plot
+                    children:
+                      - type: ComboBox
+                        name: raw
+                        enable: (plot)            
  
