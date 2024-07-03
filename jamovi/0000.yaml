@@ -137,6 +137,11 @@ datasets:
     description: LCGM with ordinal data
     tags:
       - Growth Model
+  - name: depression
+    path: depression.omv
+    description: Depression trajectories among Dutch military
+    tags:
+      - Growth Model
   - name: linear
     path: lin.omv
     description: Linear equating
