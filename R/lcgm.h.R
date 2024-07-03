@@ -276,7 +276,7 @@ lcgmResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot1",
-                title="Descriptive plot",
+                title="Density plot",
                 visible="(plot1)",
                 renderFun=".plot1",
                 clearWith=list(

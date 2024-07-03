@@ -56,12 +56,12 @@ options:
       default: TRUE
 
     - name: plot1
-      title: 'Descriptive plot'
+      title: 'Density'
       type: Bool
       default: FALSE  
 
     - name: plot
-      title: 'Trajectory plot'
+      title: 'Trajectory'
       type: Bool
       default: FALSE  
 

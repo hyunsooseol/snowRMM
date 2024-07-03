@@ -104,7 +104,7 @@ items:
           type: 'text'
 
     - name: plot1
-      title: 'Descriptive plot'
+      title: 'Density plot'
       type: Image
       visible: (plot1)
       renderFun: .plot1
