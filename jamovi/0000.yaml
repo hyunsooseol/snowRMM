@@ -138,8 +138,8 @@ datasets:
     tags:
       - Growth Model
   - name: depression
-    path: depression.omv
-    description: Depression trajectories among Dutch military
+    path: dep.omv
+    description: Depression trajectories among Dutch military personnel
     tags:
       - Growth Model
   - name: linear
