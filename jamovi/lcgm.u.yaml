@@ -31,9 +31,7 @@ children:
             label: Class
             format: number
           - type: ComboBox
-            name: type
-          - type: ComboBox
-            name: variance
+            name: thr
   - type: CollapseBox
     label: Custom model settings
     collapsed: true
@@ -77,11 +75,13 @@ children:
         stretchFactor: 1
         children:
           - type: Label
-            label: Fit measures
+            label: 'Tables'
             children:
               - type: LayoutBox
                 margin: large
                 children:
+                  - type: CheckBox
+                    name: desc
                   - type: CheckBox
                     name: fit
                   - type: CheckBox
@@ -95,8 +95,20 @@ children:
         fitToGrid: true
         children:
           - type: Label
-            label: 'Plot'
+            label: Plots
             children:
+              - type: CheckBox
+                name: plot1
+                style: list-inline
+                children:
+                  - type: TextBox
+                    name: width1
+                    format: number
+                    enable: (plot1)
+                  - type: TextBox
+                    name: height1
+                    format: number
+                    enable: (plot1)
               - type: CheckBox
                 name: plot
                 children:

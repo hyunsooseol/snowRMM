@@ -13,6 +13,38 @@ items:
       title: ''
       type:  Preformatted
 
+    - name: desc
+      title: 'Descriptive statistics'
+      type: Table
+      visible: (desc)
+      clearWith:
+        - vars
+        - model
+        - nc
+        - thr
+      refs: tidySEM
+
+      columns:
+        - name: name
+          title: ''
+          type: 'text'
+          content: ($key)
+        - name: mean
+          title: Mean
+          type: number
+        - name: median 
+          title: Median  
+          type: number
+        - name: sd
+          title: SD 
+          type: number
+        - name: min
+          title: Minimum 
+          type: number
+        - name: max
+          title: Maximum 
+          type: number
+ 
     - name: fit
       title: 'Model fit'
       type: Table
@@ -21,9 +53,7 @@ items:
         - vars
         - model
         - nc
-        - type
-        - variance
-        
+        - thr
       refs: tidySEM 
 
       columns:
@@ -43,9 +73,7 @@ items:
         - vars
         - model
         - nc
-        - type
-        - variance
- 
+        - thr
       refs: tidySEM
 
       columns:
@@ -75,6 +103,19 @@ items:
           title: name
           type: 'text'
 
+    - name: plot1
+      title: 'Descriptive plot'
+      type: Image
+      visible: (plot1)
+      renderFun: .plot1
+      clearWith:
+        - vars
+        - model
+        - nc
+        - thr
+        - width1
+        - height1
+        
     - name: plot
       title: 'Trajectory plot'
       type: Image
@@ -84,9 +125,7 @@ items:
         - vars
         - model
         - nc
-        - type
-        - variance
-        - raw
+        - thr
         - width
         - height
 

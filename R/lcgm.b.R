@@ -8,6 +8,7 @@
 #' @importFrom tidySEM mx_growth_mixture
 #' @importFrom tidySEM mx_mixture
 #' @importFrom tidySEM table_fit
+#' @importFrom tidySEM descriptives
 #' @import ggplot2
 #' @export
 
@@ -24,6 +25,8 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           
         }
         
+        #https://cjvanlissa.github.io/tidySEM/articles/LCGA.html
+        
         self$results$instructions$setContent(
           "<html>
             <head>
@@ -32,8 +35,8 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             <div class='instructions'>
             
             <p>_____________________________________________________________________________________________</p>
-            <p>1. <b>tidyLPA</b> R package is described in the <a href='https://cran.r-project.org/web/packages/tidyLPA/vignettes/Introduction_to_tidyLPA.html' target = '_blank'>page</a>.</p>
-            <p>2. Four models(1,2,3,6) are specified using <b>mclust</b> R package.</p>
+            <p>1. <b>tidySEM</b> R package is described in the <a href='https://cjvanlissa.github.io/tidySEM/articles/LCGA.html' target = '_blank'>page</a>.</p>
+            <p>2. Please set <b>Thresholds=TRUE</b> when analyzing ordinal data.</p>
             <p>3. Feature requests and bug reports can be made on the <a href='https://github.com/hyunsooseol/snowRMM/issues'  target = '_blank'>GitHub</a>.</p>
             <p>_____________________________________________________________________________________________</p>
             
@@ -42,11 +45,17 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             </html>"
         )
         
-        if(isTRUE(self$options$plot)){
+        if(isTRUE(self$options$plot1)){
+
+          width <- self$options$width1
+          height <- self$options$height1
+          self$results$plot1$setSize(width, height)
+        }
+        
+          if(isTRUE(self$options$plot)){
           
           width <- self$options$width
           height <- self$options$height
-          
           self$results$plot$setSize(width, height)
         }      
       
@@ -64,17 +73,34 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           vars <- self$options$vars
           model <- self$options$model
           nc <- self$options$nc
-          type <- self$options$type
-          variance <- self$options$variance  
-          
+          thr <- self$options$thr
+       
           data <- self$data
           data <- na.omit(data)
           data <- as.data.frame(data)
           
-         #----------------
+       #---
         retlist <- private$.computeFIT()
-        #self$results$text$setContent(fit)
-        
+       #---
+
+          if(isTRUE(self$options$desc)){
+            
+            table <- self$results$desc
+            desc <- retlist$desc
+            
+            d<- data.frame(desc)
+ 
+           for(i in seq_along(vars)){
+              row <- list()
+              row[["mean"]] <- d[[2]][i]
+              row[["median"]] <- d[[3]][i]
+              row[["sd"]] <- d[[4]][i]
+              row[["min"]] <- d[[5]][i]
+              row[["max"]] <- d[[6]][i]
+              table$addRow(rowKey = vars[i], values = row)
+            }
+                }
+          
         # model fit---
           
           if(isTRUE(self$options$fit)){ 
@@ -119,6 +145,20 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             }
           }
  
+        if(isTRUE(self$options$plot1)){
+          
+          # Density plot---
+          long <- reshape(data, direction = "long", 
+                          varying = list(names(data)), 
+                          v.names = "value", 
+                          idvar = "id", 
+                          timevar = "time")
+          
+          #self$results$text$setContent(long)
+          image <- self$results$plot1
+          image$setState(long)
+        }
+        
           if(isTRUE(self$options$plot)){
           # Trajectory plot---
           image <- self$results$plot
@@ -127,8 +167,25 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
         },
 
-        # Plot---
-        
+# Plot---
+
+ .plot1 = function(image, ggtheme, theme,...) {
+   
+   if (is.null(image$state))
+     return(FALSE)
+   
+   long <- image$state
+   
+   plot1 <- ggplot(long, aes(x = value)) +
+     geom_density() +
+     facet_wrap(~time) + theme_bw()
+   
+   plot1 <- plot1+ggtheme
+   print(plot1)
+   TRUE
+ 
+   },
+   
         .plot = function(image, ggtheme, theme,...) {
           
           if (is.null(image$state))
@@ -174,30 +231,30 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           vars <- self$options$vars
           model <- self$options$model
           nc <- self$options$nc
-          type <- self$options$type
-          variance <- self$options$variance
-          
+          thr <- self$options$thr
+         
           data <- self$data
           data <- jmvcore::naOmit(data)        
           data <- as.data.frame(data)
           
-          if(type=='conti'){
-          
+          # Descriptives---
+          desc <- tidySEM::descriptives(data)
+          desc <- desc[, c("name", "mean", "median", "sd", "min", "max")]
+         
+         # Model--- 
           set.seed(1234)
           res <- tidySEM::mx_growth_mixture(model = model,
                                             classes = nc,
+                                            thresholds=thr,
                                             data = data)
          
-          }
-          
           # Get fit table 
           fit <- tidySEM::table_fit(res)
-          
           # Get parameter estimates
           para <- tidySEM::table_results(res, columns = NULL)
           para <- para[para$Category %in% c("Means", "Variances"), c("Category", "lhs", "est", "se", "pval", "confint", "name")]
            
-        retlist <- list(res=res, fit=fit, para=para)
+        retlist <- list(res=res, fit=fit, para=para, desc=desc)
         return(retlist)
         
         } 

@@ -9,14 +9,17 @@ lcgm(
   vars,
   model = list(),
   nc = 2,
-  type = "conti",
-  variance = "equal",
+  thr = "FALSE",
   fit = TRUE,
   est = FALSE,
+  desc = FALSE,
+  plot1 = FALSE,
   plot = FALSE,
   raw = "FALSE",
   width = 500,
-  height = 500
+  height = 500,
+  width1 = 500,
+  height1 = 500
 )
 }
 \arguments{
@@ -28,13 +31,15 @@ lcgm(
 
 \item{nc}{.}
 
-\item{type}{.}
-
-\item{variance}{.}
+\item{thr}{.}
 
 \item{fit}{.}
 
 \item{est}{.}
+
+\item{desc}{.}
+
+\item{plot1}{.}
 
 \item{plot}{.}
 
@@ -43,22 +48,28 @@ lcgm(
 \item{width}{.}
 
 \item{height}{.}
+
+\item{width1}{.}
+
+\item{height1}{.}
 }
 \value{
 A results object containing:
 \tabular{llllll}{
   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
   \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
+  \code{results$desc} \tab \tab \tab \tab \tab a table \cr
   \code{results$fit} \tab \tab \tab \tab \tab a table \cr
   \code{results$est} \tab \tab \tab \tab \tab a table \cr
+  \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
 }
 
 Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
 
-\code{results$fit$asDF}
+\code{results$desc$asDF}
 
-\code{as.data.frame(results$fit)}
+\code{as.data.frame(results$desc)}
 }
 \description{
 Latent Class Growth Modeling

@@ -131,7 +131,7 @@ datasets:
     path: empathy.omv
     description: LCGM with constraints
     tags:
-      - LCGM
+      - Growth Model
   - name: linear
     path: lin.omv
     description: Linear equating
