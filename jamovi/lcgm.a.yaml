@@ -13,11 +13,9 @@ options:
       title: Variables
       type: Variables
       suggested:
-         - ordinal
          - continuous
       permitted:
-        - factor
-        - numeric
+         - numeric
     
     - name: model
       title: 'Insert model formula'
@@ -45,7 +43,7 @@ options:
     - name: fit
       title: 'Model fit'
       type: Bool
-      default: true
+      default: FALSE
 
     - name: est
       title: 'Estimates'
@@ -55,7 +53,7 @@ options:
     - name: desc
       title: 'Descriptives'
       type: Bool
-      default: FALSE
+      default: TRUE
 
     - name: plot1
       title: 'Descriptive plot'

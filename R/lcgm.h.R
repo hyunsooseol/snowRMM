@@ -10,9 +10,9 @@ lcgmOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             model = list(),
             nc = 2,
             thr = "FALSE",
-            fit = TRUE,
+            fit = FALSE,
             est = FALSE,
-            desc = FALSE,
+            desc = TRUE,
             plot1 = FALSE,
             plot = FALSE,
             raw = "FALSE",
@@ -31,10 +31,8 @@ lcgmOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "vars",
                 vars,
                 suggested=list(
-                    "ordinal",
                     "continuous"),
                 permitted=list(
-                    "factor",
                     "numeric"))
             private$..model <- jmvcore::OptionArray$new(
                 "model",
@@ -58,7 +56,7 @@ lcgmOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             private$..fit <- jmvcore::OptionBool$new(
                 "fit",
                 fit,
-                default=TRUE)
+                default=FALSE)
             private$..est <- jmvcore::OptionBool$new(
                 "est",
                 est,
@@ -66,7 +64,7 @@ lcgmOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             private$..desc <- jmvcore::OptionBool$new(
                 "desc",
                 desc,
-                default=FALSE)
+                default=TRUE)
             private$..plot1 <- jmvcore::OptionBool$new(
                 "plot1",
                 plot1,
@@ -365,9 +363,9 @@ lcgm <- function(
     model = list(),
     nc = 2,
     thr = "FALSE",
-    fit = TRUE,
+    fit = FALSE,
     est = FALSE,
-    desc = FALSE,
+    desc = TRUE,
     plot1 = FALSE,
     plot = FALSE,
     raw = "FALSE",

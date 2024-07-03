@@ -129,7 +129,12 @@ datasets:
       - Latent Profile
   - name: empathy
     path: empathy.omv
-    description: LCGM with constraints
+    description: LCGM with continuous data
+    tags:
+      - Growth Model
+  - name: ordinal
+    path: ordinal.omv
+    description: LCGM with ordinal data
     tags:
       - Growth Model
   - name: linear
