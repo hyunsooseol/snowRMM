@@ -13,6 +13,7 @@ lcgmOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             fit = FALSE,
             est = FALSE,
             desc = TRUE,
+            cp = FALSE,
             plot1 = FALSE,
             plot = FALSE,
             raw = "FALSE",
@@ -65,6 +66,12 @@ lcgmOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "desc",
                 desc,
                 default=TRUE)
+            private$..cp <- jmvcore::OptionBool$new(
+                "cp",
+                cp,
+                default=FALSE)
+            private$..mem <- jmvcore::OptionOutput$new(
+                "mem")
             private$..plot1 <- jmvcore::OptionBool$new(
                 "plot1",
                 plot1,
@@ -104,6 +111,8 @@ lcgmOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..fit)
             self$.addOption(private$..est)
             self$.addOption(private$..desc)
+            self$.addOption(private$..cp)
+            self$.addOption(private$..mem)
             self$.addOption(private$..plot1)
             self$.addOption(private$..plot)
             self$.addOption(private$..raw)
@@ -120,6 +129,8 @@ lcgmOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         fit = function() private$..fit$value,
         est = function() private$..est$value,
         desc = function() private$..desc$value,
+        cp = function() private$..cp$value,
+        mem = function() private$..mem$value,
         plot1 = function() private$..plot1$value,
         plot = function() private$..plot$value,
         raw = function() private$..raw$value,
@@ -135,6 +146,8 @@ lcgmOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..fit = NA,
         ..est = NA,
         ..desc = NA,
+        ..cp = NA,
+        ..mem = NA,
         ..plot1 = NA,
         ..plot = NA,
         ..raw = NA,
@@ -153,6 +166,8 @@ lcgmResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         desc = function() private$.items[["desc"]],
         fit = function() private$.items[["fit"]],
         est = function() private$.items[["est"]],
+        cp = function() private$.items[["cp"]],
+        mem = function() private$.items[["mem"]],
         plot1 = function() private$.items[["plot1"]],
         plot = function() private$.items[["plot"]]),
     private = list(),
@@ -273,6 +288,42 @@ lcgmResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         `name`="na", 
                         `title`="name", 
                         `type`="text"))))
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="cp",
+                title="Size of each class",
+                visible="(cp)",
+                refs="tidySEM",
+                clearWith=list(
+                    "vars",
+                    "model",
+                    "nc",
+                    "thr"),
+                columns=list(
+                    list(
+                        `name`="name", 
+                        `title`="Class", 
+                        `type`="text", 
+                        `content`="($key)"),
+                    list(
+                        `name`="count", 
+                        `title`="Count", 
+                        `type`="number"),
+                    list(
+                        `name`="prop", 
+                        `title`="Proportion", 
+                        `type`="number"))))
+            self$add(jmvcore::Output$new(
+                options=options,
+                name="mem",
+                title="Class",
+                varTitle="Class",
+                measureType="nominal",
+                clearWith=list(
+                    "vars",
+                    "model",
+                    "nc",
+                    "thr")))
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot1",
@@ -318,7 +369,7 @@ lcgmBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 pause = NULL,
                 completeWhenFilled = FALSE,
                 requiresMissings = FALSE,
-                weightsSupport = 'auto')
+                weightsSupport = 'none')
         }))
 
 #' Latent Class Growth Modeling
@@ -332,6 +383,7 @@ lcgmBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param fit .
 #' @param est .
 #' @param desc .
+#' @param cp .
 #' @param plot1 .
 #' @param plot .
 #' @param raw .
@@ -346,6 +398,8 @@ lcgmBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$desc} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$fit} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$est} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$cp} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$mem} \tab \tab \tab \tab \tab an output \cr
 #'   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
 #' }
@@ -366,6 +420,7 @@ lcgm <- function(
     fit = FALSE,
     est = FALSE,
     desc = TRUE,
+    cp = FALSE,
     plot1 = FALSE,
     plot = FALSE,
     raw = "FALSE",
@@ -392,6 +447,7 @@ lcgm <- function(
         fit = fit,
         est = est,
         desc = desc,
+        cp = cp,
         plot1 = plot1,
         plot = plot,
         raw = raw,

@@ -143,6 +143,44 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             }
           }
  
+        # class size---
+        
+        if(isTRUE(self$options$cp)){ 
+          
+          table <- self$results$cp
+          
+          d<- retlist$cp
+          
+          for(i in seq_along(1:nc)){
+            row <- list()
+            
+            row[["name"]] <- d[[1]][i]
+            row[["count"]] <- d[[2]][i]
+            row[["prop"]] <- d[[3]][i]
+            
+            table$addRow(rowKey = vars[i], values = row)
+          }
+          
+        }
+        
+        # class member--
+        if(isTRUE(self$options$mem)){
+          
+          cp<- tidySEM::class_prob(retlist$res)
+          mem<- data.frame(cp$individual)
+          m<- mem$predicted
+          
+          m <- as.factor(m)
+          
+          if (self$options$mem
+              && self$results$mem$isNotFilled()) {
+            
+            self$results$mem$setValues(m)
+            self$results$mem$setRowNums(rownames(data))
+          }
+          
+        }
+        
         if(isTRUE(self$options$plot1)){
           
           # Density plot---
@@ -256,7 +294,11 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           para <- tidySEM::table_results(res, columns = NULL)
           para <- para[para$Category %in% c("Means", "Variances"), c("Category", "lhs", "est", "se", "pval", "confint", "name")]
            
-        retlist <- list(res=res, fit=fit, para=para, desc=desc)
+          # class size
+          cp<- tidySEM::class_prob(res)
+          cp<- data.frame(cp$sum.posterior)
+          
+        retlist <- list(res=res, fit=fit, para=para, desc=desc, cp=cp)
         return(retlist)
         
         } 

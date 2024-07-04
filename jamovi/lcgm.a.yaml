@@ -55,6 +55,15 @@ options:
       type: Bool
       default: TRUE
 
+    - name: cp
+      title: Class size 
+      type: Bool 
+      default: FALSE
+
+    - name: mem
+      title: Person Membership
+      type: Output
+
     - name: plot1
       title: 'Density'
       type: Bool

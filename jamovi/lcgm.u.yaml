@@ -86,6 +86,13 @@ children:
                     name: fit
                   - type: CheckBox
                     name: est
+                  - type: CheckBox
+                    name: cp
+              - type: Label
+                label: Save
+                children:
+                  - type: Output
+                    name: mem
       - type: LayoutBox
         stretchFactor: 1
         margin: large

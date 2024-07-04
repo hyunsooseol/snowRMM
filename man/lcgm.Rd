@@ -13,6 +13,7 @@ lcgm(
   fit = FALSE,
   est = FALSE,
   desc = TRUE,
+  cp = FALSE,
   plot1 = FALSE,
   plot = FALSE,
   raw = "FALSE",
@@ -39,6 +40,8 @@ lcgm(
 
 \item{desc}{.}
 
+\item{cp}{.}
+
 \item{plot1}{.}
 
 \item{plot}{.}
@@ -61,6 +64,8 @@ A results object containing:
   \code{results$desc} \tab \tab \tab \tab \tab a table \cr
   \code{results$fit} \tab \tab \tab \tab \tab a table \cr
   \code{results$est} \tab \tab \tab \tab \tab a table \cr
+  \code{results$cp} \tab \tab \tab \tab \tab a table \cr
+  \code{results$mem} \tab \tab \tab \tab \tab an output \cr
   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
 }

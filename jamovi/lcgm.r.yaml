@@ -103,6 +103,39 @@ items:
           title: name
           type: 'text'
 
+    - name: cp
+      title: 'Size of each class'
+      type: Table
+      visible: (cp)
+      refs: tidySEM
+      clearWith:
+        - vars
+        - model
+        - nc
+        - thr 
+      columns:
+        - name: name
+          title: 'Class'
+          type: 'text'
+          content: ($key)
+        - name: count
+          title: Count
+          type: number
+        - name: prop 
+          title: Proportion   
+          type: number
+ 
+    - name: mem
+      title: Class 
+      type: Output
+      varTitle: Class
+      measureType: nominal
+      clearWith:
+        - vars
+        - model
+        - nc
+        - thr
+
     - name: plot1
       title: 'Density plot'
       type: Image
