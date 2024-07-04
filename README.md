@@ -1,6 +1,5 @@
 # snowRMM
- This module provides Latent Class Analysis, Laten Profile Analysis, Rasch model, Linear Logistic Test Model, and Rasch mixture model including model information,fit statistics,and bootstrap fit based on JMLE. Furthermore, linear and equipercentile equating can be performed within module.
-
+ Latent Class Analysis(LCA), LCA for ordinal indicators, Latent class growth modeling, Laten Profile Analysis, Rasch model, Linear Logistic Test Model, Rasch mixture model, linear and equipercentile equating can be performed within module.
 snowRMM module can be installed and used in R as a standard R packages.
 # Installation
 At the moment, snowRMM is not in CRAN yet, so you need to install it via devtools.
