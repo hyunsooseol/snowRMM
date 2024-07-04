@@ -123,6 +123,11 @@ datasets:
     description: LCA with covariates
     tags:
       - LCA
+  - name: ordinal
+    path: ordinal.omv
+    description: LCA with ordinal data
+    tags:
+      - LCA Ordianl Data
   - name: iris
     path: iris.omv
     description: Latent profile analysis
@@ -138,16 +143,17 @@ datasets:
     description: LCGM with continuous data
     tags:
       - Growth Model
-  - name: ordinal
-    path: ordinal.omv
-    description: LCGM with ordinal data
-    tags:
-      - Growth Model
   - name: depression
     path: dep.omv
     description: Depression trajectories among Dutch military personnel
     tags:
       - Growth Model
+  - name: growthord
+    path: growthord.omv
+    description: LCGM with ordinal data
+    tags:
+      - Growth Model
+      - Ordinal data
   - name: linear
     path: lin.omv
     description: Linear equating
