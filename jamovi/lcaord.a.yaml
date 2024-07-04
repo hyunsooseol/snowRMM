@@ -1,0 +1,74 @@
+---
+name:  lcaord
+title: LCA with ordinal indicators
+menuGroup: snowRMM
+version: '1.0.0'
+jas: '1.2'
+
+options:
+    - name: data
+      type: Data
+
+    - name: vars
+      title: Variables
+      type: Variables
+      suggested:
+         - continuous
+      permitted:
+         - numeric
+
+    - name: nc
+      title: 'Class'
+      type: Integer
+      min: 2
+      default: 2     
+
+    - name: desc
+      title: 'Descriptives'
+      type: Bool
+      default: TRUE
+
+    - name: fit
+      title: 'Model fit'
+      type: Bool
+      default: FALSE
+
+    - name: cp
+      title: Class size 
+      type: Bool 
+      default: FALSE
+
+    - name: mem
+      title: Person Membership
+      type: Output
+
+    - name: plot
+      title: 'Response probilities'
+      type: Bool
+      default: FALSE  
+
+    - name: width
+      type: Integer
+      title: "Size: "
+      default: 500
+      
+    - name: height
+      type: Integer
+      title: "X"
+      default: 500   
+
+    - name: plot1
+      title: 'Bar plot'
+      type: Bool
+      default: FALSE  
+
+    - name: width1
+      type: Integer
+      title: "Size: "
+      default: 500
+      
+    - name: height1
+      type: Integer
+      title: "X"
+      default: 500   
+...

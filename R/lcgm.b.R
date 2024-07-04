@@ -24,9 +24,7 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           self$results$instructions$setVisible(visible = TRUE)
           
         }
-        
-        #https://cjvanlissa.github.io/tidySEM/articles/LCGA.html
-        
+       
         self$results$instructions$setContent(
           "<html>
             <head>
@@ -241,12 +239,16 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           desc <- tidySEM::descriptives(data)
           desc <- desc[, c("name", "mean", "median", "sd", "min", "max")]
          
-         # Model--- 
+          # Model--- 
+          # Caution: Not possible to use 'classes=1:nc' using mx_mixture()
+          
           set.seed(1234)
           res <- tidySEM::mx_growth_mixture(model = model,
                                             classes = nc,
                                             thresholds=thr,
-                                            data = data)
+                                            data=data)
+          
+          #self$results$text$setContent(res)                                                                  
          
           # Get fit table 
           fit <- tidySEM::table_fit(res)

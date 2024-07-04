@@ -44,6 +44,12 @@ analyses:
     menuGroup: snowRMM
     menuTitle: Latent Class Analysis
     menuSubgroup: LCA
+  - title: LCA with ordinal indicators
+    name: lcaord
+    ns: snowRMM
+    menuGroup: snowRMM
+    menuTitle: LCA with ordinal indicators
+    menuSubgroup: LCA
   - title: Latent Profile Analysis
     name: lpa
     ns: snowRMM

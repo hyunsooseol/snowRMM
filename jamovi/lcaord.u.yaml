@@ -1,0 +1,93 @@
+title: LCA with ordinal indicators
+name: lcaord
+jus: '3.0'
+stage: 0
+compilerMode: tame
+children:
+  - type: VariableSupplier
+    suggested:
+      - ordinal
+      - continuous
+    persistentItems: false
+    stretchFactor: 1
+    children:
+      - type: TargetLayoutBox
+        label: Variables
+        children:
+          - type: VariablesListBox
+            name: vars
+            isTarget: true
+  - type: LayoutBox
+    margin: large
+    children:
+      - name: nc
+        type: TextBox
+        label: Class
+        format: number
+  - type: CollapseBox
+    label: Analysis
+    collapsed: true
+    stretchFactor: 1
+    children:
+      - type: LayoutBox
+        margin: large
+        stretchFactor: 1
+        children:
+          - type: LayoutBox
+            margin: large
+            cell:
+              column: 0
+              row: 0
+            stretchFactor: 1
+            children:
+              - type: Label
+                label: Tables
+                children:
+                  - type: LayoutBox
+                    margin: large
+                    children:
+                      - type: CheckBox
+                        name: desc
+                      - type: CheckBox
+                        name: fit
+                      - type: CheckBox
+                        name: cp
+              - type: Label
+                label: Save
+                children:
+                  - type: Output
+                    name: mem
+          - type: LayoutBox
+            margin: large
+            cell:
+              column: 1
+              row: 0
+            stretchFactor: 1
+            children:
+              - type: Label
+                label: Plots
+                children:
+                  - type: CheckBox
+                    name: plot1
+                    style: list-inline
+                    children:
+                      - type: TextBox
+                        name: width1
+                        format: number
+                        enable: (plot1)
+                      - type: TextBox
+                        name: height1
+                        format: number
+                        enable: (plot1)
+                  - type: CheckBox
+                    name: plot
+                    style: list-inline
+                    children:
+                      - type: TextBox
+                        name: width
+                        format: number
+                        enable: (plot)
+                      - type: TextBox
+                        name: height
+                        format: number
+                        enable: (plot)
