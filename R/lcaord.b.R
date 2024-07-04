@@ -33,9 +33,8 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             <div class='instructions'>
             
             <p>_____________________________________________________________________________________________</p>
-            <p>1. <b>tidySEM</b> R package is described in the <a href='https://cjvanlissa.github.io/tidySEM/articles/LCGA.html' target = '_blank'>page</a>.</p>
-            <p>2. Please set <b>Thresholds=TRUE</b> when analyzing ordinal data.</p>
-            <p>3. Feature requests and bug reports can be made on the <a href='https://github.com/hyunsooseol/snowRMM/issues'  target = '_blank'>GitHub</a>.</p>
+            <p>1. <b>tidySEM</b> R package is described in the <a href='https://cjvanlissa.github.io/tidySEM/articles/lca_ordinal.html' target = '_blank'>page</a>.</p>
+            <p>2. Feature requests and bug reports can be made on the <a href='https://github.com/hyunsooseol/snowRMM/issues' target = '_blank'>GitHub</a>.</p>
             <p>_____________________________________________________________________________________________</p>
             
             </div>
