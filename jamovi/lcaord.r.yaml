@@ -2,7 +2,7 @@
 name:  lcaord
 title: LCA with ordinal indicators
 jrs:   '1.1'
-
+refs: snowRMM
 items:
     - name: instructions
       title: 'Instructions'
