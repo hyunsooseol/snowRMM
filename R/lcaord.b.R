@@ -199,6 +199,15 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         plot<- tidySEM::plot_prob(res, bw = TRUE)
         
         plot <- plot+ggtheme
+        
+        if (self$options$angle > 0) {
+          plot <- plot + ggplot2::theme(
+            axis.text.x = ggplot2::element_text(
+              angle = self$options$angle, hjust = 1
+            )
+          )
+        }
+        
         print(plot)
         TRUE
         

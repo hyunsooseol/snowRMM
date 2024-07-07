@@ -16,7 +16,8 @@ lcaord(
   height = 500,
   plot1 = FALSE,
   width1 = 500,
-  height1 = 500
+  height1 = 500,
+  angle = 0
 )
 }
 \arguments{
@@ -43,6 +44,9 @@ lcaord(
 \item{width1}{.}
 
 \item{height1}{.}
+
+\item{angle}{a number from 0 to 90 defining the angle of the x-axis labels,
+where 0 degrees represents completely horizontal labels.}
 }
 \value{
 A results object containing:

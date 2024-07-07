@@ -2,7 +2,7 @@
 name:  lcgm
 title: Latent Class Growth Modeling
 jrs:   '1.1'
-
+refs: snowRMM
 items:
     - name: instructions
       title: 'Instructions'
