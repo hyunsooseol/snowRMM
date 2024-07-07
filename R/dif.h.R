@@ -320,7 +320,8 @@ difResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             super$initialize(
                 options=options,
                 name="",
-                title="Differential Item Functioning")
+                title="Differential Item Functioning",
+                refs="snowRMM")
             self$add(jmvcore::Html$new(
                 options=options,
                 name="instructions",

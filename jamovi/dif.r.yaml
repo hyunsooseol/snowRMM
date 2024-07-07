@@ -2,7 +2,7 @@
 name:  dif
 title: Differential Item Functioning
 jrs:   '1.1'
-
+refs: snowRMM
 items:
     - name: instructions
       title: Instructions

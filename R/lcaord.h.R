@@ -16,7 +16,8 @@ lcaordOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             height = 500,
             plot1 = FALSE,
             width1 = 500,
-            height1 = 500, ...) {
+            height1 = 500,
+            angle = 0, ...) {
 
             super$initialize(
                 package="snowRMM",
@@ -74,6 +75,12 @@ lcaordOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "height1",
                 height1,
                 default=500)
+            private$..angle <- jmvcore::OptionNumber$new(
+                "angle",
+                angle,
+                min=0,
+                max=90,
+                default=0)
 
             self$.addOption(private$..vars)
             self$.addOption(private$..nc)
@@ -87,6 +94,7 @@ lcaordOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..plot1)
             self$.addOption(private$..width1)
             self$.addOption(private$..height1)
+            self$.addOption(private$..angle)
         }),
     active = list(
         vars = function() private$..vars$value,
@@ -100,7 +108,8 @@ lcaordOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         height = function() private$..height$value,
         plot1 = function() private$..plot1$value,
         width1 = function() private$..width1$value,
-        height1 = function() private$..height1$value),
+        height1 = function() private$..height1$value,
+        angle = function() private$..angle$value),
     private = list(
         ..vars = NA,
         ..nc = NA,
@@ -113,7 +122,8 @@ lcaordOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..height = NA,
         ..plot1 = NA,
         ..width1 = NA,
-        ..height1 = NA)
+        ..height1 = NA,
+        ..angle = NA)
 )
 
 lcaordResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -251,7 +261,8 @@ lcaordResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "vars",
                     "nc",
                     "width",
-                    "height")))}))
+                    "height",
+                    "angle")))}))
 
 lcaordBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "lcaordBase",
@@ -289,6 +300,8 @@ lcaordBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param plot1 .
 #' @param width1 .
 #' @param height1 .
+#' @param angle a number from 0 to 90 defining the angle of the x-axis labels,
+#'   where 0 degrees represents completely horizontal labels.
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
@@ -320,7 +333,8 @@ lcaord <- function(
     height = 500,
     plot1 = FALSE,
     width1 = 500,
-    height1 = 500) {
+    height1 = 500,
+    angle = 0) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("lcaord requires jmvcore to be installed (restart may be required)")
@@ -343,7 +357,8 @@ lcaord <- function(
         height = height,
         plot1 = plot1,
         width1 = width1,
-        height1 = height1)
+        height1 = height1,
+        angle = angle)
 
     analysis <- lcaordClass$new(
         options = options,

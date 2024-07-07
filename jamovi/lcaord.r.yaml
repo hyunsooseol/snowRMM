@@ -111,5 +111,6 @@ items:
         - nc
         - width
         - height
+        - angle
    
 ...
