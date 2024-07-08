@@ -349,6 +349,7 @@ lcgmResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "model",
                     "nc",
                     "thr",
+                    "raw",
                     "width",
                     "height")))}))
 

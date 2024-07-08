@@ -159,6 +159,7 @@ items:
         - model
         - nc
         - thr
+        - raw
         - width
         - height
 
