@@ -3,8 +3,6 @@
 #' @importFrom R6 R6Class
 #' @import jmvcore
 #' @import tidySEM
-#' @import blavaan
-#' @import OpenMx
 #' @importFrom tidySEM mx_growth_mixture
 #' @importFrom tidySEM mx_mixture
 #' @importFrom tidySEM table_fit

@@ -31,8 +31,7 @@ Imports:
     reshape2,
     ltm,
     tidySEM,
-    blavaan,
-    OpenMx,
 Remotes: twolodzko/equi
          cran/mixRasch
+         ecmerkle/blavaan         
  
