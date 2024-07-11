@@ -65,20 +65,7 @@ raschClass <- if (requireNamespace('jmvcore'))
             </html>"
         )
         
-        # if (self$options$rsm)
-        #   self$results$rsm$setNote(
-        #     "Note",
-        #     "The <b>eRm</b> R package was used for calculating thresholds."
-        #     
-        #   )
-        # 
-        # if (self$options$pcm)
-        #   self$results$pcm$setNote(
-        #     "Note",
-        #     "The <b>eRm</b> R package was used for calculating thresholds."
-        #     
-        #   )
-        
+ 
         if (self$options$ml1)
           self$results$tm$ml1$setNote(
             "Note",
@@ -265,15 +252,7 @@ raschClass <- if (requireNamespace('jmvcore'))
           
           private$.preparePcmPlot(data)
           
-          # populate Person analysis table-------
-          # private$.populatePtotalOutputs(results)
-          # private$.populatePmeasureOutputs(results)
-          # private$.populatePseOutputs(results)
-          # private$.populatePinfitOutputs(results)
-          # private$.populatePoutfitOutputs(results)
-          # 
-          
-          
+
         }
       },
       
@@ -283,9 +262,7 @@ raschClass <- if (requireNamespace('jmvcore'))
         
         
         vars <- self$options$vars
-        
         step <- self$options$step
-        
         type <- self$options$type
         
        
@@ -391,18 +368,36 @@ raschClass <- if (requireNamespace('jmvcore'))
         res0 <- mixRasch::getEstDetails(res)
         class <- res0$nC
         
-        # person separation reliability using eRm R package---------
+########## eRm R package######################################
+
+        if(self$options$step ==1){
+          
+          rasch<- eRm::RM(data) 
+          
+        } else if(self$options$step >1){
+          
+          pcm.res<- eRm::PCM(data)
+          rsm.res <- eRm::RSM(data)
+         
+        }
+        
+# person separation reliability using eRm R package---------
         
         if(self$options$step ==1){
         
-        pers <- eRm::person.parameter(eRm::RM(data))
+          #rasch<- eRm::RM(data)
+          
+        pers <- eRm::person.parameter(rasch)
         rel <- eRm::SepRel(pers)
         } else if(self$options$step >1){
-          pers <- eRm::person.parameter(eRm::PCM(data))
+          
+          #pcm<- eRm::PCM(data)
+          
+          pers <- eRm::person.parameter(pcm.res)
           rel <- eRm::SepRel(pers)
           
         }
-        
+ ###################################################################       
         ssd <- rel$SSD.PS
         mse<-rel$MSE
         rel<- rel$sep.rel
@@ -416,9 +411,7 @@ raschClass <- if (requireNamespace('jmvcore'))
         ########################################################
         if(self$options$step ==1){
           
-          rasch <- eRm::RM(data)
-          
-          
+          #rasch <- eRm::RM(data)
           lrsplit<- self$options$lrsplit
           
           # LR test----------
@@ -507,11 +500,6 @@ raschClass <- if (requireNamespace('jmvcore'))
         if(self$options$step >1){
        # if(self$options$rsm==TRUE || self$options$mlsplit1==TRUE || self$options$plot2==TRUE){
      
-       ########################################
-        
-       rsm.res <- eRm::RSM(data)
-       #######################################
-        
         tab<- thresholds(rsm.res)
         tab<- tab$threshtable
         rsm<- data.frame(Reduce(rbind, tab))
@@ -563,8 +551,7 @@ raschClass <- if (requireNamespace('jmvcore'))
           
           image <- self$results$plot2
           image$setState(rsm.res)
-          
-          ##################################################
+         
           # Testing the Rasch model with Rating scale---
           
           mlsplit1<- self$options$mlsplit1
@@ -572,14 +559,12 @@ raschClass <- if (requireNamespace('jmvcore'))
           #Martin-lof test--------------
           
           ml1<- eRm::MLoef(rsm.res,splitcr = mlsplit1)
-          #####################
           
           value<- ml1$LR
           df<- ml1$df
           p<- ml1$p.value
           
           table <- self$results$tm$ml1
-          
           
           row <- list()
           
@@ -592,11 +577,7 @@ raschClass <- if (requireNamespace('jmvcore'))
         }
       
         if(self$options$pcm==TRUE){    
-       
-        #######################################
-        pcm.res <- eRm::PCM(data)
-        #####################################
-        
+     
         tab1<- thresholds(pcm.res)
         tab1<- tab1$threshtable
         pcm<- data.frame(Reduce(rbind, tab1))
@@ -607,7 +588,6 @@ raschClass <- if (requireNamespace('jmvcore'))
         nCategory <- nc
         
         table <- self$results$pcm
-
 
           nCategory <- nc
 
@@ -719,9 +699,8 @@ raschClass <- if (requireNamespace('jmvcore'))
           # std.resids <- item.fit$st.res
           
           if(self$options$step==1 && self$options$type=='RSM'){
-            
-            res <- eRm::RM(data)
-            p.res <- person.parameter(res)
+           
+            p.res <- person.parameter(rasch)
             
             item.fit <- eRm::itemfit(p.res)
             std.resids <- item.fit$st.res
@@ -730,8 +709,8 @@ raschClass <- if (requireNamespace('jmvcore'))
           
           if(self$options$step>1 && self$options$type=='RSM'){
             
-            res <- eRm::RSM(data)
-            p.res <- person.parameter(res)
+            #res <- eRm::RSM(data)
+            p.res <- person.parameter(rsm.res)
             
             item.fit <- eRm::itemfit(p.res)
             std.resids <- item.fit$st.res
@@ -739,8 +718,8 @@ raschClass <- if (requireNamespace('jmvcore'))
           
           if(self$options$step>1 && self$options$type=='PCM'){  
             
-            res <- eRm::PCM(data)
-            p.res <- person.parameter(res)
+            #res <- eRm::PCM(data)
+            p.res <- person.parameter(pcm.res)
             
             item.fit <- eRm::itemfit(p.res)
             std.resids <- item.fit$st.res

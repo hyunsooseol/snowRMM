@@ -313,7 +313,7 @@ children:
                     format: number
                     enable: (plot8)
   - type: CollapseBox
-    label: Additional Outputs
+    label: Additional Outputs(Step>1)
     margin: normal
     collapsed: true
     children:
@@ -360,7 +360,7 @@ children:
                     name: res1
                     enable: (q3)
   - type: CollapseBox
-    label: Nonparametric Rasch Model Tests
+    label: Nonparametric Rasch Model Tests(Step=1)
     margin: normal
     collapsed: true
     children:
@@ -369,7 +369,7 @@ children:
         margin: large
         children:
           - type: Label
-            label: 'eRm-NP test(Step=1)'
+            label: 'eRm-NP test'
             fitToGrid: true
             cell:
               column: 0
