@@ -6,8 +6,6 @@ At the moment, snowRMM is not in CRAN yet, so you need to install it via devtool
 
 library(jmv)
 
-library(haven)
-
 library(jmvReadWrite)
 
 library(jmvconnect)
