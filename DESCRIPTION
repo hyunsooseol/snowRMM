@@ -32,6 +32,6 @@ Imports:
     ltm,
     tidySEM,
     blavaan,
-Remotes: twolodzko/equi
+Remotes: twolodzko/equi,
          cran/mixRasch
         
