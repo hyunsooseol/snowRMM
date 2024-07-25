@@ -487,6 +487,10 @@ items:
         - name: Q3
           type: number  
   
+    - name:  text2
+      title: 'Standardized residula correlation matrix'
+      type:  Preformatted  
+
     - name:  text
       title: 'Rasch residual factor analysis'
       type:  Preformatted

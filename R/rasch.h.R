@@ -44,6 +44,7 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             res = "stdr",
             q3 = FALSE,
             res1 = "stdr",
+            cormatrix = FALSE,
             width = 500,
             height = 500,
             width1 = 500,
@@ -269,6 +270,10 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "stdr",
                     "sr"),
                 default="stdr")
+            private$..cormatrix <- jmvcore::OptionBool$new(
+                "cormatrix",
+                cormatrix,
+                default=FALSE)
             private$..width <- jmvcore::OptionInteger$new(
                 "width",
                 width,
@@ -411,6 +416,7 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..res)
             self$.addOption(private$..q3)
             self$.addOption(private$..res1)
+            self$.addOption(private$..cormatrix)
             self$.addOption(private$..width)
             self$.addOption(private$..height)
             self$.addOption(private$..width1)
@@ -479,6 +485,7 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         res = function() private$..res$value,
         q3 = function() private$..q3$value,
         res1 = function() private$..res1$value,
+        cormatrix = function() private$..cormatrix$value,
         width = function() private$..width$value,
         height = function() private$..height$value,
         width1 = function() private$..width1$value,
@@ -546,6 +553,7 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..res = NA,
         ..q3 = NA,
         ..res1 = NA,
+        ..cormatrix = NA,
         ..width = NA,
         ..height = NA,
         ..width1 = NA,
@@ -599,6 +607,7 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         plot8 = function() private$.items[["plot8"]],
         plot5 = function() private$.items[["plot5"]],
         q3 = function() private$.items[["q3"]],
+        text2 = function() private$.items[["text2"]],
         text = function() private$.items[["text"]],
         text1 = function() private$.items[["text1"]]),
     private = list(),
@@ -1143,6 +1152,10 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         `type`="number"))))
             self$add(jmvcore::Preformatted$new(
                 options=options,
+                name="text2",
+                title="Standardized residula correlation matrix"))
+            self$add(jmvcore::Preformatted$new(
+                options=options,
                 name="text",
                 title="Rasch residual factor analysis"))
             self$add(jmvcore::Preformatted$new(
@@ -1214,6 +1227,7 @@ raschBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param res .
 #' @param q3 .
 #' @param res1 .
+#' @param cormatrix .
 #' @param width .
 #' @param height .
 #' @param width1 .
@@ -1267,6 +1281,7 @@ raschBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$plot8} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$plot5} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$q3} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$text2} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$text1} \tab \tab \tab \tab \tab a preformatted \cr
 #' }
@@ -1318,6 +1333,7 @@ rasch <- function(
     res = "stdr",
     q3 = FALSE,
     res1 = "stdr",
+    cormatrix = FALSE,
     width = 500,
     height = 500,
     width1 = 500,
@@ -1391,6 +1407,7 @@ rasch <- function(
         res = res,
         q3 = q3,
         res1 = res1,
+        cormatrix = cormatrix,
         width = width,
         height = height,
         width1 = width1,

@@ -632,7 +632,7 @@ raschClass <- if (requireNamespace('jmvcore'))
         # summary(result)
         # plot(result)
         
-        if(self$options$plot5==TRUE){
+        if(isTRUE(self$options$plot5)){
         
         res <- self$options$res
           
@@ -659,9 +659,13 @@ raschClass <- if (requireNamespace('jmvcore'))
           pers_obj <- pairwise::pers(ip)
          
           q<- pairwise::q3(pers_obj, res=res1)
-           
-        # self$results$text1$setContent(summary(q))
-         
+       
+        if(isTRUE(self$options$cormatrix)){  
+         # Standardized correlation matrix
+         ma<- q$resid_cor$cor 
+         self$results$text2$setContent(ma)
+        }
+          
           table <- self$results$q3
           
           if(is.null(self$options$q3))

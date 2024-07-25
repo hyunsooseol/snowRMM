@@ -265,6 +265,11 @@ options:
         title: 'Score'
       default: stdr
 
+    - name: cormatrix
+      title: 'Residual correlation matrix'
+      type: Bool
+      default: false
+
     - name: width
       type: Integer
       title: "Width "

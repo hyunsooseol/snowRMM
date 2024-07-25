@@ -359,6 +359,9 @@ children:
                   - type: ComboBox
                     name: res1
                     enable: (q3)
+                  - type: CheckBox
+                    name: cormatrix
+                    enable: (q3)
   - type: CollapseBox
     label: Nonparametric Rasch Model Tests(Step=1)
     margin: normal
