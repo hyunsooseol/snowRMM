@@ -85,12 +85,12 @@ options:
       default: FALSE
 
     - name: rsm
-      title: Rating scale
+      title: Rating scale(Step>1)
       type: Bool
       default: FALSE
 
     - name: pcm
-      title: Partial credit
+      title: Partial credit(Step>1)
       type: Bool
       default: FALSE
 

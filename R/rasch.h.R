@@ -607,7 +607,7 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         plot8 = function() private$.items[["plot8"]],
         plot5 = function() private$.items[["plot5"]],
         q3 = function() private$.items[["q3"]],
-        text2 = function() private$.items[["text2"]],
+        cormatrix = function() private$.items[["cormatrix"]],
         text = function() private$.items[["text"]],
         text1 = function() private$.items[["text1"]]),
     private = list(),
@@ -1150,10 +1150,23 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     list(
                         `name`="Q3", 
                         `type`="number"))))
-            self$add(jmvcore::Preformatted$new(
+            self$add(jmvcore::Table$new(
                 options=options,
-                name="text2",
-                title="Standardized residula correlation matrix"))
+                name="cormatrix",
+                title="Residual correlation matrix",
+                visible="(cormatrix)",
+                clearWith=list(
+                    "vars",
+                    "step",
+                    "type",
+                    "res1"),
+                refs="pairwise",
+                columns=list(
+                    list(
+                        `name`="name", 
+                        `title`="", 
+                        `type`="text", 
+                        `content`="($key)"))))
             self$add(jmvcore::Preformatted$new(
                 options=options,
                 name="text",
@@ -1281,7 +1294,7 @@ raschBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$plot8} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$plot5} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$q3} \tab \tab \tab \tab \tab a table \cr
-#'   \code{results$text2} \tab \tab \tab \tab \tab a preformatted \cr
+#'   \code{results$cormatrix} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$text1} \tab \tab \tab \tab \tab a preformatted \cr
 #' }

@@ -313,7 +313,7 @@ children:
                     format: number
                     enable: (plot8)
   - type: CollapseBox
-    label: Additional Outputs(Step>1)
+    label: Additional Outputs
     margin: normal
     collapsed: true
     children:

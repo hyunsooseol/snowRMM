@@ -487,9 +487,26 @@ items:
         - name: Q3
           type: number  
   
-    - name:  text2
-      title: 'Standardized residula correlation matrix'
-      type:  Preformatted  
+    # - name:  text2
+    #   title: 'Standardized residual correlation matrix'
+    #   type:  Preformatted  
+
+    - name: cormatrix
+      title:  'Residual correlation matrix'
+      type: Table
+      visible: (cormatrix)
+      clearWith:
+        - vars
+        - step
+        - type
+        - res1
+      refs: pairwise    
+      
+      columns:
+        - name: name
+          title: ""
+          type: text
+          content: ($key)
 
     - name:  text
       title: 'Rasch residual factor analysis'

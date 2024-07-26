@@ -649,8 +649,7 @@ raschClass <- if (requireNamespace('jmvcore'))
         }
         
         # Q3 fit statistics proposed by Yen(1984)
-        
-        
+
         if(self$options$q3==TRUE){
           
           res1 <- self$options$res1
@@ -660,17 +659,40 @@ raschClass <- if (requireNamespace('jmvcore'))
          
           q<- pairwise::q3(pers_obj, res=res1)
        
-        if(isTRUE(self$options$cormatrix)){  
-         # Standardized correlation matrix
-         ma<- q$resid_cor$cor 
-         self$results$text2$setContent(ma)
-        }
+          # Standardized correlation matrix
+          ma<- q$resid_cor$cor 
+          #self$results$text2$setContent(ma)
           
+          if(isTRUE(self$options$cormatrix)){  
+         
+          table <- self$results$cormatrix
+         
+         ma <- as.data.frame(ma)
+         names <- dimnames(ma)[[1]] 
+         dims <- dimnames(ma)[[2]]
+         
+         # creating table----------------
+         
+         for (dim in dims) {
+            table$addColumn(name = paste0(dim),
+                           type = 'number')
+         }
+         
+         for (name in names) {
+            row <- list()
+            for(j in seq_along(dims)){
+             row[[dims[j]]] <- ma[name,j]
+             }
+           table$addRow(rowKey=name, values=row)
+                    }
+         
+         }
+         
+          #------------------------------ 
           table <- self$results$q3
           
           if(is.null(self$options$q3))
             return()
-          
           
           Mean<- q[["statistic"]]$Q3[1]
           Max<- q[["statistic"]]$Q3[2]
