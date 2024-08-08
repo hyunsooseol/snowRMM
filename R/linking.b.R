@@ -31,7 +31,6 @@ linkingClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             <p>1. This function creates a composite linking or equating.
             <p>2. The R package <b>equate</b>(Albano, 2018) is described in the <a href='https://cran.rstudio.com/web/packages/equate/equate.pdf' target = '_blank'>page.</a></p>
             <p>3. Feature requests and bug reports can be made on the <a href='https://github.com/hyunsooseol/snowRMM/issues'  target = '_blank'>GitHub</a>.</p>
-            <p>4. This project has been supported by <a href='http://www.itsc-group.com' target = '_blank'>ITSC GROUP(G-TELP)</a>.</p>
             <p>_____________________________________________________________________________________________</p>
             
             </div>
