@@ -30,7 +30,6 @@ Imports:
     pairwise,
     reshape2,
     ltm,
-    tidySEM,
 Remotes: twolodzko/equi,
          cran/mixRasch
         
