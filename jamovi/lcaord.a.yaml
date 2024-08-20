@@ -13,9 +13,9 @@ options:
       title: Variables
       type: Variables
       suggested:
-         - continuous
+         - ordinal
       permitted:
-         - numeric
+         - factor
 
     - name: nc
       title: 'Class'

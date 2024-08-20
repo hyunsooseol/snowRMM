@@ -29,9 +29,9 @@ lcaordOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "vars",
                 vars,
                 suggested=list(
-                    "continuous"),
+                    "ordinal"),
                 permitted=list(
-                    "numeric"))
+                    "factor"))
             private$..nc <- jmvcore::OptionInteger$new(
                 "nc",
                 nc,
@@ -345,6 +345,7 @@ lcaord <- function(
             parent.frame(),
             `if`( ! missing(vars), vars, NULL))
 
+    for (v in vars) if (v %in% names(data)) data[[v]] <- as.factor(data[[v]])
 
     options <- lcaordOptions$new(
         vars = vars,
