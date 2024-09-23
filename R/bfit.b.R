@@ -24,37 +24,62 @@ bfitClass <- if (requireNamespace('jmvcore'))
     inherit = bfitBase,
     private = list(
       
+      .htmlwidget = NULL, 
+      
       ###### .init function--------
       
       .init = function() {
  
         if(self$options$mode=='simple'){
         
-         if (is.null(self$data) | is.null(self$options$vars)) {
+         
+          private$.htmlwidget <- HTMLWidget$new()
+          
+          if (is.null(self$data) | is.null(self$options$vars)) {
           self$results$instructions$setVisible(visible = TRUE)
           
         }
         
-        self$results$instructions$setContent(
-          "<html>
-            <head>
-            </head>
-            <body>
-            <div class='instructions'>
-            
-            <h2><b>Item Fit with Confidence interval</b></h2>
-            <p>_____________________________________________________________________________________________</p>
-            <p>1. The traditional Rasch model is performed by <b>mixRasch</b> R package using Jonint Maximum Liklihood(JML).</p>
-            <p>2. Specify <b>'Step'(number of category-1) and 'Bootstrap N'</b> in the 'Analysis options'.</p>
-            <p>3. Please, be patient. The bootstrapped confidence interval is quite time-consuming.</p>
-            <p>4. Feature requests and bug reports can be made on my <a href='https://github.com/hyunsooseol/snowRMM/issues'  target = '_blank'>GitHub</a>.</p>
-            <p>_____________________________________________________________________________________________</p>
-            
-            </div>
-            </body>
-            </html>"
-        )
-        
+        # self$results$instructions$setContent(
+        #   "<html>
+        #     <head>
+        #     </head>
+        #     <body>
+        #     <div class='instructions'>
+        #     
+        #     <h2><b>Item Fit with Confidence interval</b></h2>
+        #     <p>_____________________________________________________________________________________________</p>
+        #     <p>1. The traditional Rasch model is performed by <b>mixRasch</b> R package using Jonint Maximum Liklihood(JML).</p>
+        #     <p>2. Specify <b>'Step'(number of category-1) and 'Bootstrap N'</b> in the 'Analysis options'.</p>
+        #     <p>3. Please, be patient. The bootstrapped confidence interval is quite time-consuming.</p>
+        #     <p>4. Feature requests and bug reports can be made on my <a href='https://github.com/hyunsooseol/snowRMM/issues'  target = '_blank'>GitHub</a>.</p>
+        #     <p>_____________________________________________________________________________________________</p>
+        #     
+        #     </div>
+        #     </body>
+        #     </html>"
+        # )
+
+          self$results$instructions$setContent(
+            private$.htmlwidget$generate_accordion(
+              title="Instructions",
+              content = paste(
+                '<div style="border: 2px solid #e6f4fe; border-radius: 15px; padding: 15px; background-color: #e6f4fe; margin-top: 10px;">',
+                '<div style="text-align:justify;">',
+                '<ul>',
+                '<li>The traditional Rasch model is performed by <b>mixRasch</b> R package using Jonint Maximum Liklihood(JML).</li>',
+                '<li>Specify <b>Step(number of category-1) and Bootstrap N</b> in the Analysis options.</li>',
+                '<li>Please, be patient. The bootstrapped confidence interval is quite time-consuming.</li>',
+                '<li>Feature requests and bug reports can be made on my <a href="https://github.com/hyunsooseol/snowRMM/issues" target="_blank">GitHub</a>.</li>',
+                '</ul></div></div>'
+                
+              )
+              
+            )
+          )              
+          
+          
+                  
         if(isTRUE(self$options$inplot)){
           width <- self$options$width
           height <- self$options$height
@@ -71,32 +96,54 @@ bfitClass <- if (requireNamespace('jmvcore'))
         
         if(self$options$mode=="complex"){
        
+          private$.htmlwidget <- HTMLWidget$new()
+          
              if (is.null(self$data) | is.null(self$options$vars1)) {
             self$results$instructions1$setVisible(visible = TRUE)
             
           }
           
-          self$results$instructions1$setContent(
-        
-            "<html>
-            <head>
-            </head>
-            <body>
-            <div class='instructions'>
+          # self$results$instructions1$setContent(
+          # 
+          #   "<html>
+          #   <head>
+          #   </head>
+          #   <body>
+          #   <div class='instructions'>
+          # 
+          #   <h2><b>Item Fit with P values</b></h2>
+          #   <p>_____________________________________________________________________________________________</p>
+          #   <p>1. Specify <b>Type and Bootstrap N</b> in the Analysis options.</p>
+          #   <p>2. To use the <b>correction methods</b>, uncheck the <b>Run</b> checkbox.</p>
+          #   <p>3. A fitted Rasch model or Partial Credit Model in R package <b>eRm</b> is used to compute bootstrap fit statistics.</p>
+          #   <p>4. Feature requests and bug reports can be made on my <a href='https://github.com/hyunsooseol/snowRMM/issues'  target = '_blank'>GitHub</a>.</p>
+          #   <p>_____________________________________________________________________________________________</p>
+          #   
+          #   </div>
+          #   </body>
+          #   </html>"
+          # )
 
-            <h2><b>Item Fit with P values</b></h2>
-            <p>_____________________________________________________________________________________________</p>
-            <p>1. Specify <b>Type and Bootstrap N</b> in the Analysis options.</p>
-            <p>2. To use the <b>correction methods</b>, uncheck the <b>Run</b> checkbox.</p>
-            <p>3. A fitted Rasch model or Partial Credit Model in R package <b>eRm</b> is used to compute bootstrap fit statistics.</p>
-            <p>4. Feature requests and bug reports can be made on my <a href='https://github.com/hyunsooseol/snowRMM/issues'  target = '_blank'>GitHub</a>.</p>
-            <p>_____________________________________________________________________________________________</p>
-            
-            </div>
-            </body>
-            </html>"
-          )
+          self$results$instructions$setContent(
+            private$.htmlwidget$generate_accordion(
+              title="Instructions",
+              content = paste(
+                '<div style="border: 2px solid #e6f4fe; border-radius: 15px; padding: 15px; background-color: #e6f4fe; margin-top: 10px;">',
+                '<div style="text-align:justify;">',
+                '<ul>',
+                '<li>Specify <b>Type and Bootstrap N</b> in the Analysis options.</li>',
+                '<li>To use the <b>correction methods</b>, uncheck the <b>Run</b> checkbox.</li>',
+                '<li>A fitted Rasch model or Partial Credit Model in R package <b>eRm</b> is used to compute bootstrap fit statistics.</li>',
+                '<li>Feature requests and bug reports can be made on my <a href="https://github.com/hyunsooseol/snowRMM/issues" target="_blank">GitHub</a>.</li>',
+                '</ul></div></div>'
+                
+              )
+              
+            )
+          )      
           
+          
+                    
           if (self$options$outfit)
             self$results$outfit$setNote(
               "Note",

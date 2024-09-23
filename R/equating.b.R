@@ -17,36 +17,58 @@ equatingClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
     inherit = equatingBase,
     private = list(
        
+      .htmlwidget = NULL, 
+      
         .init = function() {
             
           if(self$options$mode=='simple'){  
           
-          if (is.null(self$data) | is.null(self$options$ind)  | is.null(self$options$dep)) {
+            private$.htmlwidget <- HTMLWidget$new()  
+            
+            if (is.null(self$data) | is.null(self$options$ind)  | is.null(self$options$dep)) {
                 
                 self$results$instructions$setVisible(visible = TRUE)
                 
             }
             
-            self$results$instructions$setContent(
-                "<html>
-            <head>
-            </head>
-            <body>
-            <div class='instructions'>
-            
-            <h2><b>Linear Equating</b></h2>
-            <p>_____________________________________________________________________________________________</p>
-            <p>1. The Form x is equated to the Form y with single group design.
-            <p>2. The R package <b>equi</b>(Wolodzko, 2020) is described in the <a href='https://rdrr.io/github/twolodzko/equi/man/equi.html' target = '_blank'>page.</a></p>
-            <p>3. Feature requests and bug reports can be made on the <a href='https://github.com/hyunsooseol/snowRMM/issues'  target = '_blank'>GitHub</a>.</p>
-            <p>4. This project has been supported by <a href='http://www.itsc-group.com' target = '_blank'>ITSC GROUP(G-TELP).</a></p>
-            <p>_____________________________________________________________________________________________</p>
-            
-            </div>
-            </body>
-            </html>"
-            )
+            # self$results$instructions$setContent(
+            #     "<html>
+            # <head>
+            # </head>
+            # <body>
+            # <div class='instructions'>
+            # 
+            # <h2><b>Linear Equating</b></h2>
+            # <p>_____________________________________________________________________________________________</p>
+            # <p>1. The Form x is equated to the Form y with single group design.
+            # <p>2. The R package <b>equi</b>(Wolodzko, 2020) is described in the <a href='https://rdrr.io/github/twolodzko/equi/man/equi.html' target = '_blank'>page.</a></p>
+            # <p>3. Feature requests and bug reports can be made on the <a href='https://github.com/hyunsooseol/snowRMM/issues'  target = '_blank'>GitHub</a>.</p>
+            # <p>4. This project has been supported by <a href='http://www.itsc-group.com' target = '_blank'>ITSC GROUP(G-TELP).</a></p>
+            # <p>_____________________________________________________________________________________________</p>
+            # 
+            # </div>
+            # </body>
+            # </html>"
+            # )
 
+            self$results$instructions$setContent(
+              private$.htmlwidget$generate_accordion(
+                title="Instructions",
+                content = paste(
+                  '<div style="border: 2px solid #e6f4fe; border-radius: 15px; padding: 15px; background-color: #e6f4fe; margin-top: 10px;">',
+                  '<div style="text-align:justify;">',
+                  '<ul>',
+                  '<li>The Form x is equated to the Form y with single group design.</li>',
+                  '<li>The R package <b>equi</b>(Wolodzko, 2020) is described in the <a href="https://rdrr.io/github/twolodzko/equi/man/equi.html" target = "_blank">page</a>.</li>',
+                  '<li>Feature requests and bug reports can be made on my <a href="https://github.com/hyunsooseol/snowRMM/issues" target="_blank">GitHub</a>.</li>',
+                  '</ul></div></div>'
+                  
+                )
+                
+              )
+            )             
+            
+            
               if(self$options$lineq)
                 self$results$lineq$setNote(
                     "Note",
@@ -66,31 +88,52 @@ equatingClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           
           if(self$options$mode=='complex'){  
           
+            private$.htmlwidget <- HTMLWidget$new()  
+            
             if (is.null(self$data) | is.null(self$options$ind1)  | is.null(self$options$dep1)) {
               
               self$results$instructions1$setVisible(visible = TRUE)
               
             }
             
-            self$results$instructions1$setContent(
-              "<html>
-            <head>
-            </head>
-            <body>
-            <div class='instructions1'>
+            # self$results$instructions1$setContent(
+            #   "<html>
+            # <head>
+            # </head>
+            # <body>
+            # <div class='instructions1'>
+            # 
+            # <h2><b>Equipercentile Equating</b></h2>
+            # <p>_____________________________________________________________________________________________</p>
+            # <p>1. The Form x is equated to the Form y.
+            # <p>2. If an error message such as 'could not find function ns', please chang Form x and Form y variables.
+            # <p>3. The R package <b>equi</b>(Wolodzko, 2020) is described in the <a href='https://rdrr.io/github/twolodzko/equi/man/equi.html' target = '_blank'>page.</a></p>
+            # <p>4. Feature requests and bug reports can be made on the <a href='https://github.com/hyunsooseol/snowRMM/issues'  target = '_blank'>GitHub</a>.</p>
+            # <p>_____________________________________________________________________________________________</p>
+            # 
+            # </div>
+            # </body>
+            # </html>"
+            # )
             
-            <h2><b>Equipercentile Equating</b></h2>
-            <p>_____________________________________________________________________________________________</p>
-            <p>1. The Form x is equated to the Form y.
-            <p>2. If an error message such as 'could not find function ns', please chang Form x and Form y variables.
-            <p>3. The R package <b>equi</b>(Wolodzko, 2020) is described in the <a href='https://rdrr.io/github/twolodzko/equi/man/equi.html' target = '_blank'>page.</a></p>
-            <p>4. Feature requests and bug reports can be made on the <a href='https://github.com/hyunsooseol/snowRMM/issues'  target = '_blank'>GitHub</a>.</p>
-            <p>_____________________________________________________________________________________________</p>
+            self$results$instructions$setContent(
+              private$.htmlwidget$generate_accordion(
+                title="Instructions",
+                content = paste(
+                  '<div style="border: 2px solid #e6f4fe; border-radius: 15px; padding: 15px; background-color: #e6f4fe; margin-top: 10px;">',
+                  '<div style="text-align:justify;">',
+                  '<ul>',
+                  '<li>The Form x is equated to the Form y.</li>',
+                  '<li>If an error message such as "could not find function ns", please chang Form x and Form y variables.</li>',
+                  '<li>The R package <b>equi</b>(Wolodzko, 2020) is described in the <a href="https://rdrr.io/github/twolodzko/equi/man/equi.html" target = "_blank">page</a>.</li>',
+                  '<li>Feature requests and bug reports can be made on my <a href="https://github.com/hyunsooseol/snowRMM/issues" target="_blank">GitHub</a>.</li>',
+                  '</ul></div></div>'
+                  
+                )
+                
+              )
+            )                       
             
-            </div>
-            </body>
-            </html>"
-            )
             
           
             if(isTRUE(self$options$plot1)){

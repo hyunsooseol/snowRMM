@@ -16,7 +16,11 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
     "lcaordClass",
     inherit = lcaordBase,
     private = list(
+
+      .htmlwidget = NULL, 
       .init = function() {
+        
+        private$.htmlwidget <- HTMLWidget$new() 
         
         if (is.null(self$data) | is.null(self$options$vars)) {
           
@@ -25,22 +29,39 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         }
         
        
+        # self$results$instructions$setContent(
+        #   "<html>
+        #     <head>
+        #     </head>
+        #     <body>
+        #     <div class='instructions'>
+        #     
+        #     <p>_____________________________________________________________________________________________</p>
+        #     <p>1. <b>tidySEM</b> R package is described in the <a href='https://cjvanlissa.github.io/tidySEM/articles/lca_ordinal.html' target = '_blank'>page</a>.</p>
+        #     <p>2. Feature requests and bug reports can be made on the <a href='https://github.com/hyunsooseol/snowRMM/issues' target = '_blank'>GitHub</a>.</p>
+        #     <p>_____________________________________________________________________________________________</p>
+        #     
+        #     </div>
+        #     </body>
+        #     </html>"
+        # )
+        
         self$results$instructions$setContent(
-          "<html>
-            <head>
-            </head>
-            <body>
-            <div class='instructions'>
+          private$.htmlwidget$generate_accordion(
+            title="Instructions",
+            content = paste(
+              '<div style="border: 2px solid #e6f4fe; border-radius: 15px; padding: 15px; background-color: #e6f4fe; margin-top: 10px;">',
+              '<div style="text-align:justify;">',
+              '<ul>',
+              '<li><b>tidySEM</b> R package is described in the <a href="https://cjvanlissa.github.io/tidySEM/articles/lca_ordinal.html" target = "_blank">page</a>.</li>',
+              '<li>Feature requests and bug reports can be made on my <a href="https://github.com/hyunsooseol/snowRMM/issues" target="_blank">GitHub</a>.</li>',
+              '</ul></div></div>'
+              
+            )
             
-            <p>_____________________________________________________________________________________________</p>
-            <p>1. <b>tidySEM</b> R package is described in the <a href='https://cjvanlissa.github.io/tidySEM/articles/lca_ordinal.html' target = '_blank'>page</a>.</p>
-            <p>2. Feature requests and bug reports can be made on the <a href='https://github.com/hyunsooseol/snowRMM/issues' target = '_blank'>GitHub</a>.</p>
-            <p>_____________________________________________________________________________________________</p>
-            
-            </div>
-            </body>
-            </html>"
-        )
+          )
+        )              
+        
         
         if(isTRUE(self$options$plot1)){
 

@@ -16,33 +16,54 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
     "lcaClass",
     inherit = lcaBase,
     private = list(
- 
+      .htmlwidget = NULL,
+      
       .init = function() {
+        
+        private$.htmlwidget <- HTMLWidget$new()
         
         if (is.null(self$data) | is.null(self$options$vars)) {
           self$results$instructions$setVisible(visible = TRUE)
           
         }
         
+        # self$results$instructions$setContent(
+        #   "<html>
+        #     <head>
+        #     </head>
+        #     <body>
+        #     <div class='instructions'>
+        #    
+        #     <p>_____________________________________________________________________________________________</p>
+        #     <p>1. Latent Class Analysis based on <b>poLCA(Linzer & Lewis, 2022)</b> R package.
+        #     <p>2. Variables must contain integer values, and must be coded with consecutive values from <b>1</b> to the maximum number.</p>
+        #     <p>3. <b> Membership table</b> will be shown in the datasheet.</p>
+        #     <p>4. Feature requests and bug reports can be made on my <a href='https://github.com/hyunsooseol/snowRMM/issues'  target = '_blank'>GitHub</a>.</p>
+        #     <p>_____________________________________________________________________________________________</p>
+        #     
+        #     </div>
+        #     </body>
+        #     </html>"
+        # )
         self$results$instructions$setContent(
-          "<html>
-            <head>
-            </head>
-            <body>
-            <div class='instructions'>
-           
-            <p>_____________________________________________________________________________________________</p>
-            <p>1. Latent Class Analysis based on <b>poLCA(Linzer & Lewis, 2022)</b> R package.
-            <p>2. Variables must contain integer values, and must be coded with consecutive values from <b>1</b> to the maximum number.</p>
-            <p>3. <b> Membership table</b> will be shown in the datasheet.</p>
-            <p>4. Feature requests and bug reports can be made on my <a href='https://github.com/hyunsooseol/snowRMM/issues'  target = '_blank'>GitHub</a>.</p>
-            <p>_____________________________________________________________________________________________</p>
+          private$.htmlwidget$generate_accordion(
+            title="Instructions",
+            content = paste(
+              '<div style="border: 2px solid #e6f4fe; border-radius: 15px; padding: 15px; background-color: #e6f4fe; margin-top: 10px;">',
+              '<div style="text-align:justify;">',
+              '<ul>',
+              '<li>Latent Class Analysis based on <b>poLCA(Linzer & Lewis, 2022)</b> R package.</li>',
+              '<li>Variables must contain integer values, and must be coded with consecutive values from <b>1</b> to the maximum number.</li>',
+              '<li><b> Membership table</b> will be shown in the datasheet.</li>',
+              '<li>Feature requests and bug reports can be made on my <a href="https://github.com/hyunsooseol/snowRMM/issues" target="_blank">GitHub</a>.</li>',
+              '</ul></div></div>'
+              
+            )
             
-            </div>
-            </body>
-            </html>"
-        )
+          )
+        )         
         
+                
         if (self$options$fit)
           self$results$mf$fit$setNote(
             "Note",

@@ -34,38 +34,61 @@ raschClass <- if (requireNamespace('jmvcore'))
     "raschClass",
     inherit = raschBase,
     private = list(
-      
+      .htmlwidget = NULL, 
       
       .init = function() {
+        
+        private$.htmlwidget <- HTMLWidget$new() 
         
         if (is.null(self$data) | is.null(self$options$vars)) {
           self$results$instructions$setVisible(visible = TRUE)
           
         }
         
-        self$results$instructions$setContent(
-          "<html>
-            <head>
-            </head>
-            <body>
-            <div class='instructions'>
-            
-            <p>_____________________________________________________________________________________________</p>
-            <p>1. The <b>mixRasch</b> R package was used for the Rasch model using joint maximum likelihood estimation(JMLE).</P>
-            <p>2. Specify </b> the number of <b>Step</b> and model <b>Type</b> in the analysis option.</p>
-            <p>3. Step is defined as number of <b>category-1</b>. </p>
-            <p>4. The minimum and maximum values of a category must be the same across all items for <b>rating sclaes</b> with <b>eRm</b> R package.</p>
-            <p>5. <b>Person Analysis</b> will be displayed in the datasheet.</p>
-            <p>6. The <b>eRm</b> R package was used for the person-item map for PCM.</p>
-            <p>7. Feature requests and bug reports can be made on my <a href='https://github.com/hyunsooseol/snowRMM/issues'  target = '_blank'>GitHub</a>.</p>
-            <p>_____________________________________________________________________________________________</p>
-            
-            </div>
-            </body>
-            </html>"
-        )
+        # self$results$instructions$setContent(
+        #   "<html>
+        #     <head>
+        #     </head>
+        #     <body>
+        #     <div class='instructions'>
+        #     
+        #     <p>_____________________________________________________________________________________________</p>
+        #     <p>1. The <b>mixRasch</b> R package was used for the Rasch model using joint maximum likelihood estimation(JMLE).</P>
+        #     <p>2. Specify </b> the number of <b>Step</b> and model <b>Type</b> in the analysis option.</p>
+        #     <p>3. Step is defined as number of <b>category-1</b>. </p>
+        #     <p>4. The minimum and maximum values of a category must be the same across all items for <b>rating sclaes</b> with <b>eRm</b> R package.</p>
+        #     <p>5. <b>Person Analysis</b> will be displayed in the datasheet.</p>
+        #     <p>6. The <b>eRm</b> R package was used for the person-item map for PCM.</p>
+        #     <p>7. Feature requests and bug reports can be made on my <a href='https://github.com/hyunsooseol/snowRMM/issues'  target = '_blank'>GitHub</a>.</p>
+        #     <p>_____________________________________________________________________________________________</p>
+        #     
+        #     </div>
+        #     </body>
+        #     </html>"
+        # )
         
- 
+        self$results$instructions$setContent(
+          private$.htmlwidget$generate_accordion(
+            title="Instructions",
+            content = paste(
+              '<div style="border: 2px solid #e6f4fe; border-radius: 15px; padding: 15px; background-color: #e6f4fe; margin-top: 10px;">',
+              '<div style="text-align:justify;">',
+              '<ul>',
+              '<li>The <b>mixRasch</b> R package was used for the Rasch model using joint maximum likelihood estimation(JMLE).</li>',
+              '<li>Specify </b> the number of <b>Step</b> and model <b>Type</b> in the analysis option.</li>',
+              '<li>Step is defined as number of <b>category-1</b>.</li>',
+              '<li>The minimum and maximum values of a category must be the same across all items for <b>rating sclaes</b> with <b>eRm</b> R package.</li>',
+              '<li><b>Person Analysis</b> will be displayed in the datasheet.</li>',
+              '<li>The <b>eRm</b> R package was used for the person-item map for PCM.</li>',
+              '<li>Feature requests and bug reports can be made on my <a href="https://github.com/hyunsooseol/snowRMM/issues" target="_blank">GitHub</a>.</li>',
+              '</ul></div></div>'
+              
+            )
+            
+          )
+        )              
+        
+        
         if (self$options$ml1)
           self$results$tm$ml1$setNote(
             "Note",

@@ -14,31 +14,56 @@ lltmClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
     "lltmClass",
     inherit = lltmBase,
     private = list(
-
+      .htmlwidget = NULL, 
+      
+      
         .init = function() {
+          private$.htmlwidget <- HTMLWidget$new() 
+          
             if (is.null(self$data) | is.null(self$options$vars)) {
                 self$results$instructions$setVisible(visible = TRUE)
                 
             }
             
-            self$results$instructions$setContent(
-                "<html>
-            <head>
-            </head>
-            <body>
-            <div class='instructions'>
-            <p>____________________________________________________________________________________</p>
-            <p>1. Performs Linear Logistic Test Model (LLTM) for binary item responses by using CML estimation.</p>
-            <p>2. Design matrix(W matrix) for the LLTM will be computed by specifying <b>Vectors and Number of columns</b>.</p>
-            <p>3. Artificial data matrix and R codes for creating W matrix can be found in Data Library>snowRMM folder.</p>
-            <p>4. A description of the LLTM is described in the <a href='https://scholarworks.umass.edu/cgi/viewcontent.cgi?article=1248&context=pare' target = '_blank'>paper</a>.</p>
-            <p>5. Feature requests and bug reports can be made on my <a href='https://github.com/hyunsooseol/snowRMM/issues'  target = '_blank'>GitHub</a>.</p>
-            <p>____________________________________________________________________________________</p>
-            </div>
-            </body>
-            </html>"
-            )
+            # self$results$instructions$setContent(
+            #     "<html>
+            # <head>
+            # </head>
+            # <body>
+            # <div class='instructions'>
+            # <p>____________________________________________________________________________________</p>
+            # <p>1. Performs Linear Logistic Test Model (LLTM) for binary item responses by using CML estimation.</p>
+            # <p>2. Design matrix(W matrix) for the LLTM will be computed by specifying <b>Vectors and Number of columns</b>.</p>
+            # <p>3. Artificial data matrix and R codes for creating W matrix can be found in Data Library>snowRMM folder.</p>
+            # <p>4. A description of the LLTM is described in the <a href='https://scholarworks.umass.edu/cgi/viewcontent.cgi?article=1248&context=pare' target = '_blank'>paper</a>.</p>
+            # <p>5. Feature requests and bug reports can be made on my <a href='https://github.com/hyunsooseol/snowRMM/issues'  target = '_blank'>GitHub</a>.</p>
+            # <p>____________________________________________________________________________________</p>
+            # </div>
+            # </body>
+            # </html>"
+            # )
             
+          self$results$instructions$setContent(
+            private$.htmlwidget$generate_accordion(
+              title="Instructions",
+              content = paste(
+                '<div style="border: 2px solid #e6f4fe; border-radius: 15px; padding: 15px; background-color: #e6f4fe; margin-top: 10px;">',
+                '<div style="text-align:justify;">',
+                '<ul>',
+                '<li>Performs Linear Logistic Test Model (LLTM) for binary item responses by using CML estimation.</li>',
+                '<li>Design matrix(W matrix) for the LLTM will be computed by specifying <b>Vectors and Number of columns</b>.</li>',
+                '<li>Artificial data matrix and R codes for creating W matrix can be found in Data Library>snowRMM folder.</li>',
+                '<li>A description of the LLTM is described in the <a href="https://scholarworks.umass.edu/cgi/viewcontent.cgi?article=1248&context=pare" target = "_blank">paper</a>.</li>',
+                '<li>Feature requests and bug reports can be made on my <a href="https://github.com/hyunsooseol/snowRMM/issues" target="_blank">GitHub</a>.</li>',
+                '</ul></div></div>'
+                
+              )
+              
+            )
+          )              
+          
+          
+          
             if (self$options$items)
                 self$results$ra$items$setNote(
                     "Note",
