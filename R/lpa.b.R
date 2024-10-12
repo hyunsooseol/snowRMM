@@ -291,7 +291,42 @@ image$setState(pc)
 
 
 }            
-            
+ 
+# Posterior probabilities---
+
+if(isTRUE(self$options$post)){
+  
+  post<- tidyLPA::get_data(all$res,"posterior_probabilities")
+  post_name <- paste0("CPROB", 1:self$options$nc)
+  post<- post[, post_name, drop = FALSE]
+  post <- data.frame(post)
+  
+  if (self$options$post
+      && self$results$post$isNotFilled()) {
+    
+    keys <- 1:self$options$nc
+    measureTypes <- rep("continuous", self$options$nc)
+    
+    titles <- paste("Class", keys)
+    descriptions <- paste("Class", keys)
+    
+    self$results$post$set(
+      keys=keys,
+      titles=titles,
+      descriptions=descriptions,
+      measureTypes=measureTypes
+    )         
+    
+    self$results$pc$setRowNums(rownames(data))
+    
+    for (i in 1:self$options$nc) {
+           scores <- as.numeric(post[, i])
+           self$results$post$setValues(index=i, scores)
+         }
+ 
+  }
+    }
+
 # #https://github.com/data-edu/tidyLPA/issues/198
 # # Not resolved yet.
 # # correlation plot----------

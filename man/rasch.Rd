@@ -44,6 +44,7 @@ rasch(
   res = "stdr",
   q3 = FALSE,
   res1 = "stdr",
+  cormatrix = FALSE,
   width = 500,
   height = 500,
   width1 = 500,
@@ -149,6 +150,8 @@ where 0 degrees represents completely horizontal labels.}
 
 \item{res1}{.}
 
+\item{cormatrix}{.}
+
 \item{width}{.}
 
 \item{height}{.}
@@ -226,6 +229,7 @@ A results object containing:
   \code{results$plot8} \tab \tab \tab \tab \tab an image \cr
   \code{results$plot5} \tab \tab \tab \tab \tab an image \cr
   \code{results$q3} \tab \tab \tab \tab \tab a table \cr
+  \code{results$cormatrix} \tab \tab \tab \tab \tab a table \cr
   \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
   \code{results$text1} \tab \tab \tab \tab \tab a preformatted \cr
 }

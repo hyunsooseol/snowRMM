@@ -137,6 +137,16 @@ items:
         - variances
         - covariances
 
+    - name: post
+      title: Posterior
+      type: Output
+      measureType: continuous
+      clearWith:
+        - vars
+        - nc
+        - variances
+        - covariances
+
     - name: plot
       title: 'Percentage of class'
       type: Image

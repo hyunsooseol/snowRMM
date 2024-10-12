@@ -65,6 +65,8 @@ children:
             children:
               - type: Output
                 name: pc
+              - type: Output
+                name: post                
   - type: CollapseBox
     label: Plots
     margin: normal

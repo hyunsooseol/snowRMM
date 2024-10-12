@@ -60,6 +60,10 @@ options:
       title: Person Membership
       type: Output
       
+    - name: post
+      title: 'Posterior probabilities'
+      type: Output 
+
     - name: plot
       title: 'Percentage of Class'
       type: Bool

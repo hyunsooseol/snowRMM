@@ -78,6 +78,8 @@ lpaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 default=FALSE)
             private$..pc <- jmvcore::OptionOutput$new(
                 "pc")
+            private$..post <- jmvcore::OptionOutput$new(
+                "post")
             private$..plot <- jmvcore::OptionBool$new(
                 "plot",
                 plot,
@@ -160,6 +162,7 @@ lpaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..fit)
             self$.addOption(private$..est)
             self$.addOption(private$..pc)
+            self$.addOption(private$..post)
             self$.addOption(private$..plot)
             self$.addOption(private$..plot1)
             self$.addOption(private$..plot3)
@@ -187,6 +190,7 @@ lpaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         fit = function() private$..fit$value,
         est = function() private$..est$value,
         pc = function() private$..pc$value,
+        post = function() private$..post$value,
         plot = function() private$..plot$value,
         plot1 = function() private$..plot1$value,
         plot3 = function() private$..plot3$value,
@@ -213,6 +217,7 @@ lpaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..fit = NA,
         ..est = NA,
         ..pc = NA,
+        ..post = NA,
         ..plot = NA,
         ..plot1 = NA,
         ..plot3 = NA,
@@ -242,6 +247,7 @@ lpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         fit = function() private$.items[["fit"]],
         est = function() private$.items[["est"]],
         pc = function() private$.items[["pc"]],
+        post = function() private$.items[["post"]],
         plot = function() private$.items[["plot"]],
         plot3 = function() private$.items[["plot3"]],
         plot2 = function() private$.items[["plot2"]],
@@ -404,6 +410,16 @@ lpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "nc",
                     "variances",
                     "covariances")))
+            self$add(jmvcore::Output$new(
+                options=options,
+                name="post",
+                title="Posterior",
+                measureType="continuous",
+                clearWith=list(
+                    "vars",
+                    "nc",
+                    "variances",
+                    "covariances")))
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot",
@@ -537,6 +553,7 @@ lpaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$fit} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$est} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$pc} \tab \tab \tab \tab \tab an output \cr
+#'   \code{results$post} \tab \tab \tab \tab \tab an output \cr
 #'   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$plot3} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$plot2} \tab \tab \tab \tab \tab an image \cr
