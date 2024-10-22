@@ -153,8 +153,6 @@ raschClass <- if (requireNamespace('jmvcore'))
           self$results$piplot$setSize(width, height)
         }
         
-       
-        
         if(isTRUE(self$options$plot2)){
           
           width <- self$options$width5
@@ -179,7 +177,6 @@ raschClass <- if (requireNamespace('jmvcore'))
           self$results$plot1$setSize(width, height)
         }
          
-        
         if(isTRUE(self$options$gofplot)){
           
           width <- self$options$width7
@@ -196,15 +193,21 @@ raschClass <- if (requireNamespace('jmvcore'))
           self$results$plot8$setSize(width, height)
         }
         
+        if(isTRUE(self$options$plot9)){
+          
+          width <- self$options$width9
+          height <- self$options$height9
+          
+          self$results$plot9$setSize(width, height)
+        }
         
         
-        if (length(self$options$vars) <= 1)
-          self$setStatus('complete')
+        # if (length(self$options$vars) <= 1)
+        #   self$setStatus('complete')
         
         
       },
-      
-      
+
       .run = function() {
         
         # get variables-------
@@ -221,6 +224,10 @@ raschClass <- if (requireNamespace('jmvcore'))
           stop(paste("Variable '", varName, "' contains all the same value and should be removed in the variable box."))
         }
 
+        if(isTRUE(self$options$plot9)){
+          private$.prepareciPlot(data)
+        }
+        
         # Ready--------
         
         ready <- TRUE
@@ -275,7 +282,8 @@ raschClass <- if (requireNamespace('jmvcore'))
           
           private$.preparePcmPlot(data)
           
-
+          #private$.prepareciPlot(data)
+          
         }
       },
       
@@ -287,9 +295,36 @@ raschClass <- if (requireNamespace('jmvcore'))
         vars <- self$options$vars
         step <- self$options$step
         type <- self$options$type
+     
+        # Cross-plot with 95% CIs---
         
-       
-        # compute results------
+        # if(isTRUE(self$options$plot9)){
+        #   
+        #   mea1 <- self$options$mea1
+        #   mea2 <- self$options$mea2
+        #   
+        #   dat <- data.frame(a = mea1, b = mea2)
+        #   
+        #   # difference from diag.
+        #   dat$diff <- dat$b - dat$a
+        #   
+        #   # mean and 95%
+        #   mean_diff <- mean(dat$diff)
+        #   sem_diff <- sd(dat$diff) / sqrt(length(dat$diff))
+        #   ci_diff <- qt(0.975, df = length(dat$diff) - 1) * sem_diff
+        #   
+        #   # upper and lower bound
+        #   dat$upper_bound <- dat$a + (mean_diff + ci_diff)
+        #   dat$lower_bound <- dat$a + (mean_diff - ci_diff)
+        #   
+        #   image <- self$results$plot9
+        #   
+        #   state <- list(dat$a, dat$b, dat$upper_bound, dat$lower_bound)
+        #   image$setState(state)
+        #   
+        # }
+        # 
+     # compute results------
       set.seed(1234)
         res <-
           mixRasch::mixRasch(
@@ -1442,7 +1477,85 @@ raschClass <- if (requireNamespace('jmvcore'))
        
      },
      
-     
+
+.prepareciPlot = function(data) {
+ 
+  data <- self$data
+  mea1 <- self$options$mea1
+  mea2 <- self$options$mea2
+  
+  data[[mea1]] <- jmvcore::toNumeric(data[[mea1]])
+  data[[mea2]] <- jmvcore::toNumeric(data[[mea2]])
+  data <- na.omit(data)
+  #dat<- data.frame(data)
+  dat <- data.frame(x = data[[mea1]], y = data[[mea2]])
+  
+    # # difference from diag.
+    # dat$diff <- dat$b - dat$a
+    # 
+    # # mean and 95%
+    # mean_diff <- mean(dat$diff)
+    # sem_diff <- sd(dat$diff) / sqrt(length(dat$diff))
+    # ci_diff <- qt(0.975, df = length(dat$diff) - 1) * sem_diff
+    # 
+    # # upper and lower bound
+    # dat$upper_bound <- dat$a + (mean_diff + ci_diff)
+    # dat$lower_bound <- dat$a + (mean_diff - ci_diff)
+    
+  library(dplyr)
+  dat <- dat %>%
+    mutate(residuals = y - x)  
+  
+  std_error <- sd(dat$residuals) / sqrt(nrow(dat))
+  
+  dat <- dat %>%
+    mutate(diag = x,  
+           lwr = diag - 1.96 * std_error,  
+           upr = diag + 1.96 * std_error)  
+  
+    image <- self$results$plot9
+    
+    state <- list(dat$x, dat$y, dat$lwr, dat$upr)
+    image$setState(state)
+  
+},
+
+
+.plot9 = function(image, ggtheme, theme, ...) {
+  
+  if (is.null(image$state))
+    return(FALSE)
+  
+  x <- image$state[[1]]
+  y <- image$state[[2]]
+  lwr  <- image$state[[3]]
+  upr  <- image$state[[4]]
+  
+  
+  # plot9<- ggplot(, aes(x = a, y = b)) +
+  #   geom_point(color = "blue", alpha = 0.6) +
+  #   geom_abline(intercept = 0, slope = 1, color = "red", linetype = "dashed") + # 대각선 추가
+  #   geom_line(aes(y = upper_bound), color = "black") + # 상한 신뢰구간
+  #   geom_line(aes(y = lower_bound), color = "black") + # 하한 신뢰구간
+  #   labs(title = "",
+  #        x = "Variable 1",
+  #        y = "Variable 2") 
+  
+  plot9<- ggplot(, aes(x = x, y = y)) +
+    geom_point(color = "blue", alpha = 0.6) +  
+    geom_abline(slope = 1, intercept = 0, color="red",linetype = "dashed") +  
+    geom_ribbon(aes(ymin = lwr, ymax = upr), fill = "grey80", alpha = 0.5) +  
+    labs(title = "",
+         x = "Variable 1",
+         y = "Variable 2")
+  
+  plot9 <- plot9 + ggtheme
+  
+  print(plot9)
+  TRUE
+  
+},
+
       #### Helper functions =================================
       
       .cleanData = function() {

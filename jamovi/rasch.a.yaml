@@ -393,4 +393,35 @@ options:
       - name: T11
         title: 'Global test for local dependency'
       default: T11
+
+    - name: mea1
+      title: Variable 1
+      type: Variable
+      suggested:
+         - continuous
+      permitted:
+        - numeric
+
+    - name: mea2
+      title: Variable 2
+      type: Variable
+      suggested:
+         - continuous
+      permitted:
+        - numeric
+
+    - name: plot9
+      title: 'Plot'
+      type: Bool
+      default: false  
+
+    - name: width9
+      type: Integer
+      title: "Size: "
+      default: 500
+      
+    - name: height9
+      type: Integer
+      title: "X"
+      default: 500
 ...

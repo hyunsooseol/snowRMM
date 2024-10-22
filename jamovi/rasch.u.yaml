@@ -385,5 +385,52 @@ children:
                 name: npmethod
               - type: CheckBox
                 name: nptest
-
-
+  - type: CollapseBox
+    label: 'Scatter Plot with 95% Confidence Interval Based on Diagonal'
+    margin: normal
+    collapsed: true
+    children:
+      - type: VariableSupplier
+        persistentItems: false
+        stretchFactor: 1
+        children:
+          - type: TargetLayoutBox
+            label: Variable 1
+            children:
+              - type: VariablesListBox
+                name: mea1
+                maxItemCount: 1
+                isTarget: true
+          - type: TargetLayoutBox
+            label: Variable 2
+            children:
+              - type: VariablesListBox
+                name: mea2
+                maxItemCount: 1
+                isTarget: true 
+      - type: LayoutBox
+        margin: large
+        stretchFactor: 1
+        children:
+          - type: LayoutBox
+            margin: large
+            cell:
+              column: 0
+              row: 0
+            stretchFactor: 1
+            children:
+              - type: Label
+                label: " "
+                children:
+                  - type: CheckBox
+                    name: plot9 
+                    style: list-inline
+                    children:
+                      - type: TextBox
+                        name: width9
+                        format: number
+                        enable: (plot9)
+                      - type: TextBox
+                        name: height9
+                        format: number
+                        enable: (plot9)
