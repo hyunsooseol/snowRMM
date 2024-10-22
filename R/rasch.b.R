@@ -1543,8 +1543,8 @@ raschClass <- if (requireNamespace('jmvcore'))
   
   plot9<- ggplot(, aes(x = x, y = y)) +
     geom_point(color = "blue", alpha = 0.6) +  
-    geom_abline(slope = 1, intercept = 0, color="red",linetype = "dashed") +  
-    geom_ribbon(aes(ymin = lwr, ymax = upr), fill = "grey80", alpha = 0.5) +  
+    #geom_abline(slope = 1, intercept = 0, color="red",linetype = "dashed") +  
+    #geom_ribbon(aes(ymin = lwr, ymax = upr), fill = "grey80", alpha = 0.5) +  
     labs(title = "",
          x = "Variable 1",
          y = "Variable 2")

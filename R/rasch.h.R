@@ -1225,7 +1225,7 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot9",
-                title="Scatter Plot with 95% Confidence Interval Based on Diagonal",
+                title="Scatter Plot",
                 requiresData=TRUE,
                 visible="(plot9)",
                 renderFun=".plot9",

@@ -386,7 +386,7 @@ children:
               - type: CheckBox
                 name: nptest
   - type: CollapseBox
-    label: 'Scatter Plot with 95% Confidence Interval Based on Diagonal'
+    label: 'Scatter Plot'
     margin: normal
     collapsed: true
     children:
