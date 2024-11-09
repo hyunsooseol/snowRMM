@@ -386,7 +386,7 @@ children:
               - type: CheckBox
                 name: nptest
   - type: CollapseBox
-    label: 'Cross Plot'
+    label: 'Cross-plot'
     margin: normal
     collapsed: true
     children:

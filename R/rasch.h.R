@@ -1247,7 +1247,7 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot9",
-                title="Cross plot with 95% confidence intervals",
+                title="Cross-plot with 95% confidence intervals",
                 requiresData=TRUE,
                 visible="(plot9)",
                 renderFun=".plot9",

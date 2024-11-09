@@ -513,7 +513,7 @@ items:
       type:  Preformatted  
 
     - name:  plot9
-      title: 'Cross plot with 95% confidence intervals'
+      title: 'Cross-plot with 95% confidence intervals'
       type:  Image
       requiresData: true
       visible: (plot9)
