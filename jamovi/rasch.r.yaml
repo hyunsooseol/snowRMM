@@ -486,11 +486,7 @@ items:
           type: number
         - name: Q3
           type: number  
-  
-    # - name:  text2
-    #   title: 'Standardized residual correlation matrix'
-    #   type:  Preformatted  
-
+ 
     - name: cormatrix
       title:  'Residual correlation matrix'
       type: Table
@@ -517,7 +513,7 @@ items:
       type:  Preformatted  
 
     - name:  plot9
-      title: 'Scatter Plot'
+      title: 'Cross plot with 95% confidence intervals'
       type:  Image
       requiresData: true
       visible: (plot9)
@@ -526,7 +522,9 @@ items:
       clearWith:
             - mea1
             - mea2
+            - se1
+            - se2
             - width9
             - height9
-      
+    
 ...

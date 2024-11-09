@@ -281,9 +281,7 @@ raschClass <- if (requireNamespace('jmvcore'))
           # private$.prepareRsmPlot(data)
           
           private$.preparePcmPlot(data)
-          
-          #private$.prepareciPlot(data)
-          
+         
         }
       },
       
@@ -1429,8 +1427,6 @@ raschClass <- if (requireNamespace('jmvcore'))
                              legpos="top",
                              item.subset= num)
        
-       
-       
        print(plot3)
        TRUE
        
@@ -1476,79 +1472,83 @@ raschClass <- if (requireNamespace('jmvcore'))
        
        
      },
-     
 
 .prepareciPlot = function(data) {
  
   data <- self$data
-  mea1 <- self$options$mea1
-  mea2 <- self$options$mea2
+ 
+  D1 <- self$options$mea1
+  D2 <- self$options$mea2
+  SE1 <- self$options$se1
+  SE2 <- self$options$se2
   
-  data[[mea1]] <- jmvcore::toNumeric(data[[mea1]])
-  data[[mea2]] <- jmvcore::toNumeric(data[[mea2]])
-  data <- na.omit(data)
-  #dat<- data.frame(data)
-  dat <- data.frame(x = data[[mea1]], y = data[[mea2]])
-  
-    # # difference from diag.
-    # dat$diff <- dat$b - dat$a
-    # 
-    # # mean and 95%
-    # mean_diff <- mean(dat$diff)
-    # sem_diff <- sd(dat$diff) / sqrt(length(dat$diff))
-    # ci_diff <- qt(0.975, df = length(dat$diff) - 1) * sem_diff
-    # 
-    # # upper and lower bound
-    # dat$upper_bound <- dat$a + (mean_diff + ci_diff)
-    # dat$lower_bound <- dat$a + (mean_diff - ci_diff)
-    
-  library(dplyr)
-  dat <- dat %>%
-    mutate(residuals = y - x)  
-  
-  std_error <- sd(dat$residuals) / sqrt(nrow(dat))
-  
-  dat <- dat %>%
-    mutate(diag = x,  
-           lwr = diag - 1.96 * std_error,  
-           upr = diag + 1.96 * std_error)  
-  
-    image <- self$results$plot9
-    
-    state <- list(dat$x, dat$y, dat$lwr, dat$upr)
-    image$setState(state)
-  
-},
+   data[[D1]] <- jmvcore::toNumeric(data[[D1]])
+   data[[D2]] <- jmvcore::toNumeric(data[[D2]])
+   data[[SE1]] <- jmvcore::toNumeric(data[[SE1]])
+   data[[SE2]] <- jmvcore::toNumeric(data[[SE2]])
 
+   dat <- data.frame(D1 = data[[D1]],
+                     D2 = data[[D2]],
+                     SE1 = data[[SE1]],
+                     SE2 = data[[SE2]])
+
+  # mean
+  MEAN1 <- mean(dat$D1)
+  MEAN2 <- mean(dat$D2)
+ 
+  # Z-score for 95% confidence interval
+  Z <- 1.96
+  
+  # SE AND Upper/Lower control line 
+  SE12 <- sqrt(dat$SE1^2 + dat$SE2^2)
+  
+  UPPER1 <- (dat$D1 + dat$D2) / 2 + MEAN1 - Z * SE12 / 2
+  UPPER2 <- (dat$D1 + dat$D2) / 2 + MEAN2 + Z * SE12 / 2
+  LOWER1 <- (dat$D1 + dat$D2) / 2 + MEAN1 + Z * SE12 / 2
+  LOWER2 <- (dat$D1 + dat$D2) / 2 + MEAN2 - Z * SE12 / 2
+ 
+  dat2 <- data.frame(D1=dat$D1, D2=dat$D2,
+                     UPPER1, UPPER2,
+                     LOWER1, LOWER2)
+
+  # arrange control line---
+  control_upper <- dplyr::arrange(dat2,UPPER1)
+  control_lower <- dplyr::arrange(dat2,LOWER1)
+  
+  image <- self$results$plot9
+  
+  state <- list(dat2, 
+                control_upper,
+                control_lower) 
+                
+  image$setState(state)
+ 
+},
 
 .plot9 = function(image, ggtheme, theme, ...) {
   
   if (is.null(image$state))
     return(FALSE)
   
-  x <- image$state[[1]]
-  y <- image$state[[2]]
-  lwr  <- image$state[[3]]
-  upr  <- image$state[[4]]
+  dat2 <- image$state[[1]]
+  control_upper <- image$state[[2]]
+  control_lower <- image$state[[3]]
   
   
-  # plot9<- ggplot(, aes(x = a, y = b)) +
-  #   geom_point(color = "blue", alpha = 0.6) +
-  #   geom_abline(intercept = 0, slope = 1, color = "red", linetype = "dashed") + # 대각선 추가
-  #   geom_line(aes(y = upper_bound), color = "black") + # 상한 신뢰구간
-  #   geom_line(aes(y = lower_bound), color = "black") + # 하한 신뢰구간
-  #   labs(title = "",
-  #        x = "Variable 1",
-  #        y = "Variable 2") 
-  
-  plot9<- ggplot(, aes(x = x, y = y)) +
-    geom_point(color = "blue", alpha = 0.6) +  
-    #geom_abline(slope = 1, intercept = 0, color="red",linetype = "dashed") +  
-    #geom_ribbon(aes(ymin = lwr, ymax = upr), fill = "grey80", alpha = 0.5) +  
-    labs(title = "",
-         x = "Variable 1",
-         y = "Variable 2")
-  
+  plot9<- ggplot() +
+    geom_point(aes(x = dat2$D1, y = dat2$D2), 
+               color = "blue", alpha = 0.6, size=2) +  
+    geom_abline(slope = 1, intercept = 0, linetype = "dashed") +  
+    geom_line(data = control_upper, 
+              aes(x = dat2$UPPER1, y = dat2$UPPER2), 
+              color = "red", 
+              linetype = "solid") +  
+    geom_line(data = control_lower, 
+              aes(x = dat2$LOWER1, y = dat2$LOWER2), 
+              color = "red", linetype = "solid") +  
+    xlab("Measure 1") +
+    ylab("Measure 2") 
+   
   plot9 <- plot9 + ggtheme
   
   print(plot9)

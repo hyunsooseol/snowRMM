@@ -69,7 +69,9 @@ rasch(
   matrix = 500,
   npmethod = "T11",
   mea1,
+  se1,
   mea2,
+  se2,
   plot9 = FALSE,
   width9 = 500,
   height9 = 500
@@ -205,7 +207,11 @@ where 0 degrees represents completely horizontal labels.}
 
 \item{mea1}{.}
 
+\item{se1}{.}
+
 \item{mea2}{.}
+
+\item{se2}{.}
 
 \item{plot9}{.}
 
@@ -248,6 +254,7 @@ A results object containing:
   \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
   \code{results$text1} \tab \tab \tab \tab \tab a preformatted \cr
   \code{results$plot9} \tab \tab \tab \tab \tab an image \cr
+  \code{results$text2} \tab \tab \tab \tab \tab a preformatted \cr
 }
 
 Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:

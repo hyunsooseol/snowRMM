@@ -386,7 +386,7 @@ children:
               - type: CheckBox
                 name: nptest
   - type: CollapseBox
-    label: 'Scatter Plot'
+    label: 'Cross Plot'
     margin: normal
     collapsed: true
     children:
@@ -395,19 +395,33 @@ children:
         stretchFactor: 1
         children:
           - type: TargetLayoutBox
-            label: Variable 1
+            label: Measure 1
             children:
               - type: VariablesListBox
                 name: mea1
                 maxItemCount: 1
                 isTarget: true
           - type: TargetLayoutBox
-            label: Variable 2
+            label: SE 1
+            children:
+              - type: VariablesListBox
+                name: se1
+                maxItemCount: 1
+                isTarget: true                
+          - type: TargetLayoutBox
+            label: Measure 2
             children:
               - type: VariablesListBox
                 name: mea2
                 maxItemCount: 1
                 isTarget: true 
+          - type: TargetLayoutBox
+            label: SE 2
+            children:
+              - type: VariablesListBox
+                name: se2
+                maxItemCount: 1
+                isTarget: true         
       - type: LayoutBox
         margin: large
         stretchFactor: 1

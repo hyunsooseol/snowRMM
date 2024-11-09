@@ -395,7 +395,15 @@ options:
       default: T11
 
     - name: mea1
-      title: Variable 1
+      title: Measure 1
+      type: Variable
+      suggested:
+         - continuous
+      permitted:
+        - numeric
+
+    - name: se1
+      title: SE 1
       type: Variable
       suggested:
          - continuous
@@ -403,7 +411,15 @@ options:
         - numeric
 
     - name: mea2
-      title: Variable 2
+      title: Measure 2
+      type: Variable
+      suggested:
+         - continuous
+      permitted:
+        - numeric
+
+    - name: se2
+      title: SE 2
       type: Variable
       suggested:
          - continuous
