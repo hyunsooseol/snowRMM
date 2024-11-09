@@ -402,7 +402,7 @@ children:
                 maxItemCount: 1
                 isTarget: true
           - type: TargetLayoutBox
-            label: SE 1
+            label: 'Std.Error 1'
             children:
               - type: VariablesListBox
                 name: se1
@@ -416,7 +416,7 @@ children:
                 maxItemCount: 1
                 isTarget: true 
           - type: TargetLayoutBox
-            label: SE 2
+            label: 'Std.Error 2'
             children:
               - type: VariablesListBox
                 name: se2
