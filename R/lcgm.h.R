@@ -205,6 +205,14 @@ lcgmResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         `type`="text", 
                         `content`="($key)"),
                     list(
+                        `name`="n", 
+                        `title`="N", 
+                        `type`="number"),
+                    list(
+                        `name`="missing", 
+                        `title`="Proportion missing", 
+                        `type`="number"),
+                    list(
                         `name`="mean", 
                         `title`="Mean", 
                         `type`="number"),

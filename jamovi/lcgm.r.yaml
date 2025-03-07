@@ -29,6 +29,12 @@ items:
           title: ''
           type: 'text'
           content: ($key)
+        - name: n
+          title: N
+          type: number
+        - name: missing
+          title: Proportion missing
+          type: number          
         - name: mean
           title: Mean
           type: number

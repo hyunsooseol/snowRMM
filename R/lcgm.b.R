@@ -52,6 +52,7 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
               '<div style="text-align:justify;">',
               '<ul>',
               '<li><b>tidySEM</b> R package is described in the <a href="https://cjvanlissa.github.io/tidySEM/articles/LCGA.html" target = "_blank">page</a>.</li>',
+              '<li>The FIML method was applied to handle missing values, and the MLR estimation method was used.</li>',
               '<li>Please set <b>Thresholds=TRUE</b> when analyzing ordinal data.</li>',
               '<li>Feature requests and bug reports can be made on my <a href="https://github.com/hyunsooseol/snowRMM/issues" target="_blank">GitHub</a>.</li>',
               '</ul></div></div>'
@@ -94,7 +95,7 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           thr <- self$options$thr
        
           data <- self$data
-          data <- na.omit(data)
+          #data <- na.omit(data)
           data <- as.data.frame(data)
           
        #---
@@ -110,11 +111,13 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
  
            for(i in seq_along(vars)){
               row <- list()
-              row[["mean"]] <- d[[2]][i]
-              row[["median"]] <- d[[3]][i]
-              row[["sd"]] <- d[[4]][i]
-              row[["min"]] <- d[[5]][i]
-              row[["max"]] <- d[[6]][i]
+              row[["n"]] <- d[[2]][i]
+              row[["missing"]] <- d[[3]][i]
+              row[["mean"]] <- d[[4]][i]
+              row[["median"]] <- d[[5]][i]
+              row[["sd"]] <- d[[6]][i]
+              row[["min"]] <- d[[7]][i]
+              row[["max"]] <- d[[8]][i]
               table$addRow(rowKey = vars[i], values = row)
             }
                 }
@@ -290,12 +293,12 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           thr <- self$options$thr
          
           data <- self$data
-          data <- jmvcore::naOmit(data)        
+          #data <- jmvcore::naOmit(data)        
           data <- as.data.frame(data)
           
           # Descriptives---
           desc <- tidySEM::descriptives(data)
-          desc <- desc[, c("name", "mean", "median", "sd", "min", "max")]
+          desc <- desc[, c("name","n","missing", "mean", "median", "sd", "min", "max")]
          
           # Model--- 
           # Caution: Not possible to use 'classes=1:nc' using mx_mixture()
@@ -304,6 +307,8 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           res <- tidySEM::mx_growth_mixture(model = model,
                                             classes = nc,
                                             thresholds=thr,
+                                            missing = "fiml",  
+                                            estimator = "MLR",  
                                             data=data)
           
           #self$results$text$setContent(res)                                                                  

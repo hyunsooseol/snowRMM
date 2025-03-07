@@ -5,9 +5,9 @@
     `snowRMM`=list(
         `type`="software", 
         `author`="Seol, H.", 
-        `year`=2024, 
+        `year`=2025, 
         `title`="snowRMM: Rasch Mixture, LCA, and Test Equating Analysis", 
-        `publisher`="(Version 5.8.6) [jamovi module]. URL https://github.com/hyunsooseol/snowRMM", 
+        `publisher`="(Version 5.8.7) [jamovi module]. URL https://github.com/hyunsooseol/snowRMM", 
         `url`="https://github.com/hyunsooseol/snowRMM"), 
     `mixRasch`=list(
         `type`="software", 
