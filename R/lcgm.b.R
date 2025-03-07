@@ -189,8 +189,9 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         # class member--
         if(isTRUE(self$options$mem)){
           
-          cp<- tidySEM::class_prob(retlist$res)
-          mem<- data.frame(cp$individual)
+          #cp<- tidySEM::class_prob(retlist$res)
+          cp1<- retlist$cp1
+          mem<- data.frame(cp1$individual)
           m<- mem$predicted
           
           m <- as.factor(m)
@@ -320,10 +321,10 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           para <- para[para$Category %in% c("Means", "Variances"), c("Category", "lhs", "est", "se", "pval", "confint", "name")]
            
           # class size
-          cp<- tidySEM::class_prob(res)
-          cp<- data.frame(cp$sum.posterior)
+          cp1<- tidySEM::class_prob(res)
+          cp<- data.frame(cp1$sum.posterior)
           
-        retlist <- list(res=res, fit=fit, para=para, desc=desc, cp=cp)
+        retlist <- list(res=res, fit=fit, para=para, desc=desc, cp=cp, cp1=cp1)
         return(retlist)
         
         } 

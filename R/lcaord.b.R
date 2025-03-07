@@ -54,6 +54,7 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
               '<div style="text-align:justify;">',
               '<ul>',
               '<li><b>tidySEM</b> R package is described in the <a href="https://cjvanlissa.github.io/tidySEM/articles/lca_ordinal.html" target = "_blank">page</a>.</li>',
+              '<li> The FIML method is applied to handle missing values.</li>',
               '<li>Feature requests and bug reports can be made on my <a href="https://github.com/hyunsooseol/snowRMM/issues" target="_blank">GitHub</a>.</li>',
               '</ul></div></div>'
               
@@ -92,8 +93,7 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         nc <- self$options$nc
        
         data <- self$data
-        data <- na.omit(data)
-        data <- jmvcore::naOmit(data)  
+        #data <- jmvcore::naOmit(data)  
         data <- as.data.frame(data)
         
         #---
@@ -161,8 +161,10 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         # class member--
         if(isTRUE(self$options$mem)){
           
-          cp<- tidySEM::class_prob(retlist$res)
-          mem<- data.frame(cp$individual)
+          #cp1<- tidySEM::class_prob(retlist$res)
+          cp1<- retlist$cp1
+          
+          mem<- data.frame(cp1$individual)
           m<- mem$predicted
           
           m <- as.factor(m)
@@ -259,7 +261,9 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         nc <- self$options$nc
         
         data <- self$data
-        data <- jmvcore::naOmit(data)        
+        
+        #apply FIML method---
+        #data <- jmvcore::naOmit(data)        
         data <- as.data.frame(data)
         
         # Descriptives---
@@ -270,17 +274,19 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         # Model---
         # Not possible to use classes=1: nc now.
         set.seed(123)
-        res <- tidySEM::mx_lca(data = data, classes = nc)
+        res <- tidySEM::mx_lca(data = data, 
+                               classes = nc)
         
         #self$results$text$setContent(res)
         
         #fit
         fit <- tidySEM::table_fit(res)
-       # class size
-        cp<- tidySEM::class_prob(res)
-        cp<- data.frame(cp$sum.posterior)
+       
+        # class size
+        cp1<- tidySEM::class_prob(res)
+        cp<- data.frame(cp1$sum.posterior)
         
-        retlist <- list(res=res, desc=desc, fit=fit, cp=cp)
+        retlist <- list(res=res, desc=desc, fit=fit, cp=cp, cp1=cp1)
         return(retlist)
         
       } 

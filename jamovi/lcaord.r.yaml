@@ -34,7 +34,7 @@ items:
           title: N  
           type: number
         - name: missing
-          title: Missing
+          title: Proportion missing
           type: number
         - name: unique
           title: Unique 

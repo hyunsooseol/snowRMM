@@ -180,7 +180,7 @@ lcaordResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         `type`="number"),
                     list(
                         `name`="missing", 
-                        `title`="Missing", 
+                        `title`="Proportion missing", 
                         `type`="number"),
                     list(
                         `name`="unique", 
