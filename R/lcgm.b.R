@@ -51,7 +51,7 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
               '<div style="border: 2px solid #e6f4fe; border-radius: 15px; padding: 15px; background-color: #e6f4fe; margin-top: 10px;">',
               '<div style="text-align:justify;">',
               '<ul>',
-              '<li><b>tidySEM</b> R package is described in the <a href="https://cjvanlissa.github.io/tidySEM/articles/LCGA.html" target = "_blank">page</a>.</li>',
+              '<li><b>tidySEM</b> R package is described in the <a href="https://cjvanlissa.github.io/tidySEM/articles/lca_lcga.html" target = "_blank">page</a>.</li>',
               '<li>The FIML method was applied to handle missing values, and the MLR estimation method was used.</li>',
               '<li>Please set <b>Thresholds=TRUE</b> when analyzing ordinal data.</li>',
               '<li>Feature requests and bug reports can be made on my <a href="https://github.com/hyunsooseol/snowRMM/issues" target="_blank">GitHub</a>.</li>',
