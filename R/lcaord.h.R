@@ -17,7 +17,8 @@ lcaordOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             plot1 = FALSE,
             width1 = 500,
             height1 = 500,
-            angle = 0, ...) {
+            angle = 0,
+            miss = "fiml", ...) {
 
             super$initialize(
                 package="snowRMM",
@@ -81,6 +82,13 @@ lcaordOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 min=0,
                 max=90,
                 default=0)
+            private$..miss <- jmvcore::OptionList$new(
+                "miss",
+                miss,
+                options=list(
+                    "listwise",
+                    "fiml"),
+                default="fiml")
 
             self$.addOption(private$..vars)
             self$.addOption(private$..nc)
@@ -95,6 +103,7 @@ lcaordOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..width1)
             self$.addOption(private$..height1)
             self$.addOption(private$..angle)
+            self$.addOption(private$..miss)
         }),
     active = list(
         vars = function() private$..vars$value,
@@ -109,7 +118,8 @@ lcaordOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         plot1 = function() private$..plot1$value,
         width1 = function() private$..width1$value,
         height1 = function() private$..height1$value,
-        angle = function() private$..angle$value),
+        angle = function() private$..angle$value,
+        miss = function() private$..miss$value),
     private = list(
         ..vars = NA,
         ..nc = NA,
@@ -123,7 +133,8 @@ lcaordOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..plot1 = NA,
         ..width1 = NA,
         ..height1 = NA,
-        ..angle = NA)
+        ..angle = NA,
+        ..miss = NA)
 )
 
 lcaordResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -162,7 +173,8 @@ lcaordResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 visible="(desc)",
                 clearWith=list(
                     "vars",
-                    "nc"),
+                    "nc",
+                    "miss"),
                 refs="tidySEM",
                 columns=list(
                     list(
@@ -197,7 +209,8 @@ lcaordResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 visible="(fit)",
                 clearWith=list(
                     "vars",
-                    "nc"),
+                    "nc",
+                    "miss"),
                 refs="tidySEM",
                 columns=list(
                     list(
@@ -216,7 +229,8 @@ lcaordResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 refs="tidySEM",
                 clearWith=list(
                     "vars",
-                    "nc"),
+                    "nc",
+                    "miss"),
                 columns=list(
                     list(
                         `name`="name", 
@@ -239,7 +253,8 @@ lcaordResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 measureType="nominal",
                 clearWith=list(
                     "vars",
-                    "nc")))
+                    "nc",
+                    "miss")))
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot1",
@@ -250,7 +265,8 @@ lcaordResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "vars",
                     "nc",
                     "width1",
-                    "height1")))
+                    "height1",
+                    "miss")))
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot",
@@ -262,7 +278,8 @@ lcaordResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "nc",
                     "width",
                     "height",
-                    "angle")))}))
+                    "angle",
+                    "miss")))}))
 
 lcaordBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "lcaordBase",
@@ -302,6 +319,7 @@ lcaordBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param height1 .
 #' @param angle a number from 0 to 90 defining the angle of the x-axis labels,
 #'   where 0 degrees represents completely horizontal labels.
+#' @param miss .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
@@ -334,7 +352,8 @@ lcaord <- function(
     plot1 = FALSE,
     width1 = 500,
     height1 = 500,
-    angle = 0) {
+    angle = 0,
+    miss = "fiml") {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("lcaord requires jmvcore to be installed (restart may be required)")
@@ -359,7 +378,8 @@ lcaord <- function(
         plot1 = plot1,
         width1 = width1,
         height1 = height1,
-        angle = angle)
+        angle = angle,
+        miss = miss)
 
     analysis <- lcaordClass$new(
         options = options,

@@ -1,51 +1,62 @@
 
 # This file is a generated template, your changes will not be overwritten
-#' @importFrom R6 R6Class
-#' @import jmvcore
-#' @import tidySEM
-#' @importFrom tidySEM descriptives
-#' @importFrom tidySEM mx_lca
-#' @importFrom tidySEM table_fit
-#' @importFrom tidySEM table_prob
-#' @importFrom tidySEM plot_prob
-#' @import ggplot2
+
 #' @export
 
 
 lcaordClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
     "lcaordClass",
     inherit = lcaordBase,
+    
+# Active bindings---
+    active = list(
+
+      res = function() {
+        if (is.null(private$.res_cache)) {
+          data <- self$data
+          if (self$options$miss == 'listwise') {
+            data <- jmvcore::naOmit(data)
+          }
+          private$.res_cache <- tidySEM::mx_lca(
+            data = as.data.frame(data), 
+            classes = self$options$nc
+          )
+        }
+        return(private$.res_cache)
+      },
+
+#--- 
+desc = function() {
+  if (is.null(private$.desc_cache)) {
+    data <- self$data
+    desc <- tidySEM::descriptives(data)
+    private$.desc_cache <- desc[, c("name", "type", "n", "missing", "unique", "mode")]
+  }
+  return(private$.desc_cache)
+} 
+    ),      
+      
+
+#---------------
     private = list(
 
-      .htmlwidget = NULL, 
-      .init = function() {
+      .htmlwidget = NULL,
+      .results_cache = NULL,
+      .res_cache = NULL,
+      .desc_cache = NULL,
+      
+.init = function() {
         
         private$.htmlwidget <- HTMLWidget$new() 
+     
         
-        if (is.null(self$data) | is.null(self$options$vars)) {
+    if (is.null(self$data) | is.null(self$options$vars)) {
           
           self$results$instructions$setVisible(visible = TRUE)
           
         }
-        
-       
-        # self$results$instructions$setContent(
-        #   "<html>
-        #     <head>
-        #     </head>
-        #     <body>
-        #     <div class='instructions'>
-        #     
-        #     <p>_____________________________________________________________________________________________</p>
-        #     <p>1. <b>tidySEM</b> R package is described in the <a href='https://cjvanlissa.github.io/tidySEM/articles/lca_ordinal.html' target = '_blank'>page</a>.</p>
-        #     <p>2. Feature requests and bug reports can be made on the <a href='https://github.com/hyunsooseol/snowRMM/issues' target = '_blank'>GitHub</a>.</p>
-        #     <p>_____________________________________________________________________________________________</p>
-        #     
-        #     </div>
-        #     </body>
-        #     </html>"
-        # )
-        
+     
+
         self$results$instructions$setContent(
           private$.htmlwidget$generate_accordion(
             title="Instructions",
@@ -54,7 +65,6 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
               '<div style="text-align:justify;">',
               '<ul>',
               '<li><b>tidySEM</b> R package is described in the <a href="https://cjvanlissa.github.io/tidySEM/articles/lca_ordinal.html" target = "_blank">page</a>.</li>',
-              '<li> The FIML method is applied to handle missing values.</li>',
               '<li>Feature requests and bug reports can be made on my <a href="https://github.com/hyunsooseol/snowRMM/issues" target="_blank">GitHub</a>.</li>',
               '</ul></div></div>'
               
@@ -62,7 +72,6 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             
           )
         )              
-        
         
         if(isTRUE(self$options$plot1)){
 
@@ -78,32 +87,93 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           self$results$plot$setSize(width, height)
         }
 
+        # 초기화 시 콜백 등록
+        private$.registerCallbacks()
         
       },
+
+#---
+.registerCallbacks = function() {
+  
+  callbacks <- list(
+    desc = private$.populateDescTable,
+    fit = private$.populateFitTable,
+    cp = private$.populateClassSizeTable,
+    mem = private$.populateClassMemberTable
+  )
+  
+  for (name in names(callbacks)) {
+    
+    # check callback---
+    
+    if (name %in% names(self$results) && 
+        !is.null(self$results[[name]]) && 
+        "setCallback" %in% names(self$results[[name]])) {
+      self$results[[name]]$setCallback(callbacks[[name]])
+    }
+  }
+},
+
+###################################  
       
-      #---------     
-      
-      .run = function() {
+.run = function() {
+ 
+  if (is.null(self$options$vars) || length(self$options$vars) < 3) return()
+  
+  data <- self$data
+  if (self$options$miss == 'listwise') {
+    data <- jmvcore::naOmit(data)
+  }
+  data <- as.data.frame(data)
+  
+ 
+  if (is.null(private$.results_cache)) {
+    set.seed(1234)
+    
+    # compute using active binding
+    res <- self$res  
+    desc <- self$desc  
+    
+    # addtional computing
+    fit <- tidySEM::table_fit(res)
+    cp1 <- tidySEM::class_prob(res)
+    cp <- data.frame(cp1$sum.posterior)
+   
+    
+    # save
+    private$.results_cache <- list(
+      data = data, 
+      res = res, 
+      desc = desc, 
+      fit = fit, 
+      cp = cp, 
+      cp1 = cp1
+    )
+  
+    # inserting results---
+    if(isTRUE(self$options$desc)) private$.populateDescTable()
+    if(isTRUE(self$options$fit)) private$.populateFitTable()
+    if(isTRUE(self$options$cp)) private$.populateClassSizeTable()
+    if(isTRUE(self$options$mem)) private$.populateClassMemberTable()
+    if(isTRUE(self$options$plot)) private$.setResponseProbPlot()
+    if(isTRUE(self$options$plot1)) private$.setBarPlot()
+    
+    # ----------------------
+    private$.registerCallbacks()
+    
+    }
+},
+
+
+# Descriptives---  
         
-        
-        if (is.null(self$options$vars) ||
-            length(self$options$vars) < 3) return()
-        
-        vars <- self$options$vars
-        nc <- self$options$nc
-       
-        data <- self$data
-        #data <- jmvcore::naOmit(data)  
-        data <- as.data.frame(data)
-        
-        #---
-        retlist <- private$.computeFIT()
-        #---
-        
-        # Descriptives---
-        
-        if(isTRUE(self$options$desc)){
-          
+.populateDescTable = function() {
+  
+  if(!isTRUE(self$options$desc) || is.null(private$.results_cache)) return()
+            
+          vars <- self$options$vars
+          retlist <- private$.results_cache       
+
           table <- self$results$desc
           desc <- retlist$desc
           
@@ -118,12 +188,15 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             row[["mode"]] <- d[[6]][i]
             table$addRow(rowKey = vars[i], values = row)
           }
-        }
+        },
         
-        # model fit---
-        
-        if(isTRUE(self$options$fit)){ 
-          
+# model fit---
+
+.populateFitTable = function() {
+   
+  if(!isTRUE(self$options$fit) || is.null(private$.results_cache)) return()
+  
+          retlist <- private$.results_cache        
           table <- self$results$fit
           
           fit<- retlist$fit
@@ -136,15 +209,20 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             row[['value']] <- df[name,1]
             table$addRow(rowKey=name, values=row)
           }
-        }
+        },
         
-        # class size---
-        
-        if(isTRUE(self$options$cp)){ 
-          
-          table <- self$results$cp
-          
-          d<- retlist$cp
+# class size---
+
+.populateClassSizeTable = function() {
+
+  if(!isTRUE(self$options$cp) || is.null(private$.results_cache)) return()
+   
+       nc <- self$options$nc
+       vars <- self$options$vars
+       retlist <- private$.results_cache         
+   
+       table <- self$results$cp
+       d<- retlist$cp
         
           for(i in seq_along(1:nc)){
             row <- list()
@@ -156,11 +234,16 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             table$addRow(rowKey = vars[i], values = row)
           }
         
-        }
+        },
         
-        # class member--
-        if(isTRUE(self$options$mem)){
+# class member--
+
+.populateClassMemberTable = function() {
+  if(!isTRUE(self$options$mem) || is.null(private$.results_cache)) return()
           
+          retlist <- private$.results_cache
+          data <- retlist$data    
+        
           #cp1<- tidySEM::class_prob(retlist$res)
           cp1<- retlist$cp1
           
@@ -176,47 +259,41 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             self$results$mem$setRowNums(rownames(data))
           }
         
-        }
-        # Response probilities plot---
+        },
         
-        if(isTRUE(self$options$plot)){
-          
-          # tab <- tidySEM::table_prob(retlist$res)
-          # long<- reshape(tab,
-          #                direction = "wide",
-          #                v.names = "Probability",
-          #                timevar = "group",
-          #                idvar = c("Variable", "Category"))
-          # 
-          # self$results$text$setContent(long)
-          
+# Response probilities plot---
+.setResponseProbPlot = function() {
+  if(!isTRUE(self$options$plot) || is.null(private$.results_cache)) return()
+            
+          retlist <- private$.results_cache
           image <- self$results$plot
           image$setState(retlist$res)
-        } 
+        },
+ 
         
-        # Bar plot---
-        
-        if(isTRUE(self$options$plot1)){
-        
-        df_plot <- data
-        names(df_plot) <- paste0("Value.", names(df_plot))
-        df_plot <- reshape(df_plot, varying = names(df_plot), direction = "long")
-        
-        image <- self$results$plot1
-        image$setState(df_plot)
-        
-        }
-        
-        
-      },
+# Bar plot---
+.setBarPlot = function() {
+  if(!isTRUE(self$options$plot1) || is.null(private$.results_cache)) return()
+            
+  retlist <- private$.results_cache
+  data <- retlist$data
   
-      # plot---    
+           df_plot <- data
+          names(df_plot) <- paste0("Value.", names(df_plot))
+          df_plot <- reshape(df_plot, varying = names(df_plot), direction = "long")
+          
+          image <- self$results$plot1
+          image$setState(df_plot)
+        },
+     
+   
+# plot---    
 
    .plot = function(image, ggtheme, theme,...) {
         
         if (is.null(image$state))
           return(FALSE)
-        
+       
         res <- image$state
        
         plot<- tidySEM::plot_prob(res, bw = TRUE)
@@ -235,7 +312,9 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         TRUE
         
       },       
- 
+
+#Bar plot--- 
+
    .plot1 = function(image, ggtheme, theme,...) { 
    
      if (is.null(image$state))
@@ -243,7 +322,7 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
      
      df_plot <- image$state
      
-     
+     library(ggplot2)
      plot1<- ggplot(df_plot, aes(x = Value)) + geom_bar() + 
        facet_wrap(~time,
                   scales = "free") + theme_bw()
@@ -251,52 +330,7 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
      plot1 <- plot1+ggtheme
      print(plot1)
      TRUE
-     
-   },
-   
-   
-  .computeFIT = function() {
+   } 
 
-        vars <- self$options$vars
-        nc <- self$options$nc
-        
-        data <- self$data
-        
-        #apply FIML method---
-        #data <- jmvcore::naOmit(data)        
-        data <- as.data.frame(data)
-        
-        # Descriptives---
-        desc <- tidySEM::descriptives(data)
-        desc <- desc[, c("name", "type", "n", "missing", "unique", "mode")]
-                         
-        
-        # Model---
-        # Not possible to use classes=1: nc now.
-        set.seed(123)
-        res <- tidySEM::mx_lca(data = data, 
-                               classes = nc)
-        
-        #self$results$text$setContent(res)
-        
-        #fit
-        fit <- tidySEM::table_fit(res)
-       
-        # class size
-        cp1<- tidySEM::class_prob(res)
-        cp<- data.frame(cp1$sum.posterior)
-        
-        retlist <- list(res=res, desc=desc, fit=fit, cp=cp, cp1=cp1)
-        return(retlist)
-        
-      } 
-      
-        
-        
-        
-        
-        
-        
-        
-        )
+  )
 )
