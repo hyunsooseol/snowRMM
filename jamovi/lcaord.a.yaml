@@ -83,4 +83,11 @@ options:
             a number from 0 to 90 defining the angle of the x-axis labels, 
             where 0 degrees represents completely horizontal labels.
 
+    - name: miss
+      title: Missing Values Method
+      type: List
+      options:
+        - listwise
+        - fiml
+      default: fiml
 ...

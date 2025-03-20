@@ -20,6 +20,7 @@ items:
       clearWith:
         - vars
         - nc
+        - miss
       refs: tidySEM
 
       columns:
@@ -50,6 +51,7 @@ items:
       clearWith:
         - vars
         - nc
+        - miss
       refs: tidySEM 
 
       columns:
@@ -69,6 +71,7 @@ items:
       clearWith:
         - vars
         - nc
+        - miss
       columns:
         - name: name
           title: 'Class'
@@ -89,6 +92,7 @@ items:
       clearWith:
         - vars
         - nc
+        - miss
 
     - name: plot1
       title: 'Bar plot'
@@ -100,6 +104,7 @@ items:
         - nc
         - width1
         - height1
+        - miss
         
     - name: plot
       title: 'Response probilities'
@@ -112,5 +117,6 @@ items:
         - width
         - height
         - angle
+        - miss
    
 ...
