@@ -1,49 +1,62 @@
 
 # This file is a generated template, your changes will not be overwritten
-#' @importFrom R6 R6Class
-#' @import jmvcore
-#' @import tidySEM
-#' @importFrom tidySEM mx_growth_mixture
-#' @importFrom tidySEM mx_mixture
-#' @importFrom tidySEM table_fit
-#' @importFrom tidySEM descriptives
-#' @import ggplot2
+#' @importFrom magrittr %>% 
 #' @export
 
 lcgmClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
     "lcgmClass",
     inherit = lcgmBase,
-    private = list(
-      .htmlwidget = NULL, 
+
+    # Active bindings---
+    active = list(
       
+      res = function() {
+        if (is.null(private$.res_cache)) {
+          data <- self$data
+          if (self$options$miss == 'listwise') {
+            data <- jmvcore::naOmit(data)
+          }
+          private$.res_cache <- tidySEM::mx_growth_mixture(
+            model=self$options$model,
+            data = as.data.frame(data), 
+            classes = self$options$nc,
+            thresholds=self$options$thr
+          )
+        }
+        return(private$.res_cache)
+      },
+      
+      #--- 
+      desc = function() {
+        if (is.null(private$.desc_cache)) {
+          data <- self$data
+          desc <- tidySEM::descriptives(data)
+          private$.desc_cache <- desc[, c("name", "n", "missing", "mean", "median", "sd", "min", "max")]
+        }
+        return(private$.desc_cache)
+      } 
+    ),      
+    
+    #---------------
+    private = list(
+      
+      .htmlwidget = NULL,
+      .results_cache = NULL,
+      .res_cache = NULL,
+      .desc_cache = NULL,
+   
+#----------------------------------      
       .init = function() {
       
         private$.htmlwidget <- HTMLWidget$new()
+      
           
         if (is.null(self$data) | is.null(self$options$vars)) {
           
           self$results$instructions$setVisible(visible = TRUE)
           
         }
-       
-        # self$results$instructions$setContent(
-        #   "<html>
-        #     <head>
-        #     </head>
-        #     <body>
-        #     <div class='instructions'>
-        #     
-        #     <p>_____________________________________________________________________________________________</p>
-        #     <p>1. <b>tidySEM</b> R package is described in the <a href='https://cjvanlissa.github.io/tidySEM/articles/LCGA.html' target = '_blank'>page</a>.</p>
-        #     <p>2. Please set <b>Thresholds=TRUE</b> when analyzing ordinal data.</p>
-        #     <p>3. Feature requests and bug reports can be made on the <a href='https://github.com/hyunsooseol/snowRMM/issues'  target = '_blank'>GitHub</a>.</p>
-        #     <p>_____________________________________________________________________________________________</p>
-        #     
-        #     </div>
-        #     </body>
-        #     </html>"
-        # )
-
+ 
         self$results$instructions$setContent(
           private$.htmlwidget$generate_accordion(
             title="Instructions",
@@ -52,7 +65,6 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
               '<div style="text-align:justify;">',
               '<ul>',
               '<li><b>tidySEM</b> R package is described in the <a href="https://cjvanlissa.github.io/tidySEM/articles/lca_lcga.html" target = "_blank">page</a>.</li>',
-              '<li>The FIML method was applied to handle missing values, and the MLR estimation method was used.</li>',
               '<li>Please set <b>Thresholds=TRUE</b> when analyzing ordinal data.</li>',
               '<li>Feature requests and bug reports can be made on my <a href="https://github.com/hyunsooseol/snowRMM/issues" target="_blank">GitHub</a>.</li>',
               '</ul></div></div>'
@@ -61,9 +73,7 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             
           )
         )              
-        
-        
-                
+ 
         if(isTRUE(self$options$plot1)){
 
           width <- self$options$width1
@@ -78,34 +88,105 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           self$results$plot$setSize(width, height)
         }      
       
+        # 초기화 시 콜백 등록
+        private$.registerCallbacks()
       
       },
-      
+
+#---
+.registerCallbacks = function() {
+  
+  callbacks <- list(
+    desc = private$.populateDescTable,
+    fit = private$.populateFitTable,
+    cp = private$.populateClassSizeTable,
+    mem = private$.populateClassMemberTable
+  )
+  
+  for (name in names(callbacks)) {
+    
+    # check callback---
+    
+    if (name %in% names(self$results) && 
+        !is.null(self$results[[name]]) && 
+        "setCallback" %in% names(self$results[[name]])) {
+      self$results[[name]]$setCallback(callbacks[[name]])
+    }
+  }
+},
  #---------     
       
-   .run = function() {
+  .run = function() {
 
+    vars<- self$options$vars
           
-          if (is.null(self$options$vars) ||
-              length(self$options$vars) < 3) return()
+      if (is.null(self$options$vars) || length(self$options$vars) < 3) return()
            
-          vars <- self$options$vars
-          model <- self$options$model
-          nc <- self$options$nc
-          thr <- self$options$thr
-       
-          data <- self$data
-          #data <- na.omit(data)
-          data <- as.data.frame(data)
-          
-       #---
-        retlist <- private$.computeFIT()
-       #---
 
-          if(isTRUE(self$options$desc)){
-            
+    data <- self$data
+    if (self$options$miss == 'listwise') {
+      data <- jmvcore::naOmit(data)
+    }
+    data <- as.data.frame(data)
+    
+    
+    if (is.null(private$.results_cache)) {
+      set.seed(1234)
+      
+      # compute using active binding
+      res <- self$res  
+      desc <- self$desc  
+    
+      # Get fit table 
+      fit <- tidySEM::table_fit(res)
+      # Get parameter estimates
+      para <- tidySEM::table_results(res, columns = NULL)
+      para <- para[para$Category %in% c("Means", "Variances"), c("Category", "lhs", "est", "se", "pval", "confint", "name")]
+      
+      # class size
+      cp1<- tidySEM::class_prob(res)
+      cp<- data.frame(cp1$sum.posterior)
+    
+      # save
+      private$.results_cache <- list(
+        data=data,
+        res = res, 
+        desc = desc, 
+        fit = fit, 
+        para = para,
+        cp=cp,
+        cp1 = cp1
+      )
+    
+      # inserting results---
+      if(isTRUE(self$options$desc)) private$.populateDescTable()
+      if(isTRUE(self$options$fit)) private$.populateFitTable()
+      if(isTRUE(self$options$est)) private$.populateEST()
+      if(isTRUE(self$options$cp)) private$.populateClassSizeTable()
+      if(isTRUE(self$options$mem)) private$.populateClassMemberTable()
+
+       if(isTRUE(self$options$plot)) private$.setPlot()
+       if(isTRUE(self$options$plot1)) private$.setPlot1()
+      
+      # ----------------------
+      private$.registerCallbacks()
+      
+    }
+  },
+    
+    
+# Descriptives---  
+
+.populateDescTable = function() {
+ 
+  if(!isTRUE(self$options$desc) || is.null(private$.results_cache)) return() 
+
+  vars<- self$options$vars
+  
             table <- self$results$desc
-            desc <- retlist$desc
+            res <- private$.results_cache   
+            
+            desc <- res$desc
             
             d<- data.frame(desc)
  
@@ -120,15 +201,18 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
               row[["max"]] <- d[[8]][i]
               table$addRow(rowKey = vars[i], values = row)
             }
-                }
+                },
           
-        # model fit---
-          
-          if(isTRUE(self$options$fit)){ 
+ # model fit---
+.populateFitTable = function() {
+  
+  if(!isTRUE(self$options$fit) || is.null(private$.results_cache)) return()         
+ 
             
             table <- self$results$fit
+            res <- private$.results_cache  
             
-            fit<- retlist$fit
+            fit <- res$fit
             fit<- t(fit)
             df<- as.data.frame(fit)
             names <- dimnames(df)[[1]]
@@ -138,16 +222,19 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
               row[['value']] <- df[name,1]
               table$addRow(rowKey=name, values=row)
             }
-          }
+          },
           
-          # parameter estimates---
           
-          if(isTRUE(self$options$est)){
-            
-            table <- self$results$est
-            
-            e<- retlist$para
-            
+
+# parameter estimates---
+.populateEST = function() {
+  
+  if(!isTRUE(self$options$fit) || is.null(private$.results_cache)) return()         
+  
+             table <- self$results$est
+             res <- private$.results_cache  
+             
+            e <- res$para  
             e<- data.frame(e)
             names<- dimnames(e)[[1]]
             
@@ -164,15 +251,22 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
              
               table$addRow(rowKey=name, values=row)
             }
-          }
+          },
  
-        # class size---
         
-        if(isTRUE(self$options$cp)){ 
+# class size---
+        
+.populateClassSizeTable = function() {
+  
+  if(!isTRUE(self$options$cp) || is.null(private$.results_cache)) return()
+  
           
           table <- self$results$cp
+          nc <- self$options$nc
+          vars <- self$options$vars
           
-          d<- retlist$cp
+          res <- private$.results_cache  
+          d <- res$cp
           
           for(i in seq_along(1:nc)){
             row <- list()
@@ -184,13 +278,17 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             table$addRow(rowKey = vars[i], values = row)
           }
           
-        }
+        },
         
-        # class member--
-        if(isTRUE(self$options$mem)){
-          
-          #cp<- tidySEM::class_prob(retlist$res)
-          cp1<- retlist$cp1
+        
+# class member--
+.populateClassMemberTable = function() {
+  if(!isTRUE(self$options$mem) || is.null(private$.results_cache)) return()
+  
+           res <- private$.results_cache
+            data <- res$data    
+  
+            cp1<- res$cp1
           mem<- data.frame(cp1$individual)
           m<- mem$predicted
           
@@ -203,12 +301,17 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             self$results$mem$setRowNums(rownames(data))
           }
           
-        }
+        },
         
-        if(isTRUE(self$options$plot1)){
-          
-          # Density plot---
-          long <- reshape(data, direction = "long", 
+#plot----------   
+.setPlot1 = function() {
+  if(!isTRUE(self$options$plot1) || is.null(private$.results_cache)) return()
+     
+     res <- private$.results_cache
+     data <- res$data        
+ 
+     # Density plot---
+      long <- reshape(data, direction = "long", 
                           varying = list(names(data)), 
                           v.names = "value", 
                           idvar = "id", 
@@ -217,15 +320,18 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           #self$results$text$setContent(long)
           image <- self$results$plot1
           image$setState(long)
-        }
-        
-          if(isTRUE(self$options$plot)){
-          # Trajectory plot---
-          image <- self$results$plot
-          image$setState(retlist$res)
-          }
-
         },
+        
+.setPlot = function() {
+  if(!isTRUE(self$options$plot1) || is.null(private$.results_cache)) return()
+      
+      res <- private$.results_cache    
+      
+      # Trajectory plot---
+          image <- self$results$plot
+          image$setState(res$res)
+          },
+
 
 # Plot---
 
@@ -236,6 +342,7 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
    
    long <- image$state
    
+   library(ggplot2)
    plot1 <- ggplot(long, aes(x = value)) +
      geom_density() +
      facet_wrap(~time) + theme_bw()
@@ -246,7 +353,7 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
  
    },
    
-        .plot = function(image, ggtheme, theme,...) {
+  .plot = function(image, ggtheme, theme,...) {
           
           if (is.null(image$state))
             return(FALSE)
@@ -260,74 +367,6 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           print(plot)
           TRUE
           
-        },        
+        }
 
-        .computeFIT = function() {
-          
-          
-          # R example---
-          # data <- read.csv("empathy.csv")
-          # set.seed(1234)
-          # res<- tidySEM::mx_growth_mixture(model = "i =~ 1*ec1 + 1*ec2 + 1*ec3 +1*ec4 +1*ec5 +1*ec6
-          #                  s =~ 0*ec1 + 1*ec2 + 2*ec3 +3*ec4 +4*ec5 +5*ec6
-          #                  ec1 ~~ vec1*ec1
-          #                  ec2 ~~ vec2*ec2
-          #                  ec3 ~~ vec3*ec3
-          #                  ec4 ~~ vec4*ec4
-          #                  ec5 ~~ vec5*ec5
-          #                  ec6 ~~ vec6*ec6
-          #                   i ~~ 0*i
-          #                   s ~~ 0*s
-          #                   i ~~ 0*s
-          #                        
-          #                  # i ~~ i_var*i
-          #                  # s ~~ s_var*s
-          #                  # i ~~ s_cov*s
-          #                        ",
-          #                                  classes = 3,
-          #                                  data = data) 
-          # 
-          
-          vars <- self$options$vars
-          model <- self$options$model
-          nc <- self$options$nc
-          thr <- self$options$thr
-         
-          data <- self$data
-          #data <- jmvcore::naOmit(data)        
-          data <- as.data.frame(data)
-          
-          # Descriptives---
-          desc <- tidySEM::descriptives(data)
-          desc <- desc[, c("name","n","missing", "mean", "median", "sd", "min", "max")]
-         
-          # Model--- 
-          # Caution: Not possible to use 'classes=1:nc' using mx_mixture()
-          
-          set.seed(1234)
-          res <- tidySEM::mx_growth_mixture(model = model,
-                                            classes = nc,
-                                            thresholds=thr,
-                                            missing = "fiml",  
-                                            estimator = "MLR",  
-                                            data=data)
-          
-          #self$results$text$setContent(res)                                                                  
-         
-          # Get fit table 
-          fit <- tidySEM::table_fit(res)
-          # Get parameter estimates
-          para <- tidySEM::table_results(res, columns = NULL)
-          para <- para[para$Category %in% c("Means", "Variances"), c("Category", "lhs", "est", "se", "pval", "confint", "name")]
-           
-          # class size
-          cp1<- tidySEM::class_prob(res)
-          cp<- data.frame(cp1$sum.posterior)
-          
-        retlist <- list(res=res, fit=fit, para=para, desc=desc, cp=cp, cp1=cp1)
-        return(retlist)
-        
-        } 
-        
- )
-)
+))
