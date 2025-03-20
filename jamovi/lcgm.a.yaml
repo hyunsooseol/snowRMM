@@ -104,4 +104,11 @@ options:
       title: "X"
       default: 500   
 
+    - name: miss
+      title: Missing Values Method
+      type: List
+      options:
+        - listwise
+        - fiml
+      default: fiml
 ...

@@ -16,6 +16,8 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           if (self$options$miss == 'listwise') {
             data <- jmvcore::naOmit(data)
           }
+          private$.checkpoint()
+          
           private$.res_cache <- tidySEM::mx_growth_mixture(
             model=self$options$model,
             data = as.data.frame(data), 
@@ -132,7 +134,7 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
     
     if (is.null(private$.results_cache)) {
       set.seed(1234)
-      
+      private$.checkpoint()
       # compute using active binding
       res <- self$res  
       desc <- self$desc  
@@ -324,7 +326,8 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
 .setPlot = function() {
   if(!isTRUE(self$options$plot1) || is.null(private$.results_cache)) return()
-      
+          private$.checkpoint()
+   
       res <- private$.results_cache    
       
       # Trajectory plot---

@@ -17,6 +17,8 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           if (self$options$miss == 'listwise') {
             data <- jmvcore::naOmit(data)
           }
+          
+          private$.checkpoint()
           private$.res_cache <- tidySEM::mx_lca(
             data = as.data.frame(data), 
             classes = self$options$nc
@@ -129,7 +131,7 @@ desc = function() {
  
   if (is.null(private$.results_cache)) {
     set.seed(1234)
-    
+    private$.checkpoint()
     # compute using active binding
     res <- self$res  
     desc <- self$desc  
@@ -264,7 +266,8 @@ desc = function() {
 # Response probilities plot---
 .setResponseProbPlot = function() {
   if(!isTRUE(self$options$plot) || is.null(private$.results_cache)) return()
-            
+          
+            private$.checkpoint()  
           retlist <- private$.results_cache
           image <- self$results$plot
           image$setState(retlist$res)

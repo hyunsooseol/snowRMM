@@ -22,6 +22,7 @@ items:
         - model
         - nc
         - thr
+        - miss
       refs: tidySEM
 
       columns:
@@ -60,6 +61,7 @@ items:
         - model
         - nc
         - thr
+        - miss
       refs: tidySEM 
 
       columns:
@@ -80,6 +82,7 @@ items:
         - model
         - nc
         - thr
+        - miss
       refs: tidySEM
 
       columns:
@@ -118,7 +121,8 @@ items:
         - vars
         - model
         - nc
-        - thr 
+        - thr
+        - miss
       columns:
         - name: name
           title: 'Class'
@@ -141,6 +145,7 @@ items:
         - model
         - nc
         - thr
+        - miss
 
     - name: plot1
       title: 'Density plot'
@@ -154,6 +159,7 @@ items:
         - thr
         - width1
         - height1
+        - miss
         
     - name: plot
       title: 'Trajectory plot'
@@ -168,6 +174,7 @@ items:
         - raw
         - width
         - height
+        - miss
 
 
 
