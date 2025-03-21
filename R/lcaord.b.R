@@ -18,7 +18,7 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             data <- jmvcore::naOmit(data)
           }
           
-          private$.checkpoint()
+          #private$.checkpoint()
           
           private$.res_cache <- tidySEM::mx_lca(
             data = as.data.frame(data), 
@@ -132,7 +132,7 @@ desc = function() {
  
   if (is.null(private$.results_cache)) {
     set.seed(1234)
-    private$.checkpoint()
+    #private$.checkpoint()
     # compute using active binding
     res <- self$res  
     desc <- self$desc  
@@ -184,14 +184,14 @@ desc = function() {
           
           for(i in seq_along(vars)){
             
-            # if not rowKey, add rowkey---
-            if (!vars[i] %in% table$rowKeys) {
-              table$addRow(rowKey = vars[i])
-            }
-            
-            if (table$getCell(rowKey=vars[i],'type')$isEmpty) { 
-              
-              table$setStatus('running') 
+            # # if not rowKey, add rowkey---
+            # if (!vars[i] %in% table$rowKeys) {
+            #   table$addRow(rowKey = vars[i])
+            # }
+            # 
+            # if (table$getCell(rowKey=vars[i],'type')$isEmpty) { 
+            #   
+            #   table$setStatus('running') 
             
             row <- list()
             row[["type"]] <- d[[2]][i]
@@ -199,9 +199,9 @@ desc = function() {
             row[["missing"]] <- d[[4]][i]
             row[["unique"]] <- d[[5]][i]
             row[["mode"]] <- d[[6]][i]
-            table$setRow(rowKey = vars[i], values = row)
-            table$setStatus('complete')
-            }
+            table$addRow(rowKey = vars[i], values = row)
+            # table$setStatus('complete')
+            # }
           }
         },
         
@@ -220,20 +220,20 @@ desc = function() {
           names <- dimnames(df)[[1]]
           
           for(name in names){
-            # if not rowKey, add rowkey---
-            if (!name %in% table$rowKeys) {
-              table$addRow(rowKey = name)
-            }
-            
-            if (table$getCell(rowKey=name,'value')$isEmpty) { 
-              
-              table$setStatus('running')
+            # # if not rowKey, add rowkey---
+            # if (!name %in% table$rowKeys) {
+            #   table$addRow(rowKey = name)
+            # }
+            # 
+            # if (table$getCell(rowKey=name,'value')$isEmpty) { 
+            #   
+            #   table$setStatus('running')
             
             row <- list()
             row[['value']] <- df[name,1]
-            table$setRow(rowKey=name, values=row)
-            table$setStatus('complete')
-            }
+            table$addRow(rowKey=name, values=row)
+            # table$setStatus('complete')
+            # }
           }
         },
         
@@ -292,7 +292,7 @@ desc = function() {
 .setResponseProbPlot = function() {
   if(!isTRUE(self$options$plot) || is.null(private$.results_cache)) return()
           
-            private$.checkpoint()  
+            #private$.checkpoint()  
           retlist <- private$.results_cache
           image <- self$results$plot
           image$setState(retlist$res)
