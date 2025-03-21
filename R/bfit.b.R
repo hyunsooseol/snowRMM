@@ -1,20 +1,6 @@
 # This file is a generated template, your changes will not be overwritten
 
 #' Mixture Rasch Analysis
-#' @importFrom R6 R6Class
-#' @import jmvcore
-#' @import boot
-#' @import stats
-#' @import mixRasch
-#' @import ggplot2
-#' @importFrom mixRasch mixRasch
-#' @importFrom boot boot
-#' @importFrom boot boot.ci
-#' @importFrom stats quantile
-#' @import eRm 
-#' @importFrom eRm RM
-#' @importFrom eRm PCM
-#' @importFrom iarm boot_fit
 #' @export
 
 
@@ -39,27 +25,7 @@ bfitClass <- if (requireNamespace('jmvcore'))
           self$results$instructions$setVisible(visible = TRUE)
           
         }
-        
-        # self$results$instructions$setContent(
-        #   "<html>
-        #     <head>
-        #     </head>
-        #     <body>
-        #     <div class='instructions'>
-        #     
-        #     <h2><b>Item Fit with Confidence interval</b></h2>
-        #     <p>_____________________________________________________________________________________________</p>
-        #     <p>1. The traditional Rasch model is performed by <b>mixRasch</b> R package using Jonint Maximum Liklihood(JML).</p>
-        #     <p>2. Specify <b>'Step'(number of category-1) and 'Bootstrap N'</b> in the 'Analysis options'.</p>
-        #     <p>3. Please, be patient. The bootstrapped confidence interval is quite time-consuming.</p>
-        #     <p>4. Feature requests and bug reports can be made on my <a href='https://github.com/hyunsooseol/snowRMM/issues'  target = '_blank'>GitHub</a>.</p>
-        #     <p>_____________________________________________________________________________________________</p>
-        #     
-        #     </div>
-        #     </body>
-        #     </html>"
-        # )
-
+ 
           self$results$instructions$setContent(
             private$.htmlwidget$generate_accordion(
               title="Instructions",
@@ -78,8 +44,6 @@ bfitClass <- if (requireNamespace('jmvcore'))
             )
           )              
           
-          
-                  
         if(isTRUE(self$options$inplot)){
           width <- self$options$width
           height <- self$options$height
@@ -102,28 +66,7 @@ bfitClass <- if (requireNamespace('jmvcore'))
             self$results$instructions1$setVisible(visible = TRUE)
             
           }
-          
-          # self$results$instructions1$setContent(
-          # 
-          #   "<html>
-          #   <head>
-          #   </head>
-          #   <body>
-          #   <div class='instructions'>
-          # 
-          #   <h2><b>Item Fit with P values</b></h2>
-          #   <p>_____________________________________________________________________________________________</p>
-          #   <p>1. Specify <b>Type and Bootstrap N</b> in the Analysis options.</p>
-          #   <p>2. To use the <b>correction methods</b>, uncheck the <b>Run</b> checkbox.</p>
-          #   <p>3. A fitted Rasch model or Partial Credit Model in R package <b>eRm</b> is used to compute bootstrap fit statistics.</p>
-          #   <p>4. Feature requests and bug reports can be made on my <a href='https://github.com/hyunsooseol/snowRMM/issues'  target = '_blank'>GitHub</a>.</p>
-          #   <p>_____________________________________________________________________________________________</p>
-          #   
-          #   </div>
-          #   </body>
-          #   </html>"
-          # )
-
+ 
           self$results$instructions$setContent(
             private$.htmlwidget$generate_accordion(
               title="Instructions",
@@ -142,8 +85,6 @@ bfitClass <- if (requireNamespace('jmvcore'))
             )
           )      
           
-          
-                    
           if (self$options$outfit)
             self$results$outfit$setNote(
               "Note",
@@ -326,16 +267,24 @@ if(nco== TRUE){
         
         set.seed(1234)
         # Define bootstrapped infit and outfit statistic functions
-        boot.stat <- function(data, indices, stat) {
-          d = data[indices,]
+        # boot.stat <- function(data, indices, stat) {
+        #   d = data[indices,]
+        #   res1 <- mixRasch::mixRasch(data = d, steps = step, model = "RSM", n.c = 1)
+        #   stat.raw <- res1$item.par$in.out[, stat]
+        #   return(stat.raw)
+        # }
+        
+        # Using memoise package---
+        boot_stat_memoised <- memoise::memoise(function(data, indices, stat) {
+          d <- data[indices,]
           res1 <- mixRasch::mixRasch(data = d, steps = step, model = "RSM", n.c = 1)
           stat.raw <- res1$item.par$in.out[, stat]
           return(stat.raw)
-        }
+        })
         
         # Perform bootstrapping for infit and outfit
-        boot.in <- boot::boot(data = data, statistic = boot.stat, stat = 1, R = bn)
-        boot.out <- boot::boot(data = data, statistic = boot.stat, stat = 3, R = bn)
+        boot.in <- boot::boot(data = data, statistic = boot_stat_memoised, stat = 1, R = bn)
+        boot.out <- boot::boot(data = data, statistic = boot_stat_memoised, stat = 3, R = bn)
         
         # Extract original infit and outfit statistics and confidence intervals
         infit.raw <- boot.in$t0
@@ -347,185 +296,7 @@ if(nco== TRUE){
         outfit <- boot.out$t
         outfitlow <- apply(outfit, 2, quantile, prob = 0.025)
         outfithigh <- apply(outfit, 2, quantile, prob = 0.975)
-        
-        
-        
-        # # Computing boot infit -------------
-        # 
-        # # Define bootstrapped infit statistic function
-        # boot.infit <- function(data, indices) {
-        #   d = data[indices,]
-        #   res1 <- mixRasch::mixRasch(data = d, steps = step, model = "RSM", n.c = 1)
-        #   infit <- res1$item.par$in.out[, 1]
-        #   return(infit)
-        # }
-        # 
-        # # Perform bootstrapping for infit
-        # boot.in <- boot::boot(data = data, statistic = boot.infit, R = bn)
-        # 
-        # # Extract original infit statistic and confidence intervals
-        # infit.raw <- boot.in$t0
-        # infit <- boot.in$t
-        # infitlow <- apply(infit, 2, quantile, prob = 0.025)
-        # infithigh <- apply(infit, 2, quantile, prob = 0.975)
-        # 
-        # # Define bootstrapped outfit statistic function
-        # boot.outfit <- function(data, indices) {
-        #   d = data[indices,]
-        #   res1 <- mixRasch::mixRasch(data = d, steps = step, model = "RSM", n.c = 1)
-        #   outfit <- res1$item.par$in.out[, 3]
-        #   return(outfit)
-        # }
-        # 
-        # # Perform bootstrapping for outfit
-        # boot.out <- boot::boot(data = data, statistic = boot.outfit, R = bn)
-        # 
-        # # Extract original outfit statistic and confidence intervals
-        # outfit.raw <- boot.out$t0
-        # outfit <- boot.out$t
-        # outfitlow <- apply(outfit, 2, quantile, prob = 0.025)
-        # outfithigh <- apply(outfit, 2, quantile, prob = 0.975)
-        # 
-        
-        
-        
-        #      #####################
-        #      boot.infit <- function(data, indices) {
-        #         d = data[indices,]
-        # 
-        #         # estimate Rasch model--------
-        #         res1 <-
-        #            mixRasch::mixRasch(
-        #               data = d,
-        #               steps = step,
-        #               model = "RSM",
-        #               n.c = 1
-        #            )
-        # 
-        # 
-        #         # item infit--------
-        #         infit <- res1$item.par$in.out[, 1]
-        # 
-        #         return(infit)
-        # 
-        #      }
-        # 
-        #      # bootstrap for infit-----------------------
-        # 
-        #      boot.in <-
-        #         boot::boot(data = data,
-        #                    statistic = boot.infit,
-        #                    R = bn)
-        # 
-        # 
-        #      # original statistics for infit--------
-        # 
-        #      infit.raw <- boot.in$t0
-        # 
-        # #   self$results$text1$setContent(infit.raw)
-        # 
-        #      # confidence interval for infit---------
-        # 
-        #      infit <- boot.in$t
-        # 
-        # 
-        #      infitlow = NA
-        # 
-        #      for (i in 1:ncol(data)) {
-        #         infitlow[i] <- stats::quantile(infit[, i], .025)
-        # 
-        # 
-        #      }
-        # 
-        # 
-        #      #infit lower----------
-        # 
-        #      infitlow <- infitlow
-        # 
-        # 
-        #      #infit high--------------------
-        # 
-        #      infithigh = NA
-        # 
-        #      for (i in 1:ncol(data)) {
-        #         infithigh[i] <- stats::quantile(infit[, i], .975)
-        # 
-        # 
-        #      }
-        # 
-        #      infithigh <- infithigh
-        # 
-        # 
-        #      
-        #      ############ computing boot outfit------
-        #      
-        #      boot.outfit <- function(data, indices) {
-        #         
-        #         d = data[indices,]
-        #         
-        #         # estimate Rasch model
-        #         res1 <-
-        #            mixRasch::mixRasch(
-        #               data = d,
-        #               steps = step,
-        #               model = "RSM",
-        #               n.c = 1
-        #            )
-        #         
-        #         # item outfit-------
-        #         
-        #         outfit <- res1$item.par$in.out[, 3]
-        #         
-        #         return(outfit)
-        #      }
-        #      
-        #      
-        #      # bootstrap outfit-------------------------
-        #      
-        #      boot.out <-
-        #         boot::boot(data = data,
-        #                    statistic = boot.outfit,
-        #                    R = bn)
-        #      #-----------------------------------
-        #      
-        #      
-        #      # original statistics for outfit--------
-        #      
-        #      outfit.raw <- boot.out$t0
-        #      
-        #      
-        #      # confidence interval for outfit----------
-        #      
-        #      
-        #      outfit <- boot.out$t
-        #      
-        #      outfitlow = NA
-        #      
-        #      for (i in 1:ncol(data)) {
-        #         outfitlow[i] <- stats::quantile(outfit[, i], .025)
-        #         
-        #         
-        #      }
-        #      
-        #      # outfit low------
-        #      
-        #      outfitlow <- outfitlow
-        #      
-        #      
-        #      #outfit high------------
-        #      
-        #      outfithigh = NA
-        #      
-        #      for (i in 1:ncol(data)) {
-        #         outfithigh[i] <- stats::quantile(outfit[, i], .975)
-        #         
-        #         
-        #      }
-        #      
-        #      outfithigh <- outfithigh
-        #      
-        
-        
+
         results <-
           list(
             'infit'=infit.raw,
@@ -535,10 +306,7 @@ if(nco== TRUE){
             'outfitlow' = outfitlow,
             'outfithigh' = outfithigh
           )
-        
-        
       },
-      
       
       # Populate boot table------------
       .populateInTable = function(results) {
