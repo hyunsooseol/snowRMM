@@ -1,13 +1,6 @@
 
 # This file is a generated template, your changes will not be overwritten
 #' Mixture Rasch Analysis
-#' @importFrom R6 R6Class
-#' @import jmvcore
-#' @import poLCA
-#' @importFrom poLCA poLCA
-#' @importFrom reshape2 melt
-#' @import MASS
-#' @import scatterplot3d
 #' @import ggplot2
 #' @export
 
@@ -16,35 +9,20 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
     "lcaClass",
     inherit = lcaBase,
     private = list(
+
+      .allCache = NULL, 
       .htmlwidget = NULL,
       
       .init = function() {
         
         private$.htmlwidget <- HTMLWidget$new()
+        private$.allCache <- NULL
         
         if (is.null(self$data) | is.null(self$options$vars)) {
           self$results$instructions$setVisible(visible = TRUE)
           
         }
         
-        # self$results$instructions$setContent(
-        #   "<html>
-        #     <head>
-        #     </head>
-        #     <body>
-        #     <div class='instructions'>
-        #    
-        #     <p>_____________________________________________________________________________________________</p>
-        #     <p>1. Latent Class Analysis based on <b>poLCA(Linzer & Lewis, 2022)</b> R package.
-        #     <p>2. Variables must contain integer values, and must be coded with consecutive values from <b>1</b> to the maximum number.</p>
-        #     <p>3. <b> Membership table</b> will be shown in the datasheet.</p>
-        #     <p>4. Feature requests and bug reports can be made on my <a href='https://github.com/hyunsooseol/snowRMM/issues'  target = '_blank'>GitHub</a>.</p>
-        #     <p>_____________________________________________________________________________________________</p>
-        #     
-        #     </div>
-        #     </body>
-        #     </html>"
-        # )
         self$results$instructions$setContent(
           private$.htmlwidget$generate_accordion(
             title="Instructions",
@@ -63,7 +41,6 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           )
         )         
         
-                
         if (self$options$fit)
           self$results$mf$fit$setNote(
             "Note",
@@ -118,14 +95,16 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         if (is.null(self$options$vars) ||
             length(self$options$vars) < 2)
-          
-          ready <- FALSE
+           ready <- FALSE
         
         if (ready) {
           
-          data <- private$.cleanData()
+          if (is.null(private$.allCache)) {
+            data <- private$.cleanData()
+            private$.allCache <- private$.compute(data)
+          }
           
-          results <- private$.compute(data)               
+          results <- private$.allCache              
           
           # populate Model comparison-----------
           
@@ -166,9 +145,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         }
       },
       
-      
-      
-      .compute = function(data) {
+       .compute = function(data) {
         
        
         # library(poLCA)
@@ -201,9 +178,6 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         ################ Model Estimates############################ 
         set.seed(1126)
-        
-        library(poLCA) 
-       
         res<- poLCA::poLCA(formula,
                            data,
                            nclass=nc,
@@ -296,8 +270,6 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         out <- out
         
-       
-         
         # Elbow plot-------------
         
         out1 <- out[,c(1:5)]
@@ -319,7 +291,6 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         image <- self$results$plot3
         image$setState(elbow )
-        
         
         
         # Caculating Chi and Gsp p values----------
