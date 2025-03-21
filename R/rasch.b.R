@@ -1,30 +1,7 @@
 
 # This file is a generated template, your changes will not be overwritten
 
-#' Mixture Rasch Analysis
-#' @importFrom R6 R6Class
-#' @import jmvcore
-#' @importFrom mixRasch mixRasch
-#' @importFrom mixRasch getEstDetails
-#' @importFrom ShinyItemAnalysis ggWrightMap
-#' @importFrom eRm plotICC
-#' @importFrom eRm RM
-#' @importFrom eRm RSM
-#' @importFrom eRm thresholds
-#' @importFrom eRm PCM
-#' @importFrom eRm plotPImap
-#' @importFrom eRm LRtest
-#' @importFrom  eRm Waldtest
-#' @importFrom  eRm MLoef
-#' @importFrom  eRm plotGOF
-#' @importFrom  eRm person.parameter
-#' @importFrom  eRm SepRel
-#' @importFrom  pairwise pair
-#' @importFrom  pairwise pers
-#' @importFrom  pairwise rfa
-#' @importFrom pairwise q3
-#' @importFrom eRm NPtest
-#' @import RColorBrewer
+
 #' @import ggplot2
 #' @export
 
@@ -34,39 +11,20 @@ raschClass <- if (requireNamespace('jmvcore'))
     "raschClass",
     inherit = raschBase,
     private = list(
+      
+      .allCache = NULL, 
       .htmlwidget = NULL, 
       
       .init = function() {
         
         private$.htmlwidget <- HTMLWidget$new() 
+        private$.allCache <- NULL
         
         if (is.null(self$data) | is.null(self$options$vars)) {
           self$results$instructions$setVisible(visible = TRUE)
           
         }
-        
-        # self$results$instructions$setContent(
-        #   "<html>
-        #     <head>
-        #     </head>
-        #     <body>
-        #     <div class='instructions'>
-        #     
-        #     <p>_____________________________________________________________________________________________</p>
-        #     <p>1. The <b>mixRasch</b> R package was used for the Rasch model using joint maximum likelihood estimation(JMLE).</P>
-        #     <p>2. Specify </b> the number of <b>Step</b> and model <b>Type</b> in the analysis option.</p>
-        #     <p>3. Step is defined as number of <b>category-1</b>. </p>
-        #     <p>4. The minimum and maximum values of a category must be the same across all items for <b>rating sclaes</b> with <b>eRm</b> R package.</p>
-        #     <p>5. <b>Person Analysis</b> will be displayed in the datasheet.</p>
-        #     <p>6. The <b>eRm</b> R package was used for the person-item map for PCM.</p>
-        #     <p>7. Feature requests and bug reports can be made on my <a href='https://github.com/hyunsooseol/snowRMM/issues'  target = '_blank'>GitHub</a>.</p>
-        #     <p>_____________________________________________________________________________________________</p>
-        #     
-        #     </div>
-        #     </body>
-        #     </html>"
-        # )
-        
+ 
         self$results$instructions$setContent(
           private$.htmlwidget$generate_accordion(
             title="Instructions",
@@ -200,12 +158,7 @@ raschClass <- if (requireNamespace('jmvcore'))
           
           self$results$plot9$setSize(width, height)
         }
-        
-        
-        # if (length(self$options$vars) <= 1)
-        #   self$setStatus('complete')
-        
-        
+
       },
 
       .run = function() {
@@ -238,11 +191,15 @@ raschClass <- if (requireNamespace('jmvcore'))
           ready <- FALSE
         
         if (ready) {
-          data <- private$.cleanData()
-          
-          results <- private$.compute(data)
           
           
+          if (is.null(private$.allCache)) {
+            data <- private$.cleanData()
+            private$.allCache <- private$.compute(data)
+          }
+          
+          results <- private$.allCache   
+
           #  populate Model information table-----
           
           private$.populateModelTable(results)
@@ -294,37 +251,11 @@ raschClass <- if (requireNamespace('jmvcore'))
         step <- self$options$step
         type <- self$options$type
      
-        # Cross-plot with 95% CIs---
-        
-        # if(isTRUE(self$options$plot9)){
-        #   
-        #   mea1 <- self$options$mea1
-        #   mea2 <- self$options$mea2
-        #   
-        #   dat <- data.frame(a = mea1, b = mea2)
-        #   
-        #   # difference from diag.
-        #   dat$diff <- dat$b - dat$a
-        #   
-        #   # mean and 95%
-        #   mean_diff <- mean(dat$diff)
-        #   sem_diff <- sd(dat$diff) / sqrt(length(dat$diff))
-        #   ci_diff <- qt(0.975, df = length(dat$diff) - 1) * sem_diff
-        #   
-        #   # upper and lower bound
-        #   dat$upper_bound <- dat$a + (mean_diff + ci_diff)
-        #   dat$lower_bound <- dat$a + (mean_diff - ci_diff)
-        #   
-        #   image <- self$results$plot9
-        #   
-        #   state <- list(dat$a, dat$b, dat$upper_bound, dat$lower_bound)
-        #   image$setState(state)
-        #   
-        # }
-        # 
-     # compute results------
+      # compute results------
       set.seed(1234)
-        res <-
+      private$.checkpoint()
+      
+      res <-
           mixRasch::mixRasch(
             data = data,
             steps = step,
