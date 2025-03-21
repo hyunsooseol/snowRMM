@@ -2,21 +2,6 @@
 # This file is a generated template, your changes will not be overwritten
 
 #' Mixture Rasch Analysis
-#' @importFrom R6 R6Class
-#' @import jmvcore
-#' @import mixRasch
-#' @importFrom mixRasch mixRasch
-#' @importFrom mixRasch getEstDetails
-#' @import mixRaschTools
-#' @import RColorBrewer
-#' @importFrom mixRaschTools avg.theta
-#' @importFrom ggplot2 geom_line
-#' @importFrom ggplot2 geom_point
-#' @importFrom ggplot2 labs
-#' @importFrom ggplot2 aes
-#' @importFrom WrightMap wrightMap
-#' @importFrom tidyr gather
-#' @importFrom reshape2 melt
 #' @export
 
 
@@ -24,10 +9,8 @@ mixtureClass <- if (requireNamespace('jmvcore'))
   R6::R6Class(
     "mixtureClass",
     inherit = mixtureBase,
-    
-   
     private = list(
- 
+      .allCache = NULL,  
       .htmlwidget = NULL, 
       
       #####################
@@ -35,32 +18,13 @@ mixtureClass <- if (requireNamespace('jmvcore'))
            .init = function() {
       
              private$.htmlwidget <- HTMLWidget$new() 
+             private$.allCache <- NULL
              
           if (is.null(self$data) | is.null(self$options$vars)) {
           self$results$instructions$setVisible(visible = TRUE)
           
         }
         
-        # self$results$instructions$setContent(
-        #   "<html>
-        #     <head>
-        #     </head>
-        #     <body>
-        #     <div class='instructions'>
-        #    
-        #     <p>_____________________________________________________________________________________________</p>
-        #     <p>1. Specify the number of <b>'Class', Step', and 'Type'</b> in the 'Analysis option'.</p>
-        #     <p>2. Highlight the variables and click the arrow to move it across into the 'Variables' box.</p>
-        #     <p>3. <b> Person membership</b> table will be displayed in the datasheet.</p>
-        #     <p>4. Rasch mixture model is estimated by <b>mixRasch</b> R package.</p>
-        #     <p>5. Feature requests and bug reports can be made on my <a href='https://github.com/hyunsooseol/snowRMM/issues'  target = '_blank'>GitHub</a>.</p>
-        #     <p>_____________________________________________________________________________________________</p>
-        #     
-        #     </div>
-        #     </body>
-        #     </html>"
-        # )
-       
              self$results$instructions$setContent(
                private$.htmlwidget$generate_accordion(
                  title="Instructions",
@@ -120,10 +84,13 @@ mixtureClass <- if (requireNamespace('jmvcore'))
           ready <- FALSE
         
         if (ready) {
-          data <- private$.cleanData()
-          
-          results <- private$.compute(data)
-          
+ 
+          if (is.null(private$.allCache)) {
+            data <- private$.cleanData()
+            private$.allCache <- private$.compute(data)
+          }
+          results <- private$.allCache
+
           #  populate Model information table-----
           
           private$.populateModelTable(results)
@@ -141,21 +108,6 @@ mixtureClass <- if (requireNamespace('jmvcore'))
           # populate Average theta table----
           private$.populateAverageTable(results)
           
-         # populate Person analysis table-------
-          # private$.populatePmeasureOutputs(results)
-          # private$.populatePseOutputs(results)
-          # private$.populatePinfitOutputs(results)
-          # private$.populatePoutfitOutputs(results)
-          # 
-          # Person membership--------------------
-         # private$.populateMemberOutputs(results)
-          
-          
-          # prepare plot-----
-         # private$.prepareWrightmapPlot(data)
-          
-        
-          
         }
       },
       
@@ -163,21 +115,15 @@ mixtureClass <- if (requireNamespace('jmvcore'))
       
       .compute = function(data) {
         
-        # get variables------
-        
-        # data <- self$data
-        
         vars <- self$options$vars
-        
         nc <- self$options$nc
-        
         step <- self$options$step
-        
         type <- self$options$type
         
         # computing mixRasch-----------
         
         set.seed(1234)
+        private$.checkpoint()        
         
         res1 <-
           mixRasch::mixRasch(
@@ -801,166 +747,7 @@ mixtureClass <- if (requireNamespace('jmvcore'))
         
       },
       
-      ################################################## 
-     # .populateMemberOutputs= function(results) {
-     # 
-     #   
-     #   mem <- results$mem
-     #   mem<- as.factor(mem)
-     #   
-     #   if (self$options$pmember
-     #       && self$results$pmember$isNotFilled()) {
-     # 
-     #    self$results$pmember$setValues(mem)
-     # 
-     #   self$results$pmember$setRowNums(rownames(data))
-     # 
-     #   }
-     # 
-     # },
-
-     # Person measure across class----------
-     
-     # .populatePmeasureOutputs= function(results) {
-     # 
-     #  
-     #   pmeasure <- results$pmeasure
-     # 
-     # 
-     #   if (self$options$pmeasure
-     #       && self$results$pmeasure$isNotFilled()) {
-     # 
-     #     keys <- 1:self$options$nc
-     #     measureTypes <- rep("continuous", self$options$nc)
-     # 
-     #     titles <- paste("Measure_Class", keys)
-     #     descriptions <- paste("Measure_Class", keys)
-     # 
-     #     self$results$pmeasure$set(
-     #       keys=keys,
-     #       titles=titles,
-     #       descriptions=descriptions,
-     #       measureTypes=measureTypes
-     #     )
-     # 
-     #     self$results$pmeasure$setRowNums(rownames(data))
-     # 
-     #     for (i in 1:self$options$nc) {
-     #       scores <- as.numeric(pmeasure[, i])
-     #       self$results$pmeasure$setValues(index=i, scores)
-     #     }
-     # 
-     # 
-     #   }
-     # },
-     # 
-     # # Person error across class----------
-     # 
-     # .populatePseOutputs= function(results) {
-     #   
-     #   
-     #   pse <- results$pse
-     #   
-     #   
-     #   if (self$options$pse
-     #       && self$results$pse$isNotFilled()) {
-     #     
-     #     keys <- 1:self$options$nc
-     #     measureTypes <- rep("continuous", self$options$nc)
-     #     
-     #     titles <- paste("SE_Class", keys)
-     #     descriptions <- paste("SE_Class", keys)
-     #     
-     #     self$results$pse$set(
-     #       keys=keys,
-     #       titles=titles,
-     #       descriptions=descriptions,
-     #       measureTypes=measureTypes
-     #     )
-     #     
-     #     self$results$pse$setRowNums(rownames(data))
-     #     
-     #     for (i in 1:self$options$nc) {
-     #       scores <- as.numeric(pse[, i])
-     #       self$results$pse$setValues(index=i, scores)
-     #     }
-     #     
-     #     
-     #   }
-     # },
-     # 
-     # # Person fit analysis across class---------
-     # 
-     # .populatePinfitOutputs= function(results) {
-     #   
-     #   
-     #   pinfit <- results$pinfit
-     #   
-     #   
-     #   if (self$options$pinfit
-     #       && self$results$pinfit$isNotFilled()) {
-     #     
-     #     keys <- 1:self$options$nc
-     #     measureTypes <- rep("continuous", self$options$nc)
-     #     
-     #     titles <- paste("Infit_Class", keys)
-     #     descriptions <- paste("Infit_Class", keys)
-     #     
-     #     self$results$pinfit$set(
-     #       keys=keys,
-     #       titles=titles,
-     #       descriptions=descriptions,
-     #       measureTypes=measureTypes
-     #     )
-     #     
-     #     self$results$pinfit$setRowNums(rownames(data))
-     #     
-     #     for (i in 1:self$options$nc) {
-     #       scores <- as.numeric(pinfit[, i])
-     #       self$results$pinfit$setValues(index=i, scores)
-     #     }
-     #     
-     #     
-     #   }
-     # },
-     # 
-     # #Outfit----------
-     # 
-     # .populatePoutfitOutputs= function(results) {
-     #   
-     #   
-     #   poutfit <- results$poutfit
-     #   
-     #   
-     #   if (self$options$poutfit
-     #       && self$results$poutfit$isNotFilled()) {
-     #     
-     #     keys <- 1:self$options$nc
-     #     measureTypes <- rep("continuous", self$options$nc)
-     #     
-     #     titles <- paste("Outfit_Class", keys)
-     #     descriptions <- paste("Outfit_Class", keys)
-     #     
-     #     self$results$poutfit$set(
-     #       keys=keys,
-     #       titles=titles,
-     #       descriptions=descriptions,
-     #       measureTypes=measureTypes
-     #     )
-     #     
-     #     self$results$poutfit$setRowNums(rownames(data))
-     #     
-     #     for (i in 1:self$options$nc) {
-     #       scores <- as.numeric(poutfit[, i])
-     #       self$results$poutfit$setValues(index=i, scores)
-     #     }
-     #     
-     #     
-     #   }
-     # },
-     # 
-     
-   #  Item plot--------------
+    #  Item plot--------------
       
       .itemPlot = function(image, ggtheme, theme, ...) {
         
