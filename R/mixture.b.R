@@ -123,7 +123,7 @@ mixtureClass <- if (requireNamespace('jmvcore'))
         # computing mixRasch-----------
         
         set.seed(1234)
-        private$.checkpoint()        
+        #private$.checkpoint()        
         
         res1 <-
           mixRasch::mixRasch(

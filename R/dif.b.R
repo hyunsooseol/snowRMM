@@ -3,12 +3,6 @@
 
 # Differential Item Functioning by eRm package
 
-#' @importFrom R6 R6Class
-#' @import jmvcore
-#' @import eRm
-#' @importFrom eRm RM
-#' @importFrom eRm Waldtest
-#' @importFrom eRm RSM
 #' @export
 
 

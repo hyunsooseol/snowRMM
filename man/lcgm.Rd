@@ -20,7 +20,8 @@ lcgm(
   width = 500,
   height = 500,
   width1 = 500,
-  height1 = 500
+  height1 = 500,
+  miss = "fiml"
 )
 }
 \arguments{
@@ -55,6 +56,8 @@ lcgm(
 \item{width1}{.}
 
 \item{height1}{.}
+
+\item{miss}{.}
 }
 \value{
 A results object containing:

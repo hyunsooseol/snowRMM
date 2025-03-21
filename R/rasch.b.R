@@ -253,7 +253,7 @@ raschClass <- if (requireNamespace('jmvcore'))
      
       # compute results------
       set.seed(1234)
-      private$.checkpoint()
+      #private$.checkpoint()
       
       res <-
           mixRasch::mixRasch(
