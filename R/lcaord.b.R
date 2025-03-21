@@ -19,6 +19,7 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           }
           
           private$.checkpoint()
+          
           private$.res_cache <- tidySEM::mx_lca(
             data = as.data.frame(data), 
             classes = self$options$nc
@@ -182,13 +183,25 @@ desc = function() {
           d<- data.frame(desc)
           
           for(i in seq_along(vars)){
+            
+            # if not rowKey, add rowkey---
+            if (!vars[i] %in% table$rowKeys) {
+              table$addRow(rowKey = vars[i])
+            }
+            
+            if (table$getCell(rowKey=vars[i],'type')$isEmpty) { 
+              
+              table$setStatus('running') 
+            
             row <- list()
             row[["type"]] <- d[[2]][i]
             row[["n"]] <- d[[3]][i]
             row[["missing"]] <- d[[4]][i]
             row[["unique"]] <- d[[5]][i]
             row[["mode"]] <- d[[6]][i]
-            table$addRow(rowKey = vars[i], values = row)
+            table$setRow(rowKey = vars[i], values = row)
+            table$setStatus('complete')
+            }
           }
         },
         
@@ -207,9 +220,20 @@ desc = function() {
           names <- dimnames(df)[[1]]
           
           for(name in names){
+            # if not rowKey, add rowkey---
+            if (!name %in% table$rowKeys) {
+              table$addRow(rowKey = name)
+            }
+            
+            if (table$getCell(rowKey=name,'value')$isEmpty) { 
+              
+              table$setStatus('running')
+            
             row <- list()
             row[['value']] <- df[name,1]
-            table$addRow(rowKey=name, values=row)
+            table$setRow(rowKey=name, values=row)
+            table$setStatus('complete')
+            }
           }
         },
         
@@ -227,6 +251,7 @@ desc = function() {
        d<- retlist$cp
         
           for(i in seq_along(1:nc)){
+           
             row <- list()
             
             row[["name"]] <- d[[1]][i]
@@ -234,7 +259,7 @@ desc = function() {
             row[["prop"]] <- d[[3]][i]
             
             table$addRow(rowKey = vars[i], values = row)
-          }
+            }
         
         },
         
