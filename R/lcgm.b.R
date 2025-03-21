@@ -90,7 +90,7 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           self$results$plot$setSize(width, height)
         }      
       
-        # 초기화 시 콜백 등록
+        # 
         private$.registerCallbacks()
       
       },
@@ -193,7 +193,17 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             d<- data.frame(desc)
  
            for(i in seq_along(vars)){
-              row <- list()
+              
+             #if not rowKey, add rowkey---
+             if (!vars[i] %in% table$rowKeys) {
+               table$addRow(rowKey = vars[i])
+             }
+
+             if (table$getCell(rowKey=vars[i],'n')$isEmpty) {
+
+               table$setStatus('running')
+             
+             row <- list()
               row[["n"]] <- d[[2]][i]
               row[["missing"]] <- d[[3]][i]
               row[["mean"]] <- d[[4]][i]
@@ -201,7 +211,9 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
               row[["sd"]] <- d[[6]][i]
               row[["min"]] <- d[[7]][i]
               row[["max"]] <- d[[8]][i]
-              table$addRow(rowKey = vars[i], values = row)
+              table$setRow(rowKey = vars[i], values = row)
+              table$setStatus('complete')
+             }
             }
                 },
           
@@ -217,12 +229,24 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             fit <- res$fit
             fit<- t(fit)
             df<- as.data.frame(fit)
-            names <- dimnames(df)[[1]]
+            #names <- dimnames(df)[[1]]
+            names <- rownames(df) 
             
             for(name in names){
+              # if not rowKey, add rowkey---
+              if (!name %in% table$rowKeys) {
+                table$addRow(rowKey = name)
+              }
+              if (table$getCell(rowKey=name,'value')$isEmpty) { 
+                
+                table$setStatus('running')
+              
               row <- list()
               row[['value']] <- df[name,1]
-              table$addRow(rowKey=name, values=row)
+             
+              table$setRow(rowKey=name, values=row)
+              table$setStatus('complete')
+              }
             }
           },
           
@@ -241,8 +265,18 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             names<- dimnames(e)[[1]]
             
             for (name in names) {
-              row <- list()
               
+              # if not rowKey, add rowkey---
+              if (!name %in% table$rowKeys) {
+                table$addRow(rowKey = name)
+              }
+              
+              if (table$getCell(rowKey=name,'cat')$isEmpty) { 
+                
+                table$setStatus('running')
+              
+              
+              row <- list()
               row[['cat']] <- e[name, 1]
               row[['lhs']] <- e[name, 2]
               row[['est']] <- e[name, 3]
@@ -251,7 +285,9 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
               row[['ci']] <- e[name, 6]
               row[['na']] <- e[name, 7]
              
-              table$addRow(rowKey=name, values=row)
+              table$setRow(rowKey=name, values=row)
+              table$setStatus('complete')
+              }
             }
           },
  
