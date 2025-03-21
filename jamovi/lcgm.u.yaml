@@ -75,7 +75,7 @@ children:
         stretchFactor: 1
         children:
           - type: Label
-            label: Missing Values Method
+            label: 'Missing Values Method'
             children:
               - type: RadioButton
                 name: miss_fiml
@@ -101,11 +101,11 @@ children:
                     name: est
                   - type: CheckBox
                     name: cp
-              - type: Label
-                label: Save
-                children:
-                  - type: Output
-                    name: mem
+          - type: Label
+            label: Save
+            children:
+              - type: Output
+                name: mem
       - type: LayoutBox
         stretchFactor: 1
         margin: large
