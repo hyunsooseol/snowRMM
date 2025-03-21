@@ -1,19 +1,5 @@
 
-# This file is a generated template, your changes will not be overwritten
-# This file is a generated template, your changes will not be overwritten
-#' Mixture Rasch Analysis
-#' @importFrom R6 R6Class
-#' @import jmvcore
-#' @import tidyLPA
 #' @import ggplot2
-#' @importFrom tidyLPA estimate_profiles
-#' @importFrom tidyLPA get_fit
-#' @importFrom tidyLPA get_estimates
-#' @importFrom tidyLPA plot_profiles
-#' @importFrom tidyLPA plot_bivariate
-#' @importFrom tidyLPA get_data
-#' @importFrom reshape2 melt
-#' @importFrom tidyLPA plot_density
 #' @export
 
 
@@ -21,10 +7,11 @@ lpaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
     "lpaClass",
     inherit = lpaBase,
     private = list(
-
-      .htmlwidget = NULL, 
       
-        .init = function() {
+      .allCache = NULL,
+      .htmlwidget = NULL, 
+
+      .init = function() {
             
           private$.htmlwidget <- HTMLWidget$new()  
           
@@ -33,24 +20,6 @@ lpaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 self$results$instructions$setVisible(visible = TRUE)
                 
             }
-            
-            # self$results$instructions$setContent(
-            #     "<html>
-            # <head>
-            # </head>
-            # <body>
-            # <div class='instructions'>
-            # 
-            # <p>_____________________________________________________________________________________________</p>
-            # <p>1. <b>tidyLPA</b> R package is described in the <a href='https://cran.r-project.org/web/packages/tidyLPA/vignettes/Introduction_to_tidyLPA.html' target = '_blank'>page</a>.</p>
-            # <p>2. Four models(1,2,3,6) are specified using <b>mclust</b> R package.</p>
-            # <p>3. Feature requests and bug reports can be made on the <a href='https://github.com/hyunsooseol/snowRMM/issues'  target = '_blank'>GitHub</a>.</p>
-            # <p>_____________________________________________________________________________________________</p>
-            # 
-            # </div>
-            # </body>
-            # </html>"
-            # )
             
           self$results$instructions$setContent(
             private$.htmlwidget$generate_accordion(
@@ -69,7 +38,7 @@ lpaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             )
           )       
           
-            if(isTRUE(self$options$plot)){
+           if(isTRUE(self$options$plot)){
 
               width <- self$options$width
               height <- self$options$height
@@ -78,38 +47,38 @@ lpaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             }
 
             if(isTRUE(self$options$plot1)){
-              
+
               width <- self$options$width1
               height <- self$options$height1
-              
+
               self$results$plot1$setSize(width, height)
-            }  
-            
+            }
+
             if(isTRUE(self$options$plot3)){
-              
+
               width <- self$options$width2
               height <- self$options$height2
-              
+
               self$results$plot3$setSize(width, height)
-            }  
-            
+            }
+
             if(isTRUE(self$options$plot2)){
-              
+
               width <- self$options$width3
               height <- self$options$height3
-              
+
               self$results$plot2$setSize(width, height)
-            }  
-             
+            }
+
             if(isTRUE(self$options$plot4)){
-              
+
               width <- self$options$width4
               height <- self$options$height4
-              
+
               self$results$plot4$setSize(width, height)
-            }  
-            
-            
+            }
+
+
         },
         
         
@@ -117,144 +86,114 @@ lpaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 .run = function() {
             
     if (length(self$options$vars)<2) return()
-    
-all <- private$.computeRES()
-
+   
+  if (is.null(private$.allCache)) {
+    private$.allCache <- private$.computeRES()
+    }
+  
+  all <- private$.allCache
+ 
 #Best model fit---
 
 if(isTRUE(self$options$overall)){
-  
+ 
   table <- self$results$overall
   f<- all$bestfit
   
   names <- dimnames(f)[[1]]
-
+  
+ 
   for(name in names){
-    row <- list()
     
-    row[['model']] <- f[name, 1]
-    row[['classes']] <- f[name, 2]
-    row[['log']] <- f[name, 3]
-    row[['aic']] <- f[name, 4]
-    row[['awe']] <- f[name, 5]
-    row[['bic']] <- f[name, 6]
-    row[['caic']] <- f[name, 7]
-    row[['clc']] <- f[name, 8]
-    row[['kic']] <- f[name, 9]
-    row[['sabic']] <- f[name, 10]
-    row[['icl']] <- f[name, 11]
-    row[['entropy']] <- f[name, 12]
+    # if not rowKey, add rowkey---
+    if (!name %in% table$rowKeys) {
+      table$addRow(rowKey = name)
+    }
+  
+    if (table$getCell(rowKey=name,'model')$isEmpty) { 
     
-    table$addRow(rowKey=name, values=row)
-  }  
-  }
-
+      table$setStatus('running')
+      #private$.checkpoint()
+    
+      row <- list()
+     
+        row[['model']] <- f[name, 1]
+        row[['classes']] <- f[name, 2]
+        row[['log']] <- f[name, 3]
+        row[['aic']] <- f[name, 4]
+        row[['awe']] <- f[name, 5]
+        row[['bic']] <- f[name, 6]
+        row[['caic']] <- f[name, 7]
+        row[['clc']] <- f[name, 8]
+        row[['kic']] <- f[name, 9]
+        row[['sabic']] <- f[name, 10]
+        row[['icl']] <- f[name, 11]
+        row[['entropy']] <- f[name, 12]
+      
+     # change setrow---
+      table$setRow(rowKey=name, values=row)
+      table$setStatus('complete')
+    }}}
+      
 # Fit measres----------
 
 if(isTRUE(self$options$fit)){ 
-            
-             table <- self$results$fit
+ 
+            table <- self$results$fit
             
             res<- all$res[[1]]
             df<- as.data.frame(res$fit)
-            names <- dimnames(df)[[1]]
-
-            for(name in names){
+            #names <- dimnames(df)[[1]]
+            names <- rownames(df) 
+    
+  for(name in names){
+    
+        # if not rowKey, add rowkey---
+         if (!name %in% table$rowKeys) {
+            table$addRow(rowKey = name)
+           }
+      
+         if (table$getCell(rowKey=name,'value')$isEmpty) { 
+        
+                  table$setStatus('running')
+                  #private$.checkpoint()  
+      
               row <- list()
               row[['value']] <- df[name,1]
-              table$addRow(rowKey=name, values=row)
-            }
-          }
+              
+              table$setRow(rowKey=name, values=row)
             
-# Model comparison-------
-# 
-# out <- NULL
-# 
-# for (i in 1:self$options$nc) {
-#   
-#   res<- tidyLPA::estimate_profiles(data,n_profiles=i,
-#                                    variances = variances,
-#                                    covariances = covariances)
-#   
-#   res<- res[[1]]
-#   df<- data.frame(res$fit)
-#   df<- t(df)
-#   
-#   
-#   model<- df[1]
-#   
-#   class <- df[2]
-#   
-#   log<- df[3]
-#   aic<- df[4]
-#   awe<- df[5]
-#   bic<- df[6]
-#   caic<- df[7]
-#   clc<- df[8]
-#   kic<- df[9]
-#   sabic<- df[10]
-#   icl<- df[11]
-#   entropy<- df[12]
-#   df<- data.frame(model,log, aic,
-#                   awe, bic,caic,
-#                   clc,kic,
-#                   sabic,icl,entropy,class)
-#   
-#   
-#   if (is.null(out)) {
-#     out <- df
-#   } else {
-#     out <- rbind(out, df)
-#   }
-# }
-# 
-# out <- out
-# 
-# 
-# # populating table---------
-# 
-# table <- self$results$best
-# 
-# out <- data.frame(out)
-# 
-# names <- dimnames(out)[[1]]
-# 
-# 
-# for(name in names){
-#   
-#   row <- list()
-#   
-#   row[['model']] <- out[name, 1]
-#   row[['log']] <- out[name, 2]
-#   row[['aic']] <- out[name, 3]
-#   row[['awe']] <- out[name, 4]
-#   row[['bic']] <- out[name, 5]
-#   row[['caic']] <- out[name, 6]
-#   row[['clc']] <- out[name, 7]
-#   row[['kic']] <- out[name, 8]
-#   row[['sabic']] <- out[name, 9]
-#   row[['icl']] <- out[name, 10]
-#   row[['entropy']] <- out[name, 11]
-#   
-#   table$addRow(rowKey=name, values=row)
-#   
-# }
+              table$setStatus('complete')
+          }
+      }
+            }
+            
 
 #Estimates---
 
 if(isTRUE(self$options$est)){
 
-table <- self$results$est  
-# get estimates--------------
-set.seed(1234)
-e<- tidyLPA::get_estimates(res)
-#################################
-  e<- data.frame(e)
-  names<- dimnames(e)[[1]]
+        table <- self$results$est  
+
+        # get estimates--------------
+        set.seed(1234)
+        e<- tidyLPA::get_estimates(res)
+        #################################
+         e<- data.frame(e)
+        names<- dimnames(e)[[1]]
  
   for (name in names) {
+    
+    # if not rowKey, add rowkey---
+    if (!name %in% table$rowKeys) {
+      table$addRow(rowKey = name)
+    }
+    
+    if (table$getCell(rowKey=name,'cat')$isEmpty) { 
+      
+      table$setStatus('running')
+      
     row <- list()
-            
     row[['cat']] <- e[name, 1]
     row[['par']] <- e[name, 2]
     row[['est']] <- e[name, 3]
@@ -264,10 +203,11 @@ e<- tidyLPA::get_estimates(res)
     row[['model']] <- e[name, 7]
     row[['cla']] <- e[name, 8] 
 
-    table$addRow(rowKey=name, values=row)
-            }
+    table$setRow(rowKey=name, values=row)
+    table$setStatus('complete')        
+    }
 }            
-            
+}            
 # person class---------
 
 if(isTRUE(self$options$pc)){          
@@ -497,7 +437,7 @@ if(isTRUE(self$options$plot2)){
   
 },
 
- .plot1 = function(image1, ggtheme, theme,...) {
+.plot1 = function(image1, ggtheme, theme,...) {
             
            if (is.null(image1$state))
             return(FALSE)
@@ -577,6 +517,8 @@ if(isTRUE(self$options$plot2)){
 
   #Estimates profile------------------------  
   set.seed(1234)
+  private$.checkpoint()
+  
   res<- tidyLPA::estimate_profiles(data,
                                    nc,
                                    variances = variances,
