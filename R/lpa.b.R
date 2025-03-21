@@ -1,7 +1,5 @@
 
-#' @import ggplot2
 #' @export
-
 
 lpaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
     "lpaClass",
