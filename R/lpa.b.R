@@ -1,4 +1,4 @@
-
+#' @importFrom tidyLPA get_data
 #' @export
 
 lpaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
