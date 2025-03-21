@@ -105,15 +105,15 @@ if(isTRUE(self$options$overall)){
  
   for(name in names){
     
-    # if not rowKey, add rowkey---
-    if (!name %in% table$rowKeys) {
-      table$addRow(rowKey = name)
-    }
-  
-    if (table$getCell(rowKey=name,'model')$isEmpty) { 
-    
-      table$setStatus('running')
-      #private$.checkpoint()
+    # # if not rowKey, add rowkey---
+    # if (!name %in% table$rowKeys) {
+    #   table$addRow(rowKey = name)
+    # }
+    # 
+    # if (table$getCell(rowKey=name,'model')$isEmpty) { 
+    # 
+    #   table$setStatus('running')
+    #   #private$.checkpoint()
     
       row <- list()
      
@@ -131,9 +131,9 @@ if(isTRUE(self$options$overall)){
         row[['entropy']] <- f[name, 12]
       
      # change setrow---
-      table$setRow(rowKey=name, values=row)
-      table$setStatus('complete')
-    }}}
+      table$addRow(rowKey=name, values=row)
+      #table$setStatus('complete')
+    }}
       
 # Fit measres----------
 
@@ -148,24 +148,23 @@ if(isTRUE(self$options$fit)){
     
   for(name in names){
     
-        # if not rowKey, add rowkey---
-         if (!name %in% table$rowKeys) {
-            table$addRow(rowKey = name)
-           }
-      
-         if (table$getCell(rowKey=name,'value')$isEmpty) { 
-        
-                  table$setStatus('running')
-                  #private$.checkpoint()  
+        # # if not rowKey, add rowkey---
+        #  if (!name %in% table$rowKeys) {
+        #     table$addRow(rowKey = name)
+        #    }
+        # 
+        #  if (table$getCell(rowKey=name,'value')$isEmpty) { 
+        # 
+        #           table$setStatus('running')
+        #           #private$.checkpoint()  
       
               row <- list()
               row[['value']] <- df[name,1]
               
-              table$setRow(rowKey=name, values=row)
+              table$addRow(rowKey=name, values=row)
             
-              table$setStatus('complete')
-          }
-      }
+              #table$setStatus('complete')
+                }
             }
             
 
@@ -184,14 +183,14 @@ if(isTRUE(self$options$est)){
  
   for (name in names) {
     
-    # if not rowKey, add rowkey---
-    if (!name %in% table$rowKeys) {
-      table$addRow(rowKey = name)
-    }
-    
-    if (table$getCell(rowKey=name,'cat')$isEmpty) { 
-      
-      table$setStatus('running')
+    # # if not rowKey, add rowkey---
+    # if (!name %in% table$rowKeys) {
+    #   table$addRow(rowKey = name)
+    # }
+    # 
+    # if (table$getCell(rowKey=name,'cat')$isEmpty) { 
+    #   
+    #   table$setStatus('running')
       
     row <- list()
     row[['cat']] <- e[name, 1]
@@ -203,18 +202,18 @@ if(isTRUE(self$options$est)){
     row[['model']] <- e[name, 7]
     row[['cla']] <- e[name, 8] 
 
-    table$setRow(rowKey=name, values=row)
-    table$setStatus('complete')        
-    }
+    table$addRow(rowKey=name, values=row)
+    # table$setStatus('complete')        
+    # }
 }            
 }            
-# person class---------
 
+# person class---------
 if(isTRUE(self$options$pc)){          
             
 base::options(max.print = .Machine$integer.max)
             
-pc<- tidyLPA:: get_data(all$res)
+pc<- tidyLPA::get_data(all$res)
 pc<- pc$Class
             
 pc <- as.factor(pc)
@@ -228,8 +227,6 @@ pc <- as.factor(pc)
 
 image <- self$results$plot
 image$setState(pc)
-
-
 }            
  
 # Posterior probabilities---
@@ -317,12 +314,8 @@ if(isTRUE(self$options$plot2)){
     res<- res[[1]]
     df<- data.frame(res$fit)
     df<- t(df)
-
-
     model<- df[1]
-
     class <- df[2]
-
     log<- df[3]
     aic<- df[4]
     awe<- df[5]
@@ -368,7 +361,6 @@ if(isTRUE(self$options$plot2)){
   image$setState(elbow )
   
 }
-
         },
         
 # pLOT---
@@ -424,8 +416,6 @@ if(isTRUE(self$options$plot2)){
     return(FALSE)
   
   elbow <- image$state
-  
-
   plot2 <- ggplot2::ggplot(elbow, ggplot2::aes(x = Class, y = Value, color = Fit)) +
     ggplot2::geom_line(size = 1.1) +
     ggplot2::geom_point(size = 3) +
@@ -462,7 +452,6 @@ if(isTRUE(self$options$plot2)){
                 )
               )
             }
-            
             print(plot1)
             TRUE
          },
@@ -517,7 +506,7 @@ if(isTRUE(self$options$plot2)){
 
   #Estimates profile------------------------  
   set.seed(1234)
-  private$.checkpoint()
+  #private$.checkpoint()
   
   res<- tidyLPA::estimate_profiles(data,
                                    nc,
@@ -540,6 +529,5 @@ if(isTRUE(self$options$plot2)){
   return(retlist)
 }
 
-           
 )
 )
