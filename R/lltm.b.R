@@ -1,14 +1,3 @@
-#' @importFrom R6 R6Class
-#' @import jmvcore
-#' @import eRm
-#' @import ggplot2
-#' @importFrom eRm LLTM
-#' @importFrom stats confint
-#' @importFrom eRm LRtest
-#' @importFrom  eRm Waldtest
-#' @importFrom  eRm MLoef
-#' @export
-
 
 lltmClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
     "lltmClass",

@@ -1,9 +1,5 @@
 
 # This file is a generated template, your changes will not be overwritten
-#' Mixture Rasch Analysis
-#' @import ggplot2
-#' @export
-
 
 lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
     "lcaClass",
@@ -796,7 +792,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             }
             dimnames(pi.class) <- list(names(y),round(P,4))
             ds.plot <- data.frame(Classes=as.vector(col(pi.class)),Manifest.variables=as.vector(row(pi.class)),value=as.vector(pi.class))
-            vis <- scatterplot3d(ds.plot,type="h",lwd=5,pch=" ",x.ticklabs=colnames(pi.class),y.ticklabs=colnames(y),z.ticklabs=" ",
+            vis <- scatterplot3d::scatterplot3d(ds.plot,type="h",lwd=5,pch=" ",x.ticklabs=colnames(pi.class),y.ticklabs=colnames(y),z.ticklabs=" ",
                                  xlab="Classes; population share",ylab="Manifest variables",zlab="Pr(outcome)",color=2,main=ti,y.margin.add=0.2,
                                  mar=c(6,3,3,3),lab=c(R-1,ncol(y)-1),zlim=c(0,1),box=FALSE,cex.main=1,angle=83)
           }
@@ -809,7 +805,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             }
             dimnames(pi.class) <- list(as.character(c(1:ncol(y))),as.character(c(1:max(K.j))))
             ds.plot <- data.frame(Manifest.variables=as.vector(row(pi.class)),Outcomes=as.vector(col(pi.class)),value=as.vector(pi.class))
-            vis <- scatterplot3d(ds.plot,type="h",lwd=5,pch=" ",x.ticklabs=colnames(y),y.ticklabs=colnames(pi.class),z.ticklabs=" ",
+            vis <- scatterplot3d::scatterplot3d(ds.plot,type="h",lwd=5,pch=" ",x.ticklabs=colnames(y),y.ticklabs=colnames(pi.class),z.ticklabs=" ",
                                  xlab="Manifest variables",zlab="Pr(outcome)",main=ti,cex.main=1.5,color=2,lab=c(ncol(y)-1,max(K.j)-1),zlim=c(0,1),box=FALSE,
                                  angle=75,mar=c(3,3,2,3))
           }

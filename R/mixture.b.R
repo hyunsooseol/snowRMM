@@ -2,8 +2,6 @@
 # This file is a generated template, your changes will not be overwritten
 
 #' Mixture Rasch Analysis
-#' @export
-
 
 mixtureClass <- if (requireNamespace('jmvcore'))
   R6::R6Class(

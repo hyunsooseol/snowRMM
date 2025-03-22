@@ -1,10 +1,6 @@
 
 # This file is a generated template, your changes will not be overwritten
-
-
 #' @import ggplot2
-#' @export
-
 
 raschClass <- if (requireNamespace('jmvcore'))
   R6::R6Class(
@@ -1289,8 +1285,8 @@ raschClass <- if (requireNamespace('jmvcore'))
         #   return()
       
         erm.res <- image$state
-        
-        plot1 <- eRm::plotICC(erm.res, 
+        library(eRm)
+        plot1 <- plotICC(erm.res, 
                               item.subset= num,
                               empICC=list("raw",type="b",col="blue",lty="dotted"),
                               empCI=list())

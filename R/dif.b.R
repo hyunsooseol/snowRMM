@@ -1,10 +1,6 @@
 
 # This file is a generated template, your changes will not be overwritten
-
 # Differential Item Functioning by eRm package
-
-#' @export
-
 
 difClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
     "difClass",
@@ -20,23 +16,8 @@ difClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           self$results$instructions$setVisible(visible = TRUE)
           
         }
-        
-        # self$results$instructions$setContent(
-        #   "<html>
-        #     <head>
-        #     </head>
-        #     <body>
-        #     <div class='instructions'>
-        #     <p>____________________________________________________________________________________</p>
-        #     <p>1. Performs DIF analysis using <b>eRm</b> R package.
-        #     <p>2. For partial credit model, the grouping variable should be coded as <b>1 and 2</b>. </p>
-        #     <p>3. Feature requests and bug reports can be made on my <a href='https://github.com/hyunsooseol/snowIRT/issues'  target = '_blank'>GitHub.</a></p>
-        #     <p>____________________________________________________________________________________</p>
-        #     </div>
-        #     </body>
-        #     </html>"
-        # )      
-      
+    
+
         self$results$instructions$setContent(
           private$.htmlwidget$generate_accordion(
             title="Instructions",
@@ -136,7 +117,7 @@ difClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
                if (is.null(groupVarName)) return()
 
-               data <- select(self$data, varNames)
+               data <- jmvcore::select(self$data, varNames)
                for (var in vars)
                data[[var]] <- jmvcore::toNumeric(data[[var]])
               # exclude rows with missings in the grouping variable

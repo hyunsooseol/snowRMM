@@ -1,12 +1,4 @@
 
-#' @importFrom R6 R6Class
-#' @import jmvcore
-#' @import equate
-#' @importFrom equate freqtab
-#' @importFrom equate equate
-#' @export
-
-
 linkingClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
     "linkingClass",
     inherit = linkingBase,

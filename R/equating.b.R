@@ -1,16 +1,6 @@
 
 # This file is a generated template, your changes will not be overwritten
-
-#' @importFrom R6 R6Class
-#' @import jmvcore
 #' @import equi
-#' @importFrom equi lin
-#' @importFrom equi cdfplot
-#' @importFrom equi equi
-#' @importFrom equi conttab
-#' @importFrom equi smoothtab
-#' @import ggplot2
-#' @export
 
 equatingClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
     "equatingClass",
