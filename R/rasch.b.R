@@ -2,63 +2,53 @@
 # This file is a generated template, your changes will not be overwritten
 #' @import ggplot2
 
+
 raschClass <- if (requireNamespace('jmvcore'))
   R6::R6Class(
     "raschClass",
     inherit = raschBase,
     private = list(
-      
-      .allCache = NULL, 
-      .htmlwidget = NULL, 
+      .allCache = NULL,
+      .htmlwidget = NULL,
       
       .init = function() {
-        
-        private$.htmlwidget <- HTMLWidget$new() 
+        private$.htmlwidget <- HTMLWidget$new()
         private$.allCache <- NULL
         
         if (is.null(self$data) | is.null(self$options$vars)) {
           self$results$instructions$setVisible(visible = TRUE)
           
         }
- 
-        self$results$instructions$setContent(
-          private$.htmlwidget$generate_accordion(
-            title="Instructions",
-            content = paste(
-              '<div style="border: 2px solid #e6f4fe; border-radius: 15px; padding: 15px; background-color: #e6f4fe; margin-top: 10px;">',
-              '<div style="text-align:justify;">',
-              '<ul>',
-              '<li>The <b>mixRasch</b> R package was used for the Rasch model using joint maximum likelihood estimation(JMLE).</li>',
-              '<li>Specify </b> the number of <b>Step</b> and model <b>Type</b> in the analysis option.</li>',
-              '<li>Step is defined as number of <b>category-1</b>.</li>',
-              '<li>The minimum and maximum values of a category must be the same across all items for <b>rating sclaes</b> with <b>eRm</b> R package.</li>',
-              '<li><b>Person Analysis</b> will be displayed in the datasheet.</li>',
-              '<li>The <b>eRm</b> R package was used for the person-item map for PCM.</li>',
-              '<li>Feature requests and bug reports can be made on my <a href="https://github.com/hyunsooseol/snowRMM/issues" target="_blank">GitHub</a>.</li>',
-              '</ul></div></div>'
-              
-            )
+        
+        self$results$instructions$setContent(private$.htmlwidget$generate_accordion(
+          title = "Instructions",
+          content = paste(
+            '<div style="border: 2px solid #e6f4fe; border-radius: 15px; padding: 15px; background-color: #e6f4fe; margin-top: 10px;">',
+            '<div style="text-align:justify;">',
+            '<ul>',
+            '<li>The <b>mixRasch</b> R package was used for the Rasch model using joint maximum likelihood estimation(JMLE).</li>',
+            '<li>Specify </b> the number of <b>Step</b> and model <b>Type</b> in the analysis option.</li>',
+            '<li>Step is defined as number of <b>category-1</b>.</li>',
+            '<li>The minimum and maximum values of a category must be the same across all items for <b>rating sclaes</b> with <b>eRm</b> R package.</li>',
+            '<li><b>Person Analysis</b> will be displayed in the datasheet.</li>',
+            '<li>The <b>eRm</b> R package was used for the person-item map for PCM.</li>',
+            '<li>Feature requests and bug reports can be made on my <a href="https://github.com/hyunsooseol/snowRMM/issues" target="_blank">GitHub</a>.</li>',
+            '</ul></div></div>'
             
           )
-        )              
+          
+        ))
         
         
         if (self$options$ml1)
-          self$results$tm$ml1$setNote(
-            "Note",
-            "Number of categories should be the same for each item with eRm R package."
-            
-          )
+          self$results$tm$ml1$setNote("Note",
+                                      "Number of categories should be the same for each item with eRm R package.")
         
         if (self$options$rel)
-          self$results$mf$rel$setNote(
-            "Note",
-            "SSD=Squared Standard Deviation; MSE=Mean Squared Error."
-           
-          )
+          self$results$mf$rel$setNote("Note",
+                                      "SSD=Squared Standard Deviation; MSE=Mean Squared Error.")
         
-        if(isTRUE(self$options$inplot)){
-          
+        if (isTRUE(self$options$inplot)) {
           width <- self$options$width
           height <- self$options$height
           
@@ -66,24 +56,21 @@ raschClass <- if (requireNamespace('jmvcore'))
         }
         
         
-        if(isTRUE(self$options$outplot)){
-          
+        if (isTRUE(self$options$outplot)) {
           width <- self$options$width
           height <- self$options$height
           
           self$results$outplot$setSize(width, height)
         }
         
-        if(isTRUE(self$options$plot4)){
-          
+        if (isTRUE(self$options$plot4)) {
           width <- self$options$width1
           height <- self$options$height1
           
           self$results$plot4$setSize(width, height)
         }
         
-        if(isTRUE(self$options$plot5)){
-          
+        if (isTRUE(self$options$plot5)) {
           width <- self$options$width2
           height <- self$options$height2
           
@@ -91,89 +78,86 @@ raschClass <- if (requireNamespace('jmvcore'))
         }
         
         
-        if(isTRUE(self$options$wrightmap)){
-          
+        if (isTRUE(self$options$wrightmap)) {
           width <- self$options$width3
           height <- self$options$height3
           
           self$results$plot$setSize(width, height)
         }
         
-        if(isTRUE(self$options$piplot)){
-          
+        if (isTRUE(self$options$piplot)) {
           width <- self$options$width4
           height <- self$options$height4
           
           self$results$piplot$setSize(width, height)
         }
         
-        if(isTRUE(self$options$plot2)){
-          
+        if (isTRUE(self$options$plot2)) {
           width <- self$options$width5
           height <- self$options$height5
           
           self$results$plot2$setSize(width, height)
         }
         
-        if(isTRUE(self$options$plot3)){
-          
+        if (isTRUE(self$options$plot3)) {
           width <- self$options$width5
           height <- self$options$height5
           
           self$results$plot3$setSize(width, height)
         }
         
-        if(isTRUE(self$options$plot1)){
-          
+        if (isTRUE(self$options$plot1)) {
           width <- self$options$width6
           height <- self$options$height6
           
           self$results$plot1$setSize(width, height)
         }
-         
-        if(isTRUE(self$options$gofplot)){
-          
+        
+        if (isTRUE(self$options$gofplot)) {
           width <- self$options$width7
           height <- self$options$height7
           
           self$results$gofplot$setSize(width, height)
         }
         
-        if(isTRUE(self$options$plot8)){
-          
+        if (isTRUE(self$options$plot8)) {
           width <- self$options$width8
           height <- self$options$height8
           
           self$results$plot8$setSize(width, height)
         }
         
-        if(isTRUE(self$options$plot9)){
-          
+        if (isTRUE(self$options$plot9)) {
           width <- self$options$width9
           height <- self$options$height9
           
           self$results$plot9$setSize(width, height)
         }
-
-      },
-
-      .run = function() {
         
+      },
+      
+      .run = function() {
         # get variables-------
-
+        
         data <- self$data
-
+        
         vars <- self$options$vars
-
+        
         #Removing perfect score items before estimation (for example all 1 or 0)-------
-
+        
         for (varName in self$options$vars) {
           var <- self$data[[varName]]
           if (length(unique(var)) < 2)
-          stop(paste("Variable '", varName, "' contains all the same value and should be removed in the variable box."))
+            stop(
+              paste(
+                "Variable '",
+                varName,
+                "' contains all the same value and should be removed in the variable box."
+              )
+            )
         }
-
-        if(isTRUE(self$options$plot9)){
+        
+        if (isTRUE(self$options$plot9)) {
           private$.prepareciPlot(data)
         }
         
@@ -187,24 +171,22 @@ raschClass <- if (requireNamespace('jmvcore'))
           ready <- FALSE
         
         if (ready) {
-          
-          
           if (is.null(private$.allCache)) {
             data <- private$.cleanData()
             private$.allCache <- private$.compute(data)
           }
           
-          results <- private$.allCache   
-
+          results <- private$.allCache
+          
           #  populate Model information table-----
           
           private$.populateModelTable(results)
-         
+          
           # populate Item Statistics table-----
           
           private$.populateItemTable(results)
           
-         
+          
           # populate reliability table----------
           
           private$.populateRelTable(results)
@@ -213,7 +195,7 @@ raschClass <- if (requireNamespace('jmvcore'))
           
           private$.populateThrTable(results)
           
-         
+          
           # prepare wrightmap plot-----
           
           private$.prepareWrightmapPlot(data)
@@ -234,24 +216,23 @@ raschClass <- if (requireNamespace('jmvcore'))
           # private$.prepareRsmPlot(data)
           
           private$.preparePcmPlot(data)
-         
+          
         }
       },
       
       .compute = function(data) {
-        
         # get variables--------
         
         
         vars <- self$options$vars
         step <- self$options$step
         type <- self$options$type
-     
-      # compute results------
-      set.seed(1234)
-      #private$.checkpoint()
-      
-      res <-
+        
+        # compute results------
+        set.seed(1234)
+        #private$.checkpoint()
+        
+        res <-
           mixRasch::mixRasch(
             data = data,
             steps = step,
@@ -259,7 +240,7 @@ raschClass <- if (requireNamespace('jmvcore'))
             n.c = 1
           )
         
-       # Person analysis-----------
+        # Person analysis-----------
         
         ptotal <- res$person.par$r
         pmeasure <- res$person.par$theta
@@ -267,36 +248,31 @@ raschClass <- if (requireNamespace('jmvcore'))
         pinfit <- res$person.par$infit
         poutfit <- res$person.par$outfit
         
-        if (self$options$ptotal==TRUE){
-         
+        if (self$options$ptotal == TRUE) {
           self$results$ptotal$setRowNums(rownames(data))
           self$results$ptotal$setValues(ptotal)
           
         }
         
-        if (self$options$pmeasure==TRUE){
-          
+        if (self$options$pmeasure == TRUE) {
           self$results$pmeasure$setRowNums(rownames(data))
           self$results$pmeasure$setValues(pmeasure)
           
         }
         
-        if (self$options$pse==TRUE){
-          
+        if (self$options$pse == TRUE) {
           self$results$pse$setRowNums(rownames(data))
           self$results$pse$setValues(pse)
           
         }
         
-        if (self$options$pinfit==TRUE){
-          
+        if (self$options$pinfit == TRUE) {
           self$results$pinfit$setRowNums(rownames(data))
           self$results$pinfit$setValues(pinfit)
           
         }
         
-        if (self$options$poutfit==TRUE){
-          
+        if (self$options$poutfit == TRUE) {
           self$results$poutfit$setRowNums(rownames(data))
           self$results$poutfit$setValues(poutfit)
           
@@ -308,12 +284,14 @@ raschClass <- if (requireNamespace('jmvcore'))
         Infit <- pinfit
         Outfit <- poutfit
         
-        daf <- data.frame(Measure,Infit,Outfit)
+        daf <- data.frame(Measure, Infit, Outfit)
         
-        pf<- reshape2::melt(daf,
-                            id.vars='Measure',
-                            variable.name="Fit",
-                            value.name='Value')
+        pf <- reshape2::melt(
+          daf,
+          id.vars = 'Measure',
+          variable.name = "Fit",
+          value.name = 'Value'
+        )
         
         image <- self$results$plot4
         
@@ -340,9 +318,9 @@ raschClass <- if (requireNamespace('jmvcore'))
         
         ise <- res$item.par$SE.delta.i
         
-        infit <- res$item.par$in.out[,1]
+        infit <- res$item.par$in.out[, 1]
         
-        outfit <- res$item.par$in.out[,3]
+        outfit <- res$item.par$in.out[, 3]
         
         pbis <- res$item.par$itemDescriptives
         
@@ -351,59 +329,54 @@ raschClass <- if (requireNamespace('jmvcore'))
         res0 <- mixRasch::getEstDetails(res)
         class <- res0$nC
         
-########## eRm R package######################################
-
-        if(self$options$step ==1){
+        ########## eRm R package######################################
+        
+        if (self$options$step == 1) {
+          rasch <- eRm::RM(data)
           
-          rasch<- eRm::RM(data) 
-          
-        } else if(self$options$step >1){
-          
-          pcm.res<- eRm::PCM(data)
+        } else if (self$options$step > 1) {
+          pcm.res <- eRm::PCM(data)
           rsm.res <- eRm::RSM(data)
-         
+          
         }
         
-# person separation reliability using eRm R package---------
+        # person separation reliability using eRm R package---------
         
-        if(self$options$step ==1){
-        
+        if (self$options$step == 1) {
           #rasch<- eRm::RM(data)
           
-        pers <- eRm::person.parameter(rasch)
-        rel <- eRm::SepRel(pers)
-        } else if(self$options$step >1){
-          
+          pers <- eRm::person.parameter(rasch)
+          rel <- eRm::SepRel(pers)
+        } else if (self$options$step > 1) {
           #pcm<- eRm::PCM(data)
           
           pers <- eRm::person.parameter(pcm.res)
           rel <- eRm::SepRel(pers)
           
         }
- ###################################################################       
+        ###################################################################
         ssd <- rel$SSD.PS
-        mse<-rel$MSE
-        rel<- rel$sep.rel
-       
+        mse <- rel$MSE
+        rel <- rel$sep.rel
+        
         # thresholds(tau parameter)---------
         
-        tau<- res$item.par$tau
+        tau <- res$item.par$tau
         tau <- t(tau)
-        tau<- as.data.frame(tau)
+        tau <- as.data.frame(tau)
         
         ########################################################
-        if(self$options$step ==1){
-          
+        if (self$options$step == 1) {
           #rasch <- eRm::RM(data)
-          lrsplit<- self$options$lrsplit
+          lrsplit <- self$options$lrsplit
           
           # LR test----------
           lr <- eRm::LRtest(rasch, splitcr = lrsplit)
           #-------------------
           
-          value<- lr$LR
-          df<- lr$df
-          p<- lr$pvalue
+          value <- lr$LR
+          df <- lr$df
+          p <- lr$pvalue
           
           table <- self$results$tm$lr
           
@@ -419,22 +392,22 @@ raschClass <- if (requireNamespace('jmvcore'))
           #Goodness-of-fit plot for LR test--------
           
           image <- self$results$gofplot
-         
+          
           image$setState(lr)
           
-         
+          
           ##############################################
           
-          mlsplit<- self$options$mlsplit
+          mlsplit <- self$options$mlsplit
           
           # Martin-lof test--------------
           
-          ml<- eRm::MLoef(rasch,splitcr = mlsplit)
+          ml <- eRm::MLoef(rasch, splitcr = mlsplit)
           #####################
           
-          value<- ml$LR
-          df<- ml$df
-          p<- ml$p.value
+          value <- ml$LR
+          df <- ml$df
+          p <- ml$p.value
           
           table <- self$results$tm$ml
           
@@ -453,13 +426,13 @@ raschClass <- if (requireNamespace('jmvcore'))
           
           table <- self$results$tm$wald
           
-          waldsplit<- self$options$waldsplit
+          waldsplit <- self$options$waldsplit
           #######################
           
-          w<- eRm::Waldtest(rasch,splitcr = waldsplit)
+          w <- eRm::Waldtest(rasch, splitcr = waldsplit)
           
           ###################
-          w<- w$coef.table
+          w <- w$coef.table
           
           w <- as.data.frame(w)
           
@@ -480,30 +453,30 @@ raschClass <- if (requireNamespace('jmvcore'))
           
         }
         
-        if(self$options$step >1){
-       # if(self$options$rsm==TRUE || self$options$mlsplit1==TRUE || self$options$plot2==TRUE){
-     
-        tab<- thresholds(rsm.res)
-        tab<- tab$threshtable
-        rsm<- data.frame(Reduce(rbind, tab))
-        rsm<- rsm[,-1]
-       
-       
-        # number of category---------
-        
-        nc <- ncol(rsm)
-      
-        
-        table <- self$results$rsm
-
+        if (self$options$step > 1) {
+          # if(self$options$rsm==TRUE || self$options$mlsplit1==TRUE || self$options$plot2==TRUE){
+          
+          tab <- thresholds(rsm.res)
+          tab <- tab$threshtable
+          rsm <- data.frame(Reduce(rbind, tab))
+          rsm <- rsm[, -1]
+          
+          
+          # number of category---------
+          
+          nc <- ncol(rsm)
+          
+          
+          table <- self$results$rsm
+          
           nCategory <- nc
-
+          
           vars <- self$options$vars
-
-
+          
+          
           if (nCategory > 1) {
             for (i in 1:nCategory)
-
+              
               table$addColumn(
                 name = paste0("name", i),
                 title = as.character(i),
@@ -511,41 +484,39 @@ raschClass <- if (requireNamespace('jmvcore'))
                 type = 'number'
               )
           }
-
-
+          
+          
           for (i in seq_along(vars)) {
-
             row <- list()
-
-
+            
+            
             for (j in 1:nCategory) {
-
               row[[paste0("name", j)]] <- rsm[i, j]
-
-
+              
+              
             }
-
-
-
+            
+            
+            
             table$setRow(rowNo = i, values = row)
           }
-
+          
           #RSM plot----------
           
           image <- self$results$plot2
           image$setState(rsm.res)
-         
+          
           # Testing the Rasch model with Rating scale---
           
-          mlsplit1<- self$options$mlsplit1
+          mlsplit1 <- self$options$mlsplit1
           
           #Martin-lof test--------------
           
-          ml1<- eRm::MLoef(rsm.res,splitcr = mlsplit1)
+          ml1 <- eRm::MLoef(rsm.res, splitcr = mlsplit1)
           
-          value<- ml1$LR
-          df<- ml1$df
-          p<- ml1$p.value
+          value <- ml1$LR
+          df <- ml1$df
+          p <- ml1$p.value
           
           table <- self$results$tm$ml1
           
@@ -558,28 +529,27 @@ raschClass <- if (requireNamespace('jmvcore'))
           table$setRow(rowNo = 1, values = row)
           
         }
-      
-        if(self$options$pcm==TRUE){    
-     
-        tab1<- thresholds(pcm.res)
-        tab1<- tab1$threshtable
-        pcm<- data.frame(Reduce(rbind, tab1))
-        pcm<- pcm[,-1]
         
-        nc <- ncol(pcm)
-       
-        nCategory <- nc
-        
-        table <- self$results$pcm
-
+        if (self$options$pcm == TRUE) {
+          tab1 <- thresholds(pcm.res)
+          tab1 <- tab1$threshtable
+          pcm <- data.frame(Reduce(rbind, tab1))
+          pcm <- pcm[, -1]
+          
+          nc <- ncol(pcm)
+          
           nCategory <- nc
-
+          
+          table <- self$results$pcm
+          
+          nCategory <- nc
+          
           vars <- self$options$vars
-
-
+          
+          
           if (nCategory > 1) {
             for (i in 1:nCategory)
-
+              
               table$addColumn(
                 name = paste0("name", i),
                 title = as.character(i),
@@ -587,26 +557,24 @@ raschClass <- if (requireNamespace('jmvcore'))
                 type = 'number'
               )
           }
-
-
+          
+          
           for (i in seq_along(vars)) {
-
             row <- list()
-
-
+            
+            
             for (j in 1:nCategory) {
-
               row[[paste0("name", j)]] <- pcm[i, j]
-
-
+              
+              
             }
-
-
+            
+            
             table$setRow(rowNo = i, values = row)
           }
-
           
-          }
+          
+        }
         
         # Rasch residual factor analysis using pairwise R package
         
@@ -615,74 +583,70 @@ raschClass <- if (requireNamespace('jmvcore'))
         # summary(result)
         # plot(result)
         
-        if(isTRUE(self$options$plot5)){
-        
-        res <- self$options$res
+        if (isTRUE(self$options$plot5)) {
+          res <- self$options$res
           
-        ip <- pairwise::pair(data)
-        pers_obj <- pairwise::pers(ip)
-        rf<- pairwise::rfa(pers_obj, res=res)
-        summ<- summary(rf)
-        
-        self$results$text$setContent(summ)
-        
-        image5 <- self$results$plot5
-        image5$setState(rf)
-        
+          ip <- pairwise::pair(data)
+          pers_obj <- pairwise::pers(ip)
+          rf <- pairwise::rfa(pers_obj, res = res)
+          summ <- summary(rf)
+          
+          self$results$text$setContent(summ)
+          
+          image5 <- self$results$plot5
+          image5$setState(rf)
+          
         }
         
         # Q3 fit statistics proposed by Yen(1984)
-
-        if(self$options$q3==TRUE){
-          
+        
+        if (self$options$q3 == TRUE) {
           res1 <- self$options$res1
           
           ip <- pairwise::pair(data)
           pers_obj <- pairwise::pers(ip)
-         
-          q<- pairwise::q3(pers_obj, res=res1)
-       
+          
+          q <- pairwise::q3(pers_obj, res = res1)
+          
           # Standardized correlation matrix
-          ma<- q$resid_cor$cor 
+          ma <- q$resid_cor$cor
           #self$results$text2$setContent(ma)
           
-          if(isTRUE(self$options$cormatrix)){  
-         
-          table <- self$results$cormatrix
-         
-         ma <- as.data.frame(ma)
-         names <- dimnames(ma)[[1]] 
-         dims <- dimnames(ma)[[2]]
-         
-         # creating table----------------
-         
-         for (dim in dims) {
-            table$addColumn(name = paste0(dim),
-                           type = 'number')
-         }
-         
-         for (name in names) {
-            row <- list()
-            for(j in seq_along(dims)){
-             row[[dims[j]]] <- ma[name,j]
-             }
-           table$addRow(rowKey=name, values=row)
-                    }
-         
-         }
-         
-          #------------------------------ 
+          if (isTRUE(self$options$cormatrix)) {
+            table <- self$results$cormatrix
+            
+            ma <- as.data.frame(ma)
+            names <- dimnames(ma)[[1]]
+            dims <- dimnames(ma)[[2]]
+            
+            # creating table----------------
+            
+            for (dim in dims) {
+              table$addColumn(name = paste0(dim), type = 'number')
+            }
+            
+            for (name in names) {
+              row <- list()
+              for (j in seq_along(dims)) {
+                row[[dims[j]]] <- ma[name, j]
+              }
+              table$addRow(rowKey = name, values = row)
+            }
+            
+          }
+          
+          #------------------------------
           table <- self$results$q3
           
-          if(is.null(self$options$q3))
+          if (is.null(self$options$q3))
             return()
           
-          Mean<- q[["statistic"]]$Q3[1]
-          Max<- q[["statistic"]]$Q3[2]
-          Min<- q[["statistic"]]$Q3[3]
-          Max_abs<- q[["statistic"]]$Q3[4]
-          Min_abs<- q[["statistic"]]$Q3[5]
-          Q3<- q[["statistic"]]$Q3[6]
+          Mean <- q[["statistic"]]$Q3[1]
+          Max <- q[["statistic"]]$Q3[2]
+          Min <- q[["statistic"]]$Q3[3]
+          Max_abs <- q[["statistic"]]$Q3[4]
+          Min_abs <- q[["statistic"]]$Q3[5]
+          Q3 <- q[["statistic"]]$Q3[6]
           
           row <- list()
           
@@ -695,11 +659,10 @@ raschClass <- if (requireNamespace('jmvcore'))
           
           table$setRow(rowNo = 1, values = row)
           
-           
-        }
-      
-        if(isTRUE(self$options$plot8)){
           
+        }
+        
+        if (isTRUE(self$options$plot8)) {
           # Rasch model, estimation of item and person parameters
           # Using eRm package
           # res <- RM(raschdat2)
@@ -707,17 +670,15 @@ raschClass <- if (requireNamespace('jmvcore'))
           # item.fit <- eRm::itemfit(p.res)
           # std.resids <- item.fit$st.res
           
-          if(self$options$step==1 && self$options$type=='RSM'){
-           
+          if (self$options$step == 1 && self$options$type == 'RSM') {
             p.res <- person.parameter(rasch)
             
             item.fit <- eRm::itemfit(p.res)
             std.resids <- item.fit$st.res
-          
-          } 
-          
-          if(self$options$step>1 && self$options$type=='RSM'){
             
+          }
+          
+          if (self$options$step > 1 && self$options$type == 'RSM') {
             #res <- eRm::RSM(data)
             p.res <- person.parameter(rsm.res)
             
@@ -725,8 +686,7 @@ raschClass <- if (requireNamespace('jmvcore'))
             std.resids <- item.fit$st.res
           }
           
-          if(self$options$step>1 && self$options$type=='PCM'){  
-            
+          if (self$options$step > 1 && self$options$type == 'PCM') {
             #res <- eRm::PCM(data)
             p.res <- person.parameter(pcm.res)
             
@@ -737,29 +697,28 @@ raschClass <- if (requireNamespace('jmvcore'))
           
           image8 <- self$results$plot8
           image8$setState(std.resids)
-        
+          
         }
         
-        if(isTRUE(self$options$nptest)){
-          
+        if (isTRUE(self$options$nptest)) {
           n <- self$options$matrix
-          method <- self$options$npmethod    
+          method <- self$options$npmethod
           
           rmat <- as.matrix(data)
           res <- eRm::NPtest(rmat, n = n, method = method)
           
           self$results$text1$setContent(res)
-        } 
-          
+        }
+        
         ############################################
         results <-
           list(
             'aic' = aic,
             'bic' = bic,
             'caic' = caic,
-            'loglik'=loglik,
-            'parm'=parm,
-            'person'=person,
+            'loglik' = loglik,
+            'parm' = parm,
+            'person' = person,
             'imean' = imean,
             'imeasure' = imeasure,
             'ise' = ise,
@@ -767,15 +726,15 @@ raschClass <- if (requireNamespace('jmvcore'))
             'outfit' = outfit,
             'pbis' = pbis,
             'class' = class,
-            'ssd' =ssd,
-            'mse'=mse,
-            'rel'=rel,
-            'tau'=tau,
-            'ptotal'=ptotal,
-            'pmeasure'=pmeasure,
-            'pse'=pse,
-            'pinfit'=pinfit,
-            'poutfit'=poutfit
+            'ssd' = ssd,
+            'mse' = mse,
+            'rel' = rel,
+            'tau' = tau,
+            'ptotal' = ptotal,
+            'pmeasure' = pmeasure,
+            'pse' = pse,
+            'pinfit' = pinfit,
+            'poutfit' = poutfit
           )
         
         
@@ -784,14 +743,13 @@ raschClass <- if (requireNamespace('jmvcore'))
       # populate thresholds table(tau parameter)---------
       
       .populateThrTable = function(results) {
-        
         table <- self$results$thr
         
         tau <- results$tau
-      
+        
         #-------------
         nc <- ncol(tau)
-       
+        
         nCategory <- nc
         
         vars <- self$options$vars
@@ -810,12 +768,10 @@ raschClass <- if (requireNamespace('jmvcore'))
         
         
         for (i in seq_along(vars)) {
-          
           row <- list()
           
           
           for (j in 1:nCategory) {
-            
             row[[paste0("name", j)]] <- tau[i, j]
             
             
@@ -824,23 +780,26 @@ raschClass <- if (requireNamespace('jmvcore'))
           
           
           table$setRow(rowNo = i, values = row)
-        
-          }
+          
+        }
         
       },
       
       
       ####################################
       .gofplot = function(image, ...) {
-        
-      
         lr <- image$state
         
         tlab <- self$options$tlab
         
         # additional 95 percent control line with user specified style
-        gofplot<- plotGOF(lr, tlab=tlab, 
-                          ctrline = list(gamma = 0.95, col = "red", lty = "dashed"))
+        gofplot <- plotGOF(lr,
+                           tlab = tlab,
+                           ctrline = list(
+                             gamma = 0.95,
+                             col = "red",
+                             lty = "dashed"
+                           ))
         
         
         print(gofplot)
@@ -850,7 +809,6 @@ raschClass <- if (requireNamespace('jmvcore'))
       # populate reliability table---------
       
       .populateRelTable = function(results) {
-        
         table <- self$results$mf$rel
         
         
@@ -859,22 +817,21 @@ raschClass <- if (requireNamespace('jmvcore'))
         ssd <- results$ssd
         mse <- results$mse
         rel <- results$rel
-       
+        
         row <- list()
-
+        
         row[['SSD']] <- ssd
         row[['MSE']] <- mse
         row[['Reliability']] <- rel
-
+        
         table$setRow(rowNo = 1, values = row)
-
+        
         
       },
-     
+      
       # populate Model information table-----
       
       .populateModelTable = function(results) {
-        
         table <- self$results$mf$model
         
         
@@ -912,7 +869,6 @@ raschClass <- if (requireNamespace('jmvcore'))
       # populate Item Statistics table-----
       
       .populateItemTable = function(results) {
-        
         table <- self$results$items
         
         vars <- self$options$vars
@@ -934,7 +890,6 @@ raschClass <- if (requireNamespace('jmvcore'))
         
         
         for (i in seq_along(vars)) {
-          
           row <- list()
           
           
@@ -954,15 +909,13 @@ raschClass <- if (requireNamespace('jmvcore'))
         }
         
       },
-       
+      
       # Plot of standardized residuals using eRm package------
       
-      .plot8 = function(image8,...) {
-        
-        
+      .plot8 = function(image8, ...) {
         if (is.null(image8$state))
           return(FALSE)
-      
+        
         item.number <- self$options$num1
         std.resids <- image8$state
         
@@ -972,21 +925,32 @@ raschClass <- if (requireNamespace('jmvcore'))
         min.resid <- ceiling(min(std.resids))
         
         # The code below will produce standardized residual plots for each of the items:
-       
-          plot8<- plot(std.resids[, item.number], ylim = c(min.resid, max.resid),
-               main = paste("Standardized Residuals for Item ", item.number, sep = ""),
-               ylab = "Standardized Residual", xlab = "Person Index")
-          abline(h = 0, col = "blue")
-          abline(h=2, lty = 2, col = "red")
-          abline(h=-2, lty = 2, col = "red")
-          
-          legend("topright", c("Std. Residual", "Observed = Expected", "+/- 2 SD"), pch = c(1, NA, NA), 
-                 lty = c(NA, 1, 2),
-                 col = c("black", "blue", "red"), cex = .8)
-          
-       
-      print(plot8)
-      TRUE 
+        
+        plot8 <- plot(
+          std.resids[, item.number],
+          ylim = c(min.resid, max.resid),
+          main = paste("Standardized Residuals for Item ", item.number, sep = ""),
+          ylab = "Standardized Residual",
+          xlab = "Person Index"
+        )
+        abline(h = 0, col = "blue")
+        abline(h = 2, lty = 2, col = "red")
+        abline(h = -2,
+               lty = 2,
+               col = "red")
+        
+        legend(
+          "topright",
+          c("Std. Residual", "Observed = Expected", "+/- 2 SD"),
+          pch = c(1, NA, NA),
+          lty = c(NA, 1, 2),
+          col = c("black", "blue", "red"),
+          cex = .8
+        )
+        
+        
+        print(plot8)
+        TRUE
       },
       
       
@@ -995,8 +959,6 @@ raschClass <- if (requireNamespace('jmvcore'))
       
       
       .prepareWrightmapPlot = function(data) {
-        
-       
         step <- self$options$step
         
         type <- self$options$type
@@ -1019,82 +981,77 @@ raschClass <- if (requireNamespace('jmvcore'))
         
         image <- self$results$plot
         
-       # vars <- length(self$options$vars)
+        # vars <- length(self$options$vars)
         
         # width <- 300 + vars * 30
-        # 
+        #
         # image$setSize(width, 500)
         
         state <- list(pmeasure, imeasure, vars)
         
         image$setState(state)
         
-       
+        
       },
       
       # wright map plot--------------
       
-      .plot = function(image,...) {
-        
+      .plot = function(image, ...) {
         if (is.null(image$state))
           return(FALSE)
         # wrightmap <- self$options$wrightmap
-        # 
+        #
         # if (!wrightmap)
         #   return()
         
         pmeasure <- image$state[[1]]
         imeasure <- image$state[[2]]
         vars <- image$state[[3]]
-
-        plot<- ShinyItemAnalysis::ggWrightMap(pmeasure, imeasure,
-                                              item.names = vars,
-                                              color = "deepskyblue")
+        
+        plot <- ShinyItemAnalysis::ggWrightMap(pmeasure,
+                                               imeasure,
+                                               item.names = vars,
+                                               color = "deepskyblue")
         
         print(plot)
         TRUE
         
       },
       
-     # PREPARE PERSON-ITEM PLOT FOR PCM-------------
-     
-     .preparepiPlot = function(data) {
-       
-       autopcm <- eRm::PCM(data)
-       
-       
-       # Prepare Data For Plot -------
-       
-       image <- self$results$piplot
-       image$setState(autopcm)
-       
-     },
-     
-     .piPlot= function(image, ...) {
-       
-       autopcm <- image$state
-       
-       if (is.null(autopcm))
-         return()
-       
-       
-       plot <- eRm::plotPImap(autopcm, sorted=TRUE,
-                              warn.ord.colour = "red")
-       
-       print(plot)
-       
-       TRUE
-       
-     },
-     
-     
-     ### fit plot----------------
-     
-     
-     
-      .prepareInfitPlot=function(data){
+      # PREPARE PERSON-ITEM PLOT FOR PCM-------------
+      
+      .preparepiPlot = function(data) {
+        autopcm <- eRm::PCM(data)
         
         
+        # Prepare Data For Plot -------
+        
+        image <- self$results$piplot
+        image$setState(autopcm)
+        
+      },
+      
+      .piPlot = function(image, ...) {
+        autopcm <- image$state
+        
+        if (is.null(autopcm))
+          return()
+        
+        
+        plot <- eRm::plotPImap(autopcm, sorted = TRUE, warn.ord.colour = "red")
+        
+        print(plot)
+        
+        TRUE
+        
+      },
+      
+      
+      ### fit plot----------------
+      
+      
+      
+      .prepareInfitPlot = function(data) {
         # data <- self$data
         
         step <- self$options$step
@@ -1112,7 +1069,7 @@ raschClass <- if (requireNamespace('jmvcore'))
           n.c = 1
         )
         
-        infit <- res$item.par$in.out[,1]
+        infit <- res$item.par$in.out[, 1]
         
         item <- self$options$vars
         nitems <- length(item)
@@ -1120,13 +1077,12 @@ raschClass <- if (requireNamespace('jmvcore'))
         
         infit <- NA
         
-        for(i in 1:nitems){
-          
-          infit[i] <- res$item.par$in.out[,1][i]
+        for (i in 1:nitems) {
+          infit[i] <- res$item.par$in.out[, 1][i]
           
         }
         
-        infit1<- data.frame(item,infit)
+        infit1 <- data.frame(item, infit)
         
         #self$results$text$setContent(infit1)
         
@@ -1135,48 +1091,56 @@ raschClass <- if (requireNamespace('jmvcore'))
         image$setState(infit1)
         
         
-      }, 
+      },
       
-      .inPlot = function(image, ggtheme, theme,...) {
-        
+      .inPlot = function(image, ggtheme, theme, ...) {
         if (is.null(image$state))
           return(FALSE)
         
         # inplot <- self$options$inplot
-        # 
+        #
         # if (!inplot)
         #   return()
         
         infit1 <- image$state
         
         
-        plot <- ggplot(infit1, aes(x = item, y=infit)) + 
-          geom_point(shape = 4, color = 'black', 
-                     fill = 'white', size = 3, stroke = 2) +
-         
-          geom_hline(yintercept = 1.5,linetype = "dotted", color='red', size=1.5) +
-          geom_hline(yintercept = 0.5,linetype = "dotted", color='red', size=1.5) 
-          #ggtitle("Item Infit")
+        plot <- ggplot(infit1, aes(x = item, y = infit)) +
+          geom_point(
+            shape = 4,
+            color = 'black',
+            fill = 'white',
+            size = 3,
+            stroke = 2
+          ) +
+          
+          geom_hline(
+            yintercept = 1.5,
+            linetype = "dotted",
+            color = 'red',
+            size = 1.5
+          ) +
+          geom_hline(
+            yintercept = 0.5,
+            linetype = "dotted",
+            color = 'red',
+            size = 1.5
+          )
+        #ggtitle("Item Infit")
         
-        plot <- plot+ggtheme
+        plot <- plot + ggtheme
         
         if (self$options$angle > 0) {
-          plot <- plot + ggplot2::theme(
-            axis.text.x = ggplot2::element_text(
-              angle = self$options$angle, hjust = 1
-            )
-          )
+          plot <- plot + ggplot2::theme(axis.text.x = ggplot2::element_text(angle = self$options$angle, hjust = 1))
         }
         
         
         print(plot)
         TRUE
         
-      }, 
+      },
       
-      .prepareOutfitPlot=function(data){
-        
-        
+      .prepareOutfitPlot = function(data) {
         # data <- self$data
         
         step <- self$options$step
@@ -1193,7 +1157,7 @@ raschClass <- if (requireNamespace('jmvcore'))
           n.c = 1
         )
         
-        outfit <- res$item.par$in.out[,3]
+        outfit <- res$item.par$in.out[, 3]
         
         item <- self$options$vars
         nitems <- length(item)
@@ -1201,13 +1165,12 @@ raschClass <- if (requireNamespace('jmvcore'))
         
         outfit <- NA
         
-        for(i in 1:nitems){
-          
-          outfit[i] <- res$item.par$in.out[,3][i]
+        for (i in 1:nitems) {
+          outfit[i] <- res$item.par$in.out[, 3][i]
           
         }
         
-        outfit1<- data.frame(item,outfit)
+        outfit1 <- data.frame(item, outfit)
         
         #self$results$text$setContent(infit1)
         
@@ -1216,13 +1179,12 @@ raschClass <- if (requireNamespace('jmvcore'))
         image$setState(outfit1)
         
         
-      },     
+      },
       
-  
-      .outPlot = function(image, ggtheme, theme,...) {
-        
+      
+      .outPlot = function(image, ggtheme, theme, ...) {
         # outplot <- self$options$outplot
-        # 
+        #
         # if (!outplot)
         #   return()
         
@@ -1232,22 +1194,33 @@ raschClass <- if (requireNamespace('jmvcore'))
         outfit1 <- image$state
         
         
-        plot <- ggplot(outfit1, aes(x = item, y=outfit)) + 
-          geom_point(shape = 4, color = 'black', 
-                     fill = 'white', size = 3, stroke = 2) +
-         
-          geom_hline(yintercept = 1.5,linetype = "dotted", color='red', size=1.5) +
-          geom_hline(yintercept = 0.5,linetype = "dotted", color='red', size=1.5) 
-          #ggtitle("Item Outfit")
+        plot <- ggplot(outfit1, aes(x = item, y = outfit)) +
+          geom_point(
+            shape = 4,
+            color = 'black',
+            fill = 'white',
+            size = 3,
+            stroke = 2
+          ) +
+          
+          geom_hline(
+            yintercept = 1.5,
+            linetype = "dotted",
+            color = 'red',
+            size = 1.5
+          ) +
+          geom_hline(
+            yintercept = 0.5,
+            linetype = "dotted",
+            color = 'red',
+            size = 1.5
+          )
+        #ggtitle("Item Outfit")
         
-        plot <- plot+ggtheme
+        plot <- plot + ggtheme
         
         if (self$options$angle > 0) {
-          plot <- plot + ggplot2::theme(
-            axis.text.x = ggplot2::element_text(
-              angle = self$options$angle, hjust = 1
-            )
-          )
+          plot <- plot + ggplot2::theme(axis.text.x = ggplot2::element_text(angle = self$options$angle, hjust = 1))
         }
         
         
@@ -1255,234 +1228,252 @@ raschClass <- if (requireNamespace('jmvcore'))
         print(plot)
         TRUE
         
-      },    
+      },
       
-      .prepareIccPlot=function(data){
-        
+      .prepareIccPlot = function(data) {
         num <- self$options$num
-      
-         if (self$options$step>=2)
+        
+        if (self$options$step >= 2)
           return()
-          
+        
         erm.res <- eRm::RM(data)
-      
+        
         image <- self$results$plot1
         image$setState(erm.res)
         
-      
+        
       },
       
-      .plot1 = function(image,...) {
-        
+      .plot1 = function(image, ...) {
         num <- self$options$num
         
-        if (self$options$step>=2)
+        if (self$options$step >= 2)
           return()
         
         # plot1 <- self$options$plot1
-        # 
+        #
         # if (!plot1)
         #   return()
-      
+        
         erm.res <- image$state
         library(eRm)
-        plot1 <- plotICC(erm.res, 
-                              item.subset= num,
-                              empICC=list("raw",type="b",col="blue",lty="dotted"),
-                              empCI=list())
+        plot1 <- plotICC(
+          erm.res,
+          item.subset = num,
+          empICC = list(
+            "raw",
+            type = "b",
+            col = "blue",
+            lty = "dotted"
+          ),
+          empCI = list()
+        )
         
         
         print(plot1)
         TRUE
         
-      
+        
       },
-    
-     
-     .plot2 = function(image,...) {
-       
-       num <- self$options$num
-       
-       if (self$options$step<=1)
-         return()
-       
       
-       rsm.res <- image$state
-       
-       plot2 <- eRm::plotICC(rsm.res,
-                             legpos="top",
-                             item.subset= num)
-                            
-       
-       
-       print(plot2)
-       TRUE
-       
-       
-     },
-     
-     .preparePcmPlot=function(data){
-       
-       num <- self$options$num
-       
-       #   step <- self$options$step
-       
-       if (self$options$step<=1)
-         return()
-       
-       pcm.res <- eRm::PCM(data)
-       
-       #  rsm.res<- eRm::thresholds(rsm.res)
-       
-       image <- self$results$plot3
-       image$setState(pcm.res)
-       
-       
-     },
-     
-     .plot3 = function(image,...) {
-       
-       num <- self$options$num
-       
-       if (self$options$step<=1)
-         return()
-       
-       
-       pcm.res <- image$state
-       
-       plot3 <- eRm::plotICC(pcm.res, 
-                             legpos="top",
-                             item.subset= num)
-       
-       print(plot3)
-       TRUE
-       
-       
-     },
-     
       
-     .plot4 = function(image,ggtheme, theme,...) {
-       
-       if (is.null(image$state))
-         return(FALSE)
-       
-       pf <- image$state
-       
-       plot4<- ggplot2::ggplot(pf, aes(x = Measure, y = Value, shape = Fit))+
-         geom_point(size=3, stroke=2)+
-         
-         ggplot2::scale_shape_manual(values=c(3, 4))+
-         #ggplot2::scale_color_manual(values=c("red", "blue")+
-         ggplot2::coord_cartesian(xlim=c(-4, 4), ylim=c(0,4))+
-         ggplot2::geom_hline(yintercept = 1.5,linetype = "dotted", color='red', size=1.5)+ 
-         ggplot2::geom_hline(yintercept = 0.5,linetype = "dotted", color='red', size=1.5)    
-       
-       
-       plot4 <- plot4+ggtheme
-       
-       print(plot4)
-       TRUE
-     },
-     
-     .plot5 = function(image5,...) {
-       
-       if (is.null(image5$state))
-         return(FALSE)
-       
-       Residuals <- image5$state
-       
+      .plot2 = function(image, ...) {
+        num <- self$options$num
+        
+        if (self$options$step <= 1)
+          return()
+        
+        
+        rsm.res <- image$state
+        
+        plot2 <- eRm::plotICC(rsm.res, legpos = "top", item.subset = num)
+        
+        
+        
+        print(plot2)
+        TRUE
+        
+        
+      },
       
-       plot5 <- plot(Residuals)
-
-       print(plot5)
-       TRUE
-       
-       
-     },
-
-.prepareciPlot = function(data) {
- 
-  data <- self$data
- 
-  D1 <- self$options$mea1
-  D2 <- self$options$mea2
-  SE1 <- self$options$se1
-  SE2 <- self$options$se2
-  
-   data[[D1]] <- jmvcore::toNumeric(data[[D1]])
-   data[[D2]] <- jmvcore::toNumeric(data[[D2]])
-   data[[SE1]] <- jmvcore::toNumeric(data[[SE1]])
-   data[[SE2]] <- jmvcore::toNumeric(data[[SE2]])
-
-   dat <- data.frame(D1 = data[[D1]],
-                     D2 = data[[D2]],
-                     SE1 = data[[SE1]],
-                     SE2 = data[[SE2]])
-
-  # mean
-  MEAN1 <- mean(dat$D1)
-  MEAN2 <- mean(dat$D2)
- 
-  # Z-score for 95% confidence interval
-  Z <- 1.96
-  
-  # SE AND Upper/Lower control line 
-  SE12 <- sqrt(dat$SE1^2 + dat$SE2^2)
-  
-  UPPER1 <- (dat$D1 + dat$D2) / 2 + MEAN1 - Z * SE12 / 2
-  UPPER2 <- (dat$D1 + dat$D2) / 2 + MEAN2 + Z * SE12 / 2
-  LOWER1 <- (dat$D1 + dat$D2) / 2 + MEAN1 + Z * SE12 / 2
-  LOWER2 <- (dat$D1 + dat$D2) / 2 + MEAN2 - Z * SE12 / 2
- 
-  dat2 <- data.frame(D1=dat$D1, D2=dat$D2,
-                     UPPER1, UPPER2,
-                     LOWER1, LOWER2)
-
-  # arrange control line---
-  control_upper <- dplyr::arrange(dat2,UPPER1)
-  control_lower <- dplyr::arrange(dat2,LOWER1)
-  
-  image <- self$results$plot9
-  
-  state <- list(dat2, 
-                control_upper,
-                control_lower) 
-                
-  image$setState(state)
- 
-},
-
-.plot9 = function(image, ggtheme, theme, ...) {
-  
-  if (is.null(image$state))
-    return(FALSE)
-  
-  dat2 <- image$state[[1]]
-  control_upper <- image$state[[2]]
-  control_lower <- image$state[[3]]
-  
-  
-  plot9<- ggplot() +
-    geom_point(aes(x = dat2$D1, y = dat2$D2), 
-               color = "blue", alpha = 0.6, size=2) +  
-    geom_abline(slope = 1, intercept = 0, linetype = "dashed") +  
-    geom_line(data = control_upper, 
-              aes(x = dat2$UPPER1, y = dat2$UPPER2), 
-              color = "red", 
-              linetype = "solid") +  
-    geom_line(data = control_lower, 
-              aes(x = dat2$LOWER1, y = dat2$LOWER2), 
-              color = "red", linetype = "solid") +  
-    xlab("Measure 1") +
-    ylab("Measure 2") 
-   
-  plot9 <- plot9 + ggtheme
-  
-  print(plot9)
-  TRUE
-  
-},
-
+      .preparePcmPlot = function(data) {
+        num <- self$options$num
+        
+        #   step <- self$options$step
+        
+        if (self$options$step <= 1)
+          return()
+        
+        pcm.res <- eRm::PCM(data)
+        
+        #  rsm.res<- eRm::thresholds(rsm.res)
+        
+        image <- self$results$plot3
+        image$setState(pcm.res)
+        
+        
+      },
+      
+      .plot3 = function(image, ...) {
+        num <- self$options$num
+        
+        if (self$options$step <= 1)
+          return()
+        
+        
+        pcm.res <- image$state
+        
+        plot3 <- eRm::plotICC(pcm.res, legpos = "top", item.subset = num)
+        
+        print(plot3)
+        TRUE
+        
+        
+      },
+      
+      
+      .plot4 = function(image, ggtheme, theme, ...) {
+        if (is.null(image$state))
+          return(FALSE)
+        
+        pf <- image$state
+        
+        plot4 <- ggplot2::ggplot(pf, aes(x = Measure, y = Value, shape = Fit)) +
+          geom_point(size = 3, stroke = 2) +
+          
+          ggplot2::scale_shape_manual(values = c(3, 4)) +
+          #ggplot2::scale_color_manual(values=c("red", "blue")+
+          ggplot2::coord_cartesian(xlim = c(-4, 4), ylim = c(0, 4)) +
+          ggplot2::geom_hline(
+            yintercept = 1.5,
+            linetype = "dotted",
+            color = 'red',
+            size = 1.5
+          ) +
+          ggplot2::geom_hline(
+            yintercept = 0.5,
+            linetype = "dotted",
+            color = 'red',
+            size = 1.5
+          )
+        
+        
+        plot4 <- plot4 + ggtheme
+        
+        print(plot4)
+        TRUE
+      },
+      
+      .plot5 = function(image5, ...) {
+        if (is.null(image5$state))
+          return(FALSE)
+        
+        Residuals <- image5$state
+        
+        
+        plot5 <- plot(Residuals)
+        
+        print(plot5)
+        TRUE
+        
+        
+      },
+      
+      .prepareciPlot = function(data) {
+        data <- self$data
+        
+        D1 <- self$options$mea1
+        D2 <- self$options$mea2
+        SE1 <- self$options$se1
+        SE2 <- self$options$se2
+        
+        data[[D1]] <- jmvcore::toNumeric(data[[D1]])
+        data[[D2]] <- jmvcore::toNumeric(data[[D2]])
+        data[[SE1]] <- jmvcore::toNumeric(data[[SE1]])
+        data[[SE2]] <- jmvcore::toNumeric(data[[SE2]])
+        
+        dat <- data.frame(
+          D1 = data[[D1]],
+          D2 = data[[D2]],
+          SE1 = data[[SE1]],
+          SE2 = data[[SE2]]
+        )
+        
+        # mean
+        MEAN1 <- mean(dat$D1)
+        MEAN2 <- mean(dat$D2)
+        
+        # Z-score for 95% confidence interval
+        Z <- 1.96
+        
+        # SE AND Upper/Lower control line
+        SE12 <- sqrt(dat$SE1 ^ 2 + dat$SE2 ^ 2)
+        
+        UPPER1 <- (dat$D1 + dat$D2) / 2 + MEAN1 - Z * SE12 / 2
+        UPPER2 <- (dat$D1 + dat$D2) / 2 + MEAN2 + Z * SE12 / 2
+        LOWER1 <- (dat$D1 + dat$D2) / 2 + MEAN1 + Z * SE12 / 2
+        LOWER2 <- (dat$D1 + dat$D2) / 2 + MEAN2 - Z * SE12 / 2
+        
+        dat2 <- data.frame(D1 = dat$D1,
+                           D2 = dat$D2,
+                           UPPER1,
+                           UPPER2,
+                           LOWER1,
+                           LOWER2)
+        
+        # arrange control line---
+        control_upper <- dplyr::arrange(dat2, UPPER1)
+        control_lower <- dplyr::arrange(dat2, LOWER1)
+        
+        image <- self$results$plot9
+        
+        state <- list(dat2, control_upper, control_lower)
+        
+        image$setState(state)
+        
+      },
+      
+      .plot9 = function(image, ggtheme, theme, ...) {
+        if (is.null(image$state))
+          return(FALSE)
+        
+        dat2 <- image$state[[1]]
+        control_upper <- image$state[[2]]
+        control_lower <- image$state[[3]]
+        
+        
+        plot9 <- ggplot() +
+          geom_point(
+            aes(x = dat2$D1, y = dat2$D2),
+            color = "blue",
+            alpha = 0.6,
+            size = 2
+          ) +
+          geom_abline(slope = 1,
+                      intercept = 0,
+                      linetype = "dashed") +
+          geom_line(
+            data = control_upper,
+            aes(x = dat2$UPPER1, y = dat2$UPPER2),
+            color = "red",
+            linetype = "solid"
+          ) +
+          geom_line(
+            data = control_lower,
+            aes(x = dat2$LOWER1, y = dat2$LOWER2),
+            color = "red",
+            linetype = "solid"
+          ) +
+          xlab("Measure 1") +
+          ylab("Measure 2")
+        
+        plot9 <- plot9 + ggtheme
+        
+        print(plot9)
+        TRUE
+        
+      },
+      
       #### Helper functions =================================
       
       .cleanData = function() {
