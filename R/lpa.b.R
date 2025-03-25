@@ -161,7 +161,7 @@ lpaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           
           # get estimates--------------
           set.seed(1234)
-          e <- tidyLPA::get_estimates(res)
+          e <- tidyLPA::get_estimates(all$res)
           #################################
           e <- data.frame(e)
           names <- dimnames(e)[[1]]
