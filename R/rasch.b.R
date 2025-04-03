@@ -456,7 +456,7 @@ raschClass <- if (requireNamespace('jmvcore'))
         if (self$options$step > 1) {
           # if(self$options$rsm==TRUE || self$options$mlsplit1==TRUE || self$options$plot2==TRUE){
           
-          tab <- thresholds(rsm.res)
+          tab <- eRm::thresholds(rsm.res)
           tab <- tab$threshtable
           rsm <- data.frame(Reduce(rbind, tab))
           rsm <- rsm[, -1]
@@ -531,7 +531,7 @@ raschClass <- if (requireNamespace('jmvcore'))
         }
         
         if (self$options$pcm == TRUE) {
-          tab1 <- thresholds(pcm.res)
+          tab1 <- eRm::thresholds(pcm.res)
           tab1 <- tab1$threshtable
           pcm <- data.frame(Reduce(rbind, tab1))
           pcm <- pcm[, -1]
@@ -671,7 +671,7 @@ raschClass <- if (requireNamespace('jmvcore'))
           # std.resids <- item.fit$st.res
           
           if (self$options$step == 1 && self$options$type == 'RSM') {
-            p.res <- person.parameter(rasch)
+            p.res <- eRm::person.parameter(rasch)
             
             item.fit <- eRm::itemfit(p.res)
             std.resids <- item.fit$st.res
@@ -680,7 +680,7 @@ raschClass <- if (requireNamespace('jmvcore'))
           
           if (self$options$step > 1 && self$options$type == 'RSM') {
             #res <- eRm::RSM(data)
-            p.res <- person.parameter(rsm.res)
+            p.res <- eRm::person.parameter(rsm.res)
             
             item.fit <- eRm::itemfit(p.res)
             std.resids <- item.fit$st.res
@@ -688,7 +688,7 @@ raschClass <- if (requireNamespace('jmvcore'))
           
           if (self$options$step > 1 && self$options$type == 'PCM') {
             #res <- eRm::PCM(data)
-            p.res <- person.parameter(pcm.res)
+            p.res <- eRm::person.parameter(pcm.res)
             
             item.fit <- eRm::itemfit(p.res)
             std.resids <- item.fit$st.res
@@ -793,7 +793,7 @@ raschClass <- if (requireNamespace('jmvcore'))
         tlab <- self$options$tlab
         
         # additional 95 percent control line with user specified style
-        gofplot <- plotGOF(lr,
+        gofplot <- eRm::plotGOF(lr,
                            tlab = tlab,
                            ctrline = list(
                              gamma = 0.95,
@@ -1247,8 +1247,11 @@ raschClass <- if (requireNamespace('jmvcore'))
       .plot1 = function(image, ...) {
         num <- self$options$num
         
-        if (self$options$step >= 2)
-          return()
+        if (is.null(image$state))
+          return(FALSE)
+        
+        # if (self$options$step >= 2)
+        #   return()
         
         # plot1 <- self$options$plot1
         #
@@ -1256,8 +1259,7 @@ raschClass <- if (requireNamespace('jmvcore'))
         #   return()
         
         erm.res <- image$state
-        library(eRm)
-        plot1 <- plotICC(
+        plot1 <- eRm::plotICC(
           erm.res,
           item.subset = num,
           empICC = list(
