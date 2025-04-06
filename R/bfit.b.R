@@ -1,5 +1,6 @@
 # This file is a generated template, your changes will not be overwritten
 
+
 bfitClass <- if (requireNamespace('jmvcore'))
   R6::R6Class(
     "bfitClass",
@@ -200,9 +201,6 @@ bfitClass <- if (requireNamespace('jmvcore'))
             }
           }
         }
-        
-        
-        
         ### Caution ####
         
         # When the estimates  do not converged(for example, all 0 or 1)

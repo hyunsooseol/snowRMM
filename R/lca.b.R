@@ -118,17 +118,6 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           # populate output variables-----
           
           private$.populateOutputs(results)
-          
-          # populated cell percentages in a latent class model-----
-          
-          # private$.populateCellOutputs(results)
-          
-          # populated posterior probabilities--
-          
-          # private$.populatePosteriorOutputs(results)
-          
-          
-          
         }
       },
       
@@ -137,15 +126,11 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         # data(values)
         # f <- cbind(A,B,C,D)~1
         # res<- poLCA::poLCA(f,values,nclass=2, na.rm = F,calc.se = FALSE)
-        
-        
         nc <- self$options$nc
         
         ############ Construct formula###################
         
         vars <- self$options$vars
-        
-        
         vars <- vapply(vars, function(x)
           jmvcore::composeTerm(x), '')
         vars <- paste0(vars, collapse = ',')
@@ -161,8 +146,6 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           
           formula <- as.formula(paste0('cbind(', vars, ') ~', covs))
         }
-        
-        
         ################ Model Estimates############################
         set.seed(1126)
         res <- poLCA::poLCA(formula,
@@ -173,8 +156,6 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         
         
         ###############################################################
-        
-        
         #if( !is.null(self$options$covs) ) {
         if (length(self$options$covs) >= 1 &&
             isTRUE(self$options$coef)) {
@@ -205,10 +186,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           out <- utils::capture.output(mzout())
           self$results$text$setContent(out)
         }
-        
-        
         # Model Fit---------
-        
         aic <- res$aic
         bic <- res$bic
         Chisq <- res$Chisq
@@ -221,10 +199,6 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         
         # Akaike Information Criterion 3
         aic3 <- (-2 * res$llik) + (3 * res$npar)
-        
-        
-        # self$results$text1$setContent(SABIC)
-        
         # Model comparison-------
         
         out <- NULL
@@ -252,41 +226,26 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           CAIC = (-2 * res$llik) + res$npar * (1 + log(res$N))
           
           df <- data.frame(aic, aic3, bic, SABIC, CAIC, loglik, Chisq, Gsq)
-          
-          
           if (is.null(out)) {
             out <- df
           } else {
             out <- rbind(out, df)
           }
         }
-        
         out <- out
-        
         # Elbow plot-------------
-        
         out1 <- out[, c(1:5)]
-        
-        
         cla <- c(1:self$options$nc)
-        
         out1 <- data.frame(out1, cla)
-        
-        # self$results$text1$setContent(out1)
-        
         colnames(out1) <- c('AIC', 'AIC3', 'BIC', 'SABIC', 'CAIC', 'Class')
-        
         elbow <- reshape2::melt(
           out1,
           id.vars = 'Class',
           variable.name = "Fit",
           value.name = 'Value'
         )
-        
         image <- self$results$plot3
         image$setState(elbow)
-        
-        
         # Caculating Chi and Gsp p values----------
         
         y <- res$y
@@ -312,74 +271,41 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         #########################################
         # ref:https://stackoverflow.com/questions/33000511/entropy-measure-polca-mplus
         # caculating R2_Entropy
-        
-        
         entropy <- function (p)
           sum(na.omit(-p * log(p))) #sum(-p*log(p))
         error_prior <- entropy(res$P) # Class proportions
         error_post <- mean(apply(res$posterior, 1, entropy))
         entro <- (error_prior - error_post) / error_prior
         #########################################################################
-        
         ####### result###############################
-        
         classprob <- res$P
         itemprob <- res$probs
-        
-        
         # cell frequencies-------
         cell <- res$predcell
-        
-        
         # output results------------
-        
         base::options(max.print = .Machine$integer.max)
         cm <- res$predclass
-        
-        
-        #self$results$text1$setContent(cm)
-        
-        
-        
         #Predicted cell percentages in a latent class model
         # pc<- poLCA::poLCA.predcell(lc=res,res$y)
-        
         # Posterior probabilities---------------
         #post <- res$posterior
-        
-        
         # plot----------
-        
         image <- self$results$plot
         image$setState(res)
-        
         # plot1------
-        
         lcModelProbs <- reshape2::melt(res$probs)
         colnames(lcModelProbs) <- c("Class", "Level", "value", "L1")
-        
         image1 <- self$results$plot1
         image1$setState(lcModelProbs)
         
         # profile plot2------
-        
         profile <- reshape2::melt(res$probs)
         colnames(profile) <- c("Class", "Level", "value", "Variable")
         levels(profile$Class) <- c(1:self$options$nc)
-        
         image2 <- self$results$plot2
-        
-        # nvars <- length(vars)
-        # width <- 700 + nvars * 40
-        # image2$setSize(width, 300)
-        
         image2$setState(profile)
-        
-        
         # log-likelihood--------
-        
         like <- res[["llik"]]
-        
         # R output----------------------
         
         if (isTRUE(self$options$r)) {
@@ -410,354 +336,112 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         
       },
       
-      
       # Model table-----
-      
       .populateFitTable = function(results) {
         table <- self$results$mf$fit
-        
-        nc <- self$options$nc
-        
-        like <- results$like
-        df <- results$df
-        aic <- results$aic
-        
-        aic3 <- results$aic3
-        
-        bic <- results$bic
-        entro <- results$entro
-        resid.df <- results$df
-        Gsq <- results$Gsq
-        gp <- results$gp
-        Chisq <- results$Chisq
-        cp <- results$cp
-        
-        SABIC <- results$SABIC
-        CAIC <- results$CAIC
-        
-        row <- list()
-        
-        row[['Class']] <- nc
-        row[['Log-likelihood']] <- like
-        row[['Resid.df']] <- df
-        row[['AIC']] <- aic
-        row[['AIC3']] <- aic3
-        row[['BIC']] <- bic
-        
-        row[['SABIC']] <- SABIC
-        row[['CAIC']] <- CAIC
-        
-        row[['Entropy']] <- entro
-        row[['Resid.df']] <- resid.df
-        row[['G\u00B2']] <- Gsq
-        row[['G\u00B2 p']] <- gp
-        row[['\u03C7\u00B2']] <- Chisq
-        row[['\u03C7\u00B2 p']] <- cp
-        
-        
+        row <- list(
+          'Class' = self$options$nc,
+          'Log-likelihood' = results$like,
+          'Resid.df' = results$df,
+          'AIC' = results$aic,
+          'AIC3' = results$aic3,
+          'BIC' = results$bic,
+          'SABIC' = results$SABIC,
+          'CAIC' = results$CAIC,
+          'Entropy' = results$entro,
+          'G\u00B2' = results$Gsq,
+          'G\u00B2 p' = results$gp,
+          '\u03C7\u00B2' = results$Chisq,
+          '\u03C7\u00B2 p' = results$cp
+        )
         table$setRow(rowNo = 1, values = row)
-        
-        
-        
       },
       
       # Model comparison table----------
-      
-      
       .populateModelTable = function(results) {
         table <- self$results$mf$comp
+        fit <- as.data.frame(results$out)
         
-        nc <- self$options$nc
-        
-        out <- results$out
-        
-        
-        fit <- data.frame(out)
-        
-        
-        names <- dimnames(fit)[[1]]
-        
-        
-        for (name in names) {
-          row <- list()
-          
-          row[["aic"]]   <-  fit[name, 1]
-          row[["aic3"]]   <-  fit[name, 2]
-          row[["bic"]] <-  fit[name, 3]
-          
-          row[["SABIC"]] <-  fit[name, 4]
-          row[["CAIC"]] <-  fit[name, 5]
-          
-          row[["loglik"]] <-  fit[name, 6]
-          row[["Chisq"]] <-  fit[name, 7]
-          row[["Gsq"]] <-  fit[name, 8]
-          
+        for (name in rownames(fit)) {
+          row <- as.list(fit[name, ])
+          names(row) <- c("aic",
+                          "aic3",
+                          "bic",
+                          "SABIC",
+                          "CAIC",
+                          "loglik",
+                          "Chisq",
+                          "Gsq")
           table$addRow(rowKey = name, values = row)
-          
         }
       },
-      
-      
-      
-      # Multinomial logit coefficients--------
-      
-      #  .populateLoTable= function(results) {
-      #
-      #
-      #    table <- self$results$lo
-      #
-      #    lo <- results$lo
-      #
-      #    coef<- as.data.frame(lo)
-      #
-      #
-      #    names <- dimnames(coef)[[1]]
-      #
-      #
-      #    dims <- dimnames(coef)[[2]]
-      #
-      #
-      #     for (dim in dims) {
-      #
-      #       table$addColumn(name = paste0(dim),
-      #                       type = 'text')
-      #     }
-      #
-      #
-      #     for (name in names) {
-      #
-      #       row <- list()
-      #
-      #       for(j in seq_along(dims)){
-      #
-      #         row[[dims[j]]] <- coef[name,j]
-      #
-      #       }
-      #
-      #       table$addRow(rowKey=name, values=row)
-      #
-      #     }
-      #
-      #  },
-      #
-      #
-      # # S.E of coefficients--------
-      #
-      # .populateLeTable= function(results) {
-      #
-      #   table <- self$results$le
-      #
-      #   le <- results$le
-      #
-      #   coef<- as.data.frame(le)
-      #
-      #
-      #   names <- dimnames(coef)[[1]]
-      #
-      #
-      #   dims <- dimnames(coef)[[2]]
-      #
-      #   for (dim in dims) {
-      #
-      #     table$addColumn(name = paste0(dim),
-      #                     type = 'text')
-      #   }
-      #
-      #
-      #   for (name in names) {
-      #
-      #     row <- list()
-      #
-      #     for(j in seq_along(dims)){
-      #
-      #       row[[dims[j]]] <- coef[name,j]
-      #
-      #     }
-      #
-      #     table$addRow(rowKey=name, values=row)
-      #
-      #   }
-      #
-      # },
-      #
-      
-      
-      
       # populate class probability table---------------
-      
       .populateClassTable = function(results) {
-        classprob <- results$classprob
-        
-        classprob <- as.data.frame(classprob)
-        
-        names <- dimnames(classprob)[[1]]
-        
-        #creating table--------
-        
+        classprob <- as.data.frame(results$classprob)
         table <- self$results$pro$cp
         
-        for (name in names) {
-          row <- list()
-          
-          row[['value']] <- classprob[name, 1]
-          
+        lapply(rownames(classprob), function(name) {
+          row <- list(value = classprob[name, 1])
           table$addRow(rowKey = name, values = row)
-          
-        }
-        
+        })
       },
       
       # populate item probability table---------------
-      
       .populateItemTable = function(results) {
         tables <- self$results$ip
-        
         itemprob <- results$itemprob
-        
         vars <- self$options$vars
-        
         for (i in seq_along(vars)) {
           item <- results$item[[vars[i]]]
-          
-          
           table <- tables[[i]]
-          
           names <- row.names(item)
           dims <- colnames(item)
-          
-          
           for (dim in dims) {
             table$addColumn(name = paste0(dim),
                             type = 'text',
                             combineBelow = TRUE)
           }
-          
-          
           for (name in names) {
             row <- list()
-            
             for (j in seq_along(dims)) {
               row[[dims[j]]] <- item[name, j]
-              
             }
-            
             table$addRow(rowKey = name, values = row)
-            
           }
-          
         }
-        
       },
-      
-      
-      
       # populate cell frequencies------------
-      
       .populateCfTable = function(results) {
         table <- self$results$pro$cf
-        
         cell <- results$cell
-        
         cell <- as.data.frame(cell)
-        
         names <-  dimnames(cell)[[1]]
         dims <- dimnames(cell)[[2]]
-        
-        
         for (dim in dims) {
           table$addColumn(name = paste0(dim), type = 'number')
         }
-        
-        
         for (name in names) {
           row <- list()
-          
           for (j in seq_along(dims)) {
             row[[dims[j]]] <- cell[name, j]
-            
           }
-          
           table$addRow(rowKey = name, values = row)
-          
         }
-        
-        
-        
       },
-      
-      
       # populate class membership-------
-      
-      
       .populateOutputs = function(results) {
         cm <- results$cm
-        
         if (self$options$cm
             && self$results$cm$isNotFilled()) {
           self$results$cm$setValues(cm)
-          
           self$results$cm$setRowNums(rownames(data))
-          
         }
       },
       
-      # Predicted cell percentages in a latent class model---
-      
-      # .populateCellOutputs = function(results) {
-      #
-      #   pc <- results$pc
-      #
-      #   if (self$options$pc
-      #       && self$results$pc$isNotFilled()) {
-      #
-      #
-      #     self$results$pc$setValues(pc)
-      #
-      #     self$results$pc$setRowNums(rownames(data))
-      #
-      #   }
-      # },
-      
-      # Posterior probabilities---------
-      
-      
-      # .populatePosteriorOutputs= function(results) {
-      #
-      #   post <- results$post
-      #
-      #   if (self$options$post
-      #       && self$results$post$isNotFilled()) {
-      #
-      #     keys <- 1:self$options$nc
-      #     measureTypes <- rep("continuous", self$options$nc)
-      #
-      #     titles <- paste(.("Class"), keys)
-      #     descriptions <- paste(.("Class"), keys)
-      #
-      #     self$results$post$set(
-      #       keys=keys,
-      #       titles=titles,
-      #       descriptions=descriptions,
-      #       measureTypes=measureTypes
-      #     )
-      #
-      #     self$results$post$setRowNums(rownames(data))
-      #
-      #     for (i in 1:self$options$nc) {
-      #       scores <- as.numeric(post[, i])
-      #       self$results$post$setValues(index=i, scores)
-      #     }
-      #
-      #
-      #   }
-      # },
-      #
-      #
+      #plot---
       .plot = function(image, ...) {
         if (is.null(image$state))
           return(FALSE)
-        
-        
         x <- image$state
         
         ### plot function-----
@@ -849,26 +533,19 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
             }
             par(mfrow = c(1, 1), mar = c(5, 4, 4, 2) + 0.1)
           }
-        
         plot <-  plot.poLCA(x)
-        
         print(plot)
         TRUE
-        
-        
       },
-      
       
       .plot1 = function(image1, ggtheme, theme, ...) {
         if (is.null(image1$state))
           return(FALSE)
-        
-        
         lcModelProbs <- image1$state
         
         plot1 <- ggplot2::ggplot(lcModelProbs, aes(x = Class, y = value, fill = Level)) +
           geom_bar(stat = "identity", position = "stack") +
-          facet_wrap( ~ L1) +
+          facet_wrap(~ L1) +
           scale_x_discrete("Class", expand = c(0, 0)) +
           scale_y_continuous("Proportion", expand = c(0, 0)) +
           #  scale_fill_discrete("Factor Level") +
@@ -879,22 +556,17 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         if (self$options$angle > 0) {
           plot1 <- plot1 + ggplot2::theme(axis.text.x = ggplot2::element_text(angle = self$options$angle, hjust = 1))
         }
-        
-        
         print(plot1)
         TRUE
-        
       },
       
       .plot2 = function(image2, ggtheme, theme, ...) {
         if (is.null(image2$state))
           return(FALSE)
-        
-        
         profile <- image2$state
         
         plot2 <- ggplot2::ggplot(profile, aes(x = Variable, y = value, group = Class)) +
-          facet_wrap( ~ Level) +
+          facet_wrap(~ Level) +
           geom_line(aes(color = Class), size = 1.1) +
           geom_point(aes(color = Class), size = 3)
         
@@ -903,35 +575,21 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         if (self$options$angle > 0) {
           plot2 <- plot2 + ggplot2::theme(axis.text.x = ggplot2::element_text(angle = self$options$angle, hjust = 1))
         }
-        
         print(plot2)
         TRUE
-        
       },
       
       .plot3 = function(image, ggtheme, theme, ...) {
         if (is.null(image$state))
           return(FALSE)
-        
         elbow <- image$state
-        
-        
         plot3 <- ggplot2::ggplot(elbow, ggplot2::aes(x = Class, y = Value, color = Fit)) +
           ggplot2::geom_line(size = 1.1) +
           ggplot2::geom_point(size = 3) +
           ggplot2::scale_x_continuous(breaks = seq(1, length(elbow$Class), by = 1))
-        
-        # plot3 <- ggplot2::ggplot(elbow,aes(x = Class, y = Value, group = Fit))+
-        #   geom_line(size=1.1,aes(color=Fit))+
-        #   geom_point(size=3,aes(color=Fit))
-        #
-        
         plot3 <- plot3 + ggtheme
-        
-        
         print(plot3)
         TRUE
-        
       },
       
       ### Helper functions =================================
@@ -957,8 +615,141 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         
         return(data)
       }
-      
-      
-      
     )
   )
+
+
+# Multinomial logit coefficients--------
+
+#  .populateLoTable= function(results) {
+#
+#
+#    table <- self$results$lo
+#
+#    lo <- results$lo
+#
+#    coef<- as.data.frame(lo)
+#
+#
+#    names <- dimnames(coef)[[1]]
+#
+#
+#    dims <- dimnames(coef)[[2]]
+#
+#
+#     for (dim in dims) {
+#
+#       table$addColumn(name = paste0(dim),
+#                       type = 'text')
+#     }
+#
+#
+#     for (name in names) {
+#
+#       row <- list()
+#
+#       for(j in seq_along(dims)){
+#
+#         row[[dims[j]]] <- coef[name,j]
+#
+#       }
+#
+#       table$addRow(rowKey=name, values=row)
+#
+#     }
+#
+#  },
+#
+#
+# # S.E of coefficients--------
+#
+# .populateLeTable= function(results) {
+#
+#   table <- self$results$le
+#
+#   le <- results$le
+#
+#   coef<- as.data.frame(le)
+#
+#
+#   names <- dimnames(coef)[[1]]
+#
+#
+#   dims <- dimnames(coef)[[2]]
+#
+#   for (dim in dims) {
+#
+#     table$addColumn(name = paste0(dim),
+#                     type = 'text')
+#   }
+#
+#
+#   for (name in names) {
+#
+#     row <- list()
+#
+#     for(j in seq_along(dims)){
+#
+#       row[[dims[j]]] <- coef[name,j]
+#
+#     }
+#
+#     table$addRow(rowKey=name, values=row)
+#
+#   }
+#
+# },
+#
+
+# Predicted cell percentages in a latent class model---
+
+# .populateCellOutputs = function(results) {
+#
+#   pc <- results$pc
+#
+#   if (self$options$pc
+#       && self$results$pc$isNotFilled()) {
+#
+#
+#     self$results$pc$setValues(pc)
+#
+#     self$results$pc$setRowNums(rownames(data))
+#
+#   }
+# },
+
+# Posterior probabilities---------
+
+
+# .populatePosteriorOutputs= function(results) {
+#
+#   post <- results$post
+#
+#   if (self$options$post
+#       && self$results$post$isNotFilled()) {
+#
+#     keys <- 1:self$options$nc
+#     measureTypes <- rep("continuous", self$options$nc)
+#
+#     titles <- paste(.("Class"), keys)
+#     descriptions <- paste(.("Class"), keys)
+#
+#     self$results$post$set(
+#       keys=keys,
+#       titles=titles,
+#       descriptions=descriptions,
+#       measureTypes=measureTypes
+#     )
+#
+#     self$results$post$setRowNums(rownames(data))
+#
+#     for (i in 1:self$options$nc) {
+#       scores <- as.numeric(post[, i])
+#       self$results$post$setValues(index=i, scores)
+#     }
+#
+#
+#   }
+# },
+#
+#

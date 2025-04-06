@@ -1,9 +1,5 @@
 
-# This file is a generated template, your changes will not be overwritten
-
 #' Mixture Rasch Analysis
-
-
 mixtureClass <- if (requireNamespace('jmvcore'))
   R6::R6Class(
     "mixtureClass",
@@ -101,7 +97,7 @@ mixtureClass <- if (requireNamespace('jmvcore'))
         }
       },
       
-      # compute results=====================================================
+      # compute results---
       
       .compute = function(data) {
         vars <- self$options$vars
@@ -128,30 +124,20 @@ mixtureClass <- if (requireNamespace('jmvcore'))
           x$item.par$delta.i)
         imeasure <- as.data.frame(imeasure)
         
-        
         ise <- sapply(res1$LatentClass, function(x)
           x$item.par$SE.delta.i)
         ise <- as.data.frame(ise)
         
-        
-        #  fit <- sapply(res1$LatentClass, function(x) x$item.par$in.out)
-        
         infit <- sapply(res1$LatentClass, function(x)
           x$item.par$in.out[, 1])
         infit <- as.data.frame(infit)
-        
-        
         outfit <- sapply(res1$LatentClass, function(x)
           x$item.par$in.out[, 3])
         outfit <- as.data.frame(outfit)
-        
-        
         # desc <- sapply(res1$LatentClass, function(x) x$item.par$itemDescriptives)
-        
         imean <- sapply(res1$LatentClass, function(x)
           x$item.par$itemDescriptives[, 1])
         imean <- as.data.frame(imean)
-        
         
         pbis <- sapply(res1$LatentClass, function(x)
           x$item.par$itemDescriptives[, 2])
@@ -160,20 +146,14 @@ mixtureClass <- if (requireNamespace('jmvcore'))
         ######### Person analysis####################
         
         # person measure--------------
-        
         pmeasure <- sapply(res1$LatentClass, function(x)
           x$person.par$theta)
         pmeasure <- as.data.frame(pmeasure)
-        
         # person error-------------------
-        
         pse <- sapply(res1$LatentClass, function(x)
           x$person.par$SE.theta)
         pse <- as.data.frame(pmeasure)
-        
-        
         # person fit--------------
-        
         pinfit <- sapply(res1$LatentClass, function(x)
           x$person.par$infit)
         pinfit <- as.data.frame(pinfit)
@@ -181,8 +161,6 @@ mixtureClass <- if (requireNamespace('jmvcore'))
         poutfit <- sapply(res1$LatentClass, function(x)
           x$person.par$outfit)
         poutfit <- as.data.frame(poutfit)
-        
-        
         # Person Outputs-------------------------
         #pmeasure--------------------------------
         
@@ -206,10 +184,7 @@ mixtureClass <- if (requireNamespace('jmvcore'))
             scores <- as.numeric(pmeasure[, i])
             self$results$pmeasure$setValues(index = i, scores)
           }
-          
-          
         }
-        
         #pse---------------------------------------
         
         if (self$options$pse == TRUE) {
@@ -232,12 +207,9 @@ mixtureClass <- if (requireNamespace('jmvcore'))
             scores <- as.numeric(pse[, i])
             self$results$pse$setValues(index = i, scores)
           }
-          
-          
         }
         
         #pinfit-------------------------------
-        
         if (self$options$pinfit == TRUE) {
           keys <- 1:self$options$nc
           measureTypes <- rep("continuous", self$options$nc)
@@ -258,8 +230,6 @@ mixtureClass <- if (requireNamespace('jmvcore'))
             scores <- as.numeric(pinfit[, i])
             self$results$pinfit$setValues(index = i, scores)
           }
-          
-          
         }
         
         #poutfit----------------------------------------
@@ -284,19 +254,13 @@ mixtureClass <- if (requireNamespace('jmvcore'))
             scores <- as.numeric(poutfit[, i])
             self$results$poutfit$setValues(index = i, scores)
           }
-          
-          
         }
-        
-        
-        #####################################################
         # model fit information------
         
         out <- NULL
         
         for (i in 1:nc) {
           set.seed(1234)
-          
           res1 <-
             mixRasch::mixRasch(
               data = data,
@@ -306,28 +270,16 @@ mixtureClass <- if (requireNamespace('jmvcore'))
             )
           
           model <- res1$info.fit
-          
           df <- data.frame(model)
-          
           if (is.null(out)) {
             out <- df
           } else {
             out <- rbind(out, df)
           }
         }
-        
         out <- out
-        
-        #self$results$text$setContent(out)
-        
-        #############################
-        
         # elbow plot----------
-        
         out1 <- out[, c(1:3)]
-        
-        
-        
         colnames(out1) <- c('AIC', 'BIC', 'CAIC')
         
         df <-  as.data.frame(out1)
@@ -338,63 +290,30 @@ mixtureClass <- if (requireNamespace('jmvcore'))
           variable.name = "Fit",
           value.name = 'Value'
         )
-        
-        #self$results$text$setContent(elbow)
-        
         image <- self$results$plot2
         image$setState(elbow)
-        
-        ###############################################
-        
         # number of class
-        
+        set.seed(1234)
         res0 <- mixRasch::getEstDetails(res1)
-        
         class <- res0$nC
         
         # Average Theta Values
-        
+        set.seed(1234)
         average <- mixRaschTools::avg.theta(res1)
-        
-        
-        # average theta bar plot----------
-        
-        # df<-  as.data.frame(average)
-        # df$class <- seq.int(nrow(df))
-        # df<- reshape2::melt(df, id.vars=c("class"))
-        #
-        # image1 <- self$results$plot1
-        # image1$setState(df)
-        #
         # class membership-------------
-        
         pclass <- res1$class
         mem <- as.numeric(apply(pclass, 1, which.max))
-        
-        
         if (self$options$pmember == TRUE) {
           mem <- as.factor(mem)
-          
           self$results$pmember$setRowNums(rownames(data))
           self$results$pmember$setValues(mem)
-          
         }
-        
-        
-        
-        
-        
-        
         # Person density across class-------------
-        
         colnames(pmeasure) <- c(1:self$options$nc)
         dat <- reshape2::melt(pmeasure, variable.name = "Class", value.name =
                                 'Measure')
-        
         image <- self$results$plot3
         image$setState(dat)
-        
-        
         
         results <-
           list(
@@ -412,86 +331,45 @@ mixtureClass <- if (requireNamespace('jmvcore'))
             'pse' = pse,
             'pinfit' = pinfit,
             'poutfit' = poutfit
-            
-            
           )
-        
-        
       },
       
       # populate Model information table-----
-      
       .populateModelTable = function(results) {
         table <- self$results$item$fit
+        fit <- as.data.frame(results$out)
         
-        nc <- self$options$nc
+        # 열 이름을 명시적으로 설정 (필요 시)
+        colnames(fit) <- c("aic", "bic", "caic", "loglik", "parm", "person")
         
-        out <- results$out
-        
-        
-        fit <- data.frame(out)
-        
-        # self$results$text$setContent(fit)
-        
-        names <- dimnames(fit)[[1]]
-        
-        
-        for (name in names) {
-          row <- list()
-          
-          row[["aic"]]   <-  fit[name, 1]
-          row[["bic"]] <-  fit[name, 2]
-          row[["caic"]] <-  fit[name, 3]
-          row[["loglik"]] <-  fit[name, 4]
-          row[["parm"]] <-  fit[name, 5]
-          row[["person"]] <-  fit[name, 6]
-          
+        # lapply를 사용하여 각 행(row)을 처리
+        lapply(rownames(fit), function(name) {
+          row <- as.list(fit[name, ])
           table$addRow(rowKey = name, values = row)
-          
-        }
+        })
       },
-      
-      
       # populate Item Statistics table-----
-      
       .populateImeasureTable = function(results) {
         table <- self$results$item$imeasure
-        
         nc <- self$options$nc
-        
         vars <- self$options$vars
-        
-        
-        #result---
-        
-        
         imeasure <- results$imeasure
-        
-        
         nclass <- results$class
-        
         if (nclass > 1) {
           for (i in 2:nclass)
-            
             table$addColumn(
               name = paste0("pc", i),
               title = as.character(i),
               type = 'number',
               superTitle = 'Class'
             )
-          
         }
-        
         for (i in seq_along(vars)) {
           row <- list()
-          
-          
           for (j in 1:nclass) {
             row[[paste0("pc", j)]] <- imeasure[i, j]
           }
-          
           table$addRow(rowKey = i, values = row)
-          
         }
         
         # Prepare Data For Item Plot -------
@@ -512,232 +390,148 @@ mixtureClass <- if (requireNamespace('jmvcore'))
       
       .populateIseTable = function(results) {
         table <- self$results$item$ise
-        
         nc <- self$options$nc
-        
         vars <- self$options$vars
-        
-        #result---
-        
         ise <- results$ise
-        
         nclass <- results$class
         
         if (nclass > 1) {
           for (i in 2:nclass)
-            
             table$addColumn(
               name = paste0("pc", i),
               title = as.character(i),
               type = 'number',
               superTitle = 'Class'
             )
-          
         }
-        
         for (i in seq_along(vars)) {
           row <- list()
-          
-          
           for (j in 1:nclass) {
             row[[paste0("pc", j)]] <- ise[i, j]
           }
-          
           table$addRow(rowKey = i, values = row)
-          
         }
       },
       
-      
+      #---
       .populateImeanTable = function(results) {
         table <- self$results$item$imean
-        
         nc <- self$options$nc
-        
         vars <- self$options$vars
-        
-        #result---
-        
         imean <- results$imean
-        
         nclass <- results$class
-        
         if (nclass > 1) {
           for (i in 2:nclass)
-            
             table$addColumn(
               name = paste0("pc", i),
               title = as.character(i),
               type = 'number',
               superTitle = 'Class'
             )
-          
         }
-        
         for (i in seq_along(vars)) {
           row <- list()
-          
-          
           for (j in 1:nclass) {
             row[[paste0("pc", j)]] <- imean[i, j]
           }
-          
           table$addRow(rowKey = i, values = row)
-          
         }
       },
       
       
       .populateInfitTable = function(results) {
         table <- self$results$item$infit
-        
         nc <- self$options$nc
-        
         vars <- self$options$vars
-        
-        #result---
-        
         infit <- results$infit
-        
         nclass <- results$class
         
         if (nclass > 1) {
           for (i in 2:nclass)
-            
             table$addColumn(
               name = paste0("pc", i),
               title = as.character(i),
               type = 'number',
               superTitle = 'Class'
             )
-          
         }
-        
         for (i in seq_along(vars)) {
           row <- list()
-          
-          
           for (j in 1:nclass) {
             row[[paste0("pc", j)]] <- infit[i, j]
           }
-          
           table$addRow(rowKey = i, values = row)
-          
         }
       },
       
       .populateOutfitTable = function(results) {
         table <- self$results$item$outfit
-        
         nc <- self$options$nc
-        
         vars <- self$options$vars
-        
-        #result---
-        
         outfit <- results$outfit
-        
         nclass <- results$class
-        
         if (nclass > 1) {
           for (i in 2:nclass)
-            
             table$addColumn(
               name = paste0("pc", i),
               title = as.character(i),
               type = 'number',
               superTitle = 'Class'
             )
-          
         }
-        
         for (i in seq_along(vars)) {
           row <- list()
-          
-          
           for (j in 1:nclass) {
             row[[paste0("pc", j)]] <- outfit[i, j]
           }
-          
           table$addRow(rowKey = i, values = row)
-          
         }
       },
       
-      
       .populatePbisTable = function(results) {
         table <- self$results$item$pbis
-        
         nc <- self$options$nc
-        
         vars <- self$options$vars
-        
-        #result---
-        
         pbis <- results$pbis
-        
         nclass <- results$class
-        
         if (nclass > 1) {
           for (i in 2:nclass)
-            
             table$addColumn(
               name = paste0("pc", i),
               title = as.character(i),
               type = 'number',
               superTitle = 'Class'
             )
-          
         }
-        
         for (i in seq_along(vars)) {
           row <- list()
-          
-          
           for (j in 1:nclass) {
             row[[paste0("pc", j)]] <- pbis[i, j]
           }
-          
           table$addRow(rowKey = i, values = row)
-          
         }
       },
       
       # populate Average theta table-----
-      
       .populateAverageTable = function(results) {
         nc <- self$options$nc
-        
         table <- self$results$person$average
-        
-        #results---------
-        
         value <- results$average
         value <- as.matrix(value)
-        
-        
         for (i in seq_len(nc)) {
           row <- list()
-          
           row[["value"]] <- value[i, 1]
-          
           table$setRow(rowNo = i, values = row)
         }
-        
       },
       
-      #  Item plot--------------
+      # plot--------------
       
       .itemPlot = function(image, ggtheme, theme, ...) {
         if (is.null(image$state))
           return(FALSE)
-        
-        
         itemplot <- self$options$iplot
-        
         plotData <- image$state
-        
-        
         plot <- ggplot2::ggplot(plotData, aes(
           x = as.factor(item),
           y = measure,
@@ -756,70 +550,46 @@ mixtureClass <- if (requireNamespace('jmvcore'))
         if (self$options$angle > 0) {
           plot <- plot + ggplot2::theme(axis.text.x = ggplot2::element_text(angle = self$options$angle, hjust = 1))
         }
-        
-        
         print(plot)
         TRUE
-        
       },
       
       .plot3 = function(image, ggtheme, theme, ...) {
         if (is.null(image$state))
           return(FALSE)
-        
         dat <- image$state
-        
         plot3 <- ggplot(dat, aes(x = Measure, color = Class)) +
           geom_density()  +
           coord_cartesian(xlim = c(-5, 5))
-        
         plot3 <- plot3 + ggtheme
-        
         print(plot3)
         TRUE
-        
       },
-      
       
       .plot2 = function(image, ggtheme, theme, ...) {
         if (is.null(image$state))
           return(FALSE)
-        
         elbow <- image$state
-        
         plot2 <- ggplot2::ggplot(elbow, ggplot2::aes(x = Class, y = Value, color = Fit)) +
           ggplot2::geom_line(size = 1.1) +
           ggplot2::geom_point(size = 3) +
           ggplot2::scale_x_continuous(breaks = seq(1, length(elbow$Class), by = 1))
-        
-        
         plot2 <- plot2 + ggtheme
-        
-        
         print(plot2)
         TRUE
-        
       },
-      
-      
       #--------------------------
       
       .cleanData = function() {
         items <- self$options$vars
-        
         data <- list()
-        
         for (item in items)
           data[[item]] <-
           jmvcore::toNumeric(self$data[[item]])
-        
         attr(data, 'row.names') <- seq_len(length(data[[1]]))
         attr(data, 'class') <- 'data.frame'
         data <- jmvcore::naOmit(data)
-        
         return(data)
       }
-      
-      
     )
   )

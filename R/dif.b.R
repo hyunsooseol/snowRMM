@@ -16,8 +16,6 @@ difClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           self$results$instructions$setVisible(visible = TRUE)
           
         }
-        
-        
         self$results$instructions$setContent(private$.htmlwidget$generate_accordion(
           title = "Instructions",
           content = paste(
@@ -30,17 +28,12 @@ difClass <- if (requireNamespace('jmvcore', quietly = TRUE))
             '</ul></div></div>'
             
           )
-          
         ))
-        
-        
         if (isTRUE(self$options$plot1)) {
           width <- self$options$width1
           height <- self$options$height1
           self$results$plot1$setSize(width, height)
         }
-        
-        
         if (isTRUE(self$options$plot2)) {
           width <- self$options$width2
           height <- self$options$height2
@@ -87,8 +80,6 @@ difClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           self$setStatus('complete')
         
       },
-      
-      
       ###############################################################
       .run = function() {
         #   vars <- self$options$vars
@@ -105,8 +96,6 @@ difClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         # # data is now all of the appropriate type we can begin!
         #   data <- na.omit(data)
         #   data <- jmvcore::select(data, self$options$vars)
-        
-        
         data <- self$data
         groupVarName <- self$options$facs
         vars <- self$options$vars
@@ -136,8 +125,6 @@ difClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         # #store results from item comparisons in an object called "comparisons"
         # comparisons <- as.data.frame(subgroup_diffs$coef.table)
         #
-        
-        
         if (self$options$model == 'dicho') {
           dicho <- eRm::RM(data[, -1])
           subgroup_diffs <- eRm::Waldtest(dicho, splitcr = data[[groupVarName]])
@@ -154,21 +141,12 @@ difClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           
           for (i in seq_along(items)) {
             row <- list()
-            
             row[["zstat"]] <- z[i]
-            
             row[["p"]] <- p[i]
-            
-            
             table$setRow(rowKey = items[i], values = row)
           }
-          
-          
           # z plot1---------
-          
-          
           comparison <- as.data.frame(subgroup_diffs$coef.table)
-          
           image1 <- self$results$plot1
           image1$setState(comparison)
           
@@ -206,21 +184,15 @@ difClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           
           for (i in seq_along(items)) {
             row <- list()
-            
-            
             row[["over"]] <- over[i]
             row[["se"]] <- se[i]
             row[["g1"]] <- g1[i]
             row[["se1"]] <- se1[i]
             row[["g2"]] <- g2[i]
             row[["se2"]] <- se2[i]
-            
             table$setRow(rowKey = items[i], values = row)
           }
-          
-          
           # Melting for line plot--------------------------
-          
           comp1 <- data.frame(self$options$vars,
                               over,
                               subgroup_1_diffs,

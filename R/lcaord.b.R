@@ -33,8 +33,6 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         return(private$.desc_cache)
       }
     ),
-    
-    
     #---------------
     private = list(
       .htmlwidget = NULL,
@@ -45,12 +43,9 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly = TRUE))
       .init = function() {
         private$.htmlwidget <- HTMLWidget$new()
         
-        
         if (is.null(self$data) | is.null(self$options$vars)) {
           self$results$instructions$setVisible(visible = TRUE)
-          
         }
-        
         
         self$results$instructions$setContent(private$.htmlwidget$generate_accordion(
           title = "Instructions",
@@ -63,7 +58,6 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly = TRUE))
             '</ul></div></div>'
             
           )
-          
         ))
         
         if (isTRUE(self$options$plot1)) {
@@ -78,7 +72,6 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           self$results$plot$setSize(width, height)
         }
         
-        # 초기화 시 콜백 등록
         private$.registerCallbacks()
         
       },
@@ -103,7 +96,7 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         }
       },
       
-      ###################################
+#################################
       
       .run = function() {
         if (is.null(self$options$vars) ||
@@ -116,7 +109,6 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         }
         data <- as.data.frame(data)
         
-        
         if (is.null(private$.results_cache)) {
           set.seed(1234)
           #private$.checkpoint()
@@ -128,7 +120,6 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           fit <- tidySEM::table_fit(res)
           cp1 <- tidySEM::class_prob(res)
           cp <- data.frame(cp1$sum.posterior)
-          
           
           # save
           private$.results_cache <- list(
@@ -160,105 +151,58 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         }
       },
       
-      
       # Descriptives---
-      
       .populateDescTable = function() {
-        if (!isTRUE(self$options$desc) ||
-            is.null(private$.results_cache))
+        if (!isTRUE(self$options$desc) || is.null(private$.results_cache))
           return()
-        
         vars <- self$options$vars
-        retlist <- private$.results_cache
-        
         table <- self$results$desc
-        desc <- retlist$desc
-        
-        d <- data.frame(desc)
-        
-        for (i in seq_along(vars)) {
-          # # if not rowKey, add rowkey---
-          # if (!vars[i] %in% table$rowKeys) {
-          #   table$addRow(rowKey = vars[i])
-          # }
-          #
-          # if (table$getCell(rowKey=vars[i],'type')$isEmpty) {
-          #
-          #   table$setStatus('running')
-          
-          row <- list()
-          row[["type"]] <- d[[2]][i]
-          row[["n"]] <- d[[3]][i]
-          row[["missing"]] <- d[[4]][i]
-          row[["unique"]] <- d[[5]][i]
-          row[["mode"]] <- d[[6]][i]
+        d <- data.frame(private$.results_cache$desc)
+        lapply(seq_along(vars), function(i) {
+          row <- list(
+            type = d[[2]][i],
+            n = d[[3]][i],
+            missing = d[[4]][i],
+            unique = d[[5]][i],
+            mode = d[[6]][i]
+          )
           table$addRow(rowKey = vars[i], values = row)
-          # table$setStatus('complete')
-          # }
-        }
+        })
       },
       
       # model fit---
-      
       .populateFitTable = function() {
-        if (!isTRUE(self$options$fit) ||
-            is.null(private$.results_cache))
+        if (!isTRUE(self$options$fit) || is.null(private$.results_cache))
           return()
         
         retlist <- private$.results_cache
         table <- self$results$fit
-        
-        fit <- retlist$fit
-        fit <- t(fit)
-        df <- as.data.frame(fit)
-        names <- dimnames(df)[[1]]
-        
-        for (name in names) {
-          # # if not rowKey, add rowkey---
-          # if (!name %in% table$rowKeys) {
-          #   table$addRow(rowKey = name)
-          # }
-          #
-          # if (table$getCell(rowKey=name,'value')$isEmpty) {
-          #
-          #   table$setStatus('running')
-          
-          row <- list()
-          row[['value']] <- df[name, 1]
+        df <- as.data.frame(t(retlist$fit))
+        lapply(rownames(df), function(name) {
+          row <- list(value = df[name, 1])
           table$addRow(rowKey = name, values = row)
-          # table$setStatus('complete')
-          # }
-        }
+        })
       },
       
       # class size---
-      
       .populateClassSizeTable = function() {
-        if (!isTRUE(self$options$cp) ||
-            is.null(private$.results_cache))
+        if (!isTRUE(self$options$cp) || is.null(private$.results_cache))
           return()
         
         nc <- self$options$nc
         vars <- self$options$vars
-        retlist <- private$.results_cache
-        
         table <- self$results$cp
-        d <- retlist$cp
-        
-        for (i in seq_along(1:nc)) {
-          row <- list()
-          
-          row[["name"]] <- d[[1]][i]
-          row[["count"]] <- d[[2]][i]
-          row[["prop"]] <- d[[3]][i]
-          
+        d <- private$.results_cache$cp
+
+        lapply(seq_len(nc), function(i) {
+          row <- list(name = d[[1]][i],
+                      count = d[[2]][i],
+                      prop = d[[3]][i])
           table$addRow(rowKey = vars[i], values = row)
-        }
-        
+        })
       },
       
       # class member--
-      
       .populateClassMemberTable = function() {
         if (!isTRUE(self$options$mem) ||
             is.null(private$.results_cache))
@@ -271,16 +215,14 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         cp1 <- retlist$cp1
         
         mem <- data.frame(cp1$individual)
-        m <- mem$predicted
-        
-        m <- as.factor(m)
-        
+        m <- as.factor(mem$predicted)
+        # 
+        # m <- as.factor(m)
         if (self$options$mem
             && self$results$mem$isNotFilled()) {
           self$results$mem$setValues(m)
           self$results$mem$setRowNums(rownames(data))
         }
-        
       },
       
       # Response probilities plot---
@@ -294,8 +236,7 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         image <- self$results$plot
         image$setState(retlist$res)
       },
-      
-      
+
       # Bar plot---
       .setBarPlot = function() {
         if (!isTRUE(self$options$plot1) ||
@@ -312,8 +253,7 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         image <- self$results$plot1
         image$setState(df_plot)
       },
-      
-      
+
       # plot---
       
       .plot = function(image, ggtheme, theme, ...) {
@@ -321,18 +261,13 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           return(FALSE)
         
         res <- image$state
-        
         plot <- tidySEM::plot_prob(res, bw = TRUE)
-        
         plot <- plot + ggtheme
-        
         if (self$options$angle > 0) {
           plot <- plot + ggplot2::theme(axis.text.x = ggplot2::element_text(angle = self$options$angle, hjust = 1))
         }
-        
         print(plot)
         TRUE
-        
       },
       
       #Bar plot---
@@ -345,12 +280,104 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         
         library(ggplot2)
         plot1 <- ggplot(df_plot, aes(x = Value)) + geom_bar() +
-          facet_wrap( ~ time, scales = "free") + theme_bw()
+          facet_wrap(~ time, scales = "free") + theme_bw()
         
         plot1 <- plot1 + ggtheme
         print(plot1)
         TRUE
       }
-      
     )
   )
+
+# .populateDescTable = function() {
+#   if (!isTRUE(self$options$desc) ||
+#       is.null(private$.results_cache))
+#     return()
+#
+#   vars <- self$options$vars
+#   retlist <- private$.results_cache
+#
+#   table <- self$results$desc
+#   desc <- retlist$desc
+#
+#   d <- data.frame(desc)
+#
+#   for (i in seq_along(vars)) {
+#     # # if not rowKey, add rowkey---
+#     # if (!vars[i] %in% table$rowKeys) {
+#     #   table$addRow(rowKey = vars[i])
+#     # }
+#     #
+#     # if (table$getCell(rowKey=vars[i],'type')$isEmpty) {
+#     #
+#     #   table$setStatus('running')
+#
+#     row <- list()
+#     row[["type"]] <- d[[2]][i]
+#     row[["n"]] <- d[[3]][i]
+#     row[["missing"]] <- d[[4]][i]
+#     row[["unique"]] <- d[[5]][i]
+#     row[["mode"]] <- d[[6]][i]
+#     table$addRow(rowKey = vars[i], values = row)
+#     # table$setStatus('complete')
+#     # }
+#   }
+# },
+#
+
+
+# .populateFitTable = function() {
+#   if (!isTRUE(self$options$fit) ||
+#       is.null(private$.results_cache))
+#     return()
+#
+#   retlist <- private$.results_cache
+#   table <- self$results$fit
+#
+#   fit <- retlist$fit
+#   fit <- t(fit)
+#   df <- as.data.frame(fit)
+#   names <- dimnames(df)[[1]]
+#
+#   for (name in names) {
+#     # # if not rowKey, add rowkey---
+#     # if (!name %in% table$rowKeys) {
+#     #   table$addRow(rowKey = name)
+#     # }
+#     #
+#     # if (table$getCell(rowKey=name,'value')$isEmpty) {
+#     #
+#     #   table$setStatus('running')
+#
+#     row <- list()
+#     row[['value']] <- df[name, 1]
+#     table$addRow(rowKey = name, values = row)
+#     # table$setStatus('complete')
+#     # }
+#   }
+# },
+
+#
+# .populateClassSizeTable = function() {
+#   if (!isTRUE(self$options$cp) ||
+#       is.null(private$.results_cache))
+#     return()
+#
+#   nc <- self$options$nc
+#   vars <- self$options$vars
+#   retlist <- private$.results_cache
+#
+#   table <- self$results$cp
+#   d <- retlist$cp
+#
+#   for (i in seq_along(1:nc)) {
+#     row <- list()
+#
+#     row[["name"]] <- d[[1]][i]
+#     row[["count"]] <- d[[2]][i]
+#     row[["prop"]] <- d[[3]][i]
+#
+#     table$addRow(rowKey = vars[i], values = row)
+#   }
+#
+# },

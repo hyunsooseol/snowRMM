@@ -1,4 +1,5 @@
 
+
 # This file is a generated template, your changes will not be overwritten
 #' @importFrom magrittr %>%
 
@@ -67,7 +68,6 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
             '</ul></div></div>'
             
           )
-          
         ))
         
         if (isTRUE(self$options$plot1)) {
@@ -81,10 +81,7 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           height <- self$options$height
           self$results$plot$setSize(width, height)
         }
-        
-        #
         private$.registerCallbacks()
-        
       },
       
       #---
@@ -107,7 +104,6 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         }
       },
       #---------
-      
       .run = function() {
         vars <- self$options$vars
         
@@ -115,18 +111,14 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
             length(self$options$vars) < 3)
           return()
         
-        
         data <- self$data
         if (self$options$miss == 'listwise') {
           data <- jmvcore::naOmit(data)
         }
         data <- as.data.frame(data)
         
-        
         if (is.null(private$.results_cache)) {
           set.seed(1234)
-          #private$.checkpoint()
-          # compute using active binding
           res <- self$res
           desc <- self$desc
           
@@ -173,150 +165,81 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           
         }
       },
-      
-      
       # Descriptives---
-      
       .populateDescTable = function() {
-        if (!isTRUE(self$options$desc) ||
-            is.null(private$.results_cache))
+        if (!isTRUE(self$options$desc) || is.null(private$.results_cache))
           return()
         
         vars <- self$options$vars
-        
         table <- self$results$desc
-        res <- private$.results_cache
-        
-        desc <- res$desc
-        
-        d <- data.frame(desc)
-        
-        for (i in seq_along(vars)) {
-          # #if not rowKey, add rowkey---
-          # if (!vars[i] %in% table$rowKeys) {
-          #   table$addRow(rowKey = vars[i])
-          # }
-          #
-          # if (table$getCell(rowKey=vars[i],'n')$isEmpty) {
-          #
-          #   table$setStatus('running')
-          
-          row <- list()
-          row[["n"]] <- d[[2]][i]
-          row[["missing"]] <- d[[3]][i]
-          row[["mean"]] <- d[[4]][i]
-          row[["median"]] <- d[[5]][i]
-          row[["sd"]] <- d[[6]][i]
-          row[["min"]] <- d[[7]][i]
-          row[["max"]] <- d[[8]][i]
-          table$addRow(rowKey = vars[i], values = row) #setRaw
-          #  table$setStatus('complete')
-          # }
-        }
+        d <- as.data.frame(private$.results_cache$desc)
+        lapply(seq_along(vars), function(i) {
+          row <- list(
+            n = d[[2]][i],
+            missing = d[[3]][i],
+            mean = d[[4]][i],
+            median = d[[5]][i],
+            sd = d[[6]][i],
+            min = d[[7]][i],
+            max = d[[8]][i]
+          )
+          table$addRow(rowKey = vars[i], values = row)
+        })
       },
       
       # model fit---
       .populateFitTable = function() {
-        if (!isTRUE(self$options$fit) ||
-            is.null(private$.results_cache))
+        if (!isTRUE(self$options$fit) || is.null(private$.results_cache))
           return()
         
-        
         table <- self$results$fit
-        res <- private$.results_cache
+        df <- as.data.frame(t(private$.results_cache$fit))
         
-        fit <- res$fit
-        fit <- t(fit)
-        df <- as.data.frame(fit)
-        #names <- dimnames(df)[[1]]
-        names <- rownames(df)
-        
-        for (name in names) {
-          # # if not rowKey, add rowkey---
-          # if (!name %in% table$rowKeys) {
-          #   table$addRow(rowKey = name)
-          # }
-          # if (table$getCell(rowKey=name,'value')$isEmpty) {
-          #
-          #   table$setStatus('running')
-          
-          row <- list()
-          row[['value']] <- df[name, 1]
-          
+        lapply(rownames(df), function(name) {
+          row <- list(value = df[name, 1])
           table$addRow(rowKey = name, values = row)
-          # table$setStatus('complete')
-          # }
-        }
+        })
       },
-      
-      
       
       # parameter estimates---
       .populateEST = function() {
-        if (!isTRUE(self$options$fit) ||
-            is.null(private$.results_cache))
+        if (!isTRUE(self$options$fit) || is.null(private$.results_cache))
           return()
         
         table <- self$results$est
-        res <- private$.results_cache
+        e <- as.data.frame(private$.results_cache$para)
         
-        e <- res$para
-        e <- data.frame(e)
-        names <- dimnames(e)[[1]]
-        
-        for (name in names) {
-          # # if not rowKey, add rowkey---
-          # if (!name %in% table$rowKeys) {
-          #   table$addRow(rowKey = name)
-          # }
-          #
-          # if (table$getCell(rowKey=name,'cat')$isEmpty) {
-          #
-          #   table$setStatus('running')
-          
-          row <- list()
-          row[['cat']] <- e[name, 1]
-          row[['lhs']] <- e[name, 2]
-          row[['est']] <- e[name, 3]
-          row[['se']] <- e[name, 4]
-          row[['p']] <- e[name, 5]
-          row[['ci']] <- e[name, 6]
-          row[['na']] <- e[name, 7]
-          
+        lapply(rownames(e), function(name) {
+          row <- list(
+            cat = e[name, 1],
+            lhs = e[name, 2],
+            est = e[name, 3],
+            se = e[name, 4],
+            p = e[name, 5],
+            ci = e[name, 6],
+            na = e[name, 7]
+          )
           table$addRow(rowKey = name, values = row)
-          # table$setStatus('complete')
-          # }
-        }
+        })
       },
       
-      
       # class size---
-      
       .populateClassSizeTable = function() {
-        if (!isTRUE(self$options$cp) ||
-            is.null(private$.results_cache))
+        if (!isTRUE(self$options$cp) || is.null(private$.results_cache))
           return()
-        
         
         table <- self$results$cp
         nc <- self$options$nc
         vars <- self$options$vars
+        d <- private$.results_cache$cp
         
-        res <- private$.results_cache
-        d <- res$cp
-        
-        for (i in seq_along(1:nc)) {
-          row <- list()
-          
-          row[["name"]] <- d[[1]][i]
-          row[["count"]] <- d[[2]][i]
-          row[["prop"]] <- d[[3]][i]
-          
+        lapply(seq_len(nc), function(i) {
+          row <- list(name = d[[1]][i],
+                      count = d[[2]][i],
+                      prop = d[[3]][i])
           table$addRow(rowKey = vars[i], values = row)
-        }
-        
+        })
       },
-      
       
       # class member--
       .populateClassMemberTable = function() {
@@ -329,9 +252,8 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         
         cp1 <- res$cp1
         mem <- data.frame(cp1$individual)
-        m <- mem$predicted
-        
-        m <- as.factor(m)
+        m <- as.factor(mem$predicted)
+        #m <- as.factor(m)
         
         if (self$options$mem
             && self$results$mem$isNotFilled()) {
@@ -369,33 +291,24 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         if (!isTRUE(self$options$plot1) ||
             is.null(private$.results_cache))
           return()
-        #private$.checkpoint()
-        
         res <- private$.results_cache
-        
         # Trajectory plot---
         image <- self$results$plot
         image$setState(res$res)
       },
-      
-      
       # Plot---
-      
       .plot1 = function(image, ggtheme, theme, ...) {
         if (is.null(image$state))
           return(FALSE)
-        
         long <- image$state
-        
         library(ggplot2)
         plot1 <- ggplot(long, aes(x = value)) +
           geom_density() +
-          facet_wrap( ~ time) + theme_bw()
+          facet_wrap(~ time) + theme_bw()
         
         plot1 <- plot1 + ggtheme
         print(plot1)
         TRUE
-        
       },
       
       .plot = function(image, ggtheme, theme, ...) {
@@ -406,12 +319,145 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         plot <- tidySEM::plot_growth(tra,
                                      rawdata = self$options$raw,
                                      alpha_range = c(0, 0.05))
-        
         plot <- plot + ggtheme
         print(plot)
         TRUE
-        
       }
-      
     )
   )
+
+
+# .populateDescTable = function() {
+#   if (!isTRUE(self$options$desc) ||
+#       is.null(private$.results_cache))
+#     return()
+#
+#   vars <- self$options$vars
+#
+#   table <- self$results$desc
+#   res <- private$.results_cache
+#
+#   desc <- res$desc
+#
+#   d <- data.frame(desc)
+#
+#   for (i in seq_along(vars)) {
+#     # #if not rowKey, add rowkey---
+#     # if (!vars[i] %in% table$rowKeys) {
+#     #   table$addRow(rowKey = vars[i])
+#     # }
+#     #
+#     # if (table$getCell(rowKey=vars[i],'n')$isEmpty) {
+#     #
+#     #   table$setStatus('running')
+#
+#     row <- list()
+#     row[["n"]] <- d[[2]][i]
+#     row[["missing"]] <- d[[3]][i]
+#     row[["mean"]] <- d[[4]][i]
+#     row[["median"]] <- d[[5]][i]
+#     row[["sd"]] <- d[[6]][i]
+#     row[["min"]] <- d[[7]][i]
+#     row[["max"]] <- d[[8]][i]
+#     table$addRow(rowKey = vars[i], values = row) #setRaw
+#     #  table$setStatus('complete')
+#     # }
+#   }
+# },
+
+# .populateFitTable = function() {
+#   if (!isTRUE(self$options$fit) ||
+#       is.null(private$.results_cache))
+#     return()
+#
+#
+#   table <- self$results$fit
+#   res <- private$.results_cache
+#
+#   fit <- res$fit
+#   fit <- t(fit)
+#   df <- as.data.frame(fit)
+#   #names <- dimnames(df)[[1]]
+#   names <- rownames(df)
+#
+#   for (name in names) {
+#     # # if not rowKey, add rowkey---
+#     # if (!name %in% table$rowKeys) {
+#     #   table$addRow(rowKey = name)
+#     # }
+#     # if (table$getCell(rowKey=name,'value')$isEmpty) {
+#     #
+#     #   table$setStatus('running')
+#
+#     row <- list()
+#     row[['value']] <- df[name, 1]
+#
+#     table$addRow(rowKey = name, values = row)
+#     # table$setStatus('complete')
+#     # }
+#   }
+# },
+
+# .populateEST = function() {
+#   if (!isTRUE(self$options$fit) ||
+#       is.null(private$.results_cache))
+#     return()
+#
+#   table <- self$results$est
+#   res <- private$.results_cache
+#
+#   e <- res$para
+#   e <- data.frame(e)
+#   names <- dimnames(e)[[1]]
+#
+#   for (name in names) {
+#     # # if not rowKey, add rowkey---
+#     # if (!name %in% table$rowKeys) {
+#     #   table$addRow(rowKey = name)
+#     # }
+#     #
+#     # if (table$getCell(rowKey=name,'cat')$isEmpty) {
+#     #
+#     #   table$setStatus('running')
+#
+#     row <- list()
+#     row[['cat']] <- e[name, 1]
+#     row[['lhs']] <- e[name, 2]
+#     row[['est']] <- e[name, 3]
+#     row[['se']] <- e[name, 4]
+#     row[['p']] <- e[name, 5]
+#     row[['ci']] <- e[name, 6]
+#     row[['na']] <- e[name, 7]
+#
+#     table$addRow(rowKey = name, values = row)
+#     # table$setStatus('complete')
+#     # }
+#   }
+# },
+
+#
+# .populateClassSizeTable = function() {
+#   if (!isTRUE(self$options$cp) ||
+#       is.null(private$.results_cache))
+#     return()
+#
+#
+#   table <- self$results$cp
+#   nc <- self$options$nc
+#   vars <- self$options$vars
+#
+#   res <- private$.results_cache
+#   d <- res$cp
+#
+#   for (i in seq_along(1:nc)) {
+#     row <- list()
+#
+#     row[["name"]] <- d[[1]][i]
+#     row[["count"]] <- d[[2]][i]
+#     row[["prop"]] <- d[[3]][i]
+#
+#     table$addRow(rowKey = vars[i], values = row)
+#   }
+#
+# },
+#
