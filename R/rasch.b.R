@@ -31,16 +31,12 @@ raschClass <- if (requireNamespace('jmvcore'))
             '<li>Specify </b> the number of <b>Step</b> and model <b>Type</b> in the analysis option.</li>',
             '<li>Step is defined as number of <b>category-1</b>.</li>',
             '<li>The minimum and maximum values of a category must be the same across all items for <b>rating sclaes</b> with <b>eRm</b> R package.</li>',
-            '<li><b>Person Analysis</b> will be displayed in the datasheet.</li>',
             '<li>The <b>eRm</b> R package was used for the person-item map for PCM.</li>',
             '<li>Feature requests and bug reports can be made on my <a href="https://github.com/hyunsooseol/snowRMM/issues" target="_blank">GitHub</a>.</li>',
             '</ul></div></div>'
             
           )
-          
         ))
-        
-        
         if (self$options$ml1)
           self$results$tm$ml1$setNote("Note",
                                       "Number of categories should be the same for each item with eRm R package.")
@@ -77,8 +73,6 @@ raschClass <- if (requireNamespace('jmvcore'))
           
           self$results$plot5$setSize(width, height)
         }
-        
-        
         if (isTRUE(self$options$wrightmap)) {
           width <- self$options$width3
           height <- self$options$height3
@@ -397,18 +391,29 @@ raschClass <- if (requireNamespace('jmvcore'))
           mlsplit1 <- self$options$mlsplit1
           
           #Martin-lof test--------------
+          # set.seed(1234)
+          # ml1 <- eRm::MLoef(rsm.res, splitcr = mlsplit1)
+          # value <- ml1$LR
+          # df <- ml1$df
+          # p <- ml1$p.value
+          # table <- self$results$tm$ml1
+          # row <- list()
+          # row[['value']] <- value
+          # row[['df']] <- df
+          # row[['p']] <- p
+          # table$setRow(rowNo = 1, values = row)
           set.seed(1234)
           ml1 <- eRm::MLoef(rsm.res, splitcr = mlsplit1)
-          value <- ml1$LR
-          df <- ml1$df
-          p <- ml1$p.value
+          
           table <- self$results$tm$ml1
-          row <- list()
-          row[['value']] <- value
-          row[['df']] <- df
-          row[['p']] <- p
+          row <- list(
+            value = ml1$LR,
+            df = ml1$df,
+            p = ml1$p.value
+          )
           table$setRow(rowNo = 1, values = row)
-        }
+
+       }
         
         if (self$options$pcm == TRUE) {
           tab1 <- eRm::thresholds(pcm.res)
@@ -529,7 +534,7 @@ raschClass <- if (requireNamespace('jmvcore'))
           # std.resids <- item.fit$st.res
           
           if (self$options$step == 1 &&
-              self$options$type == 'RSM') {
+              (self$options$type == 'RSM' || self$options$type == 'PCM')) {
             set.seed(1234)
             p.res <- eRm::person.parameter(rasch)
             item.fit <- eRm::itemfit(p.res)

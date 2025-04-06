@@ -26,9 +26,7 @@ mixtureClass <- if (requireNamespace('jmvcore'))
             '<div style="text-align:justify;">',
             '<ul>',
             '<li>Specify the number of <b>Class, Step, and Type</b> in the Analysis option.</li>',
-            '<li>Highlight the variables and click the arrow to move it across into the <b>Variables</b> box.</li>',
-            '<li><b>Person membership</b> table will be displayed in the datasheet.</li>',
-            '<li>Rasch mixture model is estimated by <b>mixRasch</b> R package.</li>',
+            '<li>When <b>Step=1</b>, the partial credit model is not analyzed and an error occurs.</li>',
             '<li>Feature requests and bug reports can be made on my <a href="https://github.com/hyunsooseol/snowRMM/issues" target="_blank">GitHub</a>.</li>',
             '</ul></div></div>'
             
