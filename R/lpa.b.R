@@ -206,61 +206,72 @@ lpaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         # elbow plot----------
         
         if (isTRUE(self$options$plot2)) {
-          vars <- self$options$vars
-          nc <- self$options$nc
-          variances <- self$options$variances
-          covariances <- self$options$covariances
-          
-          data <- self$data
-          data <- jmvcore::naOmit(data)
-          
-          out <- NULL
-          
-          for (i in 1:self$options$nc) {
-            set.seed(1234)
-            res <- tidyLPA::estimate_profiles(
-              data,
-              n_profiles = i,
-              variances = variances,
-              covariances = covariances
-            )
-            
-            res <- res[[1]]
-            df <- data.frame(res$fit)
-            df <- t(df)
-            model <- df[1]
-            class <- df[2]
-            log <- df[3]
-            aic <- df[4]
-            awe <- df[5]
-            bic <- df[6]
-            caic <- df[7]
-            clc <- df[8]
-            kic <- df[9]
-            sabic <- df[10]
-            icl <- df[11]
-            entropy <- df[12]
-            df <- data.frame(model,
-                             log,
-                             aic,
-                             awe,
-                             bic,
-                             caic,
-                             clc,
-                             kic,
-                             sabic,
-                             icl,
-                             entropy,
-                             class)
-            if (is.null(out)) {
-              out <- df
-            } else {
-              out <- rbind(out, df)
-            }
-          }
-          out <- out
-          # Elbow plot---
-          out1 <- out[, c(3:10, 12), ]
+          # vars <- self$options$vars
+          # nc <- self$options$nc
+          # variances <- self$options$variances
+          # covariances <- self$options$covariances
+          #
+          # data <- self$data
+          # data <- jmvcore::naOmit(data)
+          #
+          # out <- NULL
+          #
+          # for (i in 1:self$options$nc) {
+          #   set.seed(1234)
+          #   res <- tidyLPA::estimate_profiles(
+          #     data,
+          #     n_profiles = i,
+          #     variances = variances,
+          #     covariances = covariances
+          #   )
+          #
+          #   res <- res[[1]]
+          #   df <- data.frame(res$fit)
+          #   df <- t(df)
+          #   model <- df[1]
+          #   class <- df[2]
+          #   log <- df[3]
+          #   aic <- df[4]
+          #   awe <- df[5]
+          #   bic <- df[6]
+          #   caic <- df[7]
+          #   clc <- df[8]
+          #   kic <- df[9]
+          #   sabic <- df[10]
+          #   icl <- df[11]
+          #   entropy <- df[12]
+          #   df <- data.frame(model,
+          #                    log,
+          #                    aic,
+          #                    awe,
+          #                    bic,
+          #                    caic,
+          #                    clc,
+          #                    kic,
+          #                    sabic,
+          #                    icl,
+          #                    entropy,
+          #                    class)
+          #   if (is.null(out)) {
+          #     out <- df
+          #   } else {
+          #     out <- rbind(out, df)
+          #   }
+          # }
+          # out <- out
+          # # Elbow plot---
+          # out1 <- out[, c(3:10, 12), ]
+          # colnames(out1) <- c('AIC',
+          #                     'AWE',
+          #                     'BIC',
+          #                     'CAIC',
+          #                     'CLC',
+          #                     'KIC',
+          #                     'SABIC',
+          #                     'ICL',
+          #                     'Class')
+          out <- private$.allCache$elbow_data
+          out1 <- out[, c(3:10, 12)]
           colnames(out1) <- c('AIC',
                               'AWE',
                               'BIC',
@@ -278,6 +289,12 @@ lpaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           )
           image <- self$results$plot2
           image$setState(elbow)
+        }
+        
+        if (isTRUE(self$options$plot3)) {
+          res1 <- all$res
+          image <- self$results$plot3
+          image$setState(res1)
         }
       },
       
@@ -305,19 +322,22 @@ lpaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
       },
       
       .plot3 = function(image, ggtheme, theme, ...) {
-        vars <- self$options$vars
-        nc <- self$options$nc
-        variances <- self$options$variances
-        covariances <- self$options$covariances
-        data <- self$data
-        data <- jmvcore::naOmit(data)
+        # vars <- self$options$vars
+        # nc <- self$options$nc
+        # variances <- self$options$variances
+        # covariances <- self$options$covariances
+        # data <- self$data
+        # data <- jmvcore::naOmit(data)
+        #
+        # set.seed(1234)
+        # res1 <- tidyLPA::estimate_profiles(data,
+        #                                    1:self$options$nc,
+        #                                    variances = variances,
+        #                                    covariances = covariances)
+        if (is.null(image$state))
+          return(FALSE)
         
-        set.seed(1234)
-        res1 <- tidyLPA::estimate_profiles(data,
-                                           1:self$options$nc,
-                                           variances = variances,
-                                           covariances = covariances)
-        
+        res1 <- image$state
         plot3 <- tidyLPA::plot_density(res1)
         print(plot3)
         TRUE
@@ -401,24 +421,61 @@ lpaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         #   get_fit() %>%
         #   as.data.frame()
         # res
-        
-        #Estimates profile------------------------
         set.seed(1234)
-        #private$.checkpoint()
-        
+        #elbow plot---
+        out <- NULL
+        for (i in 1:nc) {
+          set.seed(1234)
+          temp_res <- tidyLPA::estimate_profiles(
+            data,
+            n_profiles = i,
+            variances = variances,
+            covariances = covariances
+          )
+          
+          if (i == nc) {
+            res <- temp_res
+          }
+          
+          temp_res <- temp_res[[1]]
+          df <- data.frame(temp_res$fit)
+          df <- t(df)
+          df <- data.frame(
+            model = df[1],
+            log = df[3],
+            aic = df[4],
+            awe = df[5],
+            bic = df[6],
+            caic = df[7],
+            clc = df[8],
+            kic = df[9],
+            sabic = df[10],
+            icl = df[11],
+            entropy = df[12],
+            class = df[2]
+          )
+          
+          if (is.null(out)) {
+            out <- df
+          } else {
+            out <- rbind(out, df)
+          }
+        }
+        #Estimates profile------------------------
         res <- tidyLPA::estimate_profiles(data, nc, variances = variances, covariances = covariances)
         #------------------------------------------
-        
         best <-  tidyLPA::estimate_profiles(data, n_profiles = 2:nc, models = c(1, 2, 3, 6))
         
         # Compare solution
         sol <- tidyLPA::compare_solutions(best)
         self$results$text$setContent(sol)
         
-        allfit <- tidyLPA::get_fit(best)
-        bestfit <- as.data.frame(allfit)
+        bestfit <- as.data.frame(tidyLPA::get_fit(best))
+        #bestfit <- as.data.frame(allfit)
         
-        retlist <- list(res = res, bestfit = bestfit)
+        retlist <- list(res = res,
+                        bestfit = bestfit,
+                        elbow_data = out)
         return(retlist)
       }
     )

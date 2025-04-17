@@ -6,6 +6,18 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
   R6::R6Class(
     "lcaClass",
     inherit = lcaBase,
+    
+    active = list(
+      res = function() {
+        if (is.null(private$.allCache) || is.null(private$.allCache$res)) {
+          data <- private$.cleanData()
+          if (is.null(private$.allCache)) private$.allCache <- list()
+          private$.allCache$res <- private$.computeRES(data)
+        }
+        return(private$.allCache$res)
+      }
+    ),    
+    
     private = list(
       .allCache = NULL,
       .htmlwidget = NULL,
@@ -68,14 +80,8 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           
           self$results$plot3$setSize(width, height)
         }
-        
-        
-        
         if (length(self$options$vars) <= 1)
           self$setStatus('complete')
-        
-        
-        
       },
       
       .run = function() {
@@ -94,69 +100,62 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           results <- private$.allCache
           
           # populate Model comparison-----------
-          
           private$.populateModelTable(results)
-          
           # populate class probability table-----
-          
           private$.populateClassTable(results)
-          
           # populate item probability table-------
-          
           private$.populateItemTable(results)
-          
           # Populate Model table-----
-          
           private$.populateFitTable(results)
-          
-          
           # populate cell frequencies---------
-          
-          
           private$.populateCfTable(results)
-          
           # populate output variables-----
-          
           private$.populateOutputs(results)
         }
       },
       
       .compute = function(data) {
-        # library(poLCA)
-        # data(values)
-        # f <- cbind(A,B,C,D)~1
-        # res<- poLCA::poLCA(f,values,nclass=2, na.rm = F,calc.se = FALSE)
+        # # library(poLCA)
+        # # data(values)
+        # # f <- cbind(A,B,C,D)~1
+        # # res<- poLCA::poLCA(f,values,nclass=2, na.rm = F,calc.se = FALSE)
+        
         nc <- self$options$nc
-        
+
         ############ Construct formula###################
-        
+
         vars <- self$options$vars
         vars <- vapply(vars, function(x)
           jmvcore::composeTerm(x), '')
         vars <- paste0(vars, collapse = ',')
         formula <- as.formula(paste0('cbind(', vars, ')~1'))
-        
-        
+
+
         if (length(self$options$covs) >= 1) {
           # if( !is.null(self$options$covs) ) {
           covs <- self$options$covs
           covs <- vapply(covs, function(x)
             jmvcore::composeTerm(x), '')
           covs <- paste0(covs, collapse = '+')
-          
+
           formula <- as.formula(paste0('cbind(', vars, ') ~', covs))
         }
-        ################ Model Estimates############################
-        set.seed(1126)
-        res <- poLCA::poLCA(formula,
-                            data,
-                            nclass = nc,
-                            na.rm = FALSE,
-                            calc.se = FALSE)
+        # ################ Model Estimates############################
+        # set.seed(1126)
+        # res <- poLCA::poLCA(formula,
+        #                     data,
+        #                     nclass = nc,
+        #                     na.rm = FALSE,
+        #                     calc.se = FALSE)
+        # 
+        # 
+        # ###############################################################
+
         
+        res <- self$res
+        #res <- private$.computeRES(data)
+       
         
-        ###############################################################
-        #if( !is.null(self$options$covs) ) {
         if (length(self$options$covs) >= 1 &&
             isTRUE(self$options$coef)) {
           R <- length(res$P)
@@ -204,7 +203,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         out <- NULL
         
         for (i in 1:self$options$nc) {
-          #########################################
+            set.seed(1234)
           res <- poLCA::poLCA(
             formula,
             data,
@@ -212,8 +211,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
             na.rm = FALSE,
             calc.se = FALSE
           )
-          ##########################################
-          
+
           aic <- res$aic
           aic3 <- (-2 * res$llik) + (3 * res$npar)
           bic <- res$bic
@@ -232,7 +230,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
             out <- rbind(out, df)
           }
         }
-        out <- out
+        #out <- out
         # Elbow plot-------------
         out1 <- out[, c(1:5)]
         cla <- c(1:self$options$nc)
@@ -246,6 +244,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         )
         image <- self$results$plot3
         image$setState(elbow)
+        
         # Caculating Chi and Gsp p values----------
         
         y <- res$y
@@ -331,9 +330,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
             'like' = like,
             'SABIC' = SABIC,
             'CAIC' = CAIC
-            
           )
-        
       },
       
       # Model table-----
@@ -614,6 +611,41 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
             data <- data[!is.na(data[[cov]]), ]
         
         return(data)
+      },
+      
+      .computeRES= function(data = NULL) {
+        if (is.null(data)) data <- private$.cleanData()
+        
+        # library(poLCA)
+        # data(values)
+        # f <- cbind(A,B,C,D)~1
+        # res<- poLCA::poLCA(f,values,nclass=2, na.rm = F,calc.se = FALSE)
+        nc <- self$options$nc
+        
+        ############ Construct formula###################
+        vars <- self$options$vars
+        vars <- vapply(vars, function(x)
+          jmvcore::composeTerm(x), '')
+        vars <- paste0(vars, collapse = ',')
+        formula <- as.formula(paste0('cbind(', vars, ')~1'))
+
+        if (length(self$options$covs) >= 1) {
+          # if( !is.null(self$options$covs) ) {
+          covs <- self$options$covs
+          covs <- vapply(covs, function(x)
+            jmvcore::composeTerm(x), '')
+          covs <- paste0(covs, collapse = '+')
+          
+          formula <- as.formula(paste0('cbind(', vars, ') ~', covs))
+        }
+        ################ Model Estimates############################
+        set.seed(1234)
+        res <- poLCA::poLCA(formula,
+                            data,
+                            nclass = nc,
+                            na.rm = FALSE,
+                            calc.se = FALSE)
+          return(res)
       }
     )
   )

@@ -4,12 +4,23 @@ mixtureClass <- if (requireNamespace('jmvcore'))
   R6::R6Class(
     "mixtureClass",
     inherit = mixtureBase,
+    
+    active = list(
+      res = function() {
+        if (is.null(private$.allCache) || is.null(private$.allCache$res)) {
+          data <- private$.cleanData()
+          if (is.null(private$.allCache)) private$.allCache <- list()
+          private$.allCache$res <- private$.computeRES(data)
+        }
+        return(private$.allCache$res)
+      }
+    ),    
+    
+    
     private = list(
       .allCache = NULL,
       .htmlwidget = NULL,
-      
-      #####################
-      
+
       .init = function() {
         private$.htmlwidget <- HTMLWidget$new()
         private$.allCache <- NULL
@@ -56,11 +67,9 @@ mixtureClass <- if (requireNamespace('jmvcore'))
         }
         
       },
-      
-      
+
       .run = function() {
-        # Ready--------
-        
+
         ready <- TRUE
         
         if (is.null(self$options$vars) |
@@ -74,14 +83,10 @@ mixtureClass <- if (requireNamespace('jmvcore'))
             private$.allCache <- private$.compute(data)
           }
           results <- private$.allCache
-          
+   
           #  populate Model information table-----
-          
           private$.populateModelTable(results)
-          
-          
           # populate Item Statistics table-----
-          
           private$.populateImeasureTable(results)
           private$.populateIseTable(results)
           private$.populateImeanTable(results)
@@ -91,7 +96,6 @@ mixtureClass <- if (requireNamespace('jmvcore'))
           
           # populate Average theta table----
           private$.populateAverageTable(results)
-          
         }
       },
       
@@ -103,66 +107,71 @@ mixtureClass <- if (requireNamespace('jmvcore'))
         step <- self$options$step
         type <- self$options$type
         
-        # computing mixRasch-----------
+        # # computing mixRasch-----------
+        # 
+        # set.seed(1234)
+        # #private$.checkpoint()
+        # 
+        # res1 <-
+        #   mixRasch::mixRasch(
+        #     data = data,
+        #     steps = step,
+        #     model = type,
+        #     n.c = nc
+        #   )
+        #res1 <- private$.computeRES(data)
+        res <- self$res
+        # res1 <- private$.computeRES(data)
+        # private$.allCache$res <- res1
         
-        set.seed(1234)
-        #private$.checkpoint()
-        
-        res1 <-
-          mixRasch::mixRasch(
-            data = data,
-            steps = step,
-            model = type,
-            n.c = nc
-          )
         
         # item statistics--------
         
-        imeasure <- sapply(res1$LatentClass, function(x)
+        imeasure <- sapply(res$LatentClass, function(x)
           x$item.par$delta.i)
         imeasure <- as.data.frame(imeasure)
         
-        ise <- sapply(res1$LatentClass, function(x)
+        ise <- sapply(res$LatentClass, function(x)
           x$item.par$SE.delta.i)
         ise <- as.data.frame(ise)
         
-        infit <- sapply(res1$LatentClass, function(x)
+        infit <- sapply(res$LatentClass, function(x)
           x$item.par$in.out[, 1])
         infit <- as.data.frame(infit)
-        outfit <- sapply(res1$LatentClass, function(x)
+        outfit <- sapply(res$LatentClass, function(x)
           x$item.par$in.out[, 3])
         outfit <- as.data.frame(outfit)
         # desc <- sapply(res1$LatentClass, function(x) x$item.par$itemDescriptives)
-        imean <- sapply(res1$LatentClass, function(x)
+        imean <- sapply(res$LatentClass, function(x)
           x$item.par$itemDescriptives[, 1])
         imean <- as.data.frame(imean)
         
-        pbis <- sapply(res1$LatentClass, function(x)
+        pbis <- sapply(res$LatentClass, function(x)
           x$item.par$itemDescriptives[, 2])
         pbis <- as.data.frame(pbis)
         
         ######### Person analysis####################
         
         # person measure--------------
-        pmeasure <- sapply(res1$LatentClass, function(x)
+        pmeasure <- sapply(res$LatentClass, function(x)
           x$person.par$theta)
         pmeasure <- as.data.frame(pmeasure)
         # person error-------------------
-        pse <- sapply(res1$LatentClass, function(x)
+        pse <- sapply(res$LatentClass, function(x)
           x$person.par$SE.theta)
         pse <- as.data.frame(pmeasure)
         # person fit--------------
-        pinfit <- sapply(res1$LatentClass, function(x)
+        pinfit <- sapply(res$LatentClass, function(x)
           x$person.par$infit)
         pinfit <- as.data.frame(pinfit)
         
-        poutfit <- sapply(res1$LatentClass, function(x)
+        poutfit <- sapply(res$LatentClass, function(x)
           x$person.par$outfit)
         poutfit <- as.data.frame(poutfit)
         # Person Outputs-------------------------
         #pmeasure--------------------------------
         
-        if (self$options$pmeasure == TRUE) {
+        if (isTRUE(self$options$pmeasure)) {
           keys <- 1:self$options$nc
           measureTypes <- rep("continuous", self$options$nc)
           
@@ -185,7 +194,7 @@ mixtureClass <- if (requireNamespace('jmvcore'))
         }
         #pse---------------------------------------
         
-        if (self$options$pse == TRUE) {
+        if (isTRUE(self$options$pse)) {
           keys <- 1:self$options$nc
           measureTypes <- rep("continuous", self$options$nc)
           
@@ -208,7 +217,7 @@ mixtureClass <- if (requireNamespace('jmvcore'))
         }
         
         #pinfit-------------------------------
-        if (self$options$pinfit == TRUE) {
+        if (isTRUE(self$options$pinfit)) {
           keys <- 1:self$options$nc
           measureTypes <- rep("continuous", self$options$nc)
           
@@ -232,7 +241,7 @@ mixtureClass <- if (requireNamespace('jmvcore'))
         
         #poutfit----------------------------------------
         
-        if (self$options$poutfit == TRUE) {
+        if (isTRUE(self$options$poutfit)) {
           keys <- 1:self$options$nc
           measureTypes <- rep("continuous", self$options$nc)
           
@@ -254,20 +263,22 @@ mixtureClass <- if (requireNamespace('jmvcore'))
           }
         }
         # model fit information------
-        
+        if(isTRUE(self$options$fit) || isTRUE(self$options$plot2)){
+          
         out <- NULL
         
         for (i in 1:nc) {
           set.seed(1234)
-          res1 <-
+          res <-
             mixRasch::mixRasch(
               data = data,
               steps = step,
               model = type,
               n.c = i
             )
+          #res<- self$res
           
-          model <- res1$info.fit
+          model <- res$info.fit
           df <- data.frame(model)
           if (is.null(out)) {
             out <- df
@@ -279,7 +290,7 @@ mixtureClass <- if (requireNamespace('jmvcore'))
         # elbow plot----------
         out1 <- out[, c(1:3)]
         colnames(out1) <- c('AIC', 'BIC', 'CAIC')
-        
+
         df <-  as.data.frame(out1)
         df$Class <- seq.int(nrow(df))
         elbow <- reshape2::melt(
@@ -288,18 +299,20 @@ mixtureClass <- if (requireNamespace('jmvcore'))
           variable.name = "Fit",
           value.name = 'Value'
         )
+ 
         image <- self$results$plot2
         image$setState(elbow)
+        }    
         # number of class
         set.seed(1234)
-        res0 <- mixRasch::getEstDetails(res1)
+        res0 <- mixRasch::getEstDetails(res)
         class <- res0$nC
         
         # Average Theta Values
         set.seed(1234)
-        average <- mixRaschTools::avg.theta(res1)
+        average <- mixRaschTools::avg.theta(res)
         # class membership-------------
-        pclass <- res1$class
+        pclass <- res$class
         mem <- as.numeric(apply(pclass, 1, which.max))
         if (self$options$pmember == TRUE) {
           mem <- as.factor(mem)
@@ -373,17 +386,11 @@ mixtureClass <- if (requireNamespace('jmvcore'))
         # Prepare Data For Item Plot -------
         
         image <- self$results$iplot
-        
         imeasure$item <- seq.int(nrow(imeasure))
-        
         n <- paste(1:self$options$nc, sep = '')
         colnames(imeasure) <- c(n, 'item')
-        
-        
         data <- tidyr::gather(data = imeasure, class, measure, -item)
         image$setState(data)
-        
-        
       },
       
       .populateIseTable = function(results) {
@@ -588,6 +595,20 @@ mixtureClass <- if (requireNamespace('jmvcore'))
         attr(data, 'class') <- 'data.frame'
         data <- jmvcore::naOmit(data)
         return(data)
+      },
+      
+      .computeRES = function(data = NULL) {
+        if (is.null(data)) data <- private$.cleanData()     
+        # computing mixRasch-----------
+        set.seed(1234)
+        res <-
+          mixRasch::mixRasch(
+            data = data,
+            steps = self$options$step,
+            model = self$options$type,
+            n.c = self$options$nc
+          )
+        return(res)
       }
     )
   )

@@ -8,9 +8,31 @@ raschClass <- if (requireNamespace('jmvcore'))
   R6::R6Class(
     "raschClass",
     inherit = raschBase,
+    #### Active bindings ----
+    # active = list(
+    #   res = function() {
+    #     if (is.null(private$.res)) {
+    #       private$.res <- private$.computeRES()
+    #     }
+    #     return(private$.res)
+    #   }
+    # ),
+    active = list(
+      res = function() {
+        if (is.null(private$.allCache) || is.null(private$.allCache$res)) {
+          data <- private$.cleanData()
+          if (is.null(private$.allCache)) private$.allCache <- list()
+          private$.allCache$res <- private$.computeRES(data)
+        }
+        return(private$.allCache$res)
+      }
+    ),    
+    
     private = list(
-      .allCache = NULL,
+       .allCache = NULL,
+      #.cache = list(),
       .htmlwidget = NULL,
+      #.res= NULL,
       
       .init = function() {
         private$.htmlwidget <- HTMLWidget$new()
@@ -132,8 +154,8 @@ raschClass <- if (requireNamespace('jmvcore'))
       },
       
       .run = function() {
-        data <- self$data
-        vars <- self$options$vars
+        #data <- self$data
+        #vars <- self$options$vars
         #Removing perfect score items before estimation (for example all 1 or 0)-------
         for (varName in self$options$vars) {
           var <- self$data[[varName]]
@@ -159,13 +181,20 @@ raschClass <- if (requireNamespace('jmvcore'))
           ready <- FALSE
         
         if (ready) {
+
           if (is.null(private$.allCache)) {
             data <- private$.cleanData()
             private$.allCache <- private$.compute(data)
           }
-          
           results <- private$.allCache
           
+          # if (is.null(private$.cache$res))
+          #   private$.cache$res <- private$.computeRES()
+          # if (is.null(private$.cache$results))
+          #   private$.cache$results <- private$.compute(data)
+          # 
+          # res <- private$.cache$res
+          # results <- private$.cache$results
           #  populate Model information table-----
           private$.populateModelTable(results)
           
@@ -196,21 +225,25 @@ raschClass <- if (requireNamespace('jmvcore'))
       },
       
       .compute = function(data) {
-        vars <- self$options$vars
-        step <- self$options$step
-        type <- self$options$type
-        
-        # compute results------
-        set.seed(1234)
-        #private$.checkpoint()
-        res <-
-          mixRasch::mixRasch(
-            data = data,
-            steps = step,
-            model = type,
-            n.c = 1
-          )
-        
+         vars <- self$options$vars
+         step <- self$options$step
+         type <- self$options$type
+        # 
+        # # compute results------
+        # set.seed(1234)
+        # #private$.checkpoint()
+        # res <-
+        #   mixRasch::mixRasch(
+        #     data = data,
+        #     steps = step,
+        #     model = type,
+        #     n.c = 1
+        #   )
+        #res<- res$res
+        #res <- private$.cache$res
+        #res <- private$.computeRES(data) 
+        res <- self$res
+
         # Person analysis-----------
         ptotal <- res$person.par$r
         pmeasure <- res$person.par$theta
@@ -412,8 +445,8 @@ raschClass <- if (requireNamespace('jmvcore'))
             p = ml1$p.value
           )
           table$setRow(rowNo = 1, values = row)
-
-       }
+          
+        }
         
         if (self$options$pcm == TRUE) {
           tab1 <- eRm::thresholds(pcm.res)
@@ -467,7 +500,7 @@ raschClass <- if (requireNamespace('jmvcore'))
         
         # Q3 fit statistics proposed by Yen(1984)
         
-        if (self$options$q3 == TRUE) {
+        if (isTRUE(self$options$q3)) {
           res1 <- self$options$res1
           set.seed(1234)
           ip <- pairwise::pair(data)
@@ -724,16 +757,20 @@ raschClass <- if (requireNamespace('jmvcore'))
       },
       ### wrightmap Plot functions -----------
       .prepareWrightmapPlot = function(data) {
-        step <- self$options$step
-        type <- self$options$type
-        #compute wright---
-        set.seed(1234)
-        res <-  mixRasch::mixRasch(
-          data = data,
-          steps = step,
-          model = type,
-          n.c = 1
-        )
+        # step <- self$options$step
+        # type <- self$options$type
+        # #compute wright---
+        # set.seed(1234)
+        # res <-  mixRasch::mixRasch(
+        #   data = data,
+        #   steps = step,
+        #   model = type,
+        #   n.c = 1
+        # )
+        #res <- private$.cache$res
+        #res <- private$.computeRES(data) 
+        res <- self$res
+
         imeasure <- res$item.par$delta.i
         pmeasure <- res$person.par$theta
         vars <- self$options$vars
@@ -785,16 +822,19 @@ raschClass <- if (requireNamespace('jmvcore'))
       },
       ### fit plot----------------
       .prepareInfitPlot = function(data) {
-        step <- self$options$step
-        type <- self$options$type
+        # step <- self$options$step
+        # type <- self$options$type
         #compute mixRasch---
-        set.seed(1234)
-        res <-  mixRasch::mixRasch(
-          data = data,
-          steps = step,
-          model = type,
-          n.c = 1
-        )
+        # set.seed(1234)
+        # res <-  mixRasch::mixRasch(
+        #   data = data,
+        #   steps = step,
+        #   model = type,
+        #   n.c = 1
+        # )
+        #res <- private$.computeRES(data)
+        res <- self$res
+        
         infit <- res$item.par$in.out[, 1]
         item <- self$options$vars
         nitems <- length(item)
@@ -846,16 +886,19 @@ raschClass <- if (requireNamespace('jmvcore'))
       },
       
       .prepareOutfitPlot = function(data) {
-        step <- self$options$step
-        type <- self$options$type
-        #compute mixRasch---
-        set.seed(1234)
-        res <-  mixRasch::mixRasch(
-          data = data,
-          steps = step,
-          model = type,
-          n.c = 1
-        )
+        # step <- self$options$step
+        # type <- self$options$type
+        # #compute mixRasch---
+        # set.seed(1234)
+        # res <-  mixRasch::mixRasch(
+        #   data = data,
+        #   steps = step,
+        #   model = type,
+        #   n.c = 1
+        # )
+        #res <- private$.computeRES(data)
+        res <- self$res
+        
         outfit <- res$item.par$in.out[, 3]
         item <- self$options$vars
         nitems <- length(item)
@@ -1097,11 +1140,35 @@ raschClass <- if (requireNamespace('jmvcore'))
         for (item in items)
           data[[item]] <-
           jmvcore::toNumeric(self$data[[item]])
-        
+
         attr(data, 'row.names') <- seq_len(length(data[[1]]))
         attr(data, 'class') <- 'data.frame'
         data <- jmvcore::naOmit(data)
         return(data)
+      },
+      
+      # .computeRES = function() {
+      #   data <- private$.cleanData()
+      #   set.seed(1234) 
+      #   res <- mixRasch::mixRasch(
+      #     data = data,
+      #     steps = self$options$step,
+      #     model =self$options$type,
+      #     n.c = 1
+      #   ) 
+      #  return(res)
+      # }
+      .computeRES = function(data = NULL) {
+        if (is.null(data)) data <- private$.cleanData()
+        set.seed(1234) 
+        res <- mixRasch::mixRasch(
+          data = data,
+          steps = self$options$step,
+          model = self$options$type,
+          n.c = 1
+        ) 
+        return(res)
       }
+      
     )
   )
