@@ -220,8 +220,10 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         # m <- as.factor(m)
         if (self$options$mem
             && self$results$mem$isNotFilled()) {
+          
+          self$results$mem$setRowNums(rownames(self$data))
           self$results$mem$setValues(m)
-          self$results$mem$setRowNums(rownames(data))
+          
         }
       },
       

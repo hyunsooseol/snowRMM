@@ -430,8 +430,10 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         cm <- results$cm
         if (self$options$cm
             && self$results$cm$isNotFilled()) {
+          
+          self$results$cm$setRowNums(rownames(self$data))
           self$results$cm$setValues(cm)
-          self$results$cm$setRowNums(rownames(data))
+         
         }
       },
       

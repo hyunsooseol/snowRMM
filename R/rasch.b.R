@@ -252,31 +252,31 @@ raschClass <- if (requireNamespace('jmvcore'))
         poutfit <- res$person.par$outfit
         
         if (self$options$ptotal == TRUE) {
-          self$results$ptotal$setRowNums(rownames(data))
+          self$results$ptotal$setRowNums(rownames(self$data))
           self$results$ptotal$setValues(ptotal)
           
         }
         
         if (self$options$pmeasure == TRUE) {
-          self$results$pmeasure$setRowNums(rownames(data))
+          self$results$pmeasure$setRowNums(rownames(self$data))
           self$results$pmeasure$setValues(pmeasure)
           
         }
         
         if (self$options$pse == TRUE) {
-          self$results$pse$setRowNums(rownames(data))
+          self$results$pse$setRowNums(rownames(self$data))
           self$results$pse$setValues(pse)
           
         }
         
         if (self$options$pinfit == TRUE) {
-          self$results$pinfit$setRowNums(rownames(data))
+          self$results$pinfit$setRowNums(rownames(self$data))
           self$results$pinfit$setValues(pinfit)
           
         }
         
         if (self$options$poutfit == TRUE) {
-          self$results$poutfit$setRowNums(rownames(data))
+          self$results$poutfit$setRowNums(rownames(self$data))
           self$results$poutfit$setValues(poutfit)
         }
         

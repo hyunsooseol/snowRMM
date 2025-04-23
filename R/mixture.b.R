@@ -185,7 +185,7 @@ mixtureClass <- if (requireNamespace('jmvcore'))
             measureTypes = measureTypes
           )
           
-          self$results$pmeasure$setRowNums(rownames(data))
+          self$results$pmeasure$setRowNums(rownames(self$data))
           
           for (i in 1:self$options$nc) {
             scores <- as.numeric(pmeasure[, i])
@@ -208,7 +208,7 @@ mixtureClass <- if (requireNamespace('jmvcore'))
             measureTypes = measureTypes
           )
           
-          self$results$pse$setRowNums(rownames(data))
+          self$results$pse$setRowNums(rownames(self$data))
           
           for (i in 1:self$options$nc) {
             scores <- as.numeric(pse[, i])
@@ -231,7 +231,7 @@ mixtureClass <- if (requireNamespace('jmvcore'))
             measureTypes = measureTypes
           )
           
-          self$results$pinfit$setRowNums(rownames(data))
+          self$results$pinfit$setRowNums(rownames(self$data))
           
           for (i in 1:self$options$nc) {
             scores <- as.numeric(pinfit[, i])
@@ -255,7 +255,7 @@ mixtureClass <- if (requireNamespace('jmvcore'))
             measureTypes = measureTypes
           )
           
-          self$results$poutfit$setRowNums(rownames(data))
+          self$results$poutfit$setRowNums(rownames(self$data))
           
           for (i in 1:self$options$nc) {
             scores <- as.numeric(poutfit[, i])
@@ -316,7 +316,7 @@ mixtureClass <- if (requireNamespace('jmvcore'))
         mem <- as.numeric(apply(pclass, 1, which.max))
         if (self$options$pmember == TRUE) {
           mem <- as.factor(mem)
-          self$results$pmember$setRowNums(rownames(data))
+          self$results$pmember$setRowNums(rownames(self$data))
           self$results$pmember$setValues(mem)
         }
         # Person density across class-------------

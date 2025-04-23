@@ -141,11 +141,13 @@ lpaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           
           pc <- tidyLPA::get_data(all$res)
           pc <- as.factor(pc$Class)
-          #pc <- as.factor(pc)
+         
           if (self$options$pc
               && self$results$pc$isNotFilled()) {
+            
+            self$results$pc$setRowNums(rownames(self$data))
             self$results$pc$setValues(pc)
-            self$results$pc$setRowNums(rownames(data))
+           
           }
           image <- self$results$plot
           image$setState(pc)
@@ -172,7 +174,7 @@ lpaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
               descriptions = descriptions,
               measureTypes = measureTypes
             )
-            self$results$pc$setRowNums(rownames(data))
+            self$results$post$setRowNums(rownames(self$data))
             for (i in 1:self$options$nc) {
               scores <- as.numeric(post[, i])
               self$results$post$setValues(index = i, scores)
