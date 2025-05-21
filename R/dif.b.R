@@ -260,7 +260,7 @@ difClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           responses.g2 <- subset(responses.g, data[[groupVarName]] == 2)
           
           ## Compare thresholds between groups----------------
-          subgroup_diffs <- Waldtest(PC_model, splitcr = data[[groupVarName]])
+          subgroup_diffs <- eRm::Waldtest(PC_model, splitcr = data[[groupVarName]])
           
           
           for (item.number in 1:ncol(responses)) {
@@ -304,7 +304,7 @@ difClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           responses.g2 <- subset(responses.g, data[[groupVarName]] == 2)
           
           ## Compare thresholds between groups:
-          subgroup_diffs <- Waldtest(PC_model, splitcr = data[[groupVarName]])
+          subgroup_diffs <- eRm::Waldtest(PC_model, splitcr = data[[groupVarName]])
           
           
           for (item.number in 1:ncol(responses)) {
