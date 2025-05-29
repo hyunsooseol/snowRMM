@@ -21,66 +21,77 @@ analyses:
     menuGroup: snowRMM
     menuTitle: Rasch Model
     menuSubgroup: Rasch
+    ribbon: analyses
   - title: Rasch Mixture Model
     name: mixture
     ns: snowRMM
     menuGroup: snowRMM
     menuTitle: Rasch Mixture Model
     menuSubgroup: Mixture
+    ribbon: analyses
   - title: Bootstrap Item Fit
     name: bfit
     ns: snowRMM
     menuGroup: snowRMM
     menuTitle: Bootstrap Item Fit
     menuSubgroup: Rasch
+    ribbon: analyses
   - title: Differential Item Functioning
     name: dif
     ns: snowRMM
     menuGroup: snowRMM
     menuTitle: Differential Item Functioning
     menuSubgroup: Rasch
+    ribbon: analyses
   - title: Latent Class Analysis
     name: lca
     ns: snowRMM
     menuGroup: snowRMM
     menuTitle: Latent Class Analysis
     menuSubgroup: LCA
+    ribbon: analyses
   - title: LCA with ordinal indicators
     name: lcaord
     ns: snowRMM
     menuGroup: snowRMM
     menuTitle: LCA with ordinal indicators
     menuSubgroup: LCA
+    ribbon: analyses
   - title: Latent Profile Analysis
     name: lpa
     ns: snowRMM
     menuGroup: snowRMM
     menuTitle: Latent Profile Analysis
     menuSubgroup: LCA
+    ribbon: analyses
   - title: Latent Class Growth Modeling
     name: lcgm
     ns: snowRMM
     menuGroup: snowRMM
     menuTitle: Latent Class Growth Modeling
     menuSubgroup: LCA
+    ribbon: analyses
   - title: CTT Equating
     name: equating
     ns: snowRMM
     menuGroup: snowRMM
     menuTitle: CTT Equating
     menuSubgroup: Test Equating
+    ribbon: analyses
   - title: Composite Linking
     name: linking
     ns: snowRMM
     menuGroup: snowRMM
     menuTitle: Composite Linking
     menuSubgroup: Test Equating
+    ribbon: analyses
   - title: Linear Logisitic Test Model
     name: lltm
     ns: snowRMM
     menuGroup: snowRMM
     menuTitle: Linear Logisitic Test Model
     menuSubgroup: Mixture
+    ribbon: analyses
 datasets:
   - name: Rasch
     path: rasch.omv

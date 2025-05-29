@@ -33,6 +33,8 @@ Imports:
     tidySEM,
     blavaan,
     memoise,
+    magrittr,
+    dplyr,
 Remotes: twolodzko/equi,
          cran/mixRasch
         
