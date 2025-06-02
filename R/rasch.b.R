@@ -1,5 +1,3 @@
-
-
 # This file is a generated template, your changes will not be overwritten
 #' @import ggplot2
 
@@ -8,35 +6,16 @@ raschClass <- if (requireNamespace('jmvcore'))
   R6::R6Class(
     "raschClass",
     inherit = raschBase,
-    #### Active bindings ----
-    # active = list(
-    #   res = function() {
-    #     if (is.null(private$.res)) {
-    #       private$.res <- private$.computeRES()
-    #     }
-    #     return(private$.res)
-    #   }
-    # ),
-    active = list(
-      res = function() {
-        if (is.null(private$.allCache) || is.null(private$.allCache$res)) {
-          data <- private$.cleanData()
-          if (is.null(private$.allCache)) private$.allCache <- list()
-          private$.allCache$res <- private$.computeRES(data)
-        }
-        return(private$.allCache$res)
-      }
-    ),    
-    
+
     private = list(
-       .allCache = NULL,
-      #.cache = list(),
+      .resCache = NULL,
+      .ermCache = NULL,
       .htmlwidget = NULL,
-      #.res= NULL,
-      
+
       .init = function() {
         private$.htmlwidget <- HTMLWidget$new()
-        private$.allCache <- NULL
+        private$.resCache <- NULL
+        private$.ermCache <- NULL
         
         if (is.null(self$data) | is.null(self$options$vars)) {
           self$results$instructions$setVisible(visible = TRUE)
@@ -154,8 +133,7 @@ raschClass <- if (requireNamespace('jmvcore'))
       },
       
       .run = function() {
-        #data <- self$data
-        #vars <- self$options$vars
+
         #Removing perfect score items before estimation (for example all 1 or 0)-------
         for (varName in self$options$vars) {
           var <- self$data[[varName]]
@@ -169,80 +147,74 @@ raschClass <- if (requireNamespace('jmvcore'))
             )
         }
         
-        if (isTRUE(self$options$plot9)) {
-          private$.prepareciPlot(data)
-        }
-        # Ready--------
-        ready <- TRUE
-        
-        if (is.null(self$options$vars) ||
-            length(self$options$vars) < 2)
-          
-          ready <- FALSE
-        
-        if (ready) {
+        vars <- self$options$vars
+        step <- self$options$step
+        type <- self$options$type
 
-          if (is.null(private$.allCache)) {
-            data <- private$.cleanData()
-            private$.allCache <- private$.compute(data)
-          }
-          results <- private$.allCache
-          
-          # if (is.null(private$.cache$res))
-          #   private$.cache$res <- private$.computeRES()
-          # if (is.null(private$.cache$results))
-          #   private$.cache$results <- private$.compute(data)
-          # 
-          # res <- private$.cache$res
-          # results <- private$.cache$results
-          #  populate Model information table-----
-          private$.populateModelTable(results)
-          
-          # populate Item Statistics table-----
-          private$.populateItemTable(results)
-          
-          # populate reliability table----------
-          private$.populateRelTable(results)
-          
-          # populate thresholds table-----
-          private$.populateThrTable(results)
-          
-          # prepare wrightmap plot-----
-          private$.prepareWrightmapPlot(data)
-          
-          # prepare person-item map
-          private$.preparepiPlot(data)
-          
-          # prepare item fit plot-------
-          private$.prepareInfitPlot(data)
-          private$.prepareOutfitPlot(data)
-          
-          # ICC PLOT-------------------
-          private$.prepareIccPlot(data)
-          # private$.prepareRsmPlot(data)
-          private$.preparePcmPlot(data)
+        if (is.null(private$.resCache)) {
+          private$.resCache <- private$.computeRES()
         }
-      },
-      
-      .compute = function(data) {
-         vars <- self$options$vars
-         step <- self$options$step
-         type <- self$options$type
-        # 
-        # # compute results------
-        # set.seed(1234)
-        # #private$.checkpoint()
-        # res <-
-        #   mixRasch::mixRasch(
-        #     data = data,
-        #     steps = step,
-        #     model = type,
-        #     n.c = 1
-        #   )
-        #res<- res$res
-        #res <- private$.cache$res
-        #res <- private$.computeRES(data) 
-        res <- self$res
+        
+        res <- private$.resCache
+        
+        if (is.null(private$.ermCache)) {
+          private$.ermCache <- private$.computeERM()
+        }
+        erm <- private$.ermCache
+        
+        # item statistics---------
+        imean <- res$item.par$itemDescriptives
+        imeasure <- res$item.par$delta.i
+        ise <- res$item.par$SE.delta.i
+        infit <- res$item.par$in.out[, 1]
+        outfit <- res$item.par$in.out[, 3]
+        pbis <- res$item.par$itemDescriptives
+        
+        # populate Item Statistics table-----
+          table <- self$results$items
+          vars <- self$options$vars
+          
+          for (i in seq_along(vars)) {
+            table$setRow(
+              rowKey = vars[i],
+              values = list(
+                imean = imean[i, 1],
+                imeasure = imeasure[i],
+                ise = ise[i],
+                infit = infit[i],
+                outfit = outfit[i],
+                pbis = pbis[i, 2]
+              )
+            )
+          }
+       
+          # populate Model information table-----
+          set.seed(1234)
+          res0 <- mixRasch::getEstDetails(res)
+          class <- res0$nC
+          
+          if(isTRUE(self$options$fit)){
+            
+            aic <- res$info.fit$AIC
+            bic <- res$info.fit$BIC
+            caic <- res$info.fit$CAIC
+            loglik <- res$info.fit$loglik
+            parm <- res$info.fit$N.parms
+            person <- res$info.fit$N.persons
+          
+            self$results$mf$model$setRow(
+              rowNo = 1,
+              values = list(
+                class = class,
+                aic = aic,
+                bic = bic,
+                caic = caic,
+                loglik = loglik,
+                parm = parm,
+                person = person
+              )
+            )
+          }
 
         # Person analysis-----------
         ptotal <- res$person.par$r
@@ -251,31 +223,31 @@ raschClass <- if (requireNamespace('jmvcore'))
         pinfit <- res$person.par$infit
         poutfit <- res$person.par$outfit
         
-        if (self$options$ptotal == TRUE) {
+        if (isTRUE(self$options$ptotal)) {
           self$results$ptotal$setRowNums(rownames(self$data))
           self$results$ptotal$setValues(ptotal)
           
         }
         
-        if (self$options$pmeasure == TRUE) {
+        if (isTRUE(self$options$pmeasure)) {
           self$results$pmeasure$setRowNums(rownames(self$data))
           self$results$pmeasure$setValues(pmeasure)
           
         }
         
-        if (self$options$pse == TRUE) {
+        if (isTRUE(self$options$pse)) {
           self$results$pse$setRowNums(rownames(self$data))
           self$results$pse$setValues(pse)
           
         }
         
-        if (self$options$pinfit == TRUE) {
+        if (isTRUE(self$options$pinfit)) {
           self$results$pinfit$setRowNums(rownames(self$data))
           self$results$pinfit$setValues(pinfit)
           
         }
         
-        if (self$options$poutfit == TRUE) {
+        if (isTRUE(self$options$poutfit)){
           self$results$poutfit$setRowNums(rownames(self$data))
           self$results$poutfit$setValues(poutfit)
         }
@@ -294,67 +266,95 @@ raschClass <- if (requireNamespace('jmvcore'))
         image <- self$results$plot4
         image$setState(pf)
         
-        # model information--------
-        aic <- res$info.fit$AIC
-        bic <- res$info.fit$BIC
-        caic <- res$info.fit$CAIC
-        loglik <- res$info.fit$loglik
-        parm <- res$info.fit$N.parms
-        person <- res$info.fit$N.persons
-        
-        # item statistics---------
-        imean <- res$item.par$itemDescriptives
-        imeasure <- res$item.par$delta.i
-        ise <- res$item.par$SE.delta.i
-        infit <- res$item.par$in.out[, 1]
-        outfit <- res$item.par$in.out[, 3]
-        pbis <- res$item.par$itemDescriptives
-        
-        # get number of class---------
-        set.seed(1234)
-        res0 <- mixRasch::getEstDetails(res)
-        class <- res0$nC
+        # # get number of class---------
+        # set.seed(1234)
+        # res0 <- mixRasch::getEstDetails(res)
+        # class <- res0$nC
         
         ########## eRm R package######################################
-        
-        if (self$options$step == 1) {
-          set.seed(1234)
-          rasch <- eRm::RM(data)
-          
-        } else if (self$options$step > 1) {
-          set.seed(1234)
-          pcm.res <- eRm::PCM(data)
-          rsm.res <- eRm::RSM(data)
-        }
-        
+
+        # if (self$options$step == 1) {
+        #   set.seed(1234)
+        #   rasch <- eRm::RM(data)
+        # 
+        # } else if (self$options$step > 1) {
+        #   set.seed(1234)
+        #   pcm.res <- eRm::PCM(data)
+        #   rsm.res <- eRm::RSM(data)
+        # }
+
         # person separation reliability using eRm R package---------
-        
+
         if (self$options$step == 1) {
           set.seed(1234)
-          pers <- eRm::person.parameter(rasch)
+          pers <- eRm::person.parameter(erm$rasch)
           rel <- eRm::SepRel(pers)
         } else if (self$options$step > 1) {
           set.seed(1234)
-          pers <- eRm::person.parameter(pcm.res)
+          pers <- eRm::person.parameter(erm$pcm.res)
           rel <- eRm::SepRel(pers)
         }
         ###################################################################
+
+        if(isTRUE(self$options$rel)){
+
         ssd <- rel$SSD.PS
         mse <- rel$MSE
-        rel <- rel$sep.rel
+        re <- rel$sep.rel
+
+          self$results$mf$rel$setRow(
+            rowNo = 1,
+            values = list(
+              SSD = ssd,
+              MSE = mse,
+              Reliability = re
+            )
+          )
+        }
+        
         
         # thresholds(tau parameter)---------
-        tau <- res$item.par$tau
-        tau <- t(tau)
-        tau <- as.data.frame(tau)
+        # tau <- res$item.par$tau
+        # tau <- t(tau)
+        # tau <- as.data.frame(tau)
+        
+        if(isTRUE(self$options$thr)){
+
+          tau <- res$item.par$tau
+          tau <- t(tau)
+          tau <- as.data.frame(tau)
+          
+            table <- self$results$thr
+            #tau <- results$tau
+            nc <- ncol(tau)
+            nCategory <- nc
+            vars <- self$options$vars
+            if (nCategory > 1) {
+              for (i in 1:nCategory)
+                table$addColumn(
+                  name = paste0("name", i),
+                  title = as.character(i),
+                  superTitle = 'Thresholds',
+                  type = 'number'
+                )
+            }
+            for (i in seq_along(vars)) {
+              row <- list()
+              for (j in 1:nCategory) {
+                row[[paste0("name", j)]] <- tau[i, j]
+              }
+              table$setRow(rowNo = i, values = row)
+            }
+        }
         
         ########################################################
         if (self$options$step == 1) {
+          
           lrsplit <- self$options$lrsplit
           
           # LR test----------
           set.seed(1234)
-          lr <- eRm::LRtest(rasch, splitcr = lrsplit)
+          lr <- eRm::LRtest(erm$rasch, splitcr = lrsplit)
           table <- self$results$tm$lr
           table$setRow(rowNo = 1,
                        values = list(
@@ -369,7 +369,7 @@ raschClass <- if (requireNamespace('jmvcore'))
           # Martin-lof test--------------
           mlsplit <- self$options$mlsplit
           set.seed(1234)
-          ml <- eRm::MLoef(rasch, splitcr = mlsplit)
+          ml <- eRm::MLoef(erm$rasch, splitcr = mlsplit)
           self$results$tm$ml$setRow(rowNo = 1,
                                     values = list(
                                       value = ml$LR,
@@ -379,7 +379,7 @@ raschClass <- if (requireNamespace('jmvcore'))
           # Wald test----------
           vars <- self$options$vars
           set.seed(1234)
-          w <- as.data.frame(eRm::Waldtest(rasch, splitcr = self$options$waldsplit)$coef.table)
+          w <- as.data.frame(eRm::Waldtest(erm$rasch, splitcr = self$options$waldsplit)$coef.table)
           table <- self$results$tm$wald
           for (i in seq_along(vars)) {
             table$addRow(rowKey = vars[i], values = list(item = w[[1]][i], p = w[[2]][i]))
@@ -388,7 +388,7 @@ raschClass <- if (requireNamespace('jmvcore'))
         
         if (self$options$step > 1) {
           # if(self$options$rsm==TRUE || self$options$mlsplit1==TRUE || self$options$plot2==TRUE){
-          tab <- eRm::thresholds(rsm.res)
+          tab <- eRm::thresholds(erm$rsm.res)
           tab <- tab$threshtable
           rsm <- data.frame(Reduce(rbind, tab))
           rsm <- rsm[, -1]
@@ -417,27 +417,15 @@ raschClass <- if (requireNamespace('jmvcore'))
           #RSM plot----------
           
           image <- self$results$plot2
-          image$setState(rsm.res)
+          image$setState(erm$rsm.res)
           
-          # Testing the Rasch model with Rating scale---
+          # Testing Wald test with Rating scale---
           
-          mlsplit1 <- self$options$mlsplit1
+          if(isTRUE(self$options$ml1)){
           
-          #Martin-lof test--------------
-          # set.seed(1234)
-          # ml1 <- eRm::MLoef(rsm.res, splitcr = mlsplit1)
-          # value <- ml1$LR
-          # df <- ml1$df
-          # p <- ml1$p.value
-          # table <- self$results$tm$ml1
-          # row <- list()
-          # row[['value']] <- value
-          # row[['df']] <- df
-          # row[['p']] <- p
-          # table$setRow(rowNo = 1, values = row)
           set.seed(1234)
-          ml1 <- eRm::MLoef(rsm.res, splitcr = mlsplit1)
-          
+          ml1 <- eRm::LRtest(erm$rsm.res)
+                          
           table <- self$results$tm$ml1
           row <- list(
             value = ml1$LR,
@@ -447,9 +435,13 @@ raschClass <- if (requireNamespace('jmvcore'))
           table$setRow(rowNo = 1, values = row)
           
         }
-        
+        }
+          
+          
+          
         if (self$options$pcm == TRUE) {
-          tab1 <- eRm::thresholds(pcm.res)
+          
+          tab1 <- eRm::thresholds(erm$pcm.res)
           tab1 <- tab1$threshtable
           pcm <- data.frame(Reduce(rbind, tab1))
           pcm <- pcm[, -1]
@@ -577,14 +569,14 @@ raschClass <- if (requireNamespace('jmvcore'))
           
           if (self$options$step > 1 && self$options$type == 'RSM') {
             set.seed(1234)
-            p.res <- eRm::person.parameter(rsm.res)
+            p.res <- eRm::person.parameter(erm$rsm.res)
             item.fit <- eRm::itemfit(p.res)
             std.resids <- item.fit$st.res
           }
           
           if (self$options$step > 1 && self$options$type == 'PCM') {
             set.seed(1234)
-            p.res <- eRm::person.parameter(pcm.res)
+            p.res <- eRm::person.parameter(erm$pcm.res)
             item.fit <- eRm::itemfit(p.res)
             std.resids <- item.fit$st.res
           }
@@ -602,60 +594,10 @@ raschClass <- if (requireNamespace('jmvcore'))
           self$results$text1$setContent(res)
         }
         
-        results <-
-          list(
-            'aic' = aic,
-            'bic' = bic,
-            'caic' = caic,
-            'loglik' = loglik,
-            'parm' = parm,
-            'person' = person,
-            'imean' = imean,
-            'imeasure' = imeasure,
-            'ise' = ise,
-            'infit' = infit,
-            'outfit' = outfit,
-            'pbis' = pbis,
-            'class' = class,
-            'ssd' = ssd,
-            'mse' = mse,
-            'rel' = rel,
-            'tau' = tau,
-            'ptotal' = ptotal,
-            'pmeasure' = pmeasure,
-            'pse' = pse,
-            'pinfit' = pinfit,
-            'poutfit' = poutfit
-          )
       },
-      
-      
-      #Table---
-      .populateThrTable = function(results) {
-        table <- self$results$thr
-        tau <- results$tau
-        #-------------
-        nc <- ncol(tau)
-        nCategory <- nc
-        vars <- self$options$vars
-        if (nCategory > 1) {
-          for (i in 1:nCategory)
-            table$addColumn(
-              name = paste0("name", i),
-              title = as.character(i),
-              superTitle = 'Thresholds',
-              type = 'number'
-            )
-        }
-        for (i in seq_along(vars)) {
-          row <- list()
-          for (j in 1:nCategory) {
-            row[[paste0("name", j)]] <- tau[i, j]
-          }
-          table$setRow(rowNo = i, values = row)
-        }
-      },
-      
+       
+      # plot---    
+
       .gofplot = function(image, ...) {
         lr <- image$state
         tlab <- self$options$tlab
@@ -671,54 +613,8 @@ raschClass <- if (requireNamespace('jmvcore'))
         TRUE
       },
       
-      # populate reliability table---------
-      .populateRelTable = function(results) {
-        self$results$mf$rel$setRow(
-          rowNo = 1,
-          values = list(
-            SSD = results$ssd,
-            MSE = results$mse,
-            Reliability = results$rel
-          )
-        )
-      },
       
-      # populate Model information table-----
-      .populateModelTable = function(results) {
-        self$results$mf$model$setRow(
-          rowNo = 1,
-          values = list(
-            class = results$class,
-            aic = results$aic,
-            bic = results$bic,
-            caic = results$caic,
-            loglik = results$loglik,
-            parm = results$parm,
-            person = results$person
-          )
-        )
-      },
-      
-      # populate Item Statistics table-----
-      .populateItemTable = function(results) {
-        table <- self$results$items
-        vars <- self$options$vars
-        
-        for (i in seq_along(vars)) {
-          table$setRow(
-            rowKey = vars[i],
-            values = list(
-              imean = results$imean[i, 1],
-              imeasure = results$imeasure[i],
-              ise = results$ise[i],
-              infit = results$infit[i],
-              outfit = results$outfit[i],
-              pbis = results$pbis[i, 2]
-            )
-          )
-        }
-      },
-      
+
       # Plot of standardized residuals using eRm package------
       
       .plot8 = function(image8, ...) {
@@ -755,25 +651,17 @@ raschClass <- if (requireNamespace('jmvcore'))
         print(plot8)
         TRUE
       },
+      
+      
       ### wrightmap Plot functions -----------
       .prepareWrightmapPlot = function(data) {
-        # step <- self$options$step
-        # type <- self$options$type
-        # #compute wright---
-        # set.seed(1234)
-        # res <-  mixRasch::mixRasch(
-        #   data = data,
-        #   steps = step,
-        #   model = type,
-        #   n.c = 1
-        # )
-        #res <- private$.cache$res
-        #res <- private$.computeRES(data) 
-        res <- self$res
-
+        
+        res <- private$.computeRES()
+        
         imeasure <- res$item.par$delta.i
         pmeasure <- res$person.par$theta
         vars <- self$options$vars
+        
         # plot---------
         image <- self$results$plot
         
@@ -820,20 +708,12 @@ raschClass <- if (requireNamespace('jmvcore'))
         print(plot)
         TRUE
       },
+      
       ### fit plot----------------
+      
       .prepareInfitPlot = function(data) {
-        # step <- self$options$step
-        # type <- self$options$type
-        #compute mixRasch---
-        # set.seed(1234)
-        # res <-  mixRasch::mixRasch(
-        #   data = data,
-        #   steps = step,
-        #   model = type,
-        #   n.c = 1
-        # )
-        #res <- private$.computeRES(data)
-        res <- self$res
+
+        res <- private$.computeRES()
         
         infit <- res$item.par$in.out[, 1]
         item <- self$options$vars
@@ -886,18 +766,8 @@ raschClass <- if (requireNamespace('jmvcore'))
       },
       
       .prepareOutfitPlot = function(data) {
-        # step <- self$options$step
-        # type <- self$options$type
-        # #compute mixRasch---
-        # set.seed(1234)
-        # res <-  mixRasch::mixRasch(
-        #   data = data,
-        #   steps = step,
-        #   model = type,
-        #   n.c = 1
-        # )
-        #res <- private$.computeRES(data)
-        res <- self$res
+        
+        res <- private$.computeRES()
         
         outfit <- res$item.par$in.out[, 3]
         item <- self$options$vars
@@ -1140,27 +1010,17 @@ raschClass <- if (requireNamespace('jmvcore'))
         for (item in items)
           data[[item]] <-
           jmvcore::toNumeric(self$data[[item]])
-
+        
         attr(data, 'row.names') <- seq_len(length(data[[1]]))
         attr(data, 'class') <- 'data.frame'
         data <- jmvcore::naOmit(data)
         return(data)
       },
       
-      # .computeRES = function() {
-      #   data <- private$.cleanData()
-      #   set.seed(1234) 
-      #   res <- mixRasch::mixRasch(
-      #     data = data,
-      #     steps = self$options$step,
-      #     model =self$options$type,
-      #     n.c = 1
-      #   ) 
-      #  return(res)
-      # }
       .computeRES = function(data = NULL) {
         if (is.null(data)) data <- private$.cleanData()
         set.seed(1234) 
+        
         res <- mixRasch::mixRasch(
           data = data,
           steps = self$options$step,
@@ -1168,7 +1028,33 @@ raschClass <- if (requireNamespace('jmvcore'))
           n.c = 1
         ) 
         return(res)
-      }
+      },
       
+      .computeERM = function(data = NULL) {
+        if (is.null(data)) data <- private$.cleanData()
+       
+        rasch <- NULL
+        pcm.res <- NULL
+        rsm.res <- NULL
+       
+        if (self$options$step == 1) {
+          set.seed(1234)
+          rasch <- eRm::RM(data)
+
+        } else if (self$options$step > 1) {
+          set.seed(1234)
+          pcm.res <- eRm::PCM(data)
+          rsm.res <- eRm::RSM(data)
+        }
+        
+        retlist <- list(
+          rasch = rasch,
+          pcm.res = pcm.res,
+          rsm.res = rsm.res
+        )
+        return(retlist)
+      }
     )
   )
+        
+        
