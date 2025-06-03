@@ -10,8 +10,8 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             num = 1,
             step = 1,
             type = "RSM",
-            fit = TRUE,
-            rel = TRUE,
+            fit = FALSE,
+            rel = FALSE,
             imean = TRUE,
             imeasure = TRUE,
             ise = TRUE,
@@ -21,7 +21,7 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             rsm = FALSE,
             pcm = FALSE,
             thr = FALSE,
-            wrightmap = TRUE,
+            wrightmap = FALSE,
             lrsplit = "median",
             mlsplit = "median",
             waldsplit = "median",
@@ -111,11 +111,11 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             private$..fit <- jmvcore::OptionBool$new(
                 "fit",
                 fit,
-                default=TRUE)
+                default=FALSE)
             private$..rel <- jmvcore::OptionBool$new(
                 "rel",
                 rel,
-                default=TRUE)
+                default=FALSE)
             private$..imean <- jmvcore::OptionBool$new(
                 "imean",
                 imean,
@@ -155,7 +155,7 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             private$..wrightmap <- jmvcore::OptionBool$new(
                 "wrightmap",
                 wrightmap,
-                default=TRUE)
+                default=FALSE)
             private$..ptotal <- jmvcore::OptionOutput$new(
                 "ptotal")
             private$..pmeasure <- jmvcore::OptionOutput$new(
@@ -784,7 +784,7 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         self$add(jmvcore::Table$new(
                             options=options,
                             name="rel",
-                            title="Person separation reliability using eRm R package",
+                            title="Person separation reliability",
                             rows=1,
                             visible="(rel)",
                             clearWith=list(
@@ -822,7 +822,7 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Table$new(
                 options=options,
                 name="rsm",
-                title="Rating Scale Model using eRm R package",
+                title="Rating Scale Model",
                 rows="(vars)",
                 visible="(rsm)",
                 refs="eRm",
@@ -839,7 +839,7 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Table$new(
                 options=options,
                 name="pcm",
-                title="Partial Credit Model using eRm R package",
+                title="Partial Credit Model",
                 rows="(vars)",
                 visible="(pcm)",
                 refs="eRm",
@@ -1099,7 +1099,7 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         self$add(jmvcore::Table$new(
                             options=options,
                             name="lr1",
-                            title="`LR test with rating scale model - ${lrsplit1}`",
+                            title="`Andersen\u2019s LR test - ${lrsplit1}`",
                             visible="(lr1)",
                             rows=1,
                             refs="eRm",
@@ -1411,8 +1411,8 @@ rasch <- function(
     num = 1,
     step = 1,
     type = "RSM",
-    fit = TRUE,
-    rel = TRUE,
+    fit = FALSE,
+    rel = FALSE,
     imean = TRUE,
     imeasure = TRUE,
     ise = TRUE,
@@ -1422,7 +1422,7 @@ rasch <- function(
     rsm = FALSE,
     pcm = FALSE,
     thr = FALSE,
-    wrightmap = TRUE,
+    wrightmap = FALSE,
     lrsplit = "median",
     mlsplit = "median",
     waldsplit = "median",

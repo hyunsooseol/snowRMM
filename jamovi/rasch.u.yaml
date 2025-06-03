@@ -34,7 +34,7 @@ children:
           - type: ComboBox
             name: type
   - type: CollapseBox
-    label: Item Analysis(mixRasch R package)
+    label: Item Analysis
     margin: normal
     collapsed: true
     children:
@@ -81,7 +81,7 @@ children:
               - type: CheckBox
                 name: pbis
   - type: CollapseBox
-    label: Testing model(eRm R package)
+    label: Testing model
     margin: normal
     collapsed: true
     children:
@@ -295,7 +295,7 @@ children:
         fitToGrid: true
         children:
           - type: Label
-            label: Standardized residuals(eRm R package)
+            label: Standardized residuals
             children:
               - type: TextBox
                 name: num1
@@ -322,7 +322,7 @@ children:
         margin: large
         children:
           - type: Label
-            label: Thresholds(eRm R package)
+            label: Thresholds
             fitToGrid: true
             cell:
               column: 0
@@ -363,7 +363,7 @@ children:
                     name: cormatrix
                     enable: (q3)
   - type: CollapseBox
-    label: Nonparametric Rasch Model Tests(Step=1)
+    label: Nonparametric Rasch Model Test
     margin: normal
     collapsed: true
     children:
@@ -372,7 +372,7 @@ children:
         margin: large
         children:
           - type: Label
-            label: eRm-NP test
+            label: eRm-NP test((Step=1)
             fitToGrid: true
             cell:
               column: 0

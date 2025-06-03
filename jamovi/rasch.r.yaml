@@ -79,7 +79,7 @@ items:
               type: integer               
 
         - name: rel
-          title: 'Person separation reliability using eRm R package'
+          title: 'Person separation reliability'
           type: Table
           rows: 1
           visible: (rel)
@@ -114,7 +114,7 @@ items:
           content: ($key)
 
     - name: rsm
-      title: 'Rating Scale Model using eRm R package'
+      title: 'Rating Scale Model'
       type: Table
       rows: (vars)
       visible: (rsm)
@@ -130,7 +130,7 @@ items:
           content: ($key)
 
     - name: pcm
-      title: 'Partial Credit Model using eRm R package'
+      title: 'Partial Credit Model'
       type: Table
       rows: (vars)
       visible: (pcm)
@@ -373,7 +373,7 @@ items:
               format: zto,pvalue
 
         - name: lr1
-          title: '`LR test with rating scale model - ${lrsplit1}`'
+          title: '`Andersen’s LR test - ${lrsplit1}`'
           type: Table
           visible: (lr1)
           rows: 1

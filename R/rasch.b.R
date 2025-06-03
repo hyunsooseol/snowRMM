@@ -122,6 +122,10 @@ raschClass <- if (requireNamespace('jmvcore'))
       },
       
       .run = function() {
+        
+        if (is.null(self$options$vars) || length(self$options$vars) < 2)
+          return()
+        
         #Removing perfect score items before estimation (for example all 1 or 0)-------
         for (varName in self$options$vars) {
           var <- self$data[[varName]]
@@ -134,12 +138,6 @@ raschClass <- if (requireNamespace('jmvcore'))
               )
             )
         }
-        # Ready--------
-        
-        if (is.null(self$options$vars) ||
-            length(self$options$vars) < 3)
-          return()
-        
         
         vars <- self$options$vars
         step <- self$options$step
