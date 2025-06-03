@@ -164,6 +164,7 @@ items:
       type: Image
       visible: (piplot)
       renderFun: .piPlot
+      requiresData: TRUE
       refs: eRm
       clearWith:
         - vars
@@ -177,6 +178,7 @@ items:
       type: Image
       visible: (gofplot)
       renderFun: .gofplot
+      requiresData: TRUE
       refs: eRm
       clearWith:
         - vars
@@ -237,6 +239,8 @@ items:
       type: Image
       visible: (inplot)
       renderFun: .inPlot
+      requiresData: true
+      refs: mixRasch
       clearWith:
         - vars
         - step
@@ -250,6 +254,8 @@ items:
       type: Image
       visible: (outplot)
       renderFun: .outPlot
+      requiresData: true
+      refs: mixRasch
       clearWith:
         - vars
         - step
@@ -366,17 +372,17 @@ items:
               title: 'p'
               format: zto,pvalue
 
-        - name: ml1
-          title: '`Martin-Loef test - ${mlsplit1}`'
+        - name: lr1
+          title: '`LR test with rating scale model - ${lrsplit1}`'
           type: Table
-          visible: (ml1)
+          visible: (lr1)
           rows: 1
           refs: eRm 
           clearWith:
             - vars
             - step
             - type
-            - mlsplit1
+            - lrsplit1
         
           columns:
             - name: name
@@ -438,6 +444,7 @@ items:
       visible: (plot8)
       renderFun: .plot8
       refs: snowRMM
+      requiresData: TRUE
       clearWith:
             - vars
             - step

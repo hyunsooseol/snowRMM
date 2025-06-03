@@ -122,11 +122,11 @@ children:
             label: Polytomous(Step>1)
             children:
               - type: CheckBox
-                name: ml1
+                name: lr1
                 children:
                   - type: ComboBox
-                    name: mlsplit1
-                    enable: (ml1)
+                    name: lrsplit1
+                    enable: (lr1)
           - type: Label
             label: Plot(Step=1)
             children:
@@ -372,7 +372,7 @@ children:
         margin: large
         children:
           - type: Label
-            label: 'eRm-NP test'
+            label: eRm-NP test
             fitToGrid: true
             cell:
               column: 0
@@ -386,7 +386,7 @@ children:
               - type: CheckBox
                 name: nptest
   - type: CollapseBox
-    label: 'Cross-plot'
+    label: Cross-plot
     margin: normal
     collapsed: true
     children:
@@ -402,26 +402,26 @@ children:
                 maxItemCount: 1
                 isTarget: true
           - type: TargetLayoutBox
-            label: 'Std.Error 1'
+            label: Std.Error 1
             children:
               - type: VariablesListBox
                 name: se1
                 maxItemCount: 1
-                isTarget: true                
+                isTarget: true
           - type: TargetLayoutBox
             label: Measure 2
             children:
               - type: VariablesListBox
                 name: mea2
                 maxItemCount: 1
-                isTarget: true 
+                isTarget: true
           - type: TargetLayoutBox
-            label: 'Std.Error 2'
+            label: Std.Error 2
             children:
               - type: VariablesListBox
                 name: se2
                 maxItemCount: 1
-                isTarget: true         
+                isTarget: true
       - type: LayoutBox
         margin: large
         stretchFactor: 1
@@ -434,10 +434,10 @@ children:
             stretchFactor: 1
             children:
               - type: Label
-                label: " "
+                label: ' '
                 children:
                   - type: CheckBox
-                    name: plot9 
+                    name: plot9
                     style: list-inline
                     children:
                       - type: TextBox

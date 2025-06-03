@@ -158,12 +158,12 @@ options:
       type: Bool
       default: FALSE
 
-    - name: ml1
-      title: 'Martin-Loef Test'
+    - name: lr1
+      title: 'LR Test'
       type: Bool
       default: FALSE
       
-    - name: mlsplit1
+    - name: lrsplit1
       title: Split criterion
       type: List
       options:

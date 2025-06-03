@@ -27,8 +27,8 @@ rasch(
   waldsplit = "median",
   lr = FALSE,
   ml = FALSE,
-  ml1 = FALSE,
-  mlsplit1 = "median",
+  lr1 = FALSE,
+  lrsplit1 = "median",
   wald = FALSE,
   gofplot = FALSE,
   tlab = "item",
@@ -122,9 +122,9 @@ rasch(
 
 \item{ml}{.}
 
-\item{ml1}{.}
+\item{lr1}{.}
 
-\item{mlsplit1}{.}
+\item{lrsplit1}{.}
 
 \item{wald}{.}
 
@@ -244,7 +244,7 @@ A results object containing:
   \code{results$poutfit} \tab \tab \tab \tab \tab an output \cr
   \code{results$tm$lr} \tab \tab \tab \tab \tab a table \cr
   \code{results$tm$ml} \tab \tab \tab \tab \tab a table \cr
-  \code{results$tm$ml1} \tab \tab \tab \tab \tab a table \cr
+  \code{results$tm$lr1} \tab \tab \tab \tab \tab a table \cr
   \code{results$tm$wald} \tab \tab \tab \tab \tab a table \cr
   \code{results$plot4} \tab \tab \tab \tab \tab an image \cr
   \code{results$plot8} \tab \tab \tab \tab \tab an image \cr
