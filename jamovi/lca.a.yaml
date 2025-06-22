@@ -41,7 +41,7 @@ options:
     - name: comp
       title: Model comparison
       type: Bool
-      default: True
+      default: FALSE
 
     - name: cp
       title: Class size 

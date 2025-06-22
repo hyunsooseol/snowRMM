@@ -29,13 +29,13 @@ children:
           row: 0
         stretchFactor: 1
         children:
+          - type: TextBox
+            name: col
+            format: number
           - name: mat
             type: TextBox
             format: string
             stretchFactor: 2
-          - type: TextBox
-            name: col
-            format: number
   - type: CollapseBox
     label: Analysis
     margin: normal

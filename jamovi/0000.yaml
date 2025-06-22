@@ -22,6 +22,7 @@ analyses:
     menuTitle: Rasch Model
     menuSubgroup: Rasch
     ribbon: analyses
+    category: analyses
   - title: Rasch Mixture Model
     name: mixture
     ns: snowRMM
@@ -29,6 +30,7 @@ analyses:
     menuTitle: Rasch Mixture Model
     menuSubgroup: Mixture
     ribbon: analyses
+    category: analyses
   - title: Bootstrap Item Fit
     name: bfit
     ns: snowRMM
@@ -36,6 +38,7 @@ analyses:
     menuTitle: Bootstrap Item Fit
     menuSubgroup: Rasch
     ribbon: analyses
+    category: analyses
   - title: Differential Item Functioning
     name: dif
     ns: snowRMM
@@ -43,6 +46,7 @@ analyses:
     menuTitle: Differential Item Functioning
     menuSubgroup: Rasch
     ribbon: analyses
+    category: analyses
   - title: Latent Class Analysis
     name: lca
     ns: snowRMM
@@ -50,6 +54,7 @@ analyses:
     menuTitle: Latent Class Analysis
     menuSubgroup: LCA
     ribbon: analyses
+    category: analyses
   - title: LCA with ordinal indicators
     name: lcaord
     ns: snowRMM
@@ -57,6 +62,7 @@ analyses:
     menuTitle: LCA with ordinal indicators
     menuSubgroup: LCA
     ribbon: analyses
+    category: analyses
   - title: Latent Profile Analysis
     name: lpa
     ns: snowRMM
@@ -64,6 +70,7 @@ analyses:
     menuTitle: Latent Profile Analysis
     menuSubgroup: LCA
     ribbon: analyses
+    category: analyses
   - title: Latent Class Growth Modeling
     name: lcgm
     ns: snowRMM
@@ -71,6 +78,7 @@ analyses:
     menuTitle: Latent Class Growth Modeling
     menuSubgroup: LCA
     ribbon: analyses
+    category: analyses
   - title: CTT Equating
     name: equating
     ns: snowRMM
@@ -78,6 +86,7 @@ analyses:
     menuTitle: CTT Equating
     menuSubgroup: Test Equating
     ribbon: analyses
+    category: analyses
   - title: Composite Linking
     name: linking
     ns: snowRMM
@@ -85,6 +94,7 @@ analyses:
     menuTitle: Composite Linking
     menuSubgroup: Test Equating
     ribbon: analyses
+    category: analyses
   - title: Linear Logisitic Test Model
     name: lltm
     ns: snowRMM
@@ -92,6 +102,7 @@ analyses:
     menuTitle: Linear Logisitic Test Model
     menuSubgroup: Mixture
     ribbon: analyses
+    category: analyses
 datasets:
   - name: Rasch
     path: rasch.omv

@@ -10,7 +10,7 @@ lca(
   covs,
   nc = 2,
   fit = TRUE,
-  comp = TRUE,
+  comp = FALSE,
   cp = FALSE,
   ip = FALSE,
   cf = FALSE,
