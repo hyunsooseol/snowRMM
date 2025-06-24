@@ -46,15 +46,15 @@ lpaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         }
         
         if (isTRUE(self$options$plot3)) {
-          width <- self$options$width2
-          height <- self$options$height2
+          width <- self$options$width3
+          height <- self$options$height3
           
           self$results$plot3$setSize(width, height)
         }
         
         if (isTRUE(self$options$plot2)) {
-          width <- self$options$width3
-          height <- self$options$height3
+          width <- self$options$width2
+          height <- self$options$height2
           
           self$results$plot2$setSize(width, height)
         }
@@ -70,7 +70,7 @@ lpaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           width <- self$options$width5
           height <- self$options$height5
           
-          self$results$plot4$setSize(width, height)
+          self$results$plot5$setSize(width, height)
         }
     },
       
@@ -331,9 +331,10 @@ lpaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           add_line = TRUE,
           rawdata = FALSE
         ) +
-          aes(linetype = 'solid', linewidth = 1.3) +
+          aes(linetype = 'solid', linewidth = 1.3, size=3) +
           scale_linewidth_identity() +
-          scale_linetype_identity()
+          scale_linetype_identity() +
+          scale_size_identity()
         
         if (self$options$angle > 0) {
           plot4 <- plot4 + ggplot2::theme(axis.text.x = ggplot2::element_text(angle = self$options$angle, hjust = 1))
