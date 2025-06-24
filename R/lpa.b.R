@@ -65,7 +65,14 @@ lpaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           
           self$results$plot4$setSize(width, height)
         }
-      },
+
+        if (isTRUE(self$options$plot5)) {
+          width <- self$options$width5
+          height <- self$options$height5
+          
+          self$results$plot4$setSize(width, height)
+        }
+    },
       
       .run = function() {
         if (length(self$options$vars) < 2)
@@ -100,6 +107,7 @@ lpaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
             table$addRow(rowKey = name, values = row)
           })
         }
+        
         # Fit measres----------
         if (isTRUE(self$options$fit)) {
           table <- self$results$fit
@@ -205,73 +213,15 @@ lpaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           image4$setState(all$res)
         }
         
+        # Mean-centered plot---
+        if(isTRUE(self$options$plot5)){
+          image5 <- self$results$plot5
+          image5$setState(all$res)
+        }
+        
         # elbow plot----------
         
         if (isTRUE(self$options$plot2)) {
-          # vars <- self$options$vars
-          # nc <- self$options$nc
-          # variances <- self$options$variances
-          # covariances <- self$options$covariances
-          #
-          # data <- self$data
-          # data <- jmvcore::naOmit(data)
-          #
-          # out <- NULL
-          #
-          # for (i in 1:self$options$nc) {
-          #   set.seed(1234)
-          #   res <- tidyLPA::estimate_profiles(
-          #     data,
-          #     n_profiles = i,
-          #     variances = variances,
-          #     covariances = covariances
-          #   )
-          #
-          #   res <- res[[1]]
-          #   df <- data.frame(res$fit)
-          #   df <- t(df)
-          #   model <- df[1]
-          #   class <- df[2]
-          #   log <- df[3]
-          #   aic <- df[4]
-          #   awe <- df[5]
-          #   bic <- df[6]
-          #   caic <- df[7]
-          #   clc <- df[8]
-          #   kic <- df[9]
-          #   sabic <- df[10]
-          #   icl <- df[11]
-          #   entropy <- df[12]
-          #   df <- data.frame(model,
-          #                    log,
-          #                    aic,
-          #                    awe,
-          #                    bic,
-          #                    caic,
-          #                    clc,
-          #                    kic,
-          #                    sabic,
-          #                    icl,
-          #                    entropy,
-          #                    class)
-          #   if (is.null(out)) {
-          #     out <- df
-          #   } else {
-          #     out <- rbind(out, df)
-          #   }
-          # }
-          # out <- out
-          # # Elbow plot---
-          # out1 <- out[, c(3:10, 12), ]
-          # colnames(out1) <- c('AIC',
-          #                     'AWE',
-          #                     'BIC',
-          #                     'CAIC',
-          #                     'CLC',
-          #                     'KIC',
-          #                     'SABIC',
-          #                     'ICL',
-          #                     'Class')
           out <- private$.allCache$elbow_data
           out1 <- out[, c(3:10, 12)]
           colnames(out1) <- c('AIC',
@@ -300,7 +250,6 @@ lpaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         }
       },
       
-      # pLOT---
       # Percentage of class
       .plot = function(image, ggtheme, theme, ...) {
         if (is.null(image$state))
@@ -324,18 +273,6 @@ lpaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
       },
       
       .plot3 = function(image, ggtheme, theme, ...) {
-        # vars <- self$options$vars
-        # nc <- self$options$nc
-        # variances <- self$options$variances
-        # covariances <- self$options$covariances
-        # data <- self$data
-        # data <- jmvcore::naOmit(data)
-        #
-        # set.seed(1234)
-        # res1 <- tidyLPA::estimate_profiles(data,
-        #                                    1:self$options$nc,
-        #                                    variances = variances,
-        #                                    covariances = covariances)
         if (is.null(image$state))
           return(FALSE)
         
@@ -406,7 +343,41 @@ lpaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         TRUE
         
       },
+
+    .plot5 = function(image5, ggtheme, theme, ...) {
+      if (is.null(image5$state)) return(FALSE)
       
+      res <- image5$state
+      
+      model_name <- names(res)[grepl("^model_1_class_", names(res))][1]
+      if (is.na(model_name)) return(FALSE)
+      
+      estimates <- res[[model_name]][["estimates"]]
+      if (is.null(estimates)) return(FALSE)
+      
+      means_df <- estimates[estimates$Category == "Means", c("Class", "Parameter", "Estimate")]
+      if (nrow(means_df) == 0) return(FALSE)
+      
+      # check data type--
+      means_df$Estimate <- as.numeric(as.character(means_df$Estimate))
+      means_df <- means_df[!is.na(means_df$Estimate), ]
+      
+      #self$results$text$setContent(means_df)
+      
+      means_df$Centered <- stats::ave(means_df$Estimate, means_df$Parameter, FUN = function(x) x - mean(x))
+      
+      plot5 <- ggplot(means_df, aes(x = Parameter, y = Centered, group = Class, color = factor(Class))) +
+        geom_line(size = 1.2) + geom_point(size = 3) + geom_hline(yintercept = 0, linetype = "dashed") +
+        labs(y = "Deviation from Variable Mean", x = "Variables", color = "Class") + theme_minimal()
+      
+      if (self$options$angle > 0) {
+        plot5 <- plot5 + theme(axis.text.x = element_text(angle = self$options$angle, hjust = 1))
+      }
+      
+      print(plot5)
+      TRUE
+    },
+    
       .computeRES = function() {
         vars <- self$options$vars
         nc <- self$options$nc
@@ -483,79 +454,3 @@ lpaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
     )
   )
 
-# if (isTRUE(self$options$overall)) {
-#   table <- self$results$overall
-#   f <- all$bestfit
-#
-#   names <- dimnames(f)[[1]]
-#
-#
-#   for (name in names) {
-#     # # if not rowKey, add rowkey---
-#     # if (!name %in% table$rowKeys) {
-#     #   table$addRow(rowKey = name)
-#     # }
-#     #
-#     # if (table$getCell(rowKey=name,'model')$isEmpty) {
-#     #
-#     #   table$setStatus('running')
-#     #   #private$.checkpoint()
-#
-#     row <- list()
-#
-#     row[['model']] <- f[name, 1]
-#     row[['classes']] <- f[name, 2]
-#     row[['log']] <- f[name, 3]
-#     row[['aic']] <- f[name, 4]
-#     row[['awe']] <- f[name, 5]
-#     row[['bic']] <- f[name, 6]
-#     row[['caic']] <- f[name, 7]
-#     row[['clc']] <- f[name, 8]
-#     row[['kic']] <- f[name, 9]
-#     row[['sabic']] <- f[name, 10]
-#     row[['icl']] <- f[name, 11]
-#     row[['entropy']] <- f[name, 12]
-#
-#     # change setrow---
-#     table$addRow(rowKey = name, values = row)
-#     #table$setStatus('complete')
-#   }
-# }
-#
-
-#
-# if (isTRUE(self$options$est)) {
-#   table <- self$results$est
-#
-#   # get estimates--------------
-#   set.seed(1234)
-#   e <- tidyLPA::get_estimates(all$res)
-#   #################################
-#   e <- data.frame(e)
-#   names <- dimnames(e)[[1]]
-#
-#   for (name in names) {
-#     # # if not rowKey, add rowkey---
-#     # if (!name %in% table$rowKeys) {
-#     #   table$addRow(rowKey = name)
-#     # }
-#     #
-#     # if (table$getCell(rowKey=name,'cat')$isEmpty) {
-#     #
-#     #   table$setStatus('running')
-#
-#     row <- list()
-#     row[['cat']] <- e[name, 1]
-#     row[['par']] <- e[name, 2]
-#     row[['est']] <- e[name, 3]
-#     row[['se']] <- e[name, 4]
-#     row[['p']] <- e[name, 5]
-#     row[['cl']] <- e[name, 6]
-#     row[['model']] <- e[name, 7]
-#     row[['cla']] <- e[name, 8]
-#
-#     table$addRow(rowKey = name, values = row)
-#     # table$setStatus('complete')
-#     # }
-#   }
-# }

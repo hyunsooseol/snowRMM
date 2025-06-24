@@ -218,9 +218,22 @@ items:
         - covariances     
         - width4
         - height4
-        - line
         - angle
  
+    - name: plot5
+      title: 'Mean-centered plot'
+      type: Image
+      visible: (plot5)
+      refs: snowRMM
+      renderFun: .plot5
+      clearWith:
+        - vars
+        - nc
+        - variances
+        - covariances     
+        - width5
+        - height5
+        - angle
 
             
 ...

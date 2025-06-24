@@ -18,6 +18,7 @@ lpa(
   plot3 = FALSE,
   plot2 = FALSE,
   plot4 = FALSE,
+  plot5 = FALSE,
   angle = 0,
   line = "FALSE",
   width = 500,
@@ -29,7 +30,9 @@ lpa(
   width3 = 500,
   height3 = 500,
   width4 = 500,
-  height4 = 500
+  height4 = 500,
+  width5 = 500,
+  height5 = 500
 )
 }
 \arguments{
@@ -59,6 +62,8 @@ lpa(
 
 \item{plot4}{.}
 
+\item{plot5}{.}
+
 \item{angle}{a number from 0 to 90 defining the angle of the x-axis labels,
 where 0 degrees represents completely horizontal labels.}
 
@@ -83,6 +88,10 @@ where 0 degrees represents completely horizontal labels.}
 \item{width4}{.}
 
 \item{height4}{.}
+
+\item{width5}{.}
+
+\item{height5}{.}
 }
 \value{
 A results object containing:
@@ -99,6 +108,7 @@ A results object containing:
   \code{results$plot2} \tab \tab \tab \tab \tab an image \cr
   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
   \code{results$plot4} \tab \tab \tab \tab \tab an image \cr
+  \code{results$plot5} \tab \tab \tab \tab \tab an image \cr
 }
 
 Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:

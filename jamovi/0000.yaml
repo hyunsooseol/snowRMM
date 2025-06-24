@@ -1,12 +1,12 @@
 ---
 title: Rasch Mixture, LCA, and Test Equating Analysis
 name: snowRMM
-version: 5.9.2
+version: 5.9.3
 jms: '1.0'
 authors:
   - Hyunsoo Seol
 maintainer: Hyunsoo Seol <snow@cau.ac.kr>
-date: '2025-06-03'
+date: '2025-06-24'
 type: R
 description: >-
   This module allows users to conduct Latent class analysis, Latent Profile
@@ -154,11 +154,6 @@ datasets:
   - name: iris
     path: iris.omv
     description: Latent profile analysis
-    tags:
-      - Latent Profile
-  - name: WHR2021
-    path: WHR2021.omv
-    description: World Happiness Report 2021
     tags:
       - Latent Profile
   - name: empathy
