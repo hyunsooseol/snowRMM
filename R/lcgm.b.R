@@ -15,7 +15,6 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           if (self$options$miss == 'listwise') {
             data <- jmvcore::naOmit(data)
           }
-          
           private$.res_cache <- tidySEM::mx_growth_mixture(
             model = self$options$model,
             data = as.data.frame(data),
@@ -62,7 +61,6 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         return(private$.cp_cache)
       }
     ),
-    
     # Private members ----
     private = list(
       # Cache variables
@@ -72,12 +70,13 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
       .fit_cache = NULL,
       .para_cache = NULL,
       .cp_cache = NULL,
+      .mc_cache = NULL,
       
       # Init function ----
       .init = function() {
         private$.htmlwidget <- HTMLWidget$new()
         
-        if (is.null(self$data) | is.null(self$options$vars)) {
+        if (is.null(self$data) || is.null(self$options$vars)) {
           self$results$instructions$setVisible(visible = TRUE)
         }
         
@@ -93,6 +92,11 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
             '</ul></div></div>'
           )
         ))
+        
+        if (self$options$mc)
+          self$results$mc$setNote("Note",
+                                      "Entropy values are not displayed due to estimation instability in some models.")
+        
         
         # Set plot sizes
         if (isTRUE(self$options$plot1)) {
@@ -113,7 +117,8 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           desc = private$.populateDescTable,
           fit = private$.populateFitTable,
           cp = private$.populateClassSizeTable,
-          mem = private$.populateClassMemberTable
+          mem = private$.populateClassMemberTable,
+          mc = private$.populateModelComparisonTable
         )
         
         for (name in names(callbacks)) {
@@ -147,6 +152,9 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         if (isTRUE(self$options$cp))
           private$.populateClassSizeTable()
         
+        if (isTRUE(self$options$mc))
+          private$.populateModelComparisonTable() 
+        
         if (isTRUE(self$options$mem))
           private$.populateClassMemberTable()
         
@@ -158,6 +166,74 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           private$.setPlot1()
       },
       
+      # Model Comparison function ----
+      .computeModelComparison = function() {
+        if (is.null(private$.mc_cache)) {
+          model_spec <- self$options$model
+          data_df <- as.data.frame(self$data)
+          miss_handling <- self$options$miss
+          num_classes <- self$options$nc
+          use_thresholds <- self$options$thr
+          
+          private$.mc_cache <- private$.performModelComparison(
+            model_spec, data_df, miss_handling, num_classes, use_thresholds
+          )
+        }
+        return(private$.mc_cache)
+      },
+      
+      .performModelComparison = function(model_spec, data_df, miss_handling, num_classes, use_thresholds) {
+        if (miss_handling == "listwise")
+          data_df <- jmvcore::naOmit(data_df)
+        
+        results <- data.frame(
+          classes = integer(0), 
+          AIC = numeric(0), 
+          BIC = numeric(0)
+        )
+        
+        for (k in 1:num_classes) {
+          model_k <- tidySEM::mx_growth_mixture(
+            model = model_spec, 
+            data = data_df, 
+            classes = k, 
+            thresholds = use_thresholds
+          )
+          
+          if (!is.null(model_k)) {
+            fit_stats <- tidySEM::table_fit(model_k)
+            results <- rbind(results, data.frame(
+              classes = k,
+              AIC = fit_stats$AIC,
+              BIC = fit_stats$BIC
+            ))
+          }
+        }
+        return(results)
+      },
+      
+      .populateModelComparisonTable = function() {
+        if (!isTRUE(self$options$mc))
+          return()
+        
+        tbl <- self$results$mc
+        mc_data <- private$.computeModelComparison()
+        
+        if (nrow(mc_data) > 0) {
+          for (i in seq_len(nrow(mc_data))) {
+            row <- mc_data[i, ]
+            tbl$addRow(
+              rowKey = paste0("class_", row$classes),
+              values = list(
+                classes = row$classes,
+                AIC = row$AIC,
+                BIC = row$BIC
+              )
+            )
+          }
+        }
+      },
+      
       # Table population functions ----
       .populateDescTable = function() {
         if (!isTRUE(self$options$desc))
@@ -167,7 +243,7 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         table <- self$results$desc
         d <- as.data.frame(self$desc)
         
-        lapply(seq_along(vars), function(i) {
+        for (i in seq_along(vars)) {
           row <- list(
             n = d[[2]][i],
             missing = d[[3]][i],
@@ -178,7 +254,7 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
             max = d[[8]][i]
           )
           table$addRow(rowKey = vars[i], values = row)
-        })
+        }
       },
       
       .populateFitTable = function() {
@@ -188,10 +264,10 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         table <- self$results$fit
         df <- as.data.frame(t(self$fit))
         
-        lapply(rownames(df), function(name) {
+        for (name in rownames(df)) {
           row <- list(value = df[name, 1])
           table$addRow(rowKey = name, values = row)
-        })
+        }
       },
       
       .populateEST = function() {
@@ -201,7 +277,7 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         table <- self$results$est
         e <- as.data.frame(self$parameters)
         
-        lapply(rownames(e), function(name) {
+        for (name in rownames(e)) {
           row <- list(
             cat = e[name, 1],
             lhs = e[name, 2],
@@ -212,7 +288,7 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
             na = e[name, 7]
           )
           table$addRow(rowKey = name, values = row)
-        })
+        }
       },
       
       .populateClassSizeTable = function() {
@@ -224,14 +300,14 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         vars <- self$options$vars
         d <- self$classProbabilities$summary
         
-        lapply(seq_len(nc), function(i) {
+        for (i in seq_len(nc)) {
           row <- list(
             name = d[[1]][i],
             count = d[[2]][i],
             prop = d[[3]][i]
           )
           table$addRow(rowKey = vars[i], values = row)
-        })
+        }
       },
       
       .populateClassMemberTable = function() {
@@ -249,7 +325,6 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         if (self$results$mem$isNotFilled()) {
           self$results$mem$setRowNums(rownames(self$data))
           self$results$mem$setValues(m)
-          
         }
       },
       
@@ -319,138 +394,3 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
       }
     )
   )
-
-# .populateDescTable = function() {
-#   if (!isTRUE(self$options$desc) ||
-#       is.null(private$.results_cache))
-#     return()
-#
-#   vars <- self$options$vars
-#
-#   table <- self$results$desc
-#   res <- private$.results_cache
-#
-#   desc <- res$desc
-#
-#   d <- data.frame(desc)
-#
-#   for (i in seq_along(vars)) {
-#     # #if not rowKey, add rowkey---
-#     # if (!vars[i] %in% table$rowKeys) {
-#     #   table$addRow(rowKey = vars[i])
-#     # }
-#     #
-#     # if (table$getCell(rowKey=vars[i],'n')$isEmpty) {
-#     #
-#     #   table$setStatus('running')
-#
-#     row <- list()
-#     row[["n"]] <- d[[2]][i]
-#     row[["missing"]] <- d[[3]][i]
-#     row[["mean"]] <- d[[4]][i]
-#     row[["median"]] <- d[[5]][i]
-#     row[["sd"]] <- d[[6]][i]
-#     row[["min"]] <- d[[7]][i]
-#     row[["max"]] <- d[[8]][i]
-#     table$addRow(rowKey = vars[i], values = row) #setRaw
-#     #  table$setStatus('complete')
-#     # }
-#   }
-# },
-
-# .populateFitTable = function() {
-#   if (!isTRUE(self$options$fit) ||
-#       is.null(private$.results_cache))
-#     return()
-#
-#
-#   table <- self$results$fit
-#   res <- private$.results_cache
-#
-#   fit <- res$fit
-#   fit <- t(fit)
-#   df <- as.data.frame(fit)
-#   #names <- dimnames(df)[[1]]
-#   names <- rownames(df)
-#
-#   for (name in names) {
-#     # # if not rowKey, add rowkey---
-#     # if (!name %in% table$rowKeys) {
-#     #   table$addRow(rowKey = name)
-#     # }
-#     # if (table$getCell(rowKey=name,'value')$isEmpty) {
-#     #
-#     #   table$setStatus('running')
-#
-#     row <- list()
-#     row[['value']] <- df[name, 1]
-#
-#     table$addRow(rowKey = name, values = row)
-#     # table$setStatus('complete')
-#     # }
-#   }
-# },
-
-# .populateEST = function() {
-#   if (!isTRUE(self$options$fit) ||
-#       is.null(private$.results_cache))
-#     return()
-#
-#   table <- self$results$est
-#   res <- private$.results_cache
-#
-#   e <- res$para
-#   e <- data.frame(e)
-#   names <- dimnames(e)[[1]]
-#
-#   for (name in names) {
-#     # # if not rowKey, add rowkey---
-#     # if (!name %in% table$rowKeys) {
-#     #   table$addRow(rowKey = name)
-#     # }
-#     #
-#     # if (table$getCell(rowKey=name,'cat')$isEmpty) {
-#     #
-#     #   table$setStatus('running')
-#
-#     row <- list()
-#     row[['cat']] <- e[name, 1]
-#     row[['lhs']] <- e[name, 2]
-#     row[['est']] <- e[name, 3]
-#     row[['se']] <- e[name, 4]
-#     row[['p']] <- e[name, 5]
-#     row[['ci']] <- e[name, 6]
-#     row[['na']] <- e[name, 7]
-#
-#     table$addRow(rowKey = name, values = row)
-#     # table$setStatus('complete')
-#     # }
-#   }
-# },
-
-#
-# .populateClassSizeTable = function() {
-#   if (!isTRUE(self$options$cp) ||
-#       is.null(private$.results_cache))
-#     return()
-#
-#
-#   table <- self$results$cp
-#   nc <- self$options$nc
-#   vars <- self$options$vars
-#
-#   res <- private$.results_cache
-#   d <- res$cp
-#
-#   for (i in seq_along(1:nc)) {
-#     row <- list()
-#
-#     row[["name"]] <- d[[1]][i]
-#     row[["count"]] <- d[[2]][i]
-#     row[["prop"]] <- d[[3]][i]
-#
-#     table$addRow(rowKey = vars[i], values = row)
-#   }
-#
-# },
-#

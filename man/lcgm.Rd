@@ -10,9 +10,10 @@ lcgm(
   model = list(),
   nc = 2,
   thr = "FALSE",
+  mc = TRUE,
   fit = FALSE,
   est = FALSE,
-  desc = TRUE,
+  desc = FALSE,
   cp = FALSE,
   plot1 = FALSE,
   plot = FALSE,
@@ -34,6 +35,8 @@ lcgm(
 \item{nc}{.}
 
 \item{thr}{.}
+
+\item{mc}{.}
 
 \item{fit}{.}
 
@@ -64,6 +67,7 @@ A results object containing:
 \tabular{llllll}{
   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
   \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
+  \code{results$mc} \tab \tab \tab \tab \tab a table \cr
   \code{results$desc} \tab \tab \tab \tab \tab a table \cr
   \code{results$fit} \tab \tab \tab \tab \tab a table \cr
   \code{results$est} \tab \tab \tab \tab \tab a table \cr
@@ -75,9 +79,9 @@ A results object containing:
 
 Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
 
-\code{results$desc$asDF}
+\code{results$mc$asDF}
 
-\code{as.data.frame(results$desc)}
+\code{as.data.frame(results$mc)}
 }
 \description{
 Latent Class Growth Modeling

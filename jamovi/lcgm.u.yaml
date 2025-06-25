@@ -94,6 +94,8 @@ children:
                 margin: large
                 children:
                   - type: CheckBox
+                    name: mc
+                  - type: CheckBox
                     name: desc
                   - type: CheckBox
                     name: fit

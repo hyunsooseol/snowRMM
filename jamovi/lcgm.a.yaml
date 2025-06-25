@@ -40,6 +40,11 @@ options:
           name:  'TRUE'
       default: 'FALSE'  
 
+    - name: mc
+      title: 'Model comparison'
+      type: Bool
+      default: TRUE
+
     - name: fit
       title: 'Model fit'
       type: Bool
@@ -53,7 +58,7 @@ options:
     - name: desc
       title: 'Descriptives'
       type: Bool
-      default: TRUE
+      default: FALSE
 
     - name: cp
       title: Class size 
