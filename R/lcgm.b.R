@@ -61,6 +61,7 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         return(private$.cp_cache)
       }
     ),
+    
     # Private members ----
     private = list(
       # Cache variables
@@ -97,7 +98,6 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           self$results$mc$setNote("Note",
                                   "Entropy values are not displayed due to estimation instability in some models.")
         
-        
         # Set plot sizes
         if (isTRUE(self$options$plot1)) {
           self$results$plot1$setSize(self$options$width1, self$options$height1)
@@ -105,28 +105,6 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         
         if (isTRUE(self$options$plot)) {
           self$results$plot$setSize(self$options$width, self$options$height)
-        }
-        
-        # Register callbacks
-        private$.registerCallbacks()
-      },
-      
-      # Register callbacks ----
-      .registerCallbacks = function() {
-        callbacks <- list(
-          desc = private$.populateDescTable,
-          fit = private$.populateFitTable,
-          cp = private$.populateClassSizeTable,
-          mem = private$.populateClassMemberTable,
-          mc = private$.populateModelComparisonTable
-        )
-        
-        for (name in names(callbacks)) {
-          if (name %in% names(self$results) &&
-              !is.null(self$results[[name]]) &&
-              "setCallback" %in% names(self$results[[name]])) {
-            self$results[[name]]$setCallback(callbacks[[name]])
-          }
         }
       },
       
@@ -152,8 +130,9 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         if (isTRUE(self$options$cp))
           private$.populateClassSizeTable()
         
+        # Model comparison만 조건부로 실행 (최적화)
         if (isTRUE(self$options$mc))
-          private$.populateModelComparisonTable() 
+          private$.populateModelComparisonTable()
         
         if (isTRUE(self$options$mem))
           private$.populateClassMemberTable()
@@ -166,26 +145,27 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           private$.setPlot1()
       },
       
-      # Model Comparison function ---- (최적화된 부분만)
+      # Model Comparison function ---- (최적화된 부분)
       .computeModelComparison = function() {
         if (is.null(private$.mc_cache)) {
+          # 변수들을 미리 저장하여 반복 접근 최소화
           model_spec <- self$options$model
           data_df <- as.data.frame(self$data)
           miss_handling <- self$options$miss
           num_classes <- self$options$nc
           use_thresholds <- self$options$thr
           
-          # 데이터 전처리 한 번만 수행
+          # 데이터 전처리를 한 번만 수행
           if (miss_handling == "listwise")
             data_df <- jmvcore::naOmit(data_df)
           
-          # 결과 저장용 벡터 미리 할당
+          # 결과 저장용 리스트 미리 할당
           results <- vector("list", num_classes)
           
           for (k in 1:num_classes) {
             model_k <- tidySEM::mx_growth_mixture(
               model = model_spec, 
-              data = data_df, 
+              data = data_df,  # 전처리된 데이터 재사용
               classes = k, 
               thresholds = use_thresholds
             )
@@ -235,7 +215,7 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         }
       },
       
-      # Table population functions ---- (원래 코드 그대로)
+      # Table population functions ----
       .populateDescTable = function() {
         if (!isTRUE(self$options$desc))
           return()
@@ -329,7 +309,7 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         }
       },
       
-      # Plot functions ---- (원래 코드 그대로)
+      # Plot functions ----
       .setPlot1 = function() {
         if (!isTRUE(self$options$plot1))
           return()
@@ -361,7 +341,7 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         image$setState(self$res)
       },
       
-      # Plot rendering functions ---- (원래 코드 그대로)
+      # Plot rendering functions ----
       .plot1 = function(image, ggtheme, theme, ...) {
         if (is.null(image$state))
           return(FALSE)
