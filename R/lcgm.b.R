@@ -95,7 +95,7 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         
         if (self$options$mc)
           self$results$mc$setNote("Note",
-                                      "Entropy values are not displayed due to estimation instability in some models.")
+                                  "Entropy values are not displayed due to estimation instability in some models.")
         
         
         # Set plot sizes
@@ -166,7 +166,7 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           private$.setPlot1()
       },
       
-      # Model Comparison function ----
+      # Model Comparison function ---- (최적화된 부분만)
       .computeModelComparison = function() {
         if (is.null(private$.mc_cache)) {
           model_spec <- self$options$model
@@ -175,41 +175,42 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           num_classes <- self$options$nc
           use_thresholds <- self$options$thr
           
-          private$.mc_cache <- private$.performModelComparison(
-            model_spec, data_df, miss_handling, num_classes, use_thresholds
-          )
-        }
-        return(private$.mc_cache)
-      },
-      
-      .performModelComparison = function(model_spec, data_df, miss_handling, num_classes, use_thresholds) {
-        if (miss_handling == "listwise")
-          data_df <- jmvcore::naOmit(data_df)
-        
-        results <- data.frame(
-          classes = integer(0), 
-          AIC = numeric(0), 
-          BIC = numeric(0)
-        )
-        
-        for (k in 1:num_classes) {
-          model_k <- tidySEM::mx_growth_mixture(
-            model = model_spec, 
-            data = data_df, 
-            classes = k, 
-            thresholds = use_thresholds
-          )
+          # 데이터 전처리 한 번만 수행
+          if (miss_handling == "listwise")
+            data_df <- jmvcore::naOmit(data_df)
           
-          if (!is.null(model_k)) {
-            fit_stats <- tidySEM::table_fit(model_k)
-            results <- rbind(results, data.frame(
-              classes = k,
-              AIC = fit_stats$AIC,
-              BIC = fit_stats$BIC
-            ))
+          # 결과 저장용 벡터 미리 할당
+          results <- vector("list", num_classes)
+          
+          for (k in 1:num_classes) {
+            model_k <- tidySEM::mx_growth_mixture(
+              model = model_spec, 
+              data = data_df, 
+              classes = k, 
+              thresholds = use_thresholds
+            )
+            
+            if (!is.null(model_k)) {
+              fit_stats <- tidySEM::table_fit(model_k)
+              if (!is.null(fit_stats)) {
+                results[[k]] <- data.frame(
+                  classes = k,
+                  AIC = fit_stats$AIC,
+                  BIC = fit_stats$BIC
+                )
+              }
+            }
+          }
+          
+          # 유효한 결과만 병합
+          valid_results <- results[!sapply(results, is.null)]
+          if (length(valid_results) > 0) {
+            private$.mc_cache <- do.call(rbind, valid_results)
+          } else {
+            private$.mc_cache <- data.frame(classes = integer(0), AIC = numeric(0), BIC = numeric(0))
           }
         }
-        return(results)
+        return(private$.mc_cache)
       },
       
       .populateModelComparisonTable = function() {
@@ -234,7 +235,7 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         }
       },
       
-      # Table population functions ----
+      # Table population functions ---- (원래 코드 그대로)
       .populateDescTable = function() {
         if (!isTRUE(self$options$desc))
           return()
@@ -328,7 +329,7 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         }
       },
       
-      # Plot functions ----
+      # Plot functions ---- (원래 코드 그대로)
       .setPlot1 = function() {
         if (!isTRUE(self$options$plot1))
           return()
@@ -360,7 +361,7 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         image$setState(self$res)
       },
       
-      # Plot rendering functions ----
+      # Plot rendering functions ---- (원래 코드 그대로)
       .plot1 = function(image, ggtheme, theme, ...) {
         if (is.null(image$state))
           return(FALSE)
