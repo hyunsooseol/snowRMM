@@ -89,6 +89,7 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
             '<ul>',
             '<li><b>tidySEM</b> R package is described in the <a href="https://cjvanlissa.github.io/tidySEM/articles/lca_lcga.html" target = "_blank">page</a>.</li>',
             '<li>Please set <b>Thresholds=TRUE</b> when analyzing ordinal data.</li>',
+            '<li>The <b>model comparison option</b> may require a longer processing time to complete the analysis.</li>',
             '<li>Feature requests and bug reports can be made on my <a href="https://github.com/hyunsooseol/snowRMM/issues" target="_blank">GitHub</a>.</li>',
             '</ul></div></div>'
           )
@@ -130,14 +131,12 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         if (isTRUE(self$options$cp))
           private$.populateClassSizeTable()
         
-        # Model comparison만 조건부로 실행 (최적화)
         if (isTRUE(self$options$mc))
           private$.populateModelComparisonTable()
         
         if (isTRUE(self$options$mem))
           private$.populateClassMemberTable()
         
-        # Generate plots if requested
         if (isTRUE(self$options$plot))
           private$.setPlot()
         
@@ -145,76 +144,7 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           private$.setPlot1()
       },
       
-      # Model Comparison function ---- (최적화된 부분)
-      .computeModelComparison = function() {
-        if (is.null(private$.mc_cache)) {
-          # 변수들을 미리 저장하여 반복 접근 최소화
-          model_spec <- self$options$model
-          data_df <- as.data.frame(self$data)
-          miss_handling <- self$options$miss
-          num_classes <- self$options$nc
-          use_thresholds <- self$options$thr
-          
-          # 데이터 전처리를 한 번만 수행
-          if (miss_handling == "listwise")
-            data_df <- jmvcore::naOmit(data_df)
-          
-          # 결과 저장용 리스트 미리 할당
-          results <- vector("list", num_classes)
-          
-          for (k in 1:num_classes) {
-            model_k <- tidySEM::mx_growth_mixture(
-              model = model_spec, 
-              data = data_df,  # 전처리된 데이터 재사용
-              classes = k, 
-              thresholds = use_thresholds
-            )
-            
-            if (!is.null(model_k)) {
-              fit_stats <- tidySEM::table_fit(model_k)
-              if (!is.null(fit_stats)) {
-                results[[k]] <- data.frame(
-                  classes = k,
-                  AIC = fit_stats$AIC,
-                  BIC = fit_stats$BIC
-                )
-              }
-            }
-          }
-          
-          # 유효한 결과만 병합
-          valid_results <- results[!sapply(results, is.null)]
-          if (length(valid_results) > 0) {
-            private$.mc_cache <- do.call(rbind, valid_results)
-          } else {
-            private$.mc_cache <- data.frame(classes = integer(0), AIC = numeric(0), BIC = numeric(0))
-          }
-        }
-        return(private$.mc_cache)
-      },
-      
-      .populateModelComparisonTable = function() {
-        if (!isTRUE(self$options$mc))
-          return()
-        
-        tbl <- self$results$mc
-        mc_data <- private$.computeModelComparison()
-        
-        if (nrow(mc_data) > 0) {
-          for (i in seq_len(nrow(mc_data))) {
-            row <- mc_data[i, ]
-            tbl$addRow(
-              rowKey = paste0("class_", row$classes),
-              values = list(
-                classes = row$classes,
-                AIC = row$AIC,
-                BIC = row$BIC
-              )
-            )
-          }
-        }
-      },
-      
+  
       # Table population functions ----
       .populateDescTable = function() {
         if (!isTRUE(self$options$desc))
@@ -306,6 +236,77 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         if (self$results$mem$isNotFilled()) {
           self$results$mem$setRowNums(rownames(self$data))
           self$results$mem$setValues(m)
+        }
+      },
+      
+      # Model Comparison function ---- 
+      .computeModelComparison = function() {
+        if (!self$options$mc) {
+          return(data.frame(classes = integer(0), AIC = numeric(0), BIC = numeric(0)))
+        }
+        
+        if (is.null(private$.mc_cache)) {
+          
+          model_spec <- self$options$model
+          data_df <- as.data.frame(self$data)
+          miss_handling <- self$options$miss
+          num_classes <- self$options$nc
+          use_thresholds <- self$options$thr
+          
+          if (miss_handling == "listwise")
+            data_df <- jmvcore::naOmit(data_df)
+          
+          results <- vector("list", num_classes)
+          
+          for (k in 1:num_classes) {
+            model_k <- tidySEM::mx_growth_mixture(
+              model = model_spec, 
+              data = data_df,  
+              classes = k, 
+              thresholds = use_thresholds
+            )
+            
+            if (!is.null(model_k)) {
+              fit_stats <- tidySEM::table_fit(model_k)
+              if (!is.null(fit_stats)) {
+                results[[k]] <- data.frame(
+                  classes = k,
+                  AIC = fit_stats$AIC,
+                  BIC = fit_stats$BIC
+                )
+              }
+            }
+          }
+          
+          valid_results <- results[!sapply(results, is.null)]
+          if (length(valid_results) > 0) {
+            private$.mc_cache <- do.call(rbind, valid_results)
+          } else {
+            private$.mc_cache <- data.frame(classes = integer(0), AIC = numeric(0), BIC = numeric(0))
+          }
+        }
+        return(private$.mc_cache)
+      },
+      
+      .populateModelComparisonTable = function() {
+        if (!isTRUE(self$options$mc))
+          return()
+        
+        tbl <- self$results$mc
+        mc_data <- private$.computeModelComparison()
+        
+        if (nrow(mc_data) > 0) {
+          for (i in seq_len(nrow(mc_data))) {
+            row <- mc_data[i, ]
+            tbl$addRow(
+              rowKey = paste0("class_", row$classes),
+              values = list(
+                classes = row$classes,
+                AIC = row$AIC,
+                BIC = row$BIC
+              )
+            )
+          }
         }
       },
       

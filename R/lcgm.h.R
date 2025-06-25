@@ -10,11 +10,11 @@ lcgmOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             model = list(),
             nc = 2,
             thr = "FALSE",
-            mc = TRUE,
             fit = FALSE,
             est = FALSE,
-            desc = FALSE,
+            desc = TRUE,
             cp = FALSE,
+            mc = TRUE,
             plot1 = FALSE,
             plot = FALSE,
             raw = "FALSE",
@@ -56,10 +56,6 @@ lcgmOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "FALSE",
                     "TRUE"),
                 default="FALSE")
-            private$..mc <- jmvcore::OptionBool$new(
-                "mc",
-                mc,
-                default=TRUE)
             private$..fit <- jmvcore::OptionBool$new(
                 "fit",
                 fit,
@@ -71,11 +67,15 @@ lcgmOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             private$..desc <- jmvcore::OptionBool$new(
                 "desc",
                 desc,
-                default=FALSE)
+                default=TRUE)
             private$..cp <- jmvcore::OptionBool$new(
                 "cp",
                 cp,
                 default=FALSE)
+            private$..mc <- jmvcore::OptionBool$new(
+                "mc",
+                mc,
+                default=TRUE)
             private$..mem <- jmvcore::OptionOutput$new(
                 "mem")
             private$..plot1 <- jmvcore::OptionBool$new(
@@ -121,11 +121,11 @@ lcgmOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..model)
             self$.addOption(private$..nc)
             self$.addOption(private$..thr)
-            self$.addOption(private$..mc)
             self$.addOption(private$..fit)
             self$.addOption(private$..est)
             self$.addOption(private$..desc)
             self$.addOption(private$..cp)
+            self$.addOption(private$..mc)
             self$.addOption(private$..mem)
             self$.addOption(private$..plot1)
             self$.addOption(private$..plot)
@@ -141,11 +141,11 @@ lcgmOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         model = function() private$..model$value,
         nc = function() private$..nc$value,
         thr = function() private$..thr$value,
-        mc = function() private$..mc$value,
         fit = function() private$..fit$value,
         est = function() private$..est$value,
         desc = function() private$..desc$value,
         cp = function() private$..cp$value,
+        mc = function() private$..mc$value,
         mem = function() private$..mem$value,
         plot1 = function() private$..plot1$value,
         plot = function() private$..plot$value,
@@ -160,11 +160,11 @@ lcgmOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..model = NA,
         ..nc = NA,
         ..thr = NA,
-        ..mc = NA,
         ..fit = NA,
         ..est = NA,
         ..desc = NA,
         ..cp = NA,
+        ..mc = NA,
         ..mem = NA,
         ..plot1 = NA,
         ..plot = NA,
@@ -182,11 +182,11 @@ lcgmResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     active = list(
         instructions = function() private$.items[["instructions"]],
         text = function() private$.items[["text"]],
-        mc = function() private$.items[["mc"]],
         desc = function() private$.items[["desc"]],
         fit = function() private$.items[["fit"]],
         est = function() private$.items[["est"]],
         cp = function() private$.items[["cp"]],
+        mc = function() private$.items[["mc"]],
         mem = function() private$.items[["mem"]],
         plot1 = function() private$.items[["plot1"]],
         plot = function() private$.items[["plot"]]),
@@ -207,28 +207,6 @@ lcgmResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 options=options,
                 name="text",
                 title=""))
-            self$add(jmvcore::Table$new(
-                options=options,
-                name="mc",
-                title="Model Comparison",
-                visible="(mc)",
-                refs="tidySEM",
-                clearWith=list(
-                    "vars",
-                    "model",
-                    "nc",
-                    "thr",
-                    "miss"),
-                columns=list(
-                    list(
-                        `name`="classes", 
-                        `title`="Class"),
-                    list(
-                        `name`="AIC", 
-                        `title`="AIC"),
-                    list(
-                        `name`="BIC", 
-                        `title`="BIC"))))
             self$add(jmvcore::Table$new(
                 options=options,
                 name="desc",
@@ -368,6 +346,28 @@ lcgmResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         `name`="prop", 
                         `title`="Proportion", 
                         `type`="number"))))
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="mc",
+                title="Model Comparison",
+                visible="(mc)",
+                refs="tidySEM",
+                clearWith=list(
+                    "vars",
+                    "model",
+                    "nc",
+                    "thr",
+                    "miss"),
+                columns=list(
+                    list(
+                        `name`="classes", 
+                        `title`="Class"),
+                    list(
+                        `name`="AIC", 
+                        `title`="AIC"),
+                    list(
+                        `name`="BIC", 
+                        `title`="BIC"))))
             self$add(jmvcore::Output$new(
                 options=options,
                 name="mem",
@@ -439,11 +439,11 @@ lcgmBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param model .
 #' @param nc .
 #' @param thr .
-#' @param mc .
 #' @param fit .
 #' @param est .
 #' @param desc .
 #' @param cp .
+#' @param mc .
 #' @param plot1 .
 #' @param plot .
 #' @param raw .
@@ -456,11 +456,11 @@ lcgmBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
 #'   \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
-#'   \code{results$mc} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$desc} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$fit} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$est} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$cp} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$mc} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$mem} \tab \tab \tab \tab \tab an output \cr
 #'   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
@@ -468,9 +468,9 @@ lcgmBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'
 #' Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
 #'
-#' \code{results$mc$asDF}
+#' \code{results$desc$asDF}
 #'
-#' \code{as.data.frame(results$mc)}
+#' \code{as.data.frame(results$desc)}
 #'
 #' @export
 lcgm <- function(
@@ -479,11 +479,11 @@ lcgm <- function(
     model = list(),
     nc = 2,
     thr = "FALSE",
-    mc = TRUE,
     fit = FALSE,
     est = FALSE,
-    desc = FALSE,
+    desc = TRUE,
     cp = FALSE,
+    mc = TRUE,
     plot1 = FALSE,
     plot = FALSE,
     raw = "FALSE",
@@ -508,11 +508,11 @@ lcgm <- function(
         model = model,
         nc = nc,
         thr = thr,
-        mc = mc,
         fit = fit,
         est = est,
         desc = desc,
         cp = cp,
+        mc = mc,
         plot1 = plot1,
         plot = plot,
         raw = raw,

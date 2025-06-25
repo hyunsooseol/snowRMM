@@ -94,8 +94,6 @@ children:
                 margin: large
                 children:
                   - type: CheckBox
-                    name: mc
-                  - type: CheckBox
                     name: desc
                   - type: CheckBox
                     name: fit
@@ -103,6 +101,8 @@ children:
                     name: est
                   - type: CheckBox
                     name: cp
+                  - type: CheckBox
+                    name: mc
           - type: Label
             label: Save
             children:
