@@ -145,51 +145,53 @@ lpaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         
         # person class---------
         if (isTRUE(self$options$pc)) {
-          base::options(max.print = .Machine$integer.max)
           
-          pc <- tidyLPA::get_data(all$res)
-          pc <- as.factor(pc$Class)
-         
-          if (self$options$pc
-              && self$results$pc$isNotFilled()) {
-            
-            self$results$pc$setRowNums(rownames(self$data))
-            self$results$pc$setValues(pc)
-           
-          }
+          base::options(max.print = .Machine$integer.max)
+          pc_data <- tidyLPA::get_data(all$res)
+          n_row <- nrow(self$data)
+          not_na_idx <- which(stats::complete.cases(self$data[, self$options$vars, drop=FALSE]))
+          pc_vec <- rep(NA, n_row)
+          pc_vec[not_na_idx] <- as.factor(pc_data$Class)
+          
+          self$results$pc$setRowNums(rownames(self$data))
+          self$results$pc$setValues(pc_vec)
+
           image <- self$results$plot
-          image$setState(pc)
+          image$setState(pc_vec)
         }
         
         # Posterior probabilities---
-        if (isTRUE(self$options$post)) {
-          post <- tidyLPA::get_data(all$res, "posterior_probabilities")
-          post_name <- paste0("CPROB", 1:self$options$nc)
-          post <- post[, post_name, drop = FALSE]
-          post <- data.frame(post)
-          
-          if (self$options$post
-              && self$results$post$isNotFilled()) {
-            keys <- 1:self$options$nc
-            measureTypes <- rep("continuous", self$options$nc)
-            
-            titles <- paste("Class", keys)
-            descriptions <- paste("Class", keys)
-            
-            self$results$post$set(
-              keys = keys,
-              titles = titles,
-              descriptions = descriptions,
-              measureTypes = measureTypes
-            )
-            self$results$post$setRowNums(rownames(self$data))
-            for (i in 1:self$options$nc) {
-              scores <- as.numeric(post[, i])
-              self$results$post$setValues(index = i, scores)
-            }
-          }
-        }
+    if (isTRUE(self$options$post)) {
+      post_data <- tidyLPA::get_data(all$res, "posterior_probabilities")
+      post_name <- paste0("CPROB", 1:self$options$nc)
+      post_data <- post_data[, post_name, drop = FALSE]
+      n_row <- nrow(self$data)
+      not_na_idx <- which(stats::complete.cases(self$data[, self$options$vars, drop=FALSE]))
+      # 사후확률(Posterior probability) 값을 담을 빈 행렬
+      post_mat <- matrix(NA, nrow = n_row, ncol = self$options$nc)
+      # 결측치 없는 행에만 값 할당
+      post_mat[not_na_idx, ] <- as.matrix(post_data)
+      
+      if (self$options$post && self$results$post$isNotFilled()) {
+        keys <- 1:self$options$nc
+        measureTypes <- rep("continuous", self$options$nc)
+        titles <- paste("Class", keys)
+        descriptions <- paste("Class", keys)
         
+        self$results$post$set(
+          keys = keys,
+          titles = titles,
+          descriptions = descriptions,
+          measureTypes = measureTypes
+        )
+        self$results$post$setRowNums(rownames(self$data))
+        for (i in 1:self$options$nc) {
+          scores <- as.numeric(post_mat[, i])
+          self$results$post$setValues(index = i, scores)
+        }
+      }
+    }
+    
         # #https://github.com/data-edu/tidyLPA/issues/198
         # # Not resolved yet.
         # # correlation plot----------
