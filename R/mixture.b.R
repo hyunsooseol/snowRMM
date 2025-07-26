@@ -168,100 +168,108 @@ mixtureClass <- if (requireNamespace('jmvcore'))
         poutfit <- sapply(res$LatentClass, function(x)
           x$person.par$outfit)
         poutfit <- as.data.frame(poutfit)
+        
         # Person Outputs-------------------------
         #pmeasure--------------------------------
-        
         if (isTRUE(self$options$pmeasure)) {
+          n_row <- nrow(self$data)
+          not_na_idx <- which(stats::complete.cases(self$data[, self$options$vars, drop=FALSE]))
+          
           keys <- 1:self$options$nc
           measureTypes <- rep("continuous", self$options$nc)
-          
           titles <- paste("Measure_Class", keys)
           descriptions <- paste("Measure_Class", keys)
-          
           self$results$pmeasure$set(
             keys = keys,
             titles = titles,
             descriptions = descriptions,
             measureTypes = measureTypes
           )
-          
           self$results$pmeasure$setRowNums(rownames(self$data))
-          
           for (i in 1:self$options$nc) {
-            scores <- as.numeric(pmeasure[, i])
+            scores <- rep(NA, n_row)
+            scores[not_na_idx] <- as.numeric(pmeasure[, i])
             self$results$pmeasure$setValues(index = i, scores)
           }
         }
+        
+
         #pse---------------------------------------
         
         if (isTRUE(self$options$pse)) {
+          
+          n_row <- nrow(self$data)
+          not_na_idx <- which(stats::complete.cases(self$data[, self$options$vars, drop=FALSE]))
+          
+          
           keys <- 1:self$options$nc
           measureTypes <- rep("continuous", self$options$nc)
-          
           titles <- paste("SE_Class", keys)
           descriptions <- paste("SE_Class", keys)
-          
           self$results$pse$set(
             keys = keys,
             titles = titles,
             descriptions = descriptions,
             measureTypes = measureTypes
           )
-          
           self$results$pse$setRowNums(rownames(self$data))
-          
           for (i in 1:self$options$nc) {
-            scores <- as.numeric(pse[, i])
+            scores <- rep(NA, n_row)
+            scores[not_na_idx] <- as.numeric(pse[, i])
             self$results$pse$setValues(index = i, scores)
           }
         }
         
         #pinfit-------------------------------
         if (isTRUE(self$options$pinfit)) {
+          
+          n_row <- nrow(self$data)
+          not_na_idx <- which(stats::complete.cases(self$data[, self$options$vars, drop=FALSE]))
+          
+          
           keys <- 1:self$options$nc
           measureTypes <- rep("continuous", self$options$nc)
-          
           titles <- paste("Infit_Class", keys)
           descriptions <- paste("Infit_Class", keys)
-          
           self$results$pinfit$set(
             keys = keys,
             titles = titles,
             descriptions = descriptions,
             measureTypes = measureTypes
           )
-          
           self$results$pinfit$setRowNums(rownames(self$data))
-          
           for (i in 1:self$options$nc) {
-            scores <- as.numeric(pinfit[, i])
+            scores <- rep(NA, n_row)            # 원본 row 수 만큼 NA로 초기화
+            scores[not_na_idx] <- as.numeric(pinfit[, i])  # 결측치 없는 row만 결과 할당
             self$results$pinfit$setValues(index = i, scores)
           }
         }
         
         #poutfit----------------------------------------
-        
         if (isTRUE(self$options$poutfit)) {
+          
+          n_row <- nrow(self$data)
+          not_na_idx <- which(stats::complete.cases(self$data[, self$options$vars, drop=FALSE]))
+          
+          
           keys <- 1:self$options$nc
           measureTypes <- rep("continuous", self$options$nc)
-          
           titles <- paste("Outfit_Class", keys)
           descriptions <- paste("Outfit_Class", keys)
-          
           self$results$poutfit$set(
             keys = keys,
             titles = titles,
             descriptions = descriptions,
             measureTypes = measureTypes
           )
-          
           self$results$poutfit$setRowNums(rownames(self$data))
-          
           for (i in 1:self$options$nc) {
-            scores <- as.numeric(poutfit[, i])
+            scores <- rep(NA, n_row)                # 전체 NA로 초기화
+            scores[not_na_idx] <- as.numeric(poutfit[, i])  # 결측치 없는 row만 결과 할당
             self$results$poutfit$setValues(index = i, scores)
           }
         }
+        
         # model fit information------
         if(isTRUE(self$options$fit) || isTRUE(self$options$plot2)){
           
@@ -311,14 +319,23 @@ mixtureClass <- if (requireNamespace('jmvcore'))
         # Average Theta Values
         set.seed(1234)
         average <- mixRaschTools::avg.theta(res)
+        
+
         # class membership-------------
         pclass <- res$class
         mem <- as.numeric(apply(pclass, 1, which.max))
+        
         if (self$options$pmember == TRUE) {
-          mem <- as.factor(mem)
+          n_row <- nrow(self$data)
+          not_na_idx <- which(stats::complete.cases(self$data[, self$options$vars, drop=FALSE]))
+          mem_vec <- rep(NA, n_row)             # 전체 NA로 초기화
+          mem_vec[not_na_idx] <- as.factor(mem) # 결측치 없는 row만 할당
+          
           self$results$pmember$setRowNums(rownames(self$data))
-          self$results$pmember$setValues(mem)
+          self$results$pmember$setValues(mem_vec)
         }
+        
+
         # Person density across class-------------
         colnames(pmeasure) <- c(1:self$options$nc)
         dat <- reshape2::melt(pmeasure, variable.name = "Class", value.name =
