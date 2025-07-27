@@ -39,9 +39,6 @@ raschClass <- if (requireNamespace('jmvcore'))
             
           )
         ))
-        # if (self$options$ml1)
-        #   self$results$tm$ml1$setNote("Note",
-        #                               "Number of categories should be the same for each item with eRm R package.")
         
         if (self$options$rel)
           self$results$mf$rel$setNote("Note",
@@ -207,35 +204,66 @@ raschClass <- if (requireNamespace('jmvcore'))
           )
         }
         
-        # Person analysis using mixRasch package-----------
+        # 수정된 Person analysis 부분 ---------
+        # 클린 데이터와 결측값이 있는 원본 데이터 모두 필요
+        cleanData <- private$.cleanData()
+        
         ptotal <- res$person.par$r
         pmeasure <- res$person.par$theta
         pse <- res$person.par$SE.theta
         pinfit <- res$person.par$infit
         poutfit <- res$person.par$outfit
         
+        # 원본 데이터의 행 수와 클린 데이터의 행 수가 다를 경우 처리
+        originalRowCount <- nrow(self$data)
+        cleanRowCount <- nrow(cleanData)
+        
+        # 결측값으로 인해 제거된 행의 인덱스 찾기
+        if (originalRowCount != cleanRowCount) {
+          # 결측값이 없는 행의 인덱스를 찾기
+          complete_cases_index <- complete.cases(self$data[self$options$vars])
+          valid_row_names <- rownames(self$data)[complete_cases_index]
+          
+          # Person analysis 결과를 원본 데이터 구조에 맞게 확장
+          extended_ptotal <- rep(NA, originalRowCount)
+          extended_pmeasure <- rep(NA, originalRowCount)
+          extended_pse <- rep(NA, originalRowCount)
+          extended_pinfit <- rep(NA, originalRowCount)
+          extended_poutfit <- rep(NA, originalRowCount)
+          
+          # 유효한 케이스에만 값 할당
+          extended_ptotal[complete_cases_index] <- ptotal
+          extended_pmeasure[complete_cases_index] <- pmeasure
+          extended_pse[complete_cases_index] <- pse
+          extended_pinfit[complete_cases_index] <- pinfit
+          extended_poutfit[complete_cases_index] <- poutfit
+          
+          # 확장된 벡터 사용
+          ptotal <- extended_ptotal
+          pmeasure <- extended_pmeasure
+          pse <- extended_pse
+          pinfit <- extended_pinfit
+          poutfit <- extended_poutfit
+        }
+        
         if (isTRUE(self$options$ptotal)) {
           self$results$ptotal$setRowNums(rownames(self$data))
           self$results$ptotal$setValues(ptotal)
-          
         }
         
         if (isTRUE(self$options$pmeasure)) {
           self$results$pmeasure$setRowNums(rownames(self$data))
           self$results$pmeasure$setValues(pmeasure)
-          
         }
         
         if (isTRUE(self$options$pse)) {
           self$results$pse$setRowNums(rownames(self$data))
           self$results$pse$setValues(pse)
-          
         }
         
         if (isTRUE(self$options$pinfit)) {
           self$results$pinfit$setRowNums(rownames(self$data))
           self$results$pinfit$setValues(pinfit)
-          
         }
         
         if (isTRUE(self$options$poutfit)) {
@@ -243,12 +271,17 @@ raschClass <- if (requireNamespace('jmvcore'))
           self$results$poutfit$setValues(poutfit)
         }
         
-        # Person fit plot4----------------------
-        
+        # Person fit plot4 수정----------------------
         if (isTRUE(self$options$plot4)) {
-          Measure <- pmeasure
-          Infit <- pinfit
-          Outfit <- poutfit
+          # 결측값이 있는 경우 유효한 데이터만 사용
+          valid_indices <- complete.cases(self$data[self$options$vars])
+          valid_pmeasure <- res$person.par$theta
+          valid_pinfit <- res$person.par$infit
+          valid_poutfit <- res$person.par$outfit
+          
+          Measure <- valid_pmeasure
+          Infit <- valid_pinfit
+          Outfit <- valid_poutfit
           daf <- data.frame(Measure, Infit, Outfit)
           pf <- reshape2::melt(
             daf,
@@ -259,11 +292,6 @@ raschClass <- if (requireNamespace('jmvcore'))
           image <- self$results$plot4
           image$setState(pf)
         }
-        
-        # # get number of class---------
-        # set.seed(1234)
-        # res0 <- mixRasch::getEstDetails(res)
-        # class <- res0$nC
         
         ########## eRm R package######################################
         
@@ -291,10 +319,6 @@ raschClass <- if (requireNamespace('jmvcore'))
                                        Reliability = re
                                      ))
         }
-        # thresholds(tau parameter)---------
-        # tau <- res$item.par$tau
-        # tau <- t(tau)
-        # tau <- as.data.frame(tau)
         
         if (isTRUE(self$options$thr)) {
           tau <- res$item.par$tau
@@ -302,7 +326,6 @@ raschClass <- if (requireNamespace('jmvcore'))
           tau <- as.data.frame(tau)
           
           table <- self$results$thr
-          #tau <- results$tau
           nc <- ncol(tau)
           nCategory <- nc
           vars <- self$options$vars
@@ -438,11 +461,6 @@ raschClass <- if (requireNamespace('jmvcore'))
         
         # Rasch residual factor analysis using pairwise R package
         
-        # pers_obj <- pers(pair(bfiN))
-        # result <- rfa(pers_obj)
-        # summary(result)
-        # plot(result)
-        
         if (isTRUE(self$options$plot5)) {
           data <- private$.cleanData()
           
@@ -470,7 +488,6 @@ raschClass <- if (requireNamespace('jmvcore'))
           
           # Standardized correlation matrix
           ma <- q$resid_cor$cor
-          #self$results$text2$setContent(ma)
           
           if (isTRUE(self$options$cormatrix)) {
             table <- self$results$cormatrix
@@ -522,10 +539,6 @@ raschClass <- if (requireNamespace('jmvcore'))
         if (isTRUE(self$options$plot8)) {
           # Rasch model, estimation of item and person parameters
           # Using eRm package
-          # res <- RM(raschdat2)
-          # p.res <- person.parameter(res)
-          # item.fit <- eRm::itemfit(p.res)
-          # std.resids <- item.fit$st.res
           
           if (self$options$step == 1 &&
               (self$options$type == 'RSM' ||
@@ -558,6 +571,7 @@ raschClass <- if (requireNamespace('jmvcore'))
           n <- self$options$matrix
           method <- self$options$npmethod
           
+          data <- private$.cleanData()
           rmat <- as.matrix(data)
           res <- eRm::NPtest(rmat, n = n, method = method)
           
