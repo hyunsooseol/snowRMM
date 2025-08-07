@@ -58,7 +58,7 @@ options:
     - name: boutfit
       title: Outfit
       type: Bool
-      default: FALSE
+      default: TRUE
       
     - name: inplot
       title: 'Infit'
@@ -113,12 +113,12 @@ options:
     - name: outfit 
       title: Outfit
       type: Bool
-      default: TRUE
+      default: FALSE
 
     - name: infit
       title: Infit
       type: Bool
-      default: TRUE
+      default: FALSE
 
     - name: nco
       title: 'Run'

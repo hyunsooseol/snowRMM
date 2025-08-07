@@ -10,7 +10,12 @@ items:
       visible: True
       clearWith:
         - mode
-      
+
+    - name: progressBarHTML
+      title: ' '
+      type: Html
+      visible: false
+
     - name:  text
       title: ''
       type:  Preformatted

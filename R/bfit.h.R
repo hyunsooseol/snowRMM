@@ -12,15 +12,15 @@ bfitOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             step = 1,
             bn = 100,
             binfit = TRUE,
-            boutfit = FALSE,
+            boutfit = TRUE,
             inplot = FALSE,
             outplot = FALSE,
             angle = 0,
             type = "bi",
             adj = NULL,
             bn1 = 100,
-            outfit = TRUE,
-            infit = TRUE,
+            outfit = FALSE,
+            infit = FALSE,
             nco = FALSE,
             noutfit = FALSE,
             ninfit = FALSE,
@@ -71,7 +71,7 @@ bfitOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             private$..boutfit <- jmvcore::OptionBool$new(
                 "boutfit",
                 boutfit,
-                default=FALSE)
+                default=TRUE)
             private$..inplot <- jmvcore::OptionBool$new(
                 "inplot",
                 inplot,
@@ -111,11 +111,11 @@ bfitOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             private$..outfit <- jmvcore::OptionBool$new(
                 "outfit",
                 outfit,
-                default=TRUE)
+                default=FALSE)
             private$..infit <- jmvcore::OptionBool$new(
                 "infit",
                 infit,
-                default=TRUE)
+                default=FALSE)
             private$..nco <- jmvcore::OptionBool$new(
                 "nco",
                 nco,
@@ -207,6 +207,7 @@ bfitResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     inherit = jmvcore::Group,
     active = list(
         instructions = function() private$.items[["instructions"]],
+        progressBarHTML = function() private$.items[["progressBarHTML"]],
         text = function() private$.items[["text"]],
         item = function() private$.items[["item"]],
         inplot = function() private$.items[["inplot"]],
@@ -231,6 +232,11 @@ bfitResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 visible=TRUE,
                 clearWith=list(
                     "mode")))
+            self$add(jmvcore::Html$new(
+                options=options,
+                name="progressBarHTML",
+                title=" ",
+                visible=FALSE))
             self$add(jmvcore::Preformatted$new(
                 options=options,
                 name="text",
@@ -497,6 +503,7 @@ bfitBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
+#'   \code{results$progressBarHTML} \tab \tab \tab \tab \tab a html \cr
 #'   \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$item$binfit} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$item$boutfit} \tab \tab \tab \tab \tab a table \cr
@@ -524,15 +531,15 @@ bfit <- function(
     step = 1,
     bn = 100,
     binfit = TRUE,
-    boutfit = FALSE,
+    boutfit = TRUE,
     inplot = FALSE,
     outplot = FALSE,
     angle = 0,
     type = "bi",
     adj,
     bn1 = 100,
-    outfit = TRUE,
-    infit = TRUE,
+    outfit = FALSE,
+    infit = FALSE,
     nco = FALSE,
     noutfit = FALSE,
     ninfit = FALSE,
