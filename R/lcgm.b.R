@@ -7,372 +7,316 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
     "lcgmClass",
     inherit = lcgmBase,
     
-    # Active bindings ----
     active = list(
       res = function() {
         if (is.null(private$.res_cache)) {
           data <- self$data
-          if (self$options$miss == 'listwise') {
+          if (self$options$miss == 'listwise')
             data <- jmvcore::naOmit(data)
-          }
           private$.res_cache <- tidySEM::mx_growth_mixture(
-            model = self$options$model,
-            data = as.data.frame(data),
-            classes = self$options$nc,
+            model      = self$options$model,
+            data       = as.data.frame(data),
+            classes    = self$options$nc,
             thresholds = self$options$thr
           )
         }
-        return(private$.res_cache)
+        private$.res_cache
       },
       
       desc = function() {
         if (is.null(private$.desc_cache)) {
           data <- self$data
-          desc <- tidySEM::descriptives(data)
-          private$.desc_cache <- desc[, c("name", "n", "missing", "mean", "median", "sd", "min", "max")]
+          private$.desc_cache <- tidySEM::descriptives(data)[,
+                                                             c("name","n","missing","mean","median","sd","min","max")]
         }
-        return(private$.desc_cache)
+        private$.desc_cache
       },
       
       fit = function() {
-        if (is.null(private$.fit_cache)) {
+        if (is.null(private$.fit_cache))
           private$.fit_cache <- tidySEM::table_fit(self$res)
-        }
-        return(private$.fit_cache)
+        private$.fit_cache
       },
       
       parameters = function() {
         if (is.null(private$.para_cache)) {
           para <- tidySEM::table_results(self$res, columns = NULL)
-          private$.para_cache <- para[para$Category %in% c("Means", "Variances"), 
-                                      c("Category", "lhs", "est", "se", "pval", "confint", "name")]
+          private$.para_cache <- para[para$Category %in% c("Means","Variances"),
+                                      c("Category","lhs","est","se","pval","confint","name")]
         }
-        return(private$.para_cache)
+        private$.para_cache
       },
       
       classProbabilities = function() {
         if (is.null(private$.cp_cache)) {
           cp1 <- tidySEM::class_prob(self$res)
           private$.cp_cache <- list(
-            summary = data.frame(cp1$sum.posterior),
+            summary    = data.frame(cp1$sum.posterior),
             individual = data.frame(cp1$individual)
           )
         }
-        return(private$.cp_cache)
+        private$.cp_cache
       }
     ),
     
-    # Private members ----
     private = list(
-      # Cache variables
-      .htmlwidget = NULL,
-      .res_cache = NULL,
-      .desc_cache = NULL,
-      .fit_cache = NULL,
-      .para_cache = NULL,
-      .cp_cache = NULL,
-      .mc_cache = NULL,
+      .htmlwidget   = NULL,
+      .res_cache    = NULL,
+      .desc_cache   = NULL,
+      .fit_cache    = NULL,
+      .para_cache   = NULL,
+      .cp_cache     = NULL,
+      .mc_cache     = NULL,
       
-      # Init function ----
       .init = function() {
         private$.htmlwidget <- HTMLWidget$new()
         
-        if (is.null(self$data) || is.null(self$options$vars)) {
-          self$results$instructions$setVisible(visible = TRUE)
-        }
+        if (is.null(self$data) || is.null(self$options$vars))
+          self$results$instructions$setVisible(TRUE)
         
-        self$results$instructions$setContent(private$.htmlwidget$generate_accordion(
-          title = "Instructions",
-          content = paste(
-            '<div style="border: 2px solid #e6f4fe; border-radius: 15px; padding: 15px; background-color: #e6f4fe; margin-top: 10px;">',
-            '<div style="text-align:justify;">',
-            '<ul>',
-            '<li><b>tidySEM</b> R package is described in the <a href="https://cjvanlissa.github.io/tidySEM/articles/lca_lcga.html" target = "_blank">page</a>.</li>',
-            '<li>Please set <b>Thresholds=TRUE</b> when analyzing ordinal data.</li>',
-            '<li>The <b>model comparison option</b> may require a longer processing time to complete the analysis.</li>',
-            '<li>Feature requests and bug reports can be made on my <a href="https://github.com/hyunsooseol/snowRMM/issues" target="_blank">GitHub</a>.</li>',
-            '</ul></div></div>'
+        self$results$instructions$setContent(
+          private$.htmlwidget$generate_accordion(
+            title   = "Instructions",
+            content = paste(
+              '<div style="border: 2px solid #e6f4fe; border-radius: 15px;',
+              ' padding: 15px; background-color: #e6f4fe; margin-top: 10px;">',
+              '<ul>',
+              '<li><b>tidySEM</b> R package usage guide link.</li>',
+              '<li>Set <b>Thresholds=TRUE</b> for ordinal data.</li>',
+              '<li>Model comparison may take longer time.</li>',
+              '<li>GitHub issues: snowRMM repository.</li>',
+              '</ul></div>'
+            )
           )
-        ))
+        )
         
         if (self$options$mc)
           self$results$mc$setNote("Note",
-                                  "Entropy values are not displayed due to estimation instability in some models.")
+                                  "Entropy not shown due to instability in some models.")
         
-        # Set plot sizes
-        if (isTRUE(self$options$plot1)) {
+        if (isTRUE(self$options$plot1))
           self$results$plot1$setSize(self$options$width1, self$options$height1)
-        }
         
-        if (isTRUE(self$options$plot)) {
+        if (isTRUE(self$options$plot))
           self$results$plot$setSize(self$options$width, self$options$height)
-        }
       },
       
-      # Run function ----
       .run = function() {
-        # Check if we have enough variables
         if (is.null(self$options$vars) || length(self$options$vars) < 3)
           return()
         
-        # Set random seed for reproducibility
+        # Show and initialize progress bar
+        self$results$progressBarHTML$setVisible(TRUE)
+        html <- progressBarH(5,  100, 'Starting analysis...')
+        self$results$progressBarHTML$setContent(html)
+        private$.checkpoint()
+        
         set.seed(1234)
         
-        # Populate tables based on options
-        if (isTRUE(self$options$desc))
+        # Descriptives
+        if (isTRUE(self$options$desc)) {
+          html <- progressBarH(15, 100, 'Computing descriptives...')
+          self$results$progressBarHTML$setContent(html)
+          private$.checkpoint()
           private$.populateDescTable()
+        }
         
-        if (isTRUE(self$options$fit))
+        # Fit statistics
+        if (isTRUE(self$options$fit)) {
+          html <- progressBarH(25, 100, 'Calculating fit statistics...')
+          self$results$progressBarHTML$setContent(html)
+          private$.checkpoint()
           private$.populateFitTable()
+        }
         
-        if (isTRUE(self$options$est))
+        # Parameter estimates
+        if (isTRUE(self$options$est)) {
+          html <- progressBarH(35, 100, 'Extracting parameter estimates...')
+          self$results$progressBarHTML$setContent(html)
+          private$.checkpoint()
           private$.populateEST()
+        }
         
-        if (isTRUE(self$options$cp))
+        # Class probabilities
+        if (isTRUE(self$options$cp)) {
+          html <- progressBarH(45, 100, 'Computing class probabilities...')
+          self$results$progressBarHTML$setContent(html)
+          private$.checkpoint()
           private$.populateClassSizeTable()
+        }
         
-        if (isTRUE(self$options$mc))
+        # Model comparison
+        if (isTRUE(self$options$mc)) {
+          html <- progressBarH(55, 100, 'Performing model comparison...')
+          self$results$progressBarHTML$setContent(html)
+          private$.checkpoint()
           private$.populateModelComparisonTable()
+        }
         
-        if (isTRUE(self$options$mem))
+        # Class members
+        if (isTRUE(self$options$mem)) {
+          html <- progressBarH(65, 100, 'Listing class members...')
+          self$results$progressBarHTML$setContent(html)
+          private$.checkpoint()
           private$.populateClassMemberTable()
+        }
         
-        if (isTRUE(self$options$plot))
-          private$.setPlot()
-        
-        if (isTRUE(self$options$plot1))
+        # Plot1
+        if (isTRUE(self$options$plot1)) {
+          html <- progressBarH(75, 100, 'Preparing density plot...')
+          self$results$progressBarHTML$setContent(html)
+          private$.checkpoint()
           private$.setPlot1()
+        }
+        
+        # Plot2
+        if (isTRUE(self$options$plot)) {
+          html <- progressBarH(85, 100, 'Generating growth plot...')
+          self$results$progressBarHTML$setContent(html)
+          private$.checkpoint()
+          private$.setPlot()
+        }
+        
+        # Complete
+        html <- progressBarH(100,100, 'Analysis complete!')
+        self$results$progressBarHTML$setContent(html)
+        private$.checkpoint()
+        self$results$progressBarHTML$setVisible(FALSE)
       },
       
-  
-      # Table population functions ----
       .populateDescTable = function() {
-        if (!isTRUE(self$options$desc))
-          return()
-        
-        vars <- self$options$vars
+        vars  <- self$options$vars
         table <- self$results$desc
-        d <- as.data.frame(self$desc)
-        
-        for (i in seq_along(vars)) {
-          row <- list(
-            n = d[[2]][i],
-            missing = d[[3]][i],
-            mean = d[[4]][i],
-            median = d[[5]][i],
-            sd = d[[6]][i],
-            min = d[[7]][i],
-            max = d[[8]][i]
-          )
-          table$addRow(rowKey = vars[i], values = row)
-        }
+        d     <- as.data.frame(self$desc)
+        for (i in seq_along(vars))
+          table$addRow(rowKey = vars[i], values = as.list(d[i,2:8]))
       },
       
       .populateFitTable = function() {
-        if (!isTRUE(self$options$fit))
-          return()
-        
         table <- self$results$fit
-        df <- as.data.frame(t(self$fit))
-        
-        for (name in rownames(df)) {
-          row <- list(value = df[name, 1])
-          table$addRow(rowKey = name, values = row)
-        }
+        df    <- as.data.frame(t(self$fit))
+        for (nm in rownames(df))
+          table$addRow(rowKey = nm, values = list(value = df[nm,1]))
       },
       
       .populateEST = function() {
-        if (!isTRUE(self$options$est))
-          return()
-        
         table <- self$results$est
-        e <- as.data.frame(self$parameters)
-        
-        for (name in rownames(e)) {
-          row <- list(
-            cat = e[name, 1],
-            lhs = e[name, 2],
-            est = e[name, 3],
-            se = e[name, 4],
-            p = e[name, 5],
-            ci = e[name, 6],
-            na = e[name, 7]
-          )
-          table$addRow(rowKey = name, values = row)
-        }
+        e     <- as.data.frame(self$parameters)
+        for (nm in rownames(e))
+          table$addRow(rowKey = nm, values = list(
+            cat  = e[nm,1],
+            lhs  = e[nm,2],
+            est  = e[nm,3],
+            se   = e[nm,4],
+            p    = e[nm,5],
+            ci   = e[nm,6],
+            na   = e[nm,7]
+          ))
       },
       
       .populateClassSizeTable = function() {
-        if (!isTRUE(self$options$cp))
-          return()
-        
         table <- self$results$cp
-        nc <- self$options$nc
-        vars <- self$options$vars
-        d <- self$classProbabilities$summary
-        
-        for (i in seq_len(nc)) {
-          row <- list(
-            name = d[[1]][i],
-            count = d[[2]][i],
-            prop = d[[3]][i]
-          )
-          table$addRow(rowKey = vars[i], values = row)
-        }
+        d     <- self$classProbabilities$summary
+        for (i in seq_len(nrow(d)))
+          table$addRow(rowKey = i, values = as.list(d[i,]))
       },
       
       .populateClassMemberTable = function() {
-        if (!isTRUE(self$options$mem))
-          return()
-        
-        data <- self$data
-        if (self$options$miss == 'listwise') {
-          data <- jmvcore::naOmit(data)
-        }
-        
-        mem <- self$classProbabilities$individual
-        m <- as.factor(mem$predicted)
-        
-        if (self$results$mem$isNotFilled()) {
-          self$results$mem$setRowNums(rownames(self$data))
-          self$results$mem$setValues(m)
+        table <- self$results$mem
+        mem   <- self$classProbabilities$individual
+        if (table$isNotFilled()) {
+          table$setRowNums(rownames(self$data))
+          table$setValues(as.factor(mem$predicted))
         }
       },
       
-      # Model Comparison function ---- 
       .computeModelComparison = function() {
-        if (!self$options$mc) {
-          return(data.frame(classes = integer(0), AIC = numeric(0), BIC = numeric(0)))
-        }
-        
+        if (!self$options$mc)
+          return(data.frame())
         if (is.null(private$.mc_cache)) {
-          
-          model_spec <- self$options$model
           data_df <- as.data.frame(self$data)
-          miss_handling <- self$options$miss
-          num_classes <- self$options$nc
-          use_thresholds <- self$options$thr
-          
-          if (miss_handling == "listwise")
+          if (self$options$miss == 'listwise')
             data_df <- jmvcore::naOmit(data_df)
-          
-          results <- vector("list", num_classes)
-          
-          for (k in 1:num_classes) {
-            model_k <- tidySEM::mx_growth_mixture(
-              model = model_spec, 
-              data = data_df,  
-              classes = k, 
-              thresholds = use_thresholds
-            )
-            
-            if (!is.null(model_k)) {
-              fit_stats <- tidySEM::table_fit(model_k)
-              if (!is.null(fit_stats)) {
-                results[[k]] <- data.frame(
-                  classes = k,
-                  AIC = fit_stats$AIC,
-                  BIC = fit_stats$BIC
-                )
-              }
+          res_list <- list()
+          for (k in seq_len(self$options$nc)) {
+            m_k <- try(tidySEM::mx_growth_mixture(
+              model      = self$options$model,
+              data       = data_df,
+              classes    = k,
+              thresholds = self$options$thr
+            ), silent=TRUE)
+            if (!inherits(m_k, "try-error")) {
+              fit_stats <- tidySEM::table_fit(m_k)
+              res_list[[k]] <- data.frame(
+                classes = k,
+                AIC     = fit_stats$AIC,
+                BIC     = fit_stats$BIC
+              )
             }
           }
-          
-          valid_results <- results[!sapply(results, is.null)]
-          if (length(valid_results) > 0) {
-            private$.mc_cache <- do.call(rbind, valid_results)
-          } else {
-            private$.mc_cache <- data.frame(classes = integer(0), AIC = numeric(0), BIC = numeric(0))
-          }
+          private$.mc_cache <- do.call(rbind, res_list)
         }
-        return(private$.mc_cache)
+        private$.mc_cache
       },
       
       .populateModelComparisonTable = function() {
-        if (!isTRUE(self$options$mc))
-          return()
-        
-        tbl <- self$results$mc
+        table <- self$results$mc
         mc_data <- private$.computeModelComparison()
-        
-        if (nrow(mc_data) > 0) {
-          for (i in seq_len(nrow(mc_data))) {
-            row <- mc_data[i, ]
-            tbl$addRow(
-              rowKey = paste0("class_", row$classes),
-              values = list(
-                classes = row$classes,
-                AIC = row$AIC,
-                BIC = row$BIC
-              )
-            )
-          }
-        }
+        for (i in seq_len(nrow(mc_data)))
+          table$addRow(rowKey = mc_data$classes[i],
+                       values = as.list(mc_data[i,]))
       },
       
-      # Plot functions ----
       .setPlot1 = function() {
-        if (!isTRUE(self$options$plot1))
-          return()
-        
-        data <- self$data
-        if (self$options$miss == 'listwise') {
-          data <- jmvcore::naOmit(data)
-        }
-        
-        # Density plot data preparation
-        long <- reshape(
-          data,
-          direction = "long",
-          varying = list(names(data)),
-          v.names = "value",
-          idvar = "id",
-          timevar = "time"
-        )
-        
-        image <- self$results$plot1
-        image$setState(long)
+        long <- reshape(self$data, direction="long",
+                        varying=list(names(self$data)),
+                        v.names="value",
+                        idvar="id", timevar="time")
+        self$results$plot1$setState(long)
       },
       
       .setPlot = function() {
-        if (!isTRUE(self$options$plot))
-          return()
-        
-        image <- self$results$plot
-        image$setState(self$res)
+        self$results$plot$setState(self$res)
       },
       
-      # Plot rendering functions ----
       .plot1 = function(image, ggtheme, theme, ...) {
-        if (is.null(image$state))
-          return(FALSE)
-        
+        if (is.null(image$state)) return(FALSE)
         long <- image$state
-        library(ggplot2)
-        plot1 <- ggplot(long, aes(x = value)) +
-          geom_density() +
-          facet_wrap(~ time) + 
-          theme_bw()
-        
-        plot1 <- plot1 + ggtheme
-        print(plot1)
+        p <- ggplot(long, aes(x=value)) +
+          geom_density() + facet_wrap(~time) + theme_bw()
+        print(p + ggtheme)
         TRUE
       },
       
       .plot = function(image, ggtheme, theme, ...) {
-        if (is.null(image$state))
-          return(FALSE)
-        
-        tra <- image$state
-        plot <- tidySEM::plot_growth(
-          tra,
-          rawdata = self$options$raw,
-          alpha_range = c(0, 0.05)
-        )
-        
-        plot <- plot + ggtheme
-        print(plot)
+        if (is.null(image$state)) return(FALSE)
+        p <- tidySEM::plot_growth(image$state,
+                                  rawdata=self$options$raw,
+                                  alpha_range=c(0,0.05))
+        print(p + ggtheme)
         TRUE
       }
     )
   )
+
+# Progress Bar HTML 함수 (R/progressBarH.R)
+progressBarH <- function(progress = 0, total = 100, message = '') {
+  percentage <- round(progress / total * 100)
+  width      <- 400 * percentage / 100
+  
+  html <- paste0(
+    '<div style="text-align: center; padding: 20px;">',
+    '<div style="width: 400px; height: 20px; border: 1px solid #ccc;',
+    ' background-color: #f8f9fa; margin: 0 auto; border-radius: 4px;">',
+    '<div style="width: ', width, 'px; height: 18px;',
+    ' background-color: #999999; border-radius: 3px;',
+    ' transition: width 0.3s ease;"></div>',
+    '</div>',
+    '<div style="margin-top: 8px; font-size: 12px; color: #666;">',
+    message, ' (', percentage, '%)',
+    '</div>',
+    '</div>'
+  )
+  
+  return(html)
+}
