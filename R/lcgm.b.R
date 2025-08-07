@@ -299,7 +299,7 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
     )
   )
 
-# Progress Bar HTML 함수 (R/progressBarH.R)
+# Progress Bar HTML (R/progressBarH.R)
 progressBarH <- function(progress = 0, total = 100, message = '') {
   percentage <- round(progress / total * 100)
   width      <- 400 * percentage / 100

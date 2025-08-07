@@ -13,6 +13,11 @@ items:
       title: ''
       type:  Preformatted
 
+    - name: progressBarHTML
+      title: ' '
+      type: Html
+      visible: false
+
     - name: desc
       title: 'Descriptive statistics'
       type: Table
