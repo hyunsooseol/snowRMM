@@ -13,8 +13,8 @@ bfitOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             bn = 100,
             binfit = TRUE,
             boutfit = TRUE,
-            inplot = FALSE,
-            outplot = FALSE,
+            inplot = TRUE,
+            outplot = TRUE,
             angle = 0,
             type = "bi",
             adj = NULL,
@@ -75,11 +75,11 @@ bfitOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             private$..inplot <- jmvcore::OptionBool$new(
                 "inplot",
                 inplot,
-                default=FALSE)
+                default=TRUE)
             private$..outplot <- jmvcore::OptionBool$new(
                 "outplot",
                 outplot,
-                default=FALSE)
+                default=TRUE)
             private$..angle <- jmvcore::OptionNumber$new(
                 "angle",
                 angle,
@@ -532,8 +532,8 @@ bfit <- function(
     bn = 100,
     binfit = TRUE,
     boutfit = TRUE,
-    inplot = FALSE,
-    outplot = FALSE,
+    inplot = TRUE,
+    outplot = TRUE,
     angle = 0,
     type = "bi",
     adj,

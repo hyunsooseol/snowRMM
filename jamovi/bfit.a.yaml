@@ -63,12 +63,12 @@ options:
     - name: inplot
       title: 'Infit'
       type: Bool
-      default: false
+      default: TRUE
 
     - name: outplot
       title: 'Outfit'
       type: Bool
-      default: false 
+      default: TRUE 
 
     - name: angle
       title: Angle of x-axis labels
