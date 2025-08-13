@@ -22,7 +22,10 @@ lcgmOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             height = 500,
             width1 = 500,
             height1 = 500,
-            miss = "fiml", ...) {
+            miss = "fiml",
+            plot2 = FALSE,
+            width2 = 500,
+            height2 = 500, ...) {
 
             super$initialize(
                 package="snowRMM",
@@ -116,6 +119,18 @@ lcgmOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "listwise",
                     "fiml"),
                 default="fiml")
+            private$..plot2 <- jmvcore::OptionBool$new(
+                "plot2",
+                plot2,
+                default=FALSE)
+            private$..width2 <- jmvcore::OptionInteger$new(
+                "width2",
+                width2,
+                default=500)
+            private$..height2 <- jmvcore::OptionInteger$new(
+                "height2",
+                height2,
+                default=500)
 
             self$.addOption(private$..vars)
             self$.addOption(private$..model)
@@ -135,6 +150,9 @@ lcgmOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..width1)
             self$.addOption(private$..height1)
             self$.addOption(private$..miss)
+            self$.addOption(private$..plot2)
+            self$.addOption(private$..width2)
+            self$.addOption(private$..height2)
         }),
     active = list(
         vars = function() private$..vars$value,
@@ -154,7 +172,10 @@ lcgmOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         height = function() private$..height$value,
         width1 = function() private$..width1$value,
         height1 = function() private$..height1$value,
-        miss = function() private$..miss$value),
+        miss = function() private$..miss$value,
+        plot2 = function() private$..plot2$value,
+        width2 = function() private$..width2$value,
+        height2 = function() private$..height2$value),
     private = list(
         ..vars = NA,
         ..model = NA,
@@ -173,7 +194,10 @@ lcgmOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..height = NA,
         ..width1 = NA,
         ..height1 = NA,
-        ..miss = NA)
+        ..miss = NA,
+        ..plot2 = NA,
+        ..width2 = NA,
+        ..height2 = NA)
 )
 
 lcgmResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -189,6 +213,7 @@ lcgmResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         cp = function() private$.items[["cp"]],
         mc = function() private$.items[["mc"]],
         mem = function() private$.items[["mem"]],
+        plot2 = function() private$.items[["plot2"]],
         plot1 = function() private$.items[["plot1"]],
         plot = function() private$.items[["plot"]]),
     private = list(),
@@ -388,6 +413,20 @@ lcgmResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "miss")))
             self$add(jmvcore::Image$new(
                 options=options,
+                name="plot2",
+                title="Class size plot",
+                visible="(plot2)",
+                renderFun=".plot2",
+                clearWith=list(
+                    "vars",
+                    "model",
+                    "nc",
+                    "thr",
+                    "width2",
+                    "height2",
+                    "miss")))
+            self$add(jmvcore::Image$new(
+                options=options,
                 name="plot1",
                 title="Density plot",
                 visible="(plot1)",
@@ -458,6 +497,9 @@ lcgmBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param width1 .
 #' @param height1 .
 #' @param miss .
+#' @param plot2 .
+#' @param width2 .
+#' @param height2 .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
@@ -469,6 +511,7 @@ lcgmBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$cp} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$mc} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$mem} \tab \tab \tab \tab \tab an output \cr
+#'   \code{results$plot2} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
 #' }
@@ -498,7 +541,10 @@ lcgm <- function(
     height = 500,
     width1 = 500,
     height1 = 500,
-    miss = "fiml") {
+    miss = "fiml",
+    plot2 = FALSE,
+    width2 = 500,
+    height2 = 500) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("lcgm requires jmvcore to be installed (restart may be required)")
@@ -527,7 +573,10 @@ lcgm <- function(
         height = height,
         width1 = width1,
         height1 = height1,
-        miss = miss)
+        miss = miss,
+        plot2 = plot2,
+        width2 = width2,
+        height2 = height2)
 
     analysis <- lcgmClass$new(
         options = options,

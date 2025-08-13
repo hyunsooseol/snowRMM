@@ -171,6 +171,20 @@ items:
         - thr
         - miss
 
+    - name: plot2
+      title: 'Class size plot'
+      type: Image
+      visible: (plot2)
+      renderFun: .plot2
+      clearWith:
+        - vars
+        - model
+        - nc
+        - thr
+        - width2
+        - height2
+        - miss
+
     - name: plot1
       title: 'Density plot'
       type: Image

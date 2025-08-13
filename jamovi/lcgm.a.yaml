@@ -116,4 +116,19 @@ options:
         - listwise
         - fiml
       default: fiml
+
+    - name: plot2
+      title: Class size plot
+      type: Bool
+      default: false
+
+    - name: width2
+      type: Integer
+      title: "Size: "
+      default: 500
+      
+    - name: height2
+      type: Integer
+      title: "X"
+      default: 500   
 ...

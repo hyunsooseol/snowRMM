@@ -50,9 +50,25 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
       classProbabilities = function() {
         if (is.null(private$.cp_cache)) {
           cp1 <- tidySEM::class_prob(self$res)
+          
+          # Person membership 데이터에서 클래스 할당 정보 추출
+          individual_data <- data.frame(cp1$individual)
+          predicted_classes <- individual_data$predicted
+          
+          # 빈도 계산
+          class_counts <- table(predicted_classes)
+          total_n <- sum(class_counts)
+          
+          # Class Size 테이블용 요약 데이터
+          summary_df <- data.frame(
+            Class = as.numeric(names(class_counts)),
+            Count = as.numeric(class_counts),
+            Proportion = round(as.numeric(class_counts) / total_n, 3)
+          )
+          
           private$.cp_cache <- list(
-            summary    = data.frame(cp1$sum.posterior),
-            individual = data.frame(cp1$individual)
+            summary    = summary_df,
+            individual = individual_data
           )
         }
         private$.cp_cache
@@ -99,6 +115,9 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         
         if (isTRUE(self$options$plot))
           self$results$plot$setSize(self$options$width, self$options$height)
+        
+        if (isTRUE(self$options$plot2))
+          self$results$plot2$setSize(self$options$width2, self$options$height2)
       },
       
       .run = function() {
@@ -161,9 +180,17 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           private$.populateClassMemberTable()
         }
         
+        # Class size plot
+        if (isTRUE(self$options$plot2)) {
+          html <- progressBarH(70, 100, 'Creating class size plot...')
+          self$results$progressBarHTML$setContent(html)
+          private$.checkpoint()
+          private$.setPlot2()
+        }
+        
         # Plot1
         if (isTRUE(self$options$plot1)) {
-          html <- progressBarH(75, 100, 'Preparing density plot...')
+          html <- progressBarH(80, 100, 'Preparing density plot...')
           self$results$progressBarHTML$setContent(html)
           private$.checkpoint()
           private$.setPlot1()
@@ -171,7 +198,7 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         
         # Plot2
         if (isTRUE(self$options$plot)) {
-          html <- progressBarH(85, 100, 'Generating growth plot...')
+          html <- progressBarH(90, 100, 'Generating growth plot...')
           self$results$progressBarHTML$setContent(html)
           private$.checkpoint()
           private$.setPlot()
@@ -216,9 +243,27 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
       
       .populateClassSizeTable = function() {
         table <- self$results$cp
-        d     <- self$classProbabilities$summary
-        for (i in seq_len(nrow(d)))
-          table$addRow(rowKey = i, values = as.list(d[i,]))
+        
+        # Person membership 데이터를 직접 활용
+        individual_data <- self$classProbabilities$individual
+        predicted_classes <- individual_data$predicted
+        
+        # 빈도 계산
+        class_counts <- table(predicted_classes)
+        total_n <- sum(class_counts)
+        
+        # 각 클래스별로 테이블에 행 추가
+        for (class_num in sort(unique(predicted_classes))) {
+          count_val <- as.integer(class_counts[as.character(class_num)])
+          prop_val <- round(count_val / total_n, 3)
+          
+          # yaml 구조에 맞게: rowKey는 name 열에 자동 들어가고, count와 prop 열에 값 전달
+          # Class도 정수로 표시하기 위해 rowKey를 정수로 설정
+          table$addRow(rowKey = as.integer(class_num), values = list(
+            count = count_val,
+            prop = prop_val
+          ))
+        }
       },
       
       .populateClassMemberTable = function() {
@@ -267,6 +312,26 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
                        values = as.list(mc_data[i,]))
       },
       
+      .setPlot2 = function() {
+        # Person membership 데이터를 직접 활용
+        individual_data <- self$classProbabilities$individual
+        predicted_classes <- individual_data$predicted
+        
+        # 빈도 계산
+        class_counts <- table(predicted_classes)
+        total_n <- sum(class_counts)
+        
+        # 플롯용 데이터프레임 생성
+        plot_data <- data.frame(
+          Class = factor(names(class_counts), levels = sort(as.numeric(names(class_counts)))),
+          Count = as.numeric(class_counts),
+          Proportion = round(as.numeric(class_counts) / total_n, 3),
+          Percentage = round(as.numeric(class_counts) / total_n * 100, 1)
+        )
+        
+        self$results$plot2$setState(plot_data)
+      },
+      
       .setPlot1 = function() {
         long <- reshape(self$data, direction="long",
                         varying=list(names(self$data)),
@@ -277,6 +342,39 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
       
       .setPlot = function() {
         self$results$plot$setState(self$res)
+      },
+      
+      .plot2 = function(image, ggtheme, theme, ...) {
+        if (is.null(image$state)) return(FALSE)
+        
+        plot_data <- image$state
+        
+        # Bar Chart
+        p <- ggplot(plot_data, aes(x = Class, y = Count, fill = Class)) +
+          geom_bar(stat = "identity", alpha = 0.8, color = "white", size = 0.5) +
+          geom_text(aes(label = paste0("n = ", Count, "\n(", Percentage, "%)")), 
+                    vjust = -0.5, size = 3.5, fontface = "bold", color = "black") +
+          scale_fill_brewer(type = "qual", palette = "Set3") +
+          labs(
+            title = "",
+            x = "Latent Class",
+            y = "Number of Participants"
+          ) +
+          theme_minimal() +
+          theme(
+            plot.title = element_text(hjust = 0.5, size = 13, face = "bold", margin = margin(b = 20)),
+            axis.text.x = element_text(size = 11),
+            axis.text.y = element_text(size = 10),
+            axis.title = element_text(size = 11, face = "bold"),
+            legend.position = "none",
+            panel.grid.minor.y = element_blank(),
+            panel.grid.major.x = element_blank(),
+            plot.margin = margin(10, 10, 10, 10)
+          ) +
+          scale_y_continuous(expand = expansion(mult = c(0, 0.15)))
+        
+        print(p + ggtheme)
+        TRUE
       },
       
       .plot1 = function(image, ggtheme, theme, ...) {
