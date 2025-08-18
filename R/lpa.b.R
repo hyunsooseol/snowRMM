@@ -119,6 +119,15 @@ lpaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           
           self$results$pc$setRowNums(rownames(self$data))
           self$results$pc$setValues(pc_vec)
+        }
+        
+        if (isTRUE(self$options$plot)) {
+          
+          pc_data <- tidyLPA::get_data(all$res)
+          n_row <- nrow(self$data)
+          not_na_idx <- which(stats::complete.cases(self$data[, self$options$vars, drop=FALSE]))
+          pc_vec <- rep(NA, n_row)
+          pc_vec[not_na_idx] <- as.factor(pc_data$Class)
           
           image <- self$results$plot
           image$setState(pc_vec)
