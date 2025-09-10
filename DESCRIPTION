@@ -31,7 +31,6 @@ Imports:
     reshape2,
     ltm,
     tidySEM,
-    blavaan,
     memoise,
     magrittr,
     dplyr,
