@@ -60,11 +60,6 @@ options:
       type: Bool 
       default: FALSE
 
-    - name: mc
-      title: 'Model comparison'
-      type: Bool
-      default: TRUE
-
     - name: mem
       title: Person Membership
       type: Output
@@ -115,7 +110,7 @@ options:
       options:
         - listwise
         - fiml
-      default: fiml
+      default: listwise
 
     - name: plot2
       title: Class size plot

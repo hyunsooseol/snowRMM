@@ -82,7 +82,6 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
       .fit_cache    = NULL,
       .para_cache   = NULL,
       .cp_cache     = NULL,
-      .mc_cache     = NULL,
       
       .init = function() {
         private$.htmlwidget <- HTMLWidget$new()
@@ -90,6 +89,7 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         if (is.null(self$data) || is.null(self$options$vars))
           self$results$instructions$setVisible(TRUE)
         
+        # 안내문 갱신: 모형 비교 제거, AIC/BIC 수동 비교 안내
         self$results$instructions$setContent(
           private$.htmlwidget$generate_accordion(
             title   = "Instructions",
@@ -97,18 +97,16 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
               '<div style="border: 2px solid #e6f4fe; border-radius: 15px;',
               ' padding: 15px; background-color: #e6f4fe; margin-top: 10px;">',
               '<ul>',
-              '<li><b>tidySEM</b> R package usage guide link.</li>',
               '<li>Set <b>Thresholds=TRUE</b> for ordinal data.</li>',
-              '<li>Model comparison may take longer time.</li>',
-              '<li>GitHub issues: snowRMM repository.</li>',
+              '<li>To select the optimal number of classes, change the Classes option and compare the Model fit values.</li>',
+              '<li>Latent class growth analysis is described in the ',
+              '<a href="https://cjvanlissa.github.io/tidySEM/articles/lca_lcga.html" target="_blank">tidySEM article</a>.</li>',
+              '<li>Feature requests and bug reports: ',
+              '<a href="https://github.com/hyunsooseol/snowRMM/issues" target="_blank">GitHub Issues</a>.</li>',
               '</ul></div>'
             )
           )
         )
-        
-        if (self$options$mc)
-          self$results$mc$setNote("Note",
-                                  "Entropy not shown due to instability in some models.")
         
         if (isTRUE(self$options$plot1))
           self$results$plot1$setSize(self$options$width1, self$options$height1)
@@ -142,7 +140,7 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         
         # Fit statistics
         if (isTRUE(self$options$fit)) {
-          html <- progressBarH(25, 100, 'Calculating fit statistics...')
+          html <- progressBarH(30, 100, 'Calculating fit statistics...')
           self$results$progressBarHTML$setContent(html)
           private$.checkpoint()
           private$.populateFitTable()
@@ -150,7 +148,7 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         
         # Parameter estimates
         if (isTRUE(self$options$est)) {
-          html <- progressBarH(35, 100, 'Extracting parameter estimates...')
+          html <- progressBarH(45, 100, 'Extracting parameter estimates...')
           self$results$progressBarHTML$setContent(html)
           private$.checkpoint()
           private$.populateEST()
@@ -158,23 +156,15 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         
         # Class probabilities
         if (isTRUE(self$options$cp)) {
-          html <- progressBarH(45, 100, 'Computing class probabilities...')
+          html <- progressBarH(60, 100, 'Computing class probabilities...')
           self$results$progressBarHTML$setContent(html)
           private$.checkpoint()
           private$.populateClassSizeTable()
         }
         
-        # Model comparison
-        if (isTRUE(self$options$mc)) {
-          html <- progressBarH(55, 100, 'Performing model comparison...')
-          self$results$progressBarHTML$setContent(html)
-          private$.checkpoint()
-          private$.populateModelComparisonTable()
-        }
-        
         # Class members
         if (isTRUE(self$options$mem)) {
-          html <- progressBarH(65, 100, 'Listing class members...')
+          html <- progressBarH(70, 100, 'Listing class members...')
           self$results$progressBarHTML$setContent(html)
           private$.checkpoint()
           private$.populateClassMemberTable()
@@ -182,23 +172,23 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         
         # Class size plot
         if (isTRUE(self$options$plot2)) {
-          html <- progressBarH(70, 100, 'Creating class size plot...')
+          html <- progressBarH(80, 100, 'Creating class size plot...')
           self$results$progressBarHTML$setContent(html)
           private$.checkpoint()
           private$.setPlot2()
         }
         
-        # Plot1
+        # Density plot
         if (isTRUE(self$options$plot1)) {
-          html <- progressBarH(80, 100, 'Preparing density plot...')
+          html <- progressBarH(88, 100, 'Preparing density plot...')
           self$results$progressBarHTML$setContent(html)
           private$.checkpoint()
           private$.setPlot1()
         }
         
-        # Plot2
+        # Growth plot
         if (isTRUE(self$options$plot)) {
-          html <- progressBarH(90, 100, 'Generating growth plot...')
+          html <- progressBarH(96, 100, 'Generating growth plot...')
           self$results$progressBarHTML$setContent(html)
           private$.checkpoint()
           private$.setPlot()
@@ -256,12 +246,9 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         for (class_num in sort(unique(predicted_classes))) {
           count_val <- as.integer(class_counts[as.character(class_num)])
           prop_val <- round(count_val / total_n, 3)
-          
-          # yaml 구조에 맞게: rowKey는 name 열에 자동 들어가고, count와 prop 열에 값 전달
-          # Class도 정수로 표시하기 위해 rowKey를 정수로 설정
           table$addRow(rowKey = as.integer(class_num), values = list(
             count = count_val,
-            prop = prop_val
+            prop  = prop_val
           ))
         }
       },
@@ -273,43 +260,6 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           table$setRowNums(rownames(self$data))
           table$setValues(as.factor(mem$predicted))
         }
-      },
-      
-      .computeModelComparison = function() {
-        if (!self$options$mc)
-          return(data.frame())
-        if (is.null(private$.mc_cache)) {
-          data_df <- as.data.frame(self$data)
-          if (self$options$miss == 'listwise')
-            data_df <- jmvcore::naOmit(data_df)
-          res_list <- list()
-          for (k in seq_len(self$options$nc)) {
-            m_k <- try(tidySEM::mx_growth_mixture(
-              model      = self$options$model,
-              data       = data_df,
-              classes    = k,
-              thresholds = self$options$thr
-            ), silent=TRUE)
-            if (!inherits(m_k, "try-error")) {
-              fit_stats <- tidySEM::table_fit(m_k)
-              res_list[[k]] <- data.frame(
-                classes = k,
-                AIC     = fit_stats$AIC,
-                BIC     = fit_stats$BIC
-              )
-            }
-          }
-          private$.mc_cache <- do.call(rbind, res_list)
-        }
-        private$.mc_cache
-      },
-      
-      .populateModelComparisonTable = function() {
-        table <- self$results$mc
-        mc_data <- private$.computeModelComparison()
-        for (i in seq_len(nrow(mc_data)))
-          table$addRow(rowKey = mc_data$classes[i],
-                       values = as.list(mc_data[i,]))
       },
       
       .setPlot2 = function() {
@@ -397,7 +347,8 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
     )
   )
 
-# Progress Bar HTML (R/progressBarH.R)
+
+# Progress Bar HTML (R/progressBarH.R) — 그대로 사용
 progressBarH <- function(progress = 0, total = 100, message = '') {
   percentage <- round(progress / total * 100)
   width      <- 400 * percentage / 100

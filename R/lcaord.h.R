@@ -18,7 +18,7 @@ lcaordOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             width1 = 500,
             height1 = 500,
             angle = 0,
-            miss = "fiml", ...) {
+            miss = "listwise", ...) {
 
             super$initialize(
                 package="snowRMM",
@@ -88,7 +88,7 @@ lcaordOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 options=list(
                     "listwise",
                     "fiml"),
-                default="fiml")
+                default="listwise")
 
             self$.addOption(private$..vars)
             self$.addOption(private$..nc)
@@ -360,7 +360,7 @@ lcaord <- function(
     width1 = 500,
     height1 = 500,
     angle = 0,
-    miss = "fiml") {
+    miss = "listwise") {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("lcaord requires jmvcore to be installed (restart may be required)")

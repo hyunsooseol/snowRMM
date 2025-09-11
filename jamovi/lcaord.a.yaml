@@ -89,5 +89,5 @@ options:
       options:
         - listwise
         - fiml
-      default: fiml
+      default: listwise
 ...

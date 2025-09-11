@@ -140,24 +140,24 @@ items:
           title: Proportion   
           type: number
 
-    - name: mc
-      title: 'Model Comparison'
-      type: Table
-      visible: (mc)
-      refs: tidySEM
-      clearWith:
-        - vars
-        - model
-        - nc
-        - thr
-        - miss
-      columns:
-        - name: classes
-          title: 'Class'
-        - name: AIC
-          title: 'AIC'
-        - name: BIC
-          title: 'BIC'
+    # - name: mc
+    #   title: 'Model Comparison'
+    #   type: Table
+    #   visible: (mc)
+    #   refs: tidySEM
+    #   clearWith:
+    #     - vars
+    #     - model
+    #     - nc
+    #     - thr
+    #     - miss
+    #   columns:
+    #     - name: classes
+    #       title: 'Class'
+    #     - name: AIC
+    #       title: 'AIC'
+    #     - name: BIC
+    #       title: 'BIC'
 
     - name: mem
       title: Class 

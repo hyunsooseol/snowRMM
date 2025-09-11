@@ -14,7 +14,6 @@ lcgmOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             est = FALSE,
             desc = TRUE,
             cp = FALSE,
-            mc = TRUE,
             plot1 = FALSE,
             plot = FALSE,
             raw = "FALSE",
@@ -22,7 +21,7 @@ lcgmOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             height = 500,
             width1 = 500,
             height1 = 500,
-            miss = "fiml",
+            miss = "listwise",
             plot2 = FALSE,
             width2 = 500,
             height2 = 500, ...) {
@@ -75,10 +74,6 @@ lcgmOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "cp",
                 cp,
                 default=FALSE)
-            private$..mc <- jmvcore::OptionBool$new(
-                "mc",
-                mc,
-                default=TRUE)
             private$..mem <- jmvcore::OptionOutput$new(
                 "mem")
             private$..plot1 <- jmvcore::OptionBool$new(
@@ -118,7 +113,7 @@ lcgmOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 options=list(
                     "listwise",
                     "fiml"),
-                default="fiml")
+                default="listwise")
             private$..plot2 <- jmvcore::OptionBool$new(
                 "plot2",
                 plot2,
@@ -140,7 +135,6 @@ lcgmOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..est)
             self$.addOption(private$..desc)
             self$.addOption(private$..cp)
-            self$.addOption(private$..mc)
             self$.addOption(private$..mem)
             self$.addOption(private$..plot1)
             self$.addOption(private$..plot)
@@ -163,7 +157,6 @@ lcgmOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         est = function() private$..est$value,
         desc = function() private$..desc$value,
         cp = function() private$..cp$value,
-        mc = function() private$..mc$value,
         mem = function() private$..mem$value,
         plot1 = function() private$..plot1$value,
         plot = function() private$..plot$value,
@@ -185,7 +178,6 @@ lcgmOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..est = NA,
         ..desc = NA,
         ..cp = NA,
-        ..mc = NA,
         ..mem = NA,
         ..plot1 = NA,
         ..plot = NA,
@@ -211,7 +203,6 @@ lcgmResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         fit = function() private$.items[["fit"]],
         est = function() private$.items[["est"]],
         cp = function() private$.items[["cp"]],
-        mc = function() private$.items[["mc"]],
         mem = function() private$.items[["mem"]],
         plot2 = function() private$.items[["plot2"]],
         plot1 = function() private$.items[["plot1"]],
@@ -377,28 +368,6 @@ lcgmResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         `name`="prop", 
                         `title`="Proportion", 
                         `type`="number"))))
-            self$add(jmvcore::Table$new(
-                options=options,
-                name="mc",
-                title="Model Comparison",
-                visible="(mc)",
-                refs="tidySEM",
-                clearWith=list(
-                    "vars",
-                    "model",
-                    "nc",
-                    "thr",
-                    "miss"),
-                columns=list(
-                    list(
-                        `name`="classes", 
-                        `title`="Class"),
-                    list(
-                        `name`="AIC", 
-                        `title`="AIC"),
-                    list(
-                        `name`="BIC", 
-                        `title`="BIC"))))
             self$add(jmvcore::Output$new(
                 options=options,
                 name="mem",
@@ -488,7 +457,6 @@ lcgmBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param est .
 #' @param desc .
 #' @param cp .
-#' @param mc .
 #' @param plot1 .
 #' @param plot .
 #' @param raw .
@@ -509,7 +477,6 @@ lcgmBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$fit} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$est} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$cp} \tab \tab \tab \tab \tab a table \cr
-#'   \code{results$mc} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$mem} \tab \tab \tab \tab \tab an output \cr
 #'   \code{results$plot2} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
@@ -533,7 +500,6 @@ lcgm <- function(
     est = FALSE,
     desc = TRUE,
     cp = FALSE,
-    mc = TRUE,
     plot1 = FALSE,
     plot = FALSE,
     raw = "FALSE",
@@ -541,7 +507,7 @@ lcgm <- function(
     height = 500,
     width1 = 500,
     height1 = 500,
-    miss = "fiml",
+    miss = "listwise",
     plot2 = FALSE,
     width2 = 500,
     height2 = 500) {
@@ -565,7 +531,6 @@ lcgm <- function(
         est = est,
         desc = desc,
         cp = cp,
-        mc = mc,
         plot1 = plot1,
         plot = plot,
         raw = raw,

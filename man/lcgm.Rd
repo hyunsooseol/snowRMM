@@ -14,7 +14,6 @@ lcgm(
   est = FALSE,
   desc = TRUE,
   cp = FALSE,
-  mc = TRUE,
   plot1 = FALSE,
   plot = FALSE,
   raw = "FALSE",
@@ -22,7 +21,7 @@ lcgm(
   height = 500,
   width1 = 500,
   height1 = 500,
-  miss = "fiml",
+  miss = "listwise",
   plot2 = FALSE,
   width2 = 500,
   height2 = 500
@@ -46,8 +45,6 @@ lcgm(
 \item{desc}{.}
 
 \item{cp}{.}
-
-\item{mc}{.}
 
 \item{plot1}{.}
 
@@ -81,7 +78,6 @@ A results object containing:
   \code{results$fit} \tab \tab \tab \tab \tab a table \cr
   \code{results$est} \tab \tab \tab \tab \tab a table \cr
   \code{results$cp} \tab \tab \tab \tab \tab a table \cr
-  \code{results$mc} \tab \tab \tab \tab \tab a table \cr
   \code{results$mem} \tab \tab \tab \tab \tab an output \cr
   \code{results$plot2} \tab \tab \tab \tab \tab an image \cr
   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr

@@ -50,8 +50,9 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly = TRUE))
             content = paste(
               '<div style="border:2px solid #e6f4fe;border-radius:15px;padding:15px;',
               'background-color:#e6f4fe;margin-top:10px;"><ul>',
-              '<li><b>tidySEM</b> guide link.</li>',
-              '<li>Report issues on GitHub.</li>',
+              '<li>Latent class analysis for ordinal indicators is described in the ',              
+              '<a href="https://cjvanlissa.github.io/tidySEM/articles/lca_ordinal.html" target="_blank">tidySEM article</a>.</li>',
+              '<li>Feature requests and bug reports can be made on my <a href="https://github.com/hyunsooseol/snowRMM/issues" target="_blank">GitHub</a>.</li>',
               '</ul></div>'
             )
           )

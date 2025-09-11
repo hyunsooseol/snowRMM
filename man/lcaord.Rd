@@ -18,7 +18,7 @@ lcaord(
   width1 = 500,
   height1 = 500,
   angle = 0,
-  miss = "fiml"
+  miss = "listwise"
 )
 }
 \arguments{
