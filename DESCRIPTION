@@ -29,10 +29,13 @@ Imports:
     pairwise,
     reshape2,
     ltm,
-    tidySEM,
     memoise,
     magrittr,
+    tidySEM (>= 0.2.8),
     dplyr,
 Remotes: twolodzko/equi,
-         cran/mixRasch
+         cran/mixRasch,
+         hyunsooseol/tidySEM@cran-0.2.8
+
+
         
