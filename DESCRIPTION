@@ -31,7 +31,7 @@ Imports:
     ltm,
     memoise,
     magrittr,
-    tidySEM (>= 0.2.8),
+    tidySEM (== 0.2.8),
     dplyr,
 Remotes: twolodzko/equi,
          cran/mixRasch,
