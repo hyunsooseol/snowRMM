@@ -31,11 +31,13 @@ Imports:
     ltm,
     memoise,
     magrittr,
-    tidySEM, 
-    dplyr,
+    tidySEM (>= 0.2.8),
+    parallelly (>= 1.44.0),
+    dplyr
 Remotes: twolodzko/equi,
-         cran/mixRasch
+         cran/mixRasch,
+         hyunsooseol/tidySEM@21c6d3a
 
 
-
+         
         
