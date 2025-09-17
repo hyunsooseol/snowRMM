@@ -33,10 +33,10 @@ Imports:
     magrittr,
     tidySEM (>= 0.2.8),
     parallelly (>= 1.44.0),
-    dplyr
+    dplyr,
 Remotes: twolodzko/equi,
          cran/mixRasch,
-         hyunsooseol/tidySEM@21c6d3a
+         hyunsooseol/tidySEM@8837b49
 
 
          
