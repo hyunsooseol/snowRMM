@@ -31,6 +31,7 @@ Imports:
     ltm,
     memoise,
     magrittr,
+    igraph (>= 2.0.0),
     tidySEM (>= 0.2.8),
     parallelly (>= 1.44.0),
     dplyr,
