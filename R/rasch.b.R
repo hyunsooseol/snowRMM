@@ -485,11 +485,7 @@ raschClass <- if (requireNamespace('jmvcore'))
           self$results$text$setContent(body)
           self$results$plot5$setState(rf)
         }
-        
-        
-        
-        
-        
+
         # Q3 fit statistics proposed by Yen(1984)
         
         if (isTRUE(self$options$q3)) {
@@ -583,15 +579,25 @@ raschClass <- if (requireNamespace('jmvcore'))
         }
         
         if (isTRUE(self$options$nptest)) {
-          n <- self$options$matrix
-          method <- self$options$npmethod
           
-          data <- private$.cleanData()
-          rmat <- as.matrix(data)
-          res <- eRm::NPtest(rmat, n = n, method = method)
-          
-          self$results$text1$setContent(res)
+          if (self$options$step == 1) {
+            n      <- self$options$matrix
+            method <- self$options$npmethod
+            
+            data <- private$.cleanData()
+            rmat <- as.matrix(data)
+            
+            res <- eRm::NPtest(rmat, n = n, method = method)
+            
+            self$results$text1$setContent(capture.output(res))
+            
+          } else {
+ 
+            msg <- "NP test is only available for dichotomous Rasch models (step = 1)."
+            self$results$text1$setContent(msg)
+          }
         }
+        
         
       },
       
