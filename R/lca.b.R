@@ -154,7 +154,21 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         
         res <- self$res
         #res <- private$.computeRES(data)
-       
+        txt <- paste0(
+          "============================================================\n",
+          "Fit for ", length(res$P), " latent classes:\n",
+          "============================================================\n",
+          "number of observations: ", res$N, "\n",
+          "number of estimated parameters: ", res$npar, "\n",
+          "residual degrees of freedom: ", res$resid.df, "\n",
+          "maximum log-likelihood: ", round(res$llik, 1), "\n\n",
+          "AIC(", length(res$P), "): ", res$aic, "\n",
+          "BIC(", length(res$P), "): ", res$bic, "\n",
+          "G^2(", length(res$P), "): ", round(res$Gsq, 2), " (Likelihood ratio/deviance statistic)\n",
+          "X^2(", length(res$P), "): ", round(res$Chisq, 2), " (Chi-square goodness of fit)\n"
+        )
+        
+        self$results$text1$setContent(txt)            
         
         if (length(self$options$covs) >= 1 &&
             isTRUE(self$options$coef)) {
@@ -305,12 +319,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         image2$setState(profile)
         # log-likelihood--------
         like <- res[["llik"]]
-        # R output----------------------
-        
-        if (isTRUE(self$options$r)) {
-          self$results$r$setContent(res)
-        }
-        
+
         results <-
           list(
             'classprob' = classprob,

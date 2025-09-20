@@ -71,11 +71,6 @@ children:
             children:
               - type: CheckBox
                 name: coef
-          - type: Label
-            label: Output from R(Optional)
-            children:
-              - type: CheckBox
-                name: r
   - type: CollapseBox
     label: 'Plots'
     margin: normal

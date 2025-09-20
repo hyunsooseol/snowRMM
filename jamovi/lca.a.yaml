@@ -67,11 +67,6 @@ options:
       type: Bool 
       default: FALSE   
 
-    - name: r
-      title: R  
-      type: Bool 
-      default: FALSE   
-
     - name: plot
       title: LCA plot
       type: Bool

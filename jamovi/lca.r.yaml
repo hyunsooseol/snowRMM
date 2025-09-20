@@ -9,6 +9,10 @@ items:
       type: Html
       visible: True
 
+    - name:  text1
+      title: ''
+      type:  Preformatted
+
     - name: mf
       title: 'Model Fit'
       type: Group
@@ -115,7 +119,7 @@ items:
               content: ($key)
 
     - name: pro
-      title: 'Probability'
+      title: 'Class size & Predicted cell counts'
       type: Group
       items:
         - name: cp
@@ -225,13 +229,4 @@ items:
             - width2
             - height2            
 
-    - name:  r
-      title: 'Output from R'
-      type:  Preformatted
-      visible: (r)
-      refs: poLCA
-      clearWith:
-        - vars
-        - nc
-        - covs
 ...
