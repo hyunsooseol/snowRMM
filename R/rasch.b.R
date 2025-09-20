@@ -462,18 +462,33 @@ raschClass <- if (requireNamespace('jmvcore'))
         # Rasch residual factor analysis using pairwise R package
         
         if (isTRUE(self$options$plot5)) {
-          data <- private$.cleanData()
           
-          ip <- pairwise::pair(data)
-          pers_obj <- pairwise::pers(ip)
-          rf <- pairwise::rfa(pers_obj, res = self$options$res)
-          summ <- summary(rf)
+          rf <- pairwise::rfa(
+            pairwise::pers(pairwise::pair(private$.cleanData())),
+            res = self$options$res
+          )
           
-          self$results$text$setContent(summ)
+          summ <- capture.output(summary(rf))
           
-          image5 <- self$results$plot5
-          image5$setState(rf)
+          body <- gsub("\\$eigen.values", 
+                       "\n\n[Eigenvalues]\n", 
+                       paste(summ, collapse="\n"))
+          body <- gsub("\\$loadings", 
+                       "\n\n[Loadings]\n", body)
+          body <- gsub("\\$variance.proportion", 
+                       "\n\n[Variance proportion]\n", body)
+          body <- gsub("\\$variance.total", 
+                       "\n\n[Variance total]\n", body)
+          body <- gsub("\\$transposed", 
+                       "\n\n[Transposed]\n", body)
+          
+          self$results$text$setContent(body)
+          self$results$plot5$setState(rf)
         }
+        
+        
+        
+        
         
         # Q3 fit statistics proposed by Yen(1984)
         
