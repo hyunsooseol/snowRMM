@@ -123,5 +123,12 @@ items:
         - height
         - angle
         - miss
-   
+
+    - name: use3step
+      title: "3-step analysis (BCH/DCAT)"
+      type: Preformatted
+ 
+    - name: reg
+      title: "Class-wise regression"
+      type: Preformatted
 ...

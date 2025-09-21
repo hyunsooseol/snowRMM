@@ -18,7 +18,12 @@ lcaordOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             width1 = 500,
             height1 = 500,
             angle = 0,
-            miss = "listwise", ...) {
+            miss = "listwise",
+            use3step = FALSE,
+            auxVar = NULL,
+            auxFormula = "depression~peer_support",
+            reg = FALSE,
+            regvars = NULL, ...) {
 
             super$initialize(
                 package="snowRMM",
@@ -89,6 +94,38 @@ lcaordOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "listwise",
                     "fiml"),
                 default="listwise")
+            private$..use3step <- jmvcore::OptionBool$new(
+                "use3step",
+                use3step,
+                default=FALSE)
+            private$..auxVar <- jmvcore::OptionVariable$new(
+                "auxVar",
+                auxVar,
+                suggested=list(
+                    "continuous",
+                    "ordinal",
+                    "nominal"),
+                permitted=list(
+                    "numeric",
+                    "factor"))
+            private$..auxFormula <- jmvcore::OptionString$new(
+                "auxFormula",
+                auxFormula,
+                default="depression~peer_support")
+            private$..reg <- jmvcore::OptionBool$new(
+                "reg",
+                reg,
+                default=FALSE)
+            private$..regvars <- jmvcore::OptionVariable$new(
+                "regvars",
+                regvars,
+                suggested=list(
+                    "continuous",
+                    "ordinal",
+                    "nominal"),
+                permitted=list(
+                    "numeric",
+                    "factor"))
 
             self$.addOption(private$..vars)
             self$.addOption(private$..nc)
@@ -104,6 +141,11 @@ lcaordOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..height1)
             self$.addOption(private$..angle)
             self$.addOption(private$..miss)
+            self$.addOption(private$..use3step)
+            self$.addOption(private$..auxVar)
+            self$.addOption(private$..auxFormula)
+            self$.addOption(private$..reg)
+            self$.addOption(private$..regvars)
         }),
     active = list(
         vars = function() private$..vars$value,
@@ -119,7 +161,12 @@ lcaordOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         width1 = function() private$..width1$value,
         height1 = function() private$..height1$value,
         angle = function() private$..angle$value,
-        miss = function() private$..miss$value),
+        miss = function() private$..miss$value,
+        use3step = function() private$..use3step$value,
+        auxVar = function() private$..auxVar$value,
+        auxFormula = function() private$..auxFormula$value,
+        reg = function() private$..reg$value,
+        regvars = function() private$..regvars$value),
     private = list(
         ..vars = NA,
         ..nc = NA,
@@ -134,7 +181,12 @@ lcaordOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..width1 = NA,
         ..height1 = NA,
         ..angle = NA,
-        ..miss = NA)
+        ..miss = NA,
+        ..use3step = NA,
+        ..auxVar = NA,
+        ..auxFormula = NA,
+        ..reg = NA,
+        ..regvars = NA)
 )
 
 lcaordResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -149,7 +201,9 @@ lcaordResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         cp = function() private$.items[["cp"]],
         mem = function() private$.items[["mem"]],
         plot1 = function() private$.items[["plot1"]],
-        plot = function() private$.items[["plot"]]),
+        plot = function() private$.items[["plot"]],
+        use3step = function() private$.items[["use3step"]],
+        reg = function() private$.items[["reg"]]),
     private = list(),
     public=list(
         initialize=function(options) {
@@ -285,7 +339,15 @@ lcaordResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "width",
                     "height",
                     "angle",
-                    "miss")))}))
+                    "miss")))
+            self$add(jmvcore::Preformatted$new(
+                options=options,
+                name="use3step",
+                title="3-step analysis (BCH/DCAT)"))
+            self$add(jmvcore::Preformatted$new(
+                options=options,
+                name="reg",
+                title="Class-wise regression"))}))
 
 lcaordBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "lcaordBase",
@@ -326,6 +388,11 @@ lcaordBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param angle a number from 0 to 90 defining the angle of the x-axis labels,
 #'   where 0 degrees represents completely horizontal labels.
 #' @param miss .
+#' @param use3step .
+#' @param auxVar .
+#' @param auxFormula .
+#' @param reg .
+#' @param regvars .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
@@ -337,6 +404,8 @@ lcaordBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$mem} \tab \tab \tab \tab \tab an output \cr
 #'   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
+#'   \code{results$use3step} \tab \tab \tab \tab \tab a preformatted \cr
+#'   \code{results$reg} \tab \tab \tab \tab \tab a preformatted \cr
 #' }
 #'
 #' Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
@@ -360,16 +429,25 @@ lcaord <- function(
     width1 = 500,
     height1 = 500,
     angle = 0,
-    miss = "listwise") {
+    miss = "listwise",
+    use3step = FALSE,
+    auxVar,
+    auxFormula = "depression~peer_support",
+    reg = FALSE,
+    regvars) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("lcaord requires jmvcore to be installed (restart may be required)")
 
     if ( ! missing(vars)) vars <- jmvcore::resolveQuo(jmvcore::enquo(vars))
+    if ( ! missing(auxVar)) auxVar <- jmvcore::resolveQuo(jmvcore::enquo(auxVar))
+    if ( ! missing(regvars)) regvars <- jmvcore::resolveQuo(jmvcore::enquo(regvars))
     if (missing(data))
         data <- jmvcore::marshalData(
             parent.frame(),
-            `if`( ! missing(vars), vars, NULL))
+            `if`( ! missing(vars), vars, NULL),
+            `if`( ! missing(auxVar), auxVar, NULL),
+            `if`( ! missing(regvars), regvars, NULL))
 
     for (v in vars) if (v %in% names(data)) data[[v]] <- as.factor(data[[v]])
 
@@ -386,7 +464,12 @@ lcaord <- function(
         width1 = width1,
         height1 = height1,
         angle = angle,
-        miss = miss)
+        miss = miss,
+        use3step = use3step,
+        auxVar = auxVar,
+        auxFormula = auxFormula,
+        reg = reg,
+        regvars = regvars)
 
     analysis <- lcaordClass$new(
         options = options,

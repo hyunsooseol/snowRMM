@@ -90,4 +90,44 @@ options:
         - listwise
         - fiml
       default: listwise
+
+    # --- 3-STEP  ---------------------------------------------------
+    - name: use3step
+      title: "3-step auxiliary (BCH/DCAT)"
+      type: Bool
+      default: false
+
+    - name: auxVar
+      title: "Distal variable (for 3-step)"
+      type: Variable
+      suggested:
+        - continuous
+        - ordinal
+        - nominal
+      permitted:
+        - numeric
+        - factor
+
+    - name: auxFormula
+      title: "Formula"
+      type: String
+      default: "depression~peer_support"
+
+    - name: reg
+      title: "Class-wise regression"
+      type: Bool
+      default: false
+
+    - name: regvars
+      title: "Covariate (for class-wise regression)"
+      type: Variable
+      suggested:
+        - continuous
+        - ordinal
+        - nominal
+      permitted:
+        - numeric
+        - factor
+        
+
 ...

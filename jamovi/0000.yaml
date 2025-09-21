@@ -151,6 +151,11 @@ datasets:
     description: LCA with ordinal data
     tags:
       - LCA Ordianl Data
+  - name: ordinal
+    path: lcaord3.omv
+    description: LCA with ordinal data
+    tags:
+      - Ordinal data with 3-step
   - name: iris
     path: iris.omv
     description: Latent profile analysis
