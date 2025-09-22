@@ -214,6 +214,8 @@ items:
         - height
         - miss
 
-
+    - name: threeStep
+      title: "3-step analysis (BCH/DCAT)"
+      type: Preformatted
 
 ...

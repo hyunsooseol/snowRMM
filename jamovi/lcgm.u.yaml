@@ -17,6 +17,12 @@ children:
           - type: VariablesListBox
             name: vars
             isTarget: true
+      - type: TargetLayoutBox
+        children:
+          - type: VariablesListBox
+            name: auxVar
+            maxItemCount: 1
+            isTarget: true
   - type: LayoutBox
     margin: large
     style: inline
@@ -75,7 +81,7 @@ children:
         stretchFactor: 1
         children:
           - type: Label
-            label: 'Missing Values Method'
+            label: Missing Values Method
             children:
               - type: RadioButton
                 name: miss_fiml
@@ -88,7 +94,7 @@ children:
                 optionPart: listwise
                 label: Exclude cases listwise
           - type: Label
-            label: 'Tables'
+            label: Tables
             children:
               - type: LayoutBox
                 margin: large
@@ -106,6 +112,11 @@ children:
             children:
               - type: Output
                 name: mem
+          - type: Label
+            label: 3-step analysis
+            children:
+              - type: CheckBox
+                name: use3step
       - type: LayoutBox
         stretchFactor: 1
         margin: large

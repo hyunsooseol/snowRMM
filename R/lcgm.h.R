@@ -24,7 +24,9 @@ lcgmOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             miss = "listwise",
             plot2 = FALSE,
             width2 = 500,
-            height2 = 500, ...) {
+            height2 = 500,
+            auxVar = NULL,
+            use3step = FALSE, ...) {
 
             super$initialize(
                 package="snowRMM",
@@ -126,6 +128,20 @@ lcgmOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "height2",
                 height2,
                 default=500)
+            private$..auxVar <- jmvcore::OptionVariable$new(
+                "auxVar",
+                auxVar,
+                suggested=list(
+                    "continuous",
+                    "ordinal",
+                    "nominal"),
+                permitted=list(
+                    "numeric",
+                    "factor"))
+            private$..use3step <- jmvcore::OptionBool$new(
+                "use3step",
+                use3step,
+                default=FALSE)
 
             self$.addOption(private$..vars)
             self$.addOption(private$..model)
@@ -147,6 +163,8 @@ lcgmOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..plot2)
             self$.addOption(private$..width2)
             self$.addOption(private$..height2)
+            self$.addOption(private$..auxVar)
+            self$.addOption(private$..use3step)
         }),
     active = list(
         vars = function() private$..vars$value,
@@ -168,7 +186,9 @@ lcgmOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         miss = function() private$..miss$value,
         plot2 = function() private$..plot2$value,
         width2 = function() private$..width2$value,
-        height2 = function() private$..height2$value),
+        height2 = function() private$..height2$value,
+        auxVar = function() private$..auxVar$value,
+        use3step = function() private$..use3step$value),
     private = list(
         ..vars = NA,
         ..model = NA,
@@ -189,7 +209,9 @@ lcgmOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..miss = NA,
         ..plot2 = NA,
         ..width2 = NA,
-        ..height2 = NA)
+        ..height2 = NA,
+        ..auxVar = NA,
+        ..use3step = NA)
 )
 
 lcgmResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -206,7 +228,8 @@ lcgmResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         mem = function() private$.items[["mem"]],
         plot2 = function() private$.items[["plot2"]],
         plot1 = function() private$.items[["plot1"]],
-        plot = function() private$.items[["plot"]]),
+        plot = function() private$.items[["plot"]],
+        threeStep = function() private$.items[["threeStep"]]),
     private = list(),
     public=list(
         initialize=function(options) {
@@ -422,7 +445,11 @@ lcgmResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "raw",
                     "width",
                     "height",
-                    "miss")))}))
+                    "miss")))
+            self$add(jmvcore::Preformatted$new(
+                options=options,
+                name="threeStep",
+                title="3-step analysis (BCH/DCAT)"))}))
 
 lcgmBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "lcgmBase",
@@ -468,6 +495,8 @@ lcgmBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param plot2 .
 #' @param width2 .
 #' @param height2 .
+#' @param auxVar .
+#' @param use3step .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
@@ -481,6 +510,7 @@ lcgmBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$plot2} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
+#'   \code{results$threeStep} \tab \tab \tab \tab \tab a preformatted \cr
 #' }
 #'
 #' Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
@@ -510,16 +540,20 @@ lcgm <- function(
     miss = "listwise",
     plot2 = FALSE,
     width2 = 500,
-    height2 = 500) {
+    height2 = 500,
+    auxVar,
+    use3step = FALSE) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("lcgm requires jmvcore to be installed (restart may be required)")
 
     if ( ! missing(vars)) vars <- jmvcore::resolveQuo(jmvcore::enquo(vars))
+    if ( ! missing(auxVar)) auxVar <- jmvcore::resolveQuo(jmvcore::enquo(auxVar))
     if (missing(data))
         data <- jmvcore::marshalData(
             parent.frame(),
-            `if`( ! missing(vars), vars, NULL))
+            `if`( ! missing(vars), vars, NULL),
+            `if`( ! missing(auxVar), auxVar, NULL))
 
 
     options <- lcgmOptions$new(
@@ -541,7 +575,9 @@ lcgm <- function(
         miss = miss,
         plot2 = plot2,
         width2 = width2,
-        height2 = height2)
+        height2 = height2,
+        auxVar = auxVar,
+        use3step = use3step)
 
     analysis <- lcgmClass$new(
         options = options,
