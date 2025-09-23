@@ -175,4 +175,22 @@ options:
       title: "X"
       default: 500     
 
+    # --- 3-STEP  ---------------------------------------------------
+    - name: use3step
+      title: "3-step auxiliary (BCH/DCAT)"
+      type: Bool
+      default: false
+
+    - name: auxVar
+      title: "Distal variable (for 3-step)"
+      type: Variable
+      suggested:
+        - continuous
+        - ordinal
+        - nominal
+      permitted:
+        - numeric
+        - factor
+
+
 ...

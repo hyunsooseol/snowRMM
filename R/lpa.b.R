@@ -48,36 +48,38 @@ lpaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         }
         
         all <- private$.allCache
+        if (is.null(all) || is.null(all$res))
+          return()
         
-        # Best model fit table---
+        # Overall model fit table---
         if (isTRUE(self$options$overall)) {
           table <- self$results$overall
           f <- all$bestfit
-          
-          lapply(rownames(f), function(name) {
-            row <- list(
-              model = f[name, 1],
-              classes = f[name, 2],
-              log = f[name, 3],
-              aic = f[name, 4],
-              awe = f[name, 5],
-              bic = f[name, 6],
-              caic = f[name, 7],
-              clc = f[name, 8],
-              kic = f[name, 9],
-              sabic = f[name, 10],
-              icl = f[name, 11],
-              entropy = f[name, 12]
-            )
-            table$addRow(rowKey = name, values = row)
-          })
+          if (!is.null(f)) {
+            lapply(rownames(f), function(name) {
+              row <- list(
+                model = f[name, 1],
+                classes = f[name, 2],
+                log = f[name, 3],
+                aic = f[name, 4],
+                awe = f[name, 5],
+                bic = f[name, 6],
+                caic = f[name, 7],
+                clc = f[name, 8],
+                kic = f[name, 9],
+                sabic = f[name, 10],
+                icl = f[name, 11],
+                entropy = f[name, 12]
+              )
+              table$addRow(rowKey = name, values = row)
+            })
+          }
         }
         
         # Fit measures----------
         if (isTRUE(self$options$fit)) {
           table <- self$results$fit
           df <- as.data.frame(all$res[[1]]$fit)
-          
           lapply(rownames(df), function(name) {
             row <- list(value = df[name, 1])
             table$addRow(rowKey = name, values = row)
@@ -87,12 +89,8 @@ lpaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         # Estimates---
         if (isTRUE(self$options$est)) {
           table <- self$results$est
-          
-          # get estimates--------------
           set.seed(1234)
-          e <- tidyLPA::get_estimates(all$res)
-          e <- as.data.frame(e)
-          
+          e <- as.data.frame(tidyLPA::get_estimates(all$res))
           lapply(rownames(e), function(name) {
             row <- list(
               cat = e[name, 1],
@@ -116,129 +114,234 @@ lpaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           not_na_idx <- which(stats::complete.cases(self$data[, self$options$vars, drop=FALSE]))
           pc_vec <- rep(NA, n_row)
           pc_vec[not_na_idx] <- as.factor(pc_data$Class)
-          
           self$results$pc$setRowNums(rownames(self$data))
           self$results$pc$setValues(pc_vec)
         }
         
         if (isTRUE(self$options$plot)) {
-          
           pc_data <- tidyLPA::get_data(all$res)
           n_row <- nrow(self$data)
           not_na_idx <- which(stats::complete.cases(self$data[, self$options$vars, drop=FALSE]))
           pc_vec <- rep(NA, n_row)
           pc_vec[not_na_idx] <- as.factor(pc_data$Class)
-          
-          image <- self$results$plot
-          image$setState(pc_vec)
+          self$results$plot$setState(pc_vec)
         }
         
         # Posterior probabilities---
         if (isTRUE(self$options$post)) {
           post_data <- tidyLPA::get_data(all$res, "posterior_probabilities")
-          post_name <- paste0("CPROB", 1:self$options$nc)
-          post_data <- post_data[, post_name, drop = FALSE]
+          post_cols <- grep("^CPROB", names(post_data))
+          K <- if (!is.null(self$options$nc)) self$options$nc else if (!is.null(self$options$nclass)) self$options$nclass else 2
+          if (length(post_cols) == 0) post_cols <- seq_len(min(K, ncol(post_data)))
+          post_data <- post_data[, post_cols, drop = FALSE]
+          
           n_row <- nrow(self$data)
           not_na_idx <- which(stats::complete.cases(self$data[, self$options$vars, drop=FALSE]))
-          # 사후확률(Posterior probability) 값을 담을 빈 행렬
-          post_mat <- matrix(NA, nrow = n_row, ncol = self$options$nc)
-          # 결측치 없는 행에만 값 할당
+          post_mat <- matrix(NA, nrow = n_row, ncol = ncol(post_data))
           post_mat[not_na_idx, ] <- as.matrix(post_data)
           
-          if (self$options$post && self$results$post$isNotFilled()) {
-            keys <- 1:self$options$nc
-            measureTypes <- rep("continuous", self$options$nc)
-            titles <- paste("Class", keys)
-            descriptions <- paste("Class", keys)
-            
+          if (self$results$post$isNotFilled()) {
+            keys <- seq_len(ncol(post_data))
             self$results$post$set(
               keys = keys,
-              titles = titles,
-              descriptions = descriptions,
-              measureTypes = measureTypes
+              titles = paste("Class", keys),
+              descriptions = paste("Class", keys),
+              measureTypes = rep("continuous", length(keys))
             )
             self$results$post$setRowNums(rownames(self$data))
-            for (i in 1:self$options$nc) {
-              scores <- as.numeric(post_mat[, i])
-              self$results$post$setValues(index = i, scores)
+            for (i in seq_len(ncol(post_data))) {
+              self$results$post$setValues(index = i, as.numeric(post_mat[, i]))
             }
           }
         }
         
-        # Latent profile plot(Box plot)----------
-        if (isTRUE(self$options$plot1)) {
-          image1 <- self$results$plot1
-          image1$setState(all$res)
-        }
+        # Latent profile plots ----------
+        if (isTRUE(self$options$plot1)) self$results$plot1$setState(all$res)
+        if (isTRUE(self$options$plot4)) self$results$plot4$setState(all$res)
+        if (isTRUE(self$options$plot5)) self$results$plot5$setState(all$res)
         
-        # Latent profile plot(Line plot)----------
-        if (isTRUE(self$options$plot4)) {
-          image4 <- self$results$plot4
-          image4$setState(all$res)
-        }
-        
-        # Mean-centered plot---
-        if(isTRUE(self$options$plot5)){
-          image5 <- self$results$plot5
-          image5$setState(all$res)
-        }
-        
-        # elbow plot----------
         if (isTRUE(self$options$plot2)) {
           out <- private$.allCache$elbow_data
           out1 <- out[, c(3:10, 12)]
           colnames(out1) <- c('AIC','AWE','BIC','CAIC','CLC','KIC','SABIC','ICL','Class')
           elbow <- reshape2::melt(out1, id.vars = 'Class', variable.name = "Fit", value.name = 'Value')
-          image <- self$results$plot2
-          image$setState(elbow)
+          self$results$plot2$setState(elbow)
+        }
+        if (isTRUE(self$options$plot3)) self$results$plot3$setState(all$res)
+        
+        # =========================
+        # 3-step 보조분석 (BCH / DCAT)
+        # =========================
+        if (isTRUE(self$options$use3step)) {
+          aux_name <- self$options$auxVar
+          
+          if (!is.null(aux_name) && aux_name %in% names(self$data)) {
+            post_df <- try(tidyLPA::get_data(all$res, "posterior_probabilities"), silent = TRUE)
+            if (!inherits(post_df, "try-error") && !is.null(post_df)) {
+              # posterior 열
+              post_cols <- grep("^CPROB", names(post_df))
+              K <- if (!is.null(self$options$nc)) self$options$nc else if (!is.null(self$options$nclass)) self$options$nclass else 2
+              if (length(post_cols) == 0) post_cols <- seq_len(min(K, ncol(post_df)))
+              P_core <- as.matrix(post_df[, post_cols, drop = FALSE])
+              
+              # 지표 결측 제외 행과 정합
+              not_na_idx <- which(stats::complete.cases(self$data[, self$options$vars, drop=FALSE]))
+              P <- matrix(NA_real_, nrow(self$data), ncol(P_core))
+              P[not_na_idx, ] <- P_core
+              colnames(P) <- paste0("Class", seq_len(ncol(P)))
+              
+              aux <- self$data[[aux_name]]
+              lines <- c()
+              
+              if (is.numeric(aux)) {
+                # -------- BCH: class-wise weighted means + 유의성(전체 F, 쌍별 z) --------
+                lines <- c(lines, sprintf("Distal: %s (numeric, BCH)", aux_name))
+                
+                # 클래스별 가중평균/SE/N_eff
+                mu <- se <- Neff <- rep(NA_real_, ncol(P))
+                SSW <- 0
+                w_all_sum <- 0; y_w_sum <- 0
+                for (k in seq_len(ncol(P))) {
+                  w <- P[, k]; v <- aux
+                  ok <- (!is.na(w)) & (!is.na(v))
+                  if (sum(ok) > 0 && sum(w[ok], na.rm=TRUE) > 0) {
+                    mu[k]  <- stats::weighted.mean(v[ok], w[ok], na.rm=TRUE)
+                    vcent  <- v[ok] - mu[k]
+                    Neff[k] <- (sum(w[ok], na.rm=TRUE)^2) / sum(w[ok]^2, na.rm=TRUE)
+                    s2     <- sum(w[ok] * vcent^2, na.rm=TRUE) / sum(w[ok], na.rm=TRUE)
+                    se[k]  <- sqrt(s2 / max(1, Neff[k]))
+                    SSW    <- SSW + sum(w[ok] * vcent^2, na.rm=TRUE)
+                    # 전체 평균용
+                    w_all_sum <- w_all_sum + sum(w[ok], na.rm=TRUE)
+                    y_w_sum   <- y_w_sum + sum(w[ok] * v[ok], na.rm=TRUE)
+                  } else {
+                    mu[k] <- se[k] <- Neff[k] <- NA_real_
+                  }
+                  lines <- c(lines, sprintf("  Class %d: mean=%.4f, SE=%.4f, N_eff=%.1f", k, mu[k], se[k], Neff[k]))
+                }
+                # 전체 F(가중 ANOVA 근사)
+                mu_all <- y_w_sum / w_all_sum
+                SSB <- sum(Neff * (mu - mu_all)^2, na.rm=TRUE)
+                df1 <- max(1, ncol(P) - 1)
+                df2 <- max(1, sum(Neff, na.rm=TRUE) - ncol(P))
+                Fval <- (SSB/df1) / (SSW/df2)
+                pF   <- stats::pf(Fval, df1, df2, lower.tail = FALSE)
+                lines <- c(lines, sprintf("Overall test (approx. weighted ANOVA): F(%d, %.1f)=%.3f, p=%.3g", df1, df2, Fval, pF))
+                
+                # 쌍별 비교(z-test)
+                if (ncol(P) >= 2) {
+                  lines <- c(lines, "Pairwise differences (z, p):")
+                  for (a in 1:(ncol(P)-1)) for (b in (a+1):ncol(P)) {
+                    if (is.finite(mu[a]) && is.finite(mu[b]) && is.finite(se[a]) && is.finite(se[b])) {
+                      z  <- (mu[a] - mu[b]) / sqrt(se[a]^2 + se[b]^2)
+                      pz <- 2*stats::pnorm(-abs(z))
+                      lines <- c(lines, sprintf("  Class %d vs %d: z=%.3f, p=%.3g", a, b, z, pz))
+                    }
+                  }
+                }
+                
+              } else {
+                # -------- DCAT: class-wise proportions + 유의성(전체 χ², 쌍별 χ²) --------
+                f <- droplevels(as.factor(aux))
+                lines <- c(lines, sprintf("Distal: %s (categorical, DCAT)", aux_name))
+                
+                # 클래스별 비율
+                Kc <- ncol(P); Lv <- levels(f)
+                counts <- matrix(0, nrow=Kc, ncol=length(Lv), dimnames=list(paste0("Class", 1:Kc), Lv))
+                rowsum <- rep(0, Kc)
+                for (k in seq_len(Kc)) {
+                  w <- P[, k]
+                  ok <- (!is.na(w)) & (!is.na(f))
+                  if (sum(ok) > 0) {
+                    rowsum[k] <- sum(w[ok], na.rm=TRUE)
+                    tmp <- tapply(w[ok], f[ok], sum)
+                    tmp[is.na(tmp)] <- 0
+                    counts[k, names(tmp)] <- as.numeric(tmp)
+                    prop <- counts[k, ] / ifelse(rowsum[k] > 0, rowsum[k], NA_real_)
+                    lines <- c(lines, sprintf("  Class %d:", k))
+                    for (j in seq_along(Lv))
+                      lines <- c(lines, sprintf("    %s : %.4f", Lv[j], prop[j]))
+                  } else {
+                    lines <- c(lines, sprintf("  Class %d: insufficient data", k))
+                  }
+                }
+                # 전체 χ² (K×C)
+                colsum <- colSums(counts, na.rm=TRUE)
+                grand  <- sum(rowsum, na.rm=TRUE)
+                E <- outer(rowsum, colsum) / ifelse(grand > 0, grand, NA_real_)
+                chi <- sum((counts - E)^2 / pmax(E, .Machine$double.eps), na.rm=TRUE)
+                df  <- (Kc - 1) * (length(Lv) - 1)
+                pchi <- stats::pchisq(chi, df=df, lower.tail=FALSE)
+                lines <- c(lines, sprintf("Overall test (weighted chi-square): χ²(%d)=%.3f, p=%.3g", df, chi, pchi))
+                
+                # 쌍별 χ² (2×C)
+                if (Kc >= 2) {
+                  lines <- c(lines, "Pairwise association (chi-square):")
+                  for (a in 1:(Kc-1)) for (b in (a+1):Kc) {
+                    sub <- rbind(counts[a, ], counts[b, ])
+                    rs  <- rowSums(sub); cs <- colSums(sub); g <- sum(rs)
+                    Eab <- outer(rs, cs) / ifelse(g > 0, g, NA_real_)
+                    chiab <- sum((sub - Eab)^2 / pmax(Eab, .Machine$double.eps), na.rm=TRUE)
+                    dfab  <- length(Lv) - 1
+                    pab   <- stats::pchisq(chiab, df=dfab, lower.tail=FALSE)
+                    lines <- c(lines, sprintf("  Class %d vs %d: χ²(%d)=%.3f, p=%.3g", a, b, dfab, chiab, pab))
+                  }
+                }
+              }
+              
+              # ==== 결과를 r.yaml의 use3step(Preformatted) 슬롯에 출력 ====
+              if (!is.null(self$results$use3step)) {
+                self$results$use3step$setContent(paste(lines, collapse = "\n"))
+              }
+            }
+          } else {
+            if (!is.null(self$results$use3step))
+              self$results$use3step$setContent("[3-step] auxVar not selected or invalid — skipped.")
+          }
         }
         
-        if (isTRUE(self$options$plot3)) {
-          res1 <- all$res
-          image <- self$results$plot3
-          image$setState(res1)
-        }
-      },
+        
+        },
       
       .computeRES = function() {
+        # --- 지표만 추출, numeric만 허용 ---
         vars <- self$options$vars
-        nc <- self$options$nc
+        if (is.null(vars) || length(vars) < 2)
+          jmvcore::reject("Select at least two indicator variables.")
+        
+        datX <- self$data[, vars, drop = FALSE]
+        non_num <- names(datX)[!vapply(datX, is.numeric, logical(1))]
+        if (length(non_num) > 0)
+          jmvcore::reject(paste0("Indicators must be numeric only. Non-numeric: ",
+                                 paste(non_num, collapse = ", ")))
+        datX <- jmvcore::naOmit(datX)
+        
+        nc <- if (!is.null(self$options$nc)) self$options$nc else if (!is.null(self$options$nclass)) self$options$nclass else 2
         variances <- self$options$variances
         covariances <- self$options$covariances
         
-        data <- self$data
-        data <- jmvcore::naOmit(data)
-        
-        # Progress bar 시작 - 가장 시간이 많이 걸리는 부분
+        # Progress bar 시작
         self$results$progressBarHTML$setVisible(TRUE)
-        html <- progressBarH(10, 100, 'Starting profile estimation...')
-        self$results$progressBarHTML$setContent(html)
+        self$results$progressBarHTML$setContent(progressBarH(10, 100, 'Starting profile estimation...'))
         private$.checkpoint()
         
         set.seed(1234)
-        # elbow plot 데이터 생성 - 각 클래스별 모델 계산
         out <- NULL
         for (i in 1:nc) {
-          # 진행률 업데이트
-          progress <- 10 + (i / nc) * 40  # 10%부터 50%까지
-          html <- progressBarH(progress, 100, paste('Computing model for', i, 'classes...'))
-          self$results$progressBarHTML$setContent(html)
+          self$results$progressBarHTML$setContent(progressBarH(10 + (i / nc) * 40, 100, paste('Computing model for', i, 'classes...')))
           private$.checkpoint()
           
-          set.seed(1234)
           temp_res <- tidyLPA::estimate_profiles(
-            data,
+            datX,
             n_profiles = i,
             variances = variances,
             covariances = covariances
           )
           
-          if (i == nc) {
-            res <- temp_res
-          }
+          if (i == nc) res <- temp_res
           
-          temp_res <- temp_res[[1]]
-          df <- data.frame(temp_res$fit)
+          tr <- temp_res[[1]]
+          df <- data.frame(tr$fit)
           df <- t(df)
           df <- data.frame(
             model = df[1],
@@ -254,66 +357,47 @@ lpaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
             entropy = df[12],
             class = df[2]
           )
-          
-          if (is.null(out)) {
-            out <- df
-          } else {
-            out <- rbind(out, df)
-          }
+          out <- if (is.null(out)) df else rbind(out, df)
         }
         
         # 최종 모델 추정
-        html <- progressBarH(60, 100, 'Computing final profile model...')
-        self$results$progressBarHTML$setContent(html)
+        self$results$progressBarHTML$setContent(progressBarH(60, 100, 'Computing final profile model...'))
         private$.checkpoint()
+        res <- tidyLPA::estimate_profiles(datX, nc, variances = variances, covariances = covariances)
         
-        res <- tidyLPA::estimate_profiles(data, nc, variances = variances, covariances = covariances)
-        
-        # Best fit 모델 비교
-        html <- progressBarH(80, 100, 'Comparing model solutions...')
-        self$results$progressBarHTML$setContent(html)
+        # Best fit 비교/요약
+        self$results$progressBarHTML$setContent(progressBarH(80, 100, 'Comparing model solutions...'))
         private$.checkpoint()
-        
-        best <- tidyLPA::estimate_profiles(data, n_profiles = 2:nc, models = c(1, 2, 3, 6))
-        
-        # Compare solution
+        best <- tidyLPA::estimate_profiles(datX, n_profiles = 2:nc, models = c(1, 2, 3, 6))
         sol <- tidyLPA::compare_solutions(best)
         self$results$text$setContent(sol)
-        
         bestfit <- as.data.frame(tidyLPA::get_fit(best))
         
         # 완료
-        html <- progressBarH(100, 100, 'Profile estimation complete!')
-        self$results$progressBarHTML$setContent(html)
+        self$results$progressBarHTML$setContent(progressBarH(100, 100, 'Profile estimation complete!'))
         private$.checkpoint()
         self$results$progressBarHTML$setVisible(FALSE)
         
-        retlist <- list(
+        list(
           res = res,
           bestfit = bestfit,
           elbow_data = out
         )
-        
-        return(retlist)
       },
       
-      # Plot functions (original code)
+      # ----- Plotters -----
       .plot = function(image, ggtheme, theme, ...) {
         if (is.null(image$state))
           return(FALSE)
-        
         Class <- image$state
-        
         freq_table <- as.data.frame(table(Class))
         freq_table$Percentage <- (freq_table$Freq / sum(freq_table$Freq)) * 100
         freq_table$Label <- sprintf("%d (%.1f%%)", freq_table$Freq, freq_table$Percentage)
-        
         plot <- ggplot(freq_table, aes(x = Class, y = Freq)) +
           geom_bar(stat = "identity", fill = "deepskyblue") +
           geom_text(aes(label = Label, vjust = -0.5)) +
           labs(title = "", x = "Class", y = "Frequency") +
           theme_minimal()
-        
         plot <- plot + ggtheme
         print(plot)
         TRUE
@@ -322,7 +406,6 @@ lpaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
       .plot3 = function(image, ggtheme, theme, ...) {
         if (is.null(image$state))
           return(FALSE)
-        
         res1 <- image$state
         plot3 <- tidyLPA::plot_density(res1)
         print(plot3)
@@ -332,13 +415,11 @@ lpaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
       .plot2 = function(image, ggtheme, theme, ...) {
         if (is.null(image$state))
           return(FALSE)
-        
         elbow <- image$state
         plot2 <- ggplot2::ggplot(elbow, ggplot2::aes(x = Class, y = Value, color = Fit)) +
           ggplot2::geom_line(size = 1.1) +
           ggplot2::geom_point(size = 3) +
           ggplot2::scale_x_continuous(breaks = seq(1, length(elbow$Class), by = 1))
-        
         plot2 <- plot2 + ggtheme
         print(plot2)
         TRUE
@@ -347,16 +428,12 @@ lpaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
       .plot1 = function(image1, ggtheme, theme, ...) {
         if (is.null(image1$state))
           return(FALSE)
-        
         res <- image1$state
         line <- self$options$line
-        
         plot1 <- tidyLPA::plot_profiles(res, add_line = FALSE, rawdata = FALSE)
-        
         if (line == 'TRUE') {
           plot1 <- tidyLPA::plot_profiles(res, add_line = TRUE, rawdata = FALSE)
         }
-        
         if (self$options$angle > 0) {
           plot1 <- plot1 + ggplot2::theme(axis.text.x = ggplot2::element_text(angle = self$options$angle, hjust = 1))
         }
@@ -367,9 +444,7 @@ lpaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
       .plot4 = function(image4, ggtheme, theme, ...) {
         if (is.null(image4$state))
           return(FALSE)
-        
         res <- image4$state
-        
         plot4 <- tidyLPA::plot_profiles(
           res,
           ci = NULL,
@@ -381,18 +456,15 @@ lpaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           scale_linewidth_identity() +
           scale_linetype_identity() +
           scale_size_identity()
-        
         if (self$options$angle > 0) {
           plot4 <- plot4 + ggplot2::theme(axis.text.x = ggplot2::element_text(angle = self$options$angle, hjust = 1))
         }
-        
         print(plot4)
         TRUE
       },
       
       .plot5 = function(image5, ggtheme, theme, ...) {
         if (is.null(image5$state)) return(FALSE)
-        
         res <- image5$state
         
         model_name <- names(res)[grepl("^model_1_class_", names(res))][1]
@@ -404,12 +476,8 @@ lpaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         means_df <- estimates[estimates$Category == "Means", c("Class", "Parameter", "Estimate")]
         if (nrow(means_df) == 0) return(FALSE)
         
-        # check data type--
         means_df$Estimate <- as.numeric(as.character(means_df$Estimate))
         means_df <- means_df[!is.na(means_df$Estimate), ]
-        
-        #self$results$text$setContent(means_df)
-        
         means_df$Centered <- stats::ave(means_df$Estimate, means_df$Parameter, FUN = function(x) x - mean(x))
         
         plot5 <- ggplot(means_df, aes(x = Parameter, y = Centered, group = Class, color = factor(Class))) +
@@ -417,7 +485,7 @@ lpaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           labs(y = "Deviation from Variable Mean", x = "Variables", color = "Class") + theme_minimal()
         
         if (self$options$angle > 0) {
-          plot5 <- plot5 + theme(axis.text.x = element_text(angle = self$options$angle, hjust = 1))
+          plot5 <- plot5 + ggplot2::theme(axis.text.x = ggplot2::element_text(angle = self$options$angle, hjust = 1))
         }
         
         print(plot5)
@@ -426,12 +494,12 @@ lpaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
     )
   )
 
-# Progress Bar HTML 함수 (R/progressBarH.R)
+# Progress Bar HTML 함수
 progressBarH <- function(progress = 0, total = 100, message = '') {
   percentage <- round(progress / total * 100)
   width <- 400 * percentage / 100
   
-  html <- paste0(
+  paste0(
     '<div style="text-align: center; padding: 20px;">',
     '<div style="width: 400px; height: 20px; border: 1px solid #ccc; ',
     'background-color: #f8f9fa; margin: 0 auto; border-radius: 4px;">',
@@ -443,6 +511,4 @@ progressBarH <- function(progress = 0, total = 100, message = '') {
     message, ' (', percentage, '%)</div>',
     '</div>'
   )
-  
-  return(html)
 }

@@ -78,6 +78,11 @@ children:
                 children:
                   - type: Output
                     name: mem
+              - type: Label
+                label: 3-step analysis 
+                children:
+                  - type: CheckBox
+                    name: use3step
           - type: LayoutBox
             margin: large
             cell:
@@ -120,7 +125,7 @@ children:
                         format: number
                         enable: (plot)
   - type: CollapseBox
-    label: 3-step & Class-wise regression
+    label: 3-step and Class-wise regression
     collapsed: true
     stretchFactor: 1
     children:

@@ -32,7 +32,9 @@ lpaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             width4 = 500,
             height4 = 500,
             width5 = 500,
-            height5 = 500, ...) {
+            height5 = 500,
+            use3step = FALSE,
+            auxVar = NULL, ...) {
 
             super$initialize(
                 package="snowRMM",
@@ -168,6 +170,20 @@ lpaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "height5",
                 height5,
                 default=500)
+            private$..use3step <- jmvcore::OptionBool$new(
+                "use3step",
+                use3step,
+                default=FALSE)
+            private$..auxVar <- jmvcore::OptionVariable$new(
+                "auxVar",
+                auxVar,
+                suggested=list(
+                    "continuous",
+                    "ordinal",
+                    "nominal"),
+                permitted=list(
+                    "numeric",
+                    "factor"))
 
             self$.addOption(private$..vars)
             self$.addOption(private$..nc)
@@ -198,6 +214,8 @@ lpaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..height4)
             self$.addOption(private$..width5)
             self$.addOption(private$..height5)
+            self$.addOption(private$..use3step)
+            self$.addOption(private$..auxVar)
         }),
     active = list(
         vars = function() private$..vars$value,
@@ -228,7 +246,9 @@ lpaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         width4 = function() private$..width4$value,
         height4 = function() private$..height4$value,
         width5 = function() private$..width5$value,
-        height5 = function() private$..height5$value),
+        height5 = function() private$..height5$value,
+        use3step = function() private$..use3step$value,
+        auxVar = function() private$..auxVar$value),
     private = list(
         ..vars = NA,
         ..nc = NA,
@@ -258,7 +278,9 @@ lpaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..width4 = NA,
         ..height4 = NA,
         ..width5 = NA,
-        ..height5 = NA)
+        ..height5 = NA,
+        ..use3step = NA,
+        ..auxVar = NA)
 )
 
 lpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -278,7 +300,8 @@ lpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         plot2 = function() private$.items[["plot2"]],
         plot1 = function() private$.items[["plot1"]],
         plot4 = function() private$.items[["plot4"]],
-        plot5 = function() private$.items[["plot5"]]),
+        plot5 = function() private$.items[["plot5"]],
+        use3step = function() private$.items[["use3step"]]),
     private = list(),
     public=list(
         initialize=function(options) {
@@ -538,7 +561,11 @@ lpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "covariances",
                     "width5",
                     "height5",
-                    "angle")))}))
+                    "angle")))
+            self$add(jmvcore::Preformatted$new(
+                options=options,
+                name="use3step",
+                title="3-step analysis (BCH/DCAT)"))}))
 
 lpaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "lpaBase",
@@ -593,6 +620,8 @@ lpaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param height4 .
 #' @param width5 .
 #' @param height5 .
+#' @param use3step .
+#' @param auxVar .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
@@ -609,6 +638,7 @@ lpaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$plot4} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$plot5} \tab \tab \tab \tab \tab an image \cr
+#'   \code{results$use3step} \tab \tab \tab \tab \tab a preformatted \cr
 #' }
 #'
 #' Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
@@ -646,16 +676,20 @@ lpa <- function(
     width4 = 500,
     height4 = 500,
     width5 = 500,
-    height5 = 500) {
+    height5 = 500,
+    use3step = FALSE,
+    auxVar) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("lpa requires jmvcore to be installed (restart may be required)")
 
     if ( ! missing(vars)) vars <- jmvcore::resolveQuo(jmvcore::enquo(vars))
+    if ( ! missing(auxVar)) auxVar <- jmvcore::resolveQuo(jmvcore::enquo(auxVar))
     if (missing(data))
         data <- jmvcore::marshalData(
             parent.frame(),
-            `if`( ! missing(vars), vars, NULL))
+            `if`( ! missing(vars), vars, NULL),
+            `if`( ! missing(auxVar), auxVar, NULL))
 
 
     options <- lpaOptions$new(
@@ -685,7 +719,9 @@ lpa <- function(
         width4 = width4,
         height4 = height4,
         width5 = width5,
-        height5 = height5)
+        height5 = height5,
+        use3step = use3step,
+        auxVar = auxVar)
 
     analysis <- lpaClass$new(
         options = options,
