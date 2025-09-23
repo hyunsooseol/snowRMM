@@ -1,6 +1,16 @@
 
 #' @importFrom tidyLPA get_data
 
+# ---------- 범용 텍스트 테이블 함수 ----------
+text_table <- function(df, title=NULL) {
+  stopifnot(is.data.frame(df))
+  out <- capture.output(print(df, row.names=FALSE))
+  if (!is.null(title))
+    out <- c(title, out)
+  paste(out, collapse="\n")
+}
+
+
 lpaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
   R6::R6Class(
     "lpaClass",
@@ -174,159 +184,154 @@ lpaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         # =========================
         if (isTRUE(self$options$use3step)) {
           aux_name <- self$options$auxVar
-          
           if (!is.null(aux_name) && aux_name %in% names(self$data)) {
+            
             post_df <- try(tidyLPA::get_data(all$res, "posterior_probabilities"), silent = TRUE)
             if (!inherits(post_df, "try-error") && !is.null(post_df)) {
               
-              # posterior 열
               post_cols <- grep("^CPROB", names(post_df))
               K <- if (!is.null(self$options$nc)) self$options$nc else if (!is.null(self$options$nclass)) self$options$nclass else 2
               if (length(post_cols) == 0) post_cols <- seq_len(min(K, ncol(post_df)))
               P_core <- as.matrix(post_df[, post_cols, drop = FALSE])
               
-              # 지표 결측 제외 행과 정합
               not_na_idx <- which(stats::complete.cases(self$data[, self$options$vars, drop=FALSE]))
               P <- matrix(NA_real_, nrow(self$data), ncol(P_core))
               P[not_na_idx, ] <- P_core
               colnames(P) <- paste0("Class", seq_len(ncol(P)))
               
               aux <- self$data[[aux_name]]
-              lines <- c()
+              out_blocks <- list()
               
+              # -------------------
+              # Numeric distal (BCH)
+              # -------------------
               if (is.numeric(aux)) {
-                # -------- BCH: class-wise weighted means + 유의성 + 다중비교 보정 + Cohen's d --------
-                lines <- c(lines, sprintf("Distal: %s (numeric, BCH)", aux_name))
-                
                 mu <- se <- Neff <- rep(NA_real_, ncol(P))
-                SSW <- 0
-                w_all_sum <- 0; y_w_sum <- 0
+                SSW <- 0; w_all_sum <- 0; y_w_sum <- 0
                 for (k in seq_len(ncol(P))) {
-                  w <- P[, k]; v <- aux
+                  w <- P[,k]; v <- aux
                   ok <- (!is.na(w)) & (!is.na(v))
-                  if (sum(ok) > 0 && sum(w[ok], na.rm=TRUE) > 0) {
-                    mu[k]  <- stats::weighted.mean(v[ok], w[ok], na.rm=TRUE)
-                    vcent  <- v[ok] - mu[k]
-                    Neff[k] <- (sum(w[ok], na.rm=TRUE)^2) / pmax(sum(w[ok]^2, na.rm=TRUE), .Machine$double.eps)
-                    s2     <- sum(w[ok] * vcent^2, na.rm=TRUE) / pmax(sum(w[ok], na.rm=TRUE), .Machine$double.eps)
-                    se[k]  <- sqrt(s2 / max(1, Neff[k]))
-                    SSW    <- SSW + sum(w[ok] * vcent^2, na.rm=TRUE)
-                    # overall mean용 누적
-                    w_all_sum <- w_all_sum + sum(w[ok], na.rm=TRUE)
-                    y_w_sum   <- y_w_sum + sum(w[ok] * v[ok], na.rm=TRUE)
-                  } else {
-                    mu[k] <- se[k] <- Neff[k] <- NA_real_
-                  }
-                  lines <- c(lines, sprintf("  Class %d: mean=%.4f, SE=%.4f, N_eff=%.1f", k, mu[k], se[k], Neff[k]))
-                }
-                # Overall weighted ANOVA 근사
-                mu_all <- y_w_sum / pmax(w_all_sum, .Machine$double.eps)
-                SSB <- sum(Neff * (mu - mu_all)^2, na.rm=TRUE)
-                df1 <- max(1, ncol(P) - 1)
-                df2 <- max(1, sum(Neff, na.rm=TRUE) - ncol(P))
-                Fval <- (SSB/df1) / (SSW/df2)
-                pF   <- stats::pf(Fval, df1, df2, lower.tail = FALSE)
-                lines <- c(lines, sprintf("Overall test (approx. weighted ANOVA): F(%d, %.1f)=%.3f, p=%.3g", df1, df2, Fval, pF))
-                
-                # Pairwise: z, p, BH/Bonf, Cohen's d
-                if (ncol(P) >= 2) {
-                  labs <- c(); zvec <- c(); pvec <- c(); dvec <- c()
-                  for (a in 1:(ncol(P)-1)) for (b in (a+1):ncol(P)) {
-                    if (is.finite(mu[a]) && is.finite(mu[b]) && is.finite(se[a]) && is.finite(se[b])) {
-                      z  <- (mu[a] - mu[b]) / sqrt(se[a]^2 + se[b]^2)
-                      pz <- 2*stats::pnorm(-abs(z))
-                      # Cohen's d (weighted pooled SD, Neff 기반 근사)
-                      sp <- sqrt(((Neff[a]-1)* (se[a]^2 * max(1, Neff[a])) + (Neff[b]-1)* (se[b]^2 * max(1, Neff[b]))) /
-                                   pmax(Neff[a] + Neff[b] - 2, 1))
-                      # 위 sp 계산은 s^2 ≈ se^2 * n 근사를 사용 (가중근사 안정화)
-                      d  <- (mu[a] - mu[b]) / sp
-                      labs <- c(labs, sprintf("%d vs %d", a, b))
-                      zvec <- c(zvec, z); pvec <- c(pvec, pz); dvec <- c(dvec, d)
-                    }
-                  }
-                  if (length(pvec)) {
-                    pBH   <- stats::p.adjust(pvec, method = "BH")
-                    pBonf <- stats::p.adjust(pvec, method = "bonferroni")
-                    lines <- c(lines, "Pairwise (z, p, p_BH, p_Bonf, Cohen's d):")
-                    for (i in seq_along(labs)) {
-                      lines <- c(lines, sprintf("  Class %s: z=%.3f, p=%.3g, p_BH=%.3g, p_Bonf=%.3g, d=%.3f",
-                                                labs[i], zvec[i], pvec[i], pBH[i], pBonf[i], dvec[i]))
-                    }
+                  if (sum(ok)>0) {
+                    mu[k] <- stats::weighted.mean(v[ok], w[ok])
+                    Neff[k] <- (sum(w[ok])^2)/sum(w[ok]^2)
+                    s2 <- sum(w[ok]*(v[ok]-mu[k])^2)/sum(w[ok])
+                    se[k] <- sqrt(s2/Neff[k])
+                    w_all_sum <- w_all_sum + sum(w[ok])
+                    y_w_sum <- y_w_sum + sum(w[ok]*v[ok])
+                    SSW <- SSW + sum(w[ok]*(v[ok]-mu[k])^2)
                   }
                 }
+                est_df <- data.frame(Class=paste0("Class",seq_along(mu)),
+                                     Mean=mu, SE=se, N_eff=Neff)
+                out_blocks[[length(out_blocks)+1]] <- text_table(est_df,"Class-wise means (BCH)")
                 
-              } else {
-                # -------- DCAT: 전체 χ² + Cramér's V, 쌍별 χ² + BH/Bonf + V --------
-                f <- droplevels(as.factor(aux))
-                lines <- c(lines, sprintf("Distal: %s (categorical, DCAT)", aux_name))
+                # overall test
+                mu_all <- y_w_sum / w_all_sum
+                SSB <- sum(Neff*(mu-mu_all)^2, na.rm=TRUE)
+                df1 <- ncol(P)-1
+                df2 <- sum(Neff, na.rm=TRUE)-ncol(P)
+                Fval <- (SSB/df1)/(SSW/df2)
+                pF <- stats::pf(Fval, df1, df2, lower.tail=FALSE)
+                out_blocks[[length(out_blocks)+1]] <- sprintf("Overall weighted ANOVA: F(%d, %.1f)=%.3f, p=%.3g", df1, df2, Fval, pF)
                 
-                Kc <- ncol(P); Lv <- levels(f)
-                counts <- matrix(0, nrow=Kc, ncol=length(Lv), dimnames=list(paste0("Class", 1:Kc), Lv))
-                rowsum <- rep(0, Kc)
-                for (k in seq_len(Kc)) {
-                  w <- P[, k]
-                  ok <- (!is.na(w)) & (!is.na(f))
-                  if (sum(ok) > 0) {
-                    rowsum[k] <- sum(w[ok], na.rm=TRUE)
-                    tmp <- tapply(w[ok], f[ok], sum)
-                    tmp[is.na(tmp)] <- 0
-                    counts[k, names(tmp)] <- as.numeric(tmp)
-                    prop <- counts[k, ] / ifelse(rowsum[k] > 0, rowsum[k], NA_real_)
-                    lines <- c(lines, sprintf("  Class %d:", k))
-                    for (j in seq_along(Lv))
-                      lines <- c(lines, sprintf("    %s : %.4f", Lv[j], prop[j]))
-                  } else {
-                    lines <- c(lines, sprintf("  Class %d: insufficient data", k))
+                # pairwise
+                labs <- c(); zvec <- c(); pvec <- c(); dvec <- c()
+                for (a in 1:(ncol(P)-1)) for (b in (a+1):ncol(P)) {
+                  if (is.finite(mu[a]) && is.finite(mu[b])) {
+                    z <- (mu[a]-mu[b])/sqrt(se[a]^2+se[b]^2)
+                    pz <- 2*stats::pnorm(-abs(z))
+                    sp <- sqrt(((Neff[a]-1)*se[a]^2*Neff[a] + (Neff[b]-1)*se[b]^2*Neff[b])/(Neff[a]+Neff[b]-2))
+                    d <- (mu[a]-mu[b])/sp
+                    labs <- c(labs, sprintf("%d vs %d",a,b))
+                    zvec <- c(zvec,z); pvec <- c(pvec,pz); dvec <- c(dvec,d)
                   }
                 }
-                # Overall chi-square
-                colsum <- colSums(counts, na.rm=TRUE)
-                grand  <- sum(rowsum, na.rm=TRUE)
-                E <- outer(rowsum, colsum) / ifelse(grand > 0, grand, NA_real_)
-                chi <- sum((counts - E)^2 / pmax(E, .Machine$double.eps), na.rm=TRUE)
-                df  <- (Kc - 1) * (length(Lv) - 1)
-                pchi <- stats::pchisq(chi, df=df, lower.tail=FALSE)
-                Vall <- sqrt( chi / (grand * max(1, min(Kc-1, length(Lv)-1))) )
-                lines <- c(lines, sprintf("Overall test (weighted chi-square): χ²(%d)=%.3f, p=%.3g, Cramer's V=%.3f",
-                                          df, chi, pchi, Vall))
-                
-                # Pairwise 2×C
-                if (Kc >= 2) {
-                  labs <- c(); pvec <- c(); X2vec <- c(); dfvec <- c(); Vvec <- c()
-                  for (a in 1:(Kc-1)) for (b in (a+1):Kc) {
-                    sub <- rbind(counts[a, ], counts[b, ])
-                    rs  <- rowSums(sub); cs <- colSums(sub); g <- sum(rs)
-                    Eab <- outer(rs, cs) / ifelse(g > 0, g, NA_real_)
-                    chiab <- sum((sub - Eab)^2 / pmax(Eab, .Machine$double.eps), na.rm=TRUE)
-                    dfab  <- length(Lv) - 1
-                    pab   <- stats::pchisq(chiab, df=dfab, lower.tail=FALSE)
-                    Vab   <- sqrt( chiab / pmax(g * 1, .Machine$double.eps) ) # 2×C → min=1
-                    labs  <- c(labs, sprintf("%d vs %d", a, b))
-                    pvec  <- c(pvec, pab); X2vec <- c(X2vec, chiab); dfvec <- c(dfvec, dfab); Vvec <- c(Vvec, Vab)
-                  }
-                  if (length(pvec)) {
-                    pBH   <- stats::p.adjust(pvec, method = "BH")
-                    pBonf <- stats::p.adjust(pvec, method = "bonferroni")
-                    lines <- c(lines, "Pairwise (chi-square; p, p_BH, p_Bonf, Cramer's V):")
-                    for (i in seq_along(labs)) {
-                      lines <- c(lines, sprintf("  Class %s: χ²(%d)=%.3f, p=%.3g, p_BH=%.3g, p_Bonf=%.3g, V=%.3f",
-                                                labs[i], dfvec[i], X2vec[i], pvec[i], pBH[i], pBonf[i], Vvec[i]))
-                    }
-                  }
+                if (length(pvec)) {
+                  pw_df <- data.frame(Contrast=labs,z=round(zvec,3),
+                                      p=signif(pvec,3),
+                                      p_BH=signif(p.adjust(pvec,"BH"),3),
+                                      p_Bonf=signif(p.adjust(pvec,"bonf"),3),
+                                      d=round(dvec,3))
+                  out_blocks[[length(out_blocks)+1]] <- text_table(pw_df,"Pairwise (z,p,p_BH,p_Bonf,d)")
                 }
               }
               
-              # ==== 결과를 r.yaml의 use3step(Preformatted) 슬롯에 출력 ====
-              if (!is.null(self$results$use3step)) {
-                self$results$use3step$setContent(paste(lines, collapse = "\n"))
+              # -------------------
+              # Categorical distal (DCAT)
+              # -------------------
+              if (is.factor(aux)) {
+                Lv <- levels(aux)
+                counts <- matrix(0,nrow=ncol(P),ncol=length(Lv),
+                                 dimnames=list(paste0("Class",1:ncol(P)),Lv))
+                rowsum <- rep(0,ncol(P))
+                for (k in seq_len(ncol(P))) {
+                  w <- P[,k]; ok <- (!is.na(w))&(!is.na(aux))
+                  rowsum[k] <- sum(w[ok])
+                  tmp <- tapply(w[ok],aux[ok],sum)
+                  counts[k,names(tmp)] <- tmp
+                }
+                dist_df <- as.data.frame(counts)
+                out_blocks[[length(out_blocks)+1]] <- text_table(dist_df,"Class-by-category distribution")
+                
+                # overall chi-square
+                colsum <- colSums(counts); grand <- sum(rowsum)
+                E <- outer(rowsum,colsum)/grand
+                chi <- sum((counts-E)^2/E)
+                df <- (ncol(P)-1)*(length(Lv)-1)
+                pchi <- stats::pchisq(chi,df,lower.tail=FALSE)
+                V <- sqrt(chi/(grand*min(ncol(P)-1,length(Lv)-1)))
+                out_blocks[[length(out_blocks)+1]] <- sprintf("Overall chi-square: χ²(%d)=%.3f, p=%.3g, V=%.3f",df,chi,pchi,V)
+                
+                # pairwise
+                labs <- c(); X2vec <- c(); pvec <- c(); Vvec <- c()
+                for (a in 1:(ncol(P)-1)) for (b in (a+1):ncol(P)) {
+                  sub <- rbind(counts[a,],counts[b,])
+                  rs <- rowSums(sub); cs <- colSums(sub); g <- sum(rs)
+                  Eab <- outer(rs,cs)/g
+                  chiab <- sum((sub-Eab)^2/Eab)
+                  dfab <- length(Lv)-1
+                  pab <- stats::pchisq(chiab,dfab,lower.tail=FALSE)
+                  Vab <- sqrt(chiab/(g*1))
+                  labs <- c(labs,sprintf("%d vs %d",a,b))
+                  X2vec <- c(X2vec,chiab); pvec <- c(pvec,pab); Vvec <- c(Vvec,Vab)
+                }
+                if (length(pvec)) {
+                  pwc_df <- data.frame(Contrast=labs,
+                                       X2=round(X2vec,3),
+                                       df=dfab,
+                                       p=signif(pvec,3),
+                                       p_BH=signif(p.adjust(pvec,"BH"),3),
+                                       p_Bonf=signif(p.adjust(pvec,"bonf"),3),
+                                       V=round(Vvec,3))
+                  out_blocks[[length(out_blocks)+1]] <- text_table(pwc_df,"Pairwise chi-square")
+                }
               }
+              
+              # # 최종 출력
+              # if (!is.null(self$results$use3step))
+              #   self$results$use3step$setContent(paste(out_blocks,collapse="\n\n"))
+              
+              
+              # 최종 출력
+              if (!is.null(self$results$use3step)) {
+               
+                sep_line <- strrep("━", 60)
+                
+                formatted <- paste0(
+                  sep_line, "\n",
+                  paste(out_blocks, collapse = paste0("\n", sep_line, "\n")),
+                  "\n", sep_line
+                )
+                
+                self$results$use3step$setContent(formatted)
+              }
+              
             }
           } else {
             if (!is.null(self$results$use3step))
-              self$results$use3step$setContent("[3-step] auxVar not selected or invalid — skipped.")
+              self$results$use3step$setContent("[3-step] Not selected or invalid — skipped.")
           }
         }
-        
         
       },
       
