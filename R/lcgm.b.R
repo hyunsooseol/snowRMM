@@ -416,14 +416,23 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           
           res3 <- private$.computeThreeStep()
           
+          sep_line <- strrep("━", 60)  # 굵은 유니코드 줄
+          
           if (is.null(res3)) {
-            self$results$threeStep$setContent("[3-step] No auxiliary variable specified.")
+            self$results$threeStep$setContent(
+              paste0(sep_line, "\n[3-step] No auxiliary variable specified.\n", sep_line)
+            )
           } else if (!is.null(res3$text)) {
-            self$results$threeStep$setContent(res3$text)
+            formatted <- paste0(sep_line, "\n", res3$text, "\n", sep_line)
+            self$results$threeStep$setContent(formatted)
           } else if (!is.null(res3$msg)) {
-            self$results$threeStep$setContent(res3$msg)
+            self$results$threeStep$setContent(
+              paste0(sep_line, "\n", res3$msg, "\n", sep_line)
+            )
           } else {
-            self$results$threeStep$setContent("[3-step] Completed.")
+            self$results$threeStep$setContent(
+              paste0(sep_line, "\n[3-step] Completed.\n", sep_line)
+            )
           }
         }
         

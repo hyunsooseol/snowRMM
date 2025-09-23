@@ -243,7 +243,7 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly = TRUE))
             private$.checkpoint()
             private$.setBarPlot()
           }
-          
+      
           # ===================== 96%: 3-STEP (텍스트 출력) =====================
           if (isTRUE(self$options$use3step)) {
             html <- progressBarH(96, 100, 'Running 3-STEP (BCH/DCAT)...')
@@ -278,21 +278,35 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly = TRUE))
             ## 데이터에 없던 보조/회귀 변수 각주
             miss_aux <- private$.results_cache$missing_aux_cols
             if (!is.null(miss_aux) && length(miss_aux) > 0) {
-              note <- sprintf("[Note] columns not found and ignored: %s",
-                              paste(miss_aux, collapse = ", "))
+              note <- sprintf("[Note] columns not found and ignored: %s", paste(miss_aux, collapse = ", "))
               out_lines <- c(out_lines, note)
               if (!is.null(reg_lines)) reg_lines <- c(reg_lines, note)
             }
             
-            ## r.yaml: name = use3step / reg (Preformatted)에 출력
-            if (!is.null(self$results$use3step))
-              self$results$use3step$setContent(paste(out_lines, collapse = "\n"))
-            if (!is.null(reg_lines) && !is.null(self$results$reg))
-              self$results$reg$setContent(paste(reg_lines, collapse = "\n"))
+            ## ━━━ 굵은 유니코드 구분선으로 감싸서 출력 ━━━
+            sep_line <- strrep("━", 60)
+            
+            if (!is.null(self$results$use3step)) {
+              formatted <- paste0(
+                sep_line, "\n",
+                paste(out_lines, collapse = "\n"),
+                "\n", sep_line
+              )
+              self$results$use3step$setContent(formatted)
+            }
+            
+            if (!is.null(reg_lines) && !is.null(self$results$reg)) {
+              formatted_reg <- paste0(
+                sep_line, "\n",
+                paste(reg_lines, collapse = "\n"),
+                "\n", sep_line
+              )
+              self$results$reg$setContent(formatted_reg)
+            }
           }
-          # ===================================================================
         }
-        
+ 
+
         # 100%: complete and hide
         html <- progressBarH(100,100,'Analysis complete!')
         self$results$progressBarHTML$setContent(html)
