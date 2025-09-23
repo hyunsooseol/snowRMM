@@ -178,6 +178,7 @@ lpaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           if (!is.null(aux_name) && aux_name %in% names(self$data)) {
             post_df <- try(tidyLPA::get_data(all$res, "posterior_probabilities"), silent = TRUE)
             if (!inherits(post_df, "try-error") && !is.null(post_df)) {
+              
               # posterior 열
               post_cols <- grep("^CPROB", names(post_df))
               K <- if (!is.null(self$options$nc)) self$options$nc else if (!is.null(self$options$nclass)) self$options$nclass else 2
@@ -194,10 +195,9 @@ lpaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
               lines <- c()
               
               if (is.numeric(aux)) {
-                # -------- BCH: class-wise weighted means + 유의성(전체 F, 쌍별 z) --------
+                # -------- BCH: class-wise weighted means + 유의성 + 다중비교 보정 + Cohen's d --------
                 lines <- c(lines, sprintf("Distal: %s (numeric, BCH)", aux_name))
                 
-                # 클래스별 가중평균/SE/N_eff
                 mu <- se <- Neff <- rep(NA_real_, ncol(P))
                 SSW <- 0
                 w_all_sum <- 0; y_w_sum <- 0
@@ -207,11 +207,11 @@ lpaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
                   if (sum(ok) > 0 && sum(w[ok], na.rm=TRUE) > 0) {
                     mu[k]  <- stats::weighted.mean(v[ok], w[ok], na.rm=TRUE)
                     vcent  <- v[ok] - mu[k]
-                    Neff[k] <- (sum(w[ok], na.rm=TRUE)^2) / sum(w[ok]^2, na.rm=TRUE)
-                    s2     <- sum(w[ok] * vcent^2, na.rm=TRUE) / sum(w[ok], na.rm=TRUE)
+                    Neff[k] <- (sum(w[ok], na.rm=TRUE)^2) / pmax(sum(w[ok]^2, na.rm=TRUE), .Machine$double.eps)
+                    s2     <- sum(w[ok] * vcent^2, na.rm=TRUE) / pmax(sum(w[ok], na.rm=TRUE), .Machine$double.eps)
                     se[k]  <- sqrt(s2 / max(1, Neff[k]))
                     SSW    <- SSW + sum(w[ok] * vcent^2, na.rm=TRUE)
-                    # 전체 평균용
+                    # overall mean용 누적
                     w_all_sum <- w_all_sum + sum(w[ok], na.rm=TRUE)
                     y_w_sum   <- y_w_sum + sum(w[ok] * v[ok], na.rm=TRUE)
                   } else {
@@ -219,8 +219,8 @@ lpaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
                   }
                   lines <- c(lines, sprintf("  Class %d: mean=%.4f, SE=%.4f, N_eff=%.1f", k, mu[k], se[k], Neff[k]))
                 }
-                # 전체 F(가중 ANOVA 근사)
-                mu_all <- y_w_sum / w_all_sum
+                # Overall weighted ANOVA 근사
+                mu_all <- y_w_sum / pmax(w_all_sum, .Machine$double.eps)
                 SSB <- sum(Neff * (mu - mu_all)^2, na.rm=TRUE)
                 df1 <- max(1, ncol(P) - 1)
                 df2 <- max(1, sum(Neff, na.rm=TRUE) - ncol(P))
@@ -228,24 +228,38 @@ lpaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
                 pF   <- stats::pf(Fval, df1, df2, lower.tail = FALSE)
                 lines <- c(lines, sprintf("Overall test (approx. weighted ANOVA): F(%d, %.1f)=%.3f, p=%.3g", df1, df2, Fval, pF))
                 
-                # 쌍별 비교(z-test)
+                # Pairwise: z, p, BH/Bonf, Cohen's d
                 if (ncol(P) >= 2) {
-                  lines <- c(lines, "Pairwise differences (z, p):")
+                  labs <- c(); zvec <- c(); pvec <- c(); dvec <- c()
                   for (a in 1:(ncol(P)-1)) for (b in (a+1):ncol(P)) {
                     if (is.finite(mu[a]) && is.finite(mu[b]) && is.finite(se[a]) && is.finite(se[b])) {
                       z  <- (mu[a] - mu[b]) / sqrt(se[a]^2 + se[b]^2)
                       pz <- 2*stats::pnorm(-abs(z))
-                      lines <- c(lines, sprintf("  Class %d vs %d: z=%.3f, p=%.3g", a, b, z, pz))
+                      # Cohen's d (weighted pooled SD, Neff 기반 근사)
+                      sp <- sqrt(((Neff[a]-1)* (se[a]^2 * max(1, Neff[a])) + (Neff[b]-1)* (se[b]^2 * max(1, Neff[b]))) /
+                                   pmax(Neff[a] + Neff[b] - 2, 1))
+                      # 위 sp 계산은 s^2 ≈ se^2 * n 근사를 사용 (가중근사 안정화)
+                      d  <- (mu[a] - mu[b]) / sp
+                      labs <- c(labs, sprintf("%d vs %d", a, b))
+                      zvec <- c(zvec, z); pvec <- c(pvec, pz); dvec <- c(dvec, d)
+                    }
+                  }
+                  if (length(pvec)) {
+                    pBH   <- stats::p.adjust(pvec, method = "BH")
+                    pBonf <- stats::p.adjust(pvec, method = "bonferroni")
+                    lines <- c(lines, "Pairwise (z, p, p_BH, p_Bonf, Cohen's d):")
+                    for (i in seq_along(labs)) {
+                      lines <- c(lines, sprintf("  Class %s: z=%.3f, p=%.3g, p_BH=%.3g, p_Bonf=%.3g, d=%.3f",
+                                                labs[i], zvec[i], pvec[i], pBH[i], pBonf[i], dvec[i]))
                     }
                   }
                 }
                 
               } else {
-                # -------- DCAT: class-wise proportions + 유의성(전체 χ², 쌍별 χ²) --------
+                # -------- DCAT: 전체 χ² + Cramér's V, 쌍별 χ² + BH/Bonf + V --------
                 f <- droplevels(as.factor(aux))
                 lines <- c(lines, sprintf("Distal: %s (categorical, DCAT)", aux_name))
                 
-                # 클래스별 비율
                 Kc <- ncol(P); Lv <- levels(f)
                 counts <- matrix(0, nrow=Kc, ncol=length(Lv), dimnames=list(paste0("Class", 1:Kc), Lv))
                 rowsum <- rep(0, Kc)
@@ -265,18 +279,20 @@ lpaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
                     lines <- c(lines, sprintf("  Class %d: insufficient data", k))
                   }
                 }
-                # 전체 χ² (K×C)
+                # Overall chi-square
                 colsum <- colSums(counts, na.rm=TRUE)
                 grand  <- sum(rowsum, na.rm=TRUE)
                 E <- outer(rowsum, colsum) / ifelse(grand > 0, grand, NA_real_)
                 chi <- sum((counts - E)^2 / pmax(E, .Machine$double.eps), na.rm=TRUE)
                 df  <- (Kc - 1) * (length(Lv) - 1)
                 pchi <- stats::pchisq(chi, df=df, lower.tail=FALSE)
-                lines <- c(lines, sprintf("Overall test (weighted chi-square): χ²(%d)=%.3f, p=%.3g", df, chi, pchi))
+                Vall <- sqrt( chi / (grand * max(1, min(Kc-1, length(Lv)-1))) )
+                lines <- c(lines, sprintf("Overall test (weighted chi-square): χ²(%d)=%.3f, p=%.3g, Cramer's V=%.3f",
+                                          df, chi, pchi, Vall))
                 
-                # 쌍별 χ² (2×C)
+                # Pairwise 2×C
                 if (Kc >= 2) {
-                  lines <- c(lines, "Pairwise association (chi-square):")
+                  labs <- c(); pvec <- c(); X2vec <- c(); dfvec <- c(); Vvec <- c()
                   for (a in 1:(Kc-1)) for (b in (a+1):Kc) {
                     sub <- rbind(counts[a, ], counts[b, ])
                     rs  <- rowSums(sub); cs <- colSums(sub); g <- sum(rs)
@@ -284,7 +300,18 @@ lpaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
                     chiab <- sum((sub - Eab)^2 / pmax(Eab, .Machine$double.eps), na.rm=TRUE)
                     dfab  <- length(Lv) - 1
                     pab   <- stats::pchisq(chiab, df=dfab, lower.tail=FALSE)
-                    lines <- c(lines, sprintf("  Class %d vs %d: χ²(%d)=%.3f, p=%.3g", a, b, dfab, chiab, pab))
+                    Vab   <- sqrt( chiab / pmax(g * 1, .Machine$double.eps) ) # 2×C → min=1
+                    labs  <- c(labs, sprintf("%d vs %d", a, b))
+                    pvec  <- c(pvec, pab); X2vec <- c(X2vec, chiab); dfvec <- c(dfvec, dfab); Vvec <- c(Vvec, Vab)
+                  }
+                  if (length(pvec)) {
+                    pBH   <- stats::p.adjust(pvec, method = "BH")
+                    pBonf <- stats::p.adjust(pvec, method = "bonferroni")
+                    lines <- c(lines, "Pairwise (chi-square; p, p_BH, p_Bonf, Cramer's V):")
+                    for (i in seq_along(labs)) {
+                      lines <- c(lines, sprintf("  Class %s: χ²(%d)=%.3f, p=%.3g, p_BH=%.3g, p_Bonf=%.3g, V=%.3f",
+                                                labs[i], dfvec[i], X2vec[i], pvec[i], pBH[i], pBonf[i], Vvec[i]))
+                    }
                   }
                 }
               }
@@ -301,7 +328,7 @@ lpaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         }
         
         
-        },
+      },
       
       .computeRES = function() {
         # --- 지표만 추출, numeric만 허용 ---

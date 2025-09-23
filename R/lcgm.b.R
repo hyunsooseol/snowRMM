@@ -94,8 +94,7 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         invisible(TRUE)
       },
       
-      # ---------- 3-STEP 계산 ----------
-      # ---------- 3-STEP 계산 (안전장치 포함) ----------
+      # ---------- 3-STEP 계산 (효과크기 + 다중비교 보정 포함) ----------
       .computeThreeStep = function() {
         auxName <- self$options$auxVar
         if (is.null(auxName) || !nzchar(auxName))
@@ -108,7 +107,7 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         # posterior 가져오기
         ind <- self$classProbabilities$individual
         
-        # 견고한 posterior 열 탐색기
+        # posterior 열 탐색
         .findPosteriorCols <- function(nms) {
           pats <- c(
             "^Class[_\\.]?[0-9]+$", "^class[_\\.]?[0-9]+$",
@@ -119,8 +118,6 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           nms[hits]
         }
         pcols <- .findPosteriorCols(names(ind))
-        
-        # 최후 보정: 숫자열 중 (predicted/id 제외) 행합≈1 이면 posterior로 간주
         if (length(pcols) == 0) {
           num <- names(ind)[vapply(ind, is.numeric, TRUE)]
           cand <- setdiff(num, c("id","ID","predicted","Predicted"))
@@ -136,31 +133,23 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         K <- length(pcols)
         cls_levels <- seq_len(K)
         
-        # ---- 보조변수 안전 판별/형변환 ----
+        # ---- 보조변수 타입 결정 ----
         yraw <- dat[[auxName]]
         n <- NROW(yraw)
         if (n != NROW(ind))
           return(list(msg = "[3-step] data/posterior row mismatch."))
         
         notes <- character(0)
-        
         is_cat_like <- function(x) {
-          # 숫자라도 고유값이 적고 정수이면 범주형으로 간주(예: 0/1/2)
           if (!is.numeric(x)) return(FALSE)
           ux <- sort(unique(x[is.finite(x)]))
-          if (length(ux) <= 6 && all(abs(ux - round(ux)) < 1e-8)) TRUE else FALSE
+          length(ux) <= 6 && all(abs(ux - round(ux)) < 1e-8)
         }
         
-        # 타입 자동결정 규칙:
-        #  - factor/ordered/character/logical  -> DCAT
-        #  - numeric & "cat-like" (고유값<=6 & 모두 정수) -> DCAT로 전환(노트 기록)
-        #  - 그 외 numeric -> BCH
         if (is.factor(yraw) || is.ordered(yraw) || is.character(yraw) || is.logical(yraw)) {
-          ytype <- "categorical"
-          yfac  <- as.factor(yraw)
+          ytype <- "categorical"; yfac <- as.factor(yraw)
         } else if (is_cat_like(yraw)) {
-          ytype <- "categorical"
-          yfac  <- factor(yraw)   # 순서형으로 보고 싶으면 ordered(yraw)로 바꿔도 됨
+          ytype <- "categorical"; yfac <- factor(yraw)
           notes <- c(notes, sprintf("[note] '%s' has few integer levels; treated as categorical (DCAT).", auxName))
         } else if (is.numeric(yraw)) {
           ytype <- "numeric"
@@ -168,62 +157,95 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           return(list(msg = sprintf("[3-step] Unsupported type for '%s'.", auxName)))
         }
         
-        # ---- 결측 안전 처리 ----
-        # posterior는 그대로 두고, y 결측만 가중치=0로 무해화
-        # (listwise 옵션이 이미 적용되어 있더라도 추가 안전)
+        # ---- 결측 처리: y 결측이면 해당 행 가중치 0 ----
         if (ytype == "numeric") {
-          y <- yraw
-          wmask <- is.finite(y)
+          y <- yraw; wmask <- is.finite(y)
         } else {
-          y <- yfac
-          wmask <- !is.na(y)
+          y <- yfac; wmask <- !is.na(y)
         }
-        # 가중치 마스크: 결측이면 모든 class weight 0
         for (pc in pcols) ind[[pc]][!wmask] <- 0
         
-        # --------------- 분석 ---------------
+        # =========================
+        # BCH (연속형)
+        # =========================
         if (ytype == "numeric") {
-          # BCH_basic (가중 ANOVA 근사)
           long <- lapply(seq_len(K), function(k) {
             data.frame(class = factor(k, levels = cls_levels),
                        y = y, w = ind[[pcols[k]]])
           })
           long <- do.call(rbind, long)
           
-          # 분산 0 또는 유효 샘플 과소 경고
           eff_nk <- tapply(long$w, long$class, sum)
           if (any(eff_nk < 1e-6))
             notes <- c(notes, "[warn] One or more classes have (near-)zero effective weight for the distal variable.")
           if (stats::var(long$y[long$w > 0], na.rm = TRUE) < 1e-10)
             notes <- c(notes, "[warn] Near-zero variance in distal variable (BCH may be unreliable).")
           
-          wmean <- tapply(long$y * long$w, long$class, sum) /
-            pmax(eff_nk, .Machine$double.eps)
+          # 클래스별 평균/분산/SE/N_eff
+          wmean <- tapply(long$y * long$w, long$class, sum) / pmax(eff_nk, .Machine$double.eps)
+          # 가중 분산
+          wvar <- sapply(levels(long$class), function(k) {
+            idx <- long$class == k
+            wk <- long$w[idx]; yk <- long$y[idx]
+            mk <- if (eff_nk[k] > 0) sum(wk * yk) / eff_nk[k] else NA_real_
+            if (!is.finite(mk) || eff_nk[k] <= 0) return(NA_real_)
+            sum(wk * (yk - mk)^2) / eff_nk[k]
+          })
+          wse <- sqrt(wvar / pmax(eff_nk, 1))
+          
+          # 전체 F 근사
           wbar <- sum(long$y * long$w) / sum(long$w)
-          ssb <- sum(eff_nk * (wmean - wbar)^2)
+          ssb  <- sum(eff_nk * (wmean - wbar)^2, na.rm=TRUE)
           long$gmean <- wmean[as.character(long$class)]
-          ssw <- sum(long$w * (long$y - long$gmean)^2)
+          ssw  <- sum(long$w * (long$y - long$gmean)^2, na.rm=TRUE)
+          dfb  <- K - 1
+          dfw  <- max(1, sum(eff_nk, na.rm=TRUE) - K)
+          msb  <- ssb / dfb
+          msw  <- ssw / dfw
+          Fst  <- if (msw > 0) msb / msw else Inf
+          pF   <- tryCatch(stats::pf(Fst, dfb, dfw, lower.tail = FALSE), error = function(e) NA_real_)
           
-          dfb <- K - 1
-          dfw <- max(1, sum(eff_nk) - K)
-          msb <- ssb / dfb
-          msw <- ssw / dfw
-          Fst <- if (msw > 0) msb / msw else Inf
-          pval <- tryCatch(stats::pf(Fst, dfb, dfw, lower.tail = FALSE), error = function(e) NA_real_)
-          
-          txt <- c(
+          # 텍스트: 클래스별
+          lines <- c(
             "3-step analysis (BCH/DCAT)",
             "=== 3-STEP auxiliary (tidySEM, BCH_basic) ===",
             sprintf("[Distal: %s, numeric] K=%d", auxName, K),
             sprintf("Class-weighted means: %s",
                     paste(paste0("C", names(wmean), "=", round(wmean, 3)), collapse = ", ")),
-            sprintf("Wald/ANOVA approx: F(%d,%d)=%.3f, p=%.4f", dfb, dfw, Fst, pval)
+            sprintf("Wald/ANOVA approx: F(%d,%.1f)=%.3f, p=%.4f", dfb, dfw, Fst, pF)
           )
-          if (length(notes)) txt <- c(txt, notes)
-          return(list(text = paste(txt, collapse = "\n")))
+          
+          # 쌍별 비교: z, p, p_BH, p_Bonf, Cohen's d
+          if (K >= 2) {
+            pair_lab <- c(); p_raw <- c(); zvals <- c(); dvals <- c()
+            for (a in 1:(K-1)) for (b in (a+1):K) {
+              za <- (wmean[a] - wmean[b]) / sqrt(wse[a]^2 + wse[b]^2)
+              pa <- 2*stats::pnorm(-abs(za))
+              # Cohen's d (가중 pooled SD)
+              spooled <- sqrt( ((eff_nk[a]-1)*wvar[a] + (eff_nk[b]-1)*wvar[b]) /
+                                 pmax(eff_nk[a]+eff_nk[b]-2, 1) )
+              d_ab <- (wmean[a] - wmean[b]) / spooled
+              pair_lab <- c(pair_lab, sprintf("%d vs %d", a, b))
+              p_raw    <- c(p_raw, pa)
+              zvals    <- c(zvals, za)
+              dvals    <- c(dvals, d_ab)
+            }
+            p_bh   <- stats::p.adjust(p_raw, method = "BH")
+            p_bonf <- stats::p.adjust(p_raw, method = "bonferroni")
+            lines <- c(lines, "Pairwise differences (z, p, p_BH, p_Bonf, Cohen's d):")
+            for (i in seq_along(pair_lab)) {
+              lines <- c(lines, sprintf("  Class %s: z=%.3f, p=%.3g, p_BH=%.3g, p_Bonf=%.3g, d=%.3f",
+                                        pair_lab[i], zvals[i], p_raw[i], p_bh[i], p_bonf[i], dvals[i]))
+            }
+          }
+          
+          if (length(notes)) lines <- c(lines, notes)
+          return(list(text = paste(lines, collapse = "\n")))
         }
         
-        # DCAT (가중 카이제곱)
+        # =========================
+        # DCAT (범주형)
+        # =========================
         cats <- levels(y)
         W <- matrix(0, nrow = K, ncol = length(cats),
                     dimnames = list(paste0("C", cls_levels), cats))
@@ -233,25 +255,57 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           }
         }
         
-        # 희소성 진단 (가중 기대도수 근사)
-        E <- outer(rowSums(W), colSums(W)) / sum(W)
+        # 전체 χ² + Cramér's V
+        rowsum <- rowSums(W, na.rm=TRUE)
+        colsum <- colSums(W, na.rm=TRUE)
+        grand  <- sum(rowsum, na.rm=TRUE)
+        E <- outer(rowsum, colsum) / ifelse(grand > 0, grand, NA_real_)
         if (any(E < 1))
           notes <- c(notes, "[warn] Some expected weighted counts < 1 (chi-square may be inaccurate).")
         if (mean(E < 5) > 0.2)
           notes <- c(notes, "[note] >20% of expected weighted counts < 5 (use caution).")
         
-        chis <- suppressWarnings(stats::chisq.test(W, correct = FALSE))
-        txt <- c(
+        chi  <- sum((W - E)^2 / pmax(E, .Machine$double.eps), na.rm=TRUE)
+        df   <- (K - 1) * (length(cats) - 1)
+        pchi <- stats::pchisq(chi, df=df, lower.tail=FALSE)
+        Vall <- sqrt( chi / (grand * max(1, min(K-1, length(cats)-1))) )
+        
+        lines <- c(
           "3-step analysis (BCH/DCAT)",
           "=== 3-STEP auxiliary (tidySEM, DCAT) ===",
           sprintf("[Distal: %s, categorical] K=%d, J=%d", auxName, K, ncol(W)),
-          sprintf("Wald/Chi-square: X^2(%d)=%.3f, p=%.4f",
-                  chis$parameter, chis$statistic, chis$p.value)
+          sprintf("Wald/Chi-square: X^2(%d)=%.3f, p=%.4f, Cramer's V=%.3f", df, chi, pchi, Vall)
         )
-        if (length(notes)) txt <- c(txt, notes)
-        return(list(text = paste(txt, collapse = "\n")))
+        
+        # 쌍별 2×C: χ², p, 보정 p, V
+        if (K >= 2) {
+          pair_lab <- c(); p_raw <- c(); chis <- c(); df2 <- c(); Vpair <- c()
+          for (a in 1:(K-1)) for (b in (a+1):K) {
+            sub <- rbind(W[a, ], W[b, ])
+            rs  <- rowSums(sub); cs <- colSums(sub); g <- sum(rs)
+            Eab <- outer(rs, cs) / ifelse(g > 0, g, NA_real_)
+            chiab <- sum((sub - Eab)^2 / pmax(Eab, .Machine$double.eps), na.rm=TRUE)
+            dfab  <- ncol(W) - 1
+            pab   <- stats::pchisq(chiab, df=dfab, lower.tail=FALSE)
+            Vab   <- sqrt( chiab / pmax(g, .Machine$double.eps) )  # 2×C → min(r-1,c-1)=1
+            pair_lab <- c(pair_lab, sprintf("%d vs %d", a, b))
+            p_raw    <- c(p_raw, pab)
+            chis     <- c(chis, chiab)
+            df2      <- c(df2, dfab)
+            Vpair    <- c(Vpair, Vab)
+          }
+          p_bh   <- stats::p.adjust(p_raw, method = "BH")
+          p_bonf <- stats::p.adjust(p_raw, method = "bonferroni")
+          lines <- c(lines, "Pairwise association (chi-square; p, p_BH, p_Bonf, Cramer's V):")
+          for (i in seq_along(pair_lab)) {
+            lines <- c(lines, sprintf("  Class %s: X^2(%d)=%.3f, p=%.3g, p_BH=%.3g, p_Bonf=%.3g, V=%.3f",
+                                      pair_lab[i], df2[i], chis[i], p_raw[i], p_bh[i], p_bonf[i], Vpair[i]))
+          }
+        }
+        
+        if (length(notes)) lines <- c(lines, notes)
+        return(list(text = paste(lines, collapse = "\n")))
       },
-      
       
       .init = function() {
         private$.htmlwidget <- HTMLWidget$new()
@@ -373,23 +427,10 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           }
         }
         
-        
         html <- progressBarH(100,100, 'Analysis complete!')
         self$results$progressBarHTML$setContent(html)
         private$.checkpoint()
         self$results$progressBarHTML$setVisible(FALSE)
-        
-        
-        # html <- progressBarH(100,100, 'Analysis complete!')
-        # self$results$progressBarHTML$setContent(html)
-        # private$.checkpoint()
-        # self$results$progressBarHTML$setVisible(FALSE)
-        # 
-        # 
-        # html <- progressBarH(100,100, 'Analysis complete!')
-        # self$results$progressBarHTML$setContent(html)
-        # private$.checkpoint()
-        # self$results$progressBarHTML$setVisible(FALSE)
       },
       
       .populateDescTable = function() {
@@ -465,38 +506,22 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
       },
       
       .setPlot1 = function() {
-        # 1) 원본과 지표 목록
         df   <- as.data.frame(self$data)
-        vars <- self$options$vars              # 사용자가 지정한 지표(성장모형에 들어가는 y들)
-        
-        if (is.null(vars) || length(vars) < 1)
-          return()
-        
-        # 2) 연속형( numeric ) 지표만 사용 (factor/ordered 제외)
+        vars <- self$options$vars
+        if (is.null(vars) || length(vars) < 1) return()
         isNum <- vapply(df[vars], is.numeric, TRUE)
         xvars <- vars[isNum]
-        if (length(xvars) < 1)
-          return()
-        
-        # 3) id 보장
-        if (!("id" %in% names(df)))
-          df$id <- seq_len(nrow(df))
-        
-        # 4) long 형태로 변환 (지표들만)
+        if (length(xvars) < 1) return()
+        if (!("id" %in% names(df))) df$id <- seq_len(nrow(df))
         long <- reshape(df[, c("id", xvars), drop = FALSE],
                         direction = "long",
                         varying   = xvars,
                         v.names   = "value",
                         idvar     = "id",
                         timevar   = "time")
-        
-        # time 라벨을 지표명으로 (y1,y2,...) 표시하고 싶지 않으면 as.factor(seq_along(xvars))
         long$time <- factor(long$time, labels = xvars)
-        
-        # 5) 상태 저장
         self$results$plot1$setState(long)
       },
-      
       
       .setPlot = function() {
         self$results$plot$setState(self$res)
@@ -537,7 +562,6 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         print(p + ggtheme)
         TRUE
       },
-      
       
       .plot = function(image, ggtheme, theme, ...) {
         if (is.null(image$state)) return(FALSE)

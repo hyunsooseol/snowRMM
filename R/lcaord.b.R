@@ -251,14 +251,13 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly = TRUE))
             private$.checkpoint()
             
             dat <- private$.results_cache$data_all  # 보조변수 포함 전체 데이터
-            res <- private$.results_cache$res
             
-            ## (A) Distal 결과 텍스트
+            ## (A) Distal 결과 텍스트 (효과크기 + 보정 포함)
             out_lines <- c("=== 3-STEP auxiliary (tidySEM) ===")
             vname <- self$options$auxVar
             if (!is.null(vname) && nzchar(vname)) {
-              dres <- private$.run3stepDistal(res, dat, vname)
-              out_lines <- c(out_lines, dres$msg)
+              tres <- private$.computeThreeStep(dat, vname)
+              out_lines <- c(out_lines, tres)
             } else {
               out_lines <- c(out_lines, "[Distal] no variable selected.")
             }
@@ -269,7 +268,7 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly = TRUE))
               fstr <- self$options$auxFormula
               reg_lines <- c("=== Class-wise regression (3-STEP BCH) ===")
               if (!is.null(fstr) && nzchar(fstr)) {
-                rres <- private$.run3stepReg(res, dat, fstr)
+                rres <- private$.run3stepReg(self$res, dat, fstr)
                 reg_lines <- c(reg_lines, rres$msg)
               } else {
                 reg_lines <- c(reg_lines, "[Regression] no formula.")
@@ -375,231 +374,146 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         print(p); TRUE
       },
       
-      # ---- 3-STEP helpers (BCH/DCAT) : SIMPLIFIED ROBUST VERSION --------------
-      .run3stepDistal = function(res_final, dat, vname) {
-        if (is.null(vname) || !nzchar(vname) || is.null(dat[[vname]]))
-          return(list(msg = sprintf("[Distal] variable '%s' not found.", vname),
-                      omni = NULL))
-        
-        # 데이터 전처리
-        orig_var <- dat[[vname]]
-        
-        # 완전한 케이스만 선택 (LCA 결과와 보조변수 모두)
-        lca_data <- self$data[self$options$vars]  # LCA에 사용된 원본 데이터
-        complete_lca <- complete.cases(lca_data)
-        complete_aux <- !is.na(orig_var)
-        complete_both <- complete_lca & complete_aux
-        
-        if (sum(complete_both) < 10) {
-          return(list(msg = sprintf("[Distal: %s] Insufficient complete cases (n=%d).", 
-                                    vname, sum(complete_both)), omni = NULL))
-        }
-        
-        # 완전한 케이스만으로 데이터 구성
-        dat_clean <- dat[complete_both, , drop = FALSE]
-        
-        # 변수 타입 결정 및 전처리
-        var_clean <- dat_clean[[vname]]
-        
-        if (is.character(var_clean) || is.factor(var_clean)) {
-          # 범주형 변수 처리
-          if (is.character(var_clean)) {
-            var_clean <- factor(var_clean, exclude = NULL)
-          } else {
-            var_clean <- droplevels(var_clean)
-          }
-          
-          n_levels <- nlevels(var_clean)
-          if (n_levels < 2) {
-            return(list(msg = sprintf("[Distal: %s] Less than 2 levels after cleaning.", vname),
-                        omni = NULL))
-          }
-          
-          dat_clean[[vname]] <- var_clean
-          is_categorical <- TRUE
-          
+      # ------------------------------------------------------------------
+      # 3-STEP (BCH/DCAT) with effect sizes & multiple-comparison control
+      # ------------------------------------------------------------------
+      .computeThreeStep = function(dat_all, auxName) {
+        # posterior 가져오기 (results_cache가 있으면 거기서)
+        ind <- NULL
+        if (!is.null(private$.results_cache$cp1$individual)) {
+          ind <- data.frame(private$.results_cache$cp1$individual)
         } else {
-          # 연속형 변수 처리
-          var_clean <- as.numeric(var_clean)
-          if (all(is.na(var_clean))) {
-            return(list(msg = sprintf("[Distal: %s] All values are NA after numeric conversion.", vname),
-                        omni = NULL))
+          cp <- try(tidySEM::class_prob(self$res), silent = TRUE)
+          if (!inherits(cp, "try-error") && !is.null(cp$individual))
+            ind <- data.frame(cp$individual)
+        }
+        if (is.null(ind))
+          return("[3-step] posterior probabilities not found.")
+        
+        # posterior 열 찾기
+        .findPcols <- function(nms) {
+          pats <- c("^CPROB[0-9]+$","^Class[_\\.]?[0-9]+$","^C[0-9]+$",
+                    "^p[0-9]+$","^posterior[_\\.]?[0-9]+$")
+          hits <- unique(unlist(lapply(pats, function(p) grep(p, nms))))
+          if (length(hits)) return(nms[hits])
+          num <- nms[vapply(ind, is.numeric, TRUE)]
+          cand <- setdiff(num, c("id","ID","predicted","Predicted"))
+          if (length(cand) > 1) {
+            S <- rowSums(ind[, cand, drop=FALSE], na.rm=TRUE)
+            if (all(is.finite(S)) && mean(abs(S-1)) < 1e-3) return(cand)
           }
-          dat_clean[[vname]] <- var_clean
-          is_categorical <- FALSE
+          character(0)
         }
+        pcols <- .findPcols(names(ind))
+        if (length(pcols) == 0)
+          return("[3-step] posterior columns could not be identified.")
         
-        # 포뮬러 생성
-        formula_str <- sprintf("%s ~ 1", vname)
+        K <- length(pcols)
         
-        # BCH 적합 시도 (단순한 방법부터)
-        fit <- NULL
-        method_used <- "Unknown"
-        error_messages <- character(0)
+        if (is.null(dat_all[[auxName]]))
+          return(sprintf("[Distal] variable '%s' not found.", auxName))
         
-        # 방법 1: 가장 기본적인 BCH
-        fit_try1 <- try({
-          tidySEM::BCH(res_final, model = formula_str, data = dat_clean)
-        }, silent = TRUE)
+        yraw <- dat_all[[auxName]]
+        # y 결측이면 그 행의 모든 가중치 0으로
+        ok <- if (is.numeric(yraw)) is.finite(yraw) else !is.na(yraw)
+        for (pc in pcols) ind[[pc]][!ok] <- 0
         
-        if (!inherits(fit_try1, "try-error")) {
-          fit <- fit_try1
-          method_used <- "BCH_basic"
-        } else {
-          error_messages <- c(error_messages, paste("Basic BCH:", conditionMessage(attr(fit_try1, "condition"))))
-        }
-        
-        # 방법 2: 연속형을 명시적으로 처리
-        if (is.null(fit) && !is_categorical) {
-          fit_try2 <- try({
-            # 연속형 변수를 표준화해서 시도
-            dat_std <- dat_clean
-            dat_std[[vname]] <- scale(dat_std[[vname]])[,1]
-            tidySEM::BCH(res_final, model = formula_str, data = dat_std)
-          }, silent = TRUE)
+        # ====== BCH (numeric) ======
+        if (is.numeric(yraw) && !(is.factor(yraw) || is.ordered(yraw))) {
+          y <- yraw
+          eff <- sapply(pcols, function(pc) sum(ind[[pc]], na.rm=TRUE))
+          m   <- sapply(pcols, function(pc) sum(ind[[pc]]*y, na.rm=TRUE) / pmax(sum(ind[[pc]],na.rm=TRUE), .Machine$double.eps))
+          v   <- mapply(function(pc, mu) {
+            w <- ind[[pc]]; sum(w*(y-mu)^2, na.rm=TRUE) / pmax(sum(w,na.rm=TRUE), .Machine$double.eps)
+          }, pcols, m)
+          se  <- sqrt(v / pmax(eff,1))
           
-          if (!inherits(fit_try2, "try-error")) {
-            fit <- fit_try2
-            method_used <- "BCH_standardized"
-          } else {
-            error_messages <- c(error_messages, paste("Standardized BCH:", conditionMessage(attr(fit_try2, "condition"))))
+          # 전체 F
+          wbar <- sum(y * rowSums(ind[, pcols, drop=FALSE]), na.rm=TRUE) /
+            sum(rowSums(ind[, pcols, drop=FALSE]), na.rm=TRUE)
+          ssb  <- sum(eff * (m - wbar)^2, na.rm=TRUE)
+          ssw  <- 0
+          for (i in seq_along(pcols)) {
+            w <- ind[[pcols[i]]]; mu <- m[i]
+            ssw <- ssw + sum(w*(y-mu)^2, na.rm=TRUE)
           }
-        }
-        
-        # 방법 3: 범주형을 이진 더미변수로 변환
-        if (is.null(fit) && is_categorical && n_levels <= 5) {
-          fit_try3 <- try({
-            # 가장 빈번한 카테고리를 참조범주로 하여 더미변수 생성
-            freq_table <- table(dat_clean[[vname]])
-            ref_level <- names(freq_table)[which.max(freq_table)]
-            
-            # 다른 레벨들에 대한 더미변수 생성
-            for (level in levels(dat_clean[[vname]])) {
-              if (level != ref_level) {
-                dummy_name <- paste0(vname, "_", level)
-                dat_clean[[dummy_name]] <- as.numeric(dat_clean[[vname]] == level)
-              }
+          df1 <- K - 1; df2 <- max(1, sum(eff,na.rm=TRUE) - K)
+          Fst <- (ssb/df1) / (ssw/df2); pF <- stats::pf(Fst, df1, df2, lower.tail = FALSE)
+          
+          lines <- c(
+            "3-step analysis (BCH/DCAT)",
+            "=== 3-STEP auxiliary (ordinal LCA, BCH) ===",
+            sprintf("[Distal: %s, numeric] K=%d", auxName, K),
+            sprintf("Class-weighted means: %s",
+                    paste(paste0("C", seq_len(K), "=", round(m,3)), collapse=", ")),
+            sprintf("Wald/ANOVA approx: F(%d,%.1f)=%.3f, p=%.4f", df1, df2, Fst, pF)
+          )
+          
+          # 쌍별: z, p, BH/Bonf, Cohen's d
+          if (K >= 2) {
+            lab <- c(); z <- c(); p <- c(); d <- c()
+            for (a in 1:(K-1)) for (b in (a+1):K) {
+              za <- (m[a]-m[b]) / sqrt(se[a]^2 + se[b]^2)
+              pa <- 2*stats::pnorm(-abs(za))
+              sp <- sqrt(((eff[a]-1)*v[a] + (eff[b]-1)*v[b]) /
+                           pmax(eff[a]+eff[b]-2, 1))
+              d  <- c(d, (m[a]-m[b]) / sp); lab <- c(lab, sprintf("%d vs %d", a,b))
+              z  <- c(z, za); p <- c(p, pa)
             }
-            
-            # 첫 번째 더미변수로 모델 적합
-            dummy_names <- paste0(vname, "_", setdiff(levels(dat_clean[[vname]]), ref_level))
-            if (length(dummy_names) > 0) {
-              dummy_formula <- sprintf("%s ~ 1", dummy_names[1])
-              tidySEM::BCH(res_final, model = dummy_formula, data = dat_clean)
-            } else {
-              stop("No dummy variables created")
-            }
-          }, silent = TRUE)
-          
-          if (!inherits(fit_try3, "try-error")) {
-            fit <- fit_try3
-            method_used <- "BCH_dummy"
-          } else {
-            error_messages <- c(error_messages, paste("Dummy BCH:", conditionMessage(attr(fit_try3, "condition"))))
+            p_bh <- stats::p.adjust(p, "BH")
+            p_bonf <- stats::p.adjust(p, "bonferroni")
+            lines <- c(lines, "Pairwise (z, p, p_BH, p_Bonf, Cohen's d):")
+            for (i in seq_along(lab))
+              lines <- c(lines, sprintf("  Class %s: z=%.3f, p=%.3g, p_BH=%.3g, p_Bonf=%.3g, d=%.3f",
+                                        lab[i], z[i], p[i], p_bh[i], p_bonf[i], d[i]))
           }
+          return(paste(lines, collapse="\n"))
         }
         
-        if (is.null(fit)) {
-          error_summary <- paste(error_messages, collapse = "; ")
-          return(list(msg = sprintf("[Distal: %s] All fitting methods failed: %s", vname, error_summary),
-                      omni = NULL))
-        }
+        # ====== DCAT (categorical/ordinal) ======
+        f <- as.factor(yraw)
+        J <- nlevels(f)
+        W <- matrix(0, nrow=K, ncol=J, dimnames=list(paste0("C",1:K), levels(f)))
+        for (k in 1:K) for (j in 1:J)
+          W[k,j] <- sum( (f==levels(f)[j]) * ind[[pcols[k]]], na.rm=TRUE )
         
-        # 통계적 검정 수행
-        test_result <- NULL
-        test_name <- "None"
+        rs <- rowSums(W); cs <- colSums(W); N <- sum(rs)
+        E  <- outer(rs, cs) / ifelse(N>0, N, NA_real_)
+        chi <- sum((W - E)^2 / pmax(E, .Machine$double.eps), na.rm=TRUE)
+        df  <- (K-1)*(J-1)
+        pchi <- stats::pchisq(chi, df=df, lower.tail=FALSE)
+        Vall <- sqrt( chi / (N * max(1, min(K-1, J-1))) )
         
-        # LR 테스트 시도
-        lr_options <- c("default", "M", "means")
-        for (opt in lr_options) {
-          lr_test <- try({
-            if (opt == "default") {
-              tidySEM::lr_test(fit)
-            } else {
-              tidySEM::lr_test(fit, compare = opt)
-            }
-          }, silent = TRUE)
-          
-          if (!inherits(lr_test, "try-error") && is.data.frame(lr_test) && nrow(lr_test) > 0) {
-            test_result <- lr_test
-            test_name <- paste("LR", opt, sep = "_")
-            break
-          }
-        }
-        
-        # Wald 테스트 시도 (LR이 실패한 경우)
-        if (is.null(test_result)) {
-          wald_test <- try({
-            # 단순한 평균 동등성 검정
-            constraint <- "class1.M[1,1]=class2.M[1,1]"
-            tidySEM::wald_test(fit, constraint)
-          }, silent = TRUE)
-          
-          if (!inherits(wald_test, "try-error") && is.data.frame(wald_test) && nrow(wald_test) > 0) {
-            test_result <- wald_test
-            test_name <- "Wald_means"
-          }
-        }
-        
-        # 결과 정리
-        if (is.null(test_result)) {
-          return(list(msg = sprintf("[Distal: %s, %s] Model fitted but no statistical test available.", 
-                                    vname, method_used), omni = NULL))
-        }
-        
-        # 통계량 추출
-        stat_value <- NA
-        df_value <- NA
-        p_value <- NA
-        
-        # 컬럼명을 소문자로 변환해서 찾기
-        col_names <- tolower(names(test_result))
-        
-        # 통계량 찾기
-        stat_cols <- c("lr", "chisq", "wald", "w", "x2", "statistic")
-        for (col in stat_cols) {
-          if (col %in% col_names) {
-            stat_value <- as.numeric(test_result[[which(col_names == col)[1]]])
-            break
-          }
-        }
-        
-        # 자유도 찾기
-        df_cols <- c("df", "dof")
-        for (col in df_cols) {
-          if (col %in% col_names) {
-            df_value <- as.integer(test_result[[which(col_names == col)[1]]])
-            break
-          }
-        }
-        
-        # p값 찾기
-        p_cols <- c("p", "p.value", "pvalue")
-        for (col in p_cols) {
-          if (col %in% col_names) {
-            p_value <- as.numeric(test_result[[which(col_names == col)[1]]])
-            break
-          }
-        }
-        
-        # 결과 메시지 생성
-        msg <- sprintf("[Distal: %s, %s] %s(df=%s) = %.3f, p = %.4f",
-                       vname, method_used, test_name,
-                       ifelse(is.na(df_value), "?", as.character(df_value)),
-                       ifelse(is.na(stat_value), 0, stat_value),
-                       ifelse(is.na(p_value), 1, p_value))
-        
-        omni_result <- data.frame(
-          var = vname,
-          df = df_value,
-          stat = stat_value,
-          p = p_value,
-          stringsAsFactors = FALSE
+        lines <- c(
+          "3-step analysis (BCH/DCAT)",
+          "=== 3-STEP auxiliary (ordinal LCA, DCAT) ===",
+          sprintf("[Distal: %s, categorical/ordinal] K=%d, J=%d", auxName, K, J),
+          sprintf("Wald/Chi-square: X^2(%d)=%.3f, p=%.4f, Cramer's V=%.3f", df, chi, pchi, Vall)
         )
         
-        return(list(msg = msg, omni = omni_result))
+        if (K >= 2) {
+          lab <- c(); p <- c(); X2 <- c(); dfv <- c(); Vpair <- c()
+          for (a in 1:(K-1)) for (b in (a+1):K) {
+            sub <- rbind(W[a,], W[b,])
+            rs2 <- rowSums(sub); cs2 <- colSums(sub); N2 <- sum(rs2)
+            E2  <- outer(rs2, cs2) / ifelse(N2>0, N2, NA_real_)
+            chi2 <- sum((sub - E2)^2 / pmax(E2, .Machine$double.eps), na.rm=TRUE)
+            df2  <- J-1; p2 <- stats::pchisq(chi2, df=df2, lower.tail=FALSE)
+            V2   <- sqrt( chi2 / pmax(N2, .Machine$double.eps) )   # 2×J → min=1
+            lab <- c(lab, sprintf("%d vs %d", a,b)); p <- c(p,p2)
+            X2 <- c(X2, chi2); dfv <- c(dfv, df2); Vpair <- c(Vpair, V2)
+          }
+          p_bh <- stats::p.adjust(p, "BH")
+          p_bonf <- stats::p.adjust(p, "bonferroni")
+          lines <- c(lines, "Pairwise (chi-square; p, p_BH, p_Bonf, Cramer's V):")
+          for (i in seq_along(lab))
+            lines <- c(lines, sprintf("  Class %s: X^2(%d)=%.3f, p=%.3g, p_BH=%.3g, p_Bonf=%.3g, V=%.3f",
+                                      lab[i], dfv[i], X2[i], p[i], p_bh[i], p_bonf[i], Vpair[i]))
+        }
+        paste(lines, collapse="\n")
       },
       
+      # ---- 회귀(기존 유지) ----------------------------------------------------
       .run3stepReg = function(res_final, dat, formula_str) {
         if (is.null(formula_str) || !nzchar(formula_str))
           return(list(msg = "[Regression] no formula.", tests = NULL))
@@ -617,9 +531,9 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         y     <- vars[1]
         xvars <- vars[-1]
         
-        # 2) 예측변수 전처리: 숫자/이진 → 그대로, 3레벨 이상 factor/문자 → (k-1) 더미 생성
-        use_x      <- character(0)    # 최종 포뮬러에 들어갈 예측변수 이름들(더미 포함)
-        ref_notes  <- character(0)    # 참조범주 기록
+        # 2) 예측변수 전처리
+        use_x      <- character(0)
+        ref_notes  <- character(0)
         
         for (vx in xvars) {
           if (is.null(dat[[vx]]))
@@ -628,30 +542,20 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly = TRUE))
               tests = NULL))
           
           v <- dat[[vx]]
-          # 문자 → factor
           if (is.character(v)) v <- factor(v)
           if (is.factor(v)) {
             v <- droplevels(v)
             nl <- nlevels(v)
-            
-            if (nl == 0) {
-              next
-            } else if (nl == 1) {
-              # 변동이 없으면 스킵
-              ref_notes <- c(ref_notes, sprintf("%s: single level (%s) → dropped", vx, levels(v)[1]))
+            if (nl <= 1) {
+              ref_notes <- c(ref_notes, sprintf("%s: single level → dropped", vx))
               next
             } else if (nl == 2) {
-              # 이진 → 0/1
               dat[[vx]] <- as.integer(v) - 1L
               use_x <- c(use_x, vx)
               ref_notes <- c(ref_notes, sprintf("%s: binary factor, ref='%s'→0/1", vx, levels(v)[1]))
             } else {
-              # k>2 → 가장 빈도 높은 레벨을 참조로 (안정적)
-              tab <- table(v)
-              ref <- names(tab)[which.max(tab)]
-              lv  <- levels(v)
-              
-              for (lev in lv) {
+              tab <- table(v); ref <- names(tab)[which.max(tab)]
+              for (lev in levels(v)) {
                 if (lev == ref) next
                 new_name <- paste0(vx, "_", make.names(lev))
                 dat[[new_name]] <- as.integer(v == lev)
@@ -662,23 +566,19 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly = TRUE))
                                      vx, nl, nl - 1, ref))
             }
           } else {
-            # 숫자형
             dat[[vx]] <- suppressWarnings(as.numeric(v))
             use_x <- c(use_x, vx)
           }
         }
         
-        # Y를 숫자형으로(문자/범주면 코어스)
         if (is.null(dat[[y]]))
           return(list(msg = sprintf("[Regression] outcome '%s' not found.", y), tests = NULL))
         if (is.character(dat[[y]]) || is.factor(dat[[y]]))
           dat[[y]] <- suppressWarnings(as.numeric(dat[[y]]))
         
-        # 예측자가 하나도 남지 않으면 종료
         if (length(use_x) == 0)
           return(list(msg = "[Regression] no usable predictors after processing.", tests = NULL))
         
-        # 3) 완전케이스
         needed_cols <- unique(c(y, use_x))
         cc <- stats::complete.cases(dat[, needed_cols, drop = FALSE])
         ncc <- sum(cc)
@@ -687,10 +587,8 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly = TRUE))
                       tests = NULL))
         dat_cc <- dat[cc, , drop = FALSE]
         
-        # 4) 더미까지 반영한 새 포뮬러 생성
         new_formula <- sprintf("%s ~ %s", y, paste(use_x, collapse = " + "))
         
-        # 5) BCH 회귀 적합
         fit2 <- try(tidySEM::BCH(res_final, model = new_formula, data = dat_cc), silent = TRUE)
         if (inherits(fit2, "try-error")) {
           emsg <- conditionMessage(attr(fit2, "condition"))
@@ -699,7 +597,6 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly = TRUE))
                       tests = NULL))
         }
         
-        # 6) Omnibus: A 행렬(기울기) 동일성 LR 테스트
         lrA <- try(tidySEM::lr_test(fit2, compare = "A"), silent = TRUE)
         if (!inherits(lrA, "try-error") && is.data.frame(lrA) && nrow(lrA) > 0) {
           nml <- tolower(names(lrA))
@@ -715,14 +612,12 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           return(list(msg = msg, tests = tests))
         }
         
-        # 7) LR 실패 시 Wald: 모든 기울기 동일 제약
-        K <- length(res_final$classes); if (is.null(K) || K < 2) K <- 2L
-        p <- length(use_x)  # 더미 확장 후 예측자 개수 기준
+        K <- length(self$options$nc); if (is.null(K) || K < 2) K <- 2L
+        p <- length(use_x)
         cons_list <- character(0)
         for (j in seq_len(p)) {
           idx <- paste0("[1,", j + 1L, "]")
           eq  <- paste0("class1.A", idx, "=class2.A", idx)
-          if (K > 2) for (k in 3:K) eq <- paste0(eq, "&class1.A", idx, "=class", k, ".A", idx)
           cons_list <- c(cons_list, eq)
         }
         cons <- paste(cons_list, collapse = "&")
@@ -731,7 +626,7 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         if (!inherits(wd, "try-error") && is.data.frame(wd) && nrow(wd) > 0) {
           nmt <- tolower(names(wd))
           get2 <- function(cs) { i <- which(nmt %in% cs)[1]; if (length(i)==0 || is.na(i)) NA else wd[[i]] }
-          dff  <- suppressWarnings(as.integer(get2(c("df","dof"))[1])); if (is.na(dff) || !is.finite(dff)) dff <- (K - 1L) * p
+          dff  <- suppressWarnings(as.integer(get2(c("df","dof"))[1])); if (is.na(dff) || !is.finite(dff)) dff <- (2 - 1L) * p
           stat <- suppressWarnings(as.numeric(get2(c("wald","w","statistic"))[1]))
           pv   <- suppressWarnings(as.numeric(get2(c("p","p.value"))[1])); if (is.na(stat) && is.finite(pv)) stat <- stats::qchisq(1 - pv, dff)
           note <- if (length(ref_notes)) paste0(" (", paste(ref_notes, collapse="; "), ")") else ""
@@ -744,8 +639,6 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         
         list(msg = "[Regression] LR/Wald both failed.", tests = NULL)
       }
-      
-      
       
     )
   )
