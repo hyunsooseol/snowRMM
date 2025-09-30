@@ -14,6 +14,10 @@ description: >-
   Linear Logisitic Test Model, Linear and Equipercentile Equating, Rasch model
   and Rasch mixture model including model information,fit statistics, and
   bootstrap item fit.
+  
+  Please submit feedback, bug reports, and feature requests via the links
+  provided <a href = "https://github.com/hyunsooseol/snowRMM/issues" target="_blank">
+  here</a>.
 analyses:
   - title: Rasch Model
     name: rasch
