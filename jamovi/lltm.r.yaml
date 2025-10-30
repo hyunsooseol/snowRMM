@@ -204,6 +204,15 @@ items:
               type: number
               superTitle: '95% CI'  
  
+            - name: infit
+              title: 'Infit MSQ'
+              type: number
+              superTitle: 'Fit'
+            - name: outfit
+              title: 'Outfit MSQ'
+              type: number
+              superTitle: 'Fit'
+
         - name: comp
           title: 'Analysis of Deviances'
           type: Table

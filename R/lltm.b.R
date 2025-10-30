@@ -19,21 +19,17 @@ lltmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
       },
       
       # ---------- helper: extract MSQ from eRm::itemfit() ----------
-      # ---------- helper: extract MSQ from eRm::itemfit() ----------
-      .extractMSQ = function(model, item_names) {
-        # person.parameter() 객체 생성 필요
-        p_res <- tryCatch(
-          eRm::person.parameter(model),
-          error = function(e) {
-            warning("person.parameter() failed: ", e$message)
-            return(NULL)
-          }
-        )
-        if (is.null(p_res)) return(NULL)
+      # ---------- helper: extract MSQ from person.parameter object ----------
+      .extractMSQ = function(person_obj, item_names) {
+        # 이미 계산된 person.parameter 객체를 직접 사용
+        if (is.null(person_obj)) {
+          warning("person.parameter object is NULL")
+          return(NULL)
+        }
         
         # person parameter 객체에 itemfit() 적용
         fit <- tryCatch(
-          eRm::itemfit(p_res),
+          eRm::itemfit(person_obj),
           error = function(e) {
             warning("itemfit() failed: ", e$message)
             return(NULL)
@@ -44,33 +40,36 @@ lltmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         infit_vals <- NULL
         outfit_vals <- NULL
         
-        # 시도 1: 직접 필드 접근 (가장 일반적)
+        # 시도 1: i.infitMSQ, i.outfitMSQ 필드 접근
         if (!is.null(fit$i.infitMSQ)) infit_vals <- fit$i.infitMSQ
         if (!is.null(fit$i.outfitMSQ)) outfit_vals <- fit$i.outfitMSQ
         
-        # 시도 2: i.fit 데이터프레임 내부
+        # 시도 2: i.fit 데이터프레임 내부 검색
         if (is.null(infit_vals) && !is.null(fit$i.fit)) {
           df <- as.data.frame(fit$i.fit)
           cn <- tolower(colnames(df))
           
-          outfit_idx <- which(cn %in% c("outfit", "outfitmsq", "outfit.msq", "outfitms"))[1]
+          # Outfit 검색
+          outfit_idx <- which(cn %in% c("outfit", "outfitmsq", "outfit.msq", "outfitms", "i.outfitmsq"))[1]
           if (!is.na(outfit_idx)) outfit_vals <- df[[outfit_idx]]
           
-          infit_idx <- which(cn %in% c("infit", "infitmsq", "infit.msq", "infitms"))[1]
+          # Infit 검색
+          infit_idx <- which(cn %in% c("infit", "infitmsq", "infit.msq", "infitms", "i.infitmsq"))[1]
           if (!is.na(infit_idx)) infit_vals <- df[[infit_idx]]
         }
         
-        # 시도 3: 대문자 필드명
+        # 시도 3: 직접 접근 (대문자)
         if (is.null(infit_vals) && !is.null(fit$InfitMSQ)) infit_vals <- fit$InfitMSQ
         if (is.null(outfit_vals) && !is.null(fit$OutfitMSQ)) outfit_vals <- fit$OutfitMSQ
         
-        # 시도 4: Outfit, Infit (컬럼명만)
+        # 시도 4: 단순 컬럼명
         if (is.null(infit_vals) && !is.null(fit$Infit)) infit_vals <- fit$Infit
         if (is.null(outfit_vals) && !is.null(fit$Outfit)) outfit_vals <- fit$Outfit
         
         # 값이 없으면 NULL 반환
         if (is.null(infit_vals) || is.null(outfit_vals)) {
-          warning("Could not extract Infit/Outfit MSQ from itemfit()")
+          warning("Could not extract Infit/Outfit MSQ from itemfit(). Available names: ", 
+                  paste(names(fit), collapse = ", "))
           return(NULL)
         }
         
@@ -91,8 +90,9 @@ lltmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           row.names = item_names,
           stringsAsFactors = FALSE
         )
-      }, 
+      },
       
+
       .init = function() {
         private$.htmlwidget <- HTMLWidget$new()
         
@@ -120,7 +120,7 @@ lltmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         if (self$options$items)
           self$results$ra$items$setNote(
             "Note",
-            "Easiness parameters have opposite signs to difficulty parameters. Infit/Outfit MSQ indicate item-level model fit (values between 0.7–1.3 are typically acceptable)."
+            "Easiness parameters have opposite signs to difficulty parameters."
           )
         
         if (self$options$comp)
@@ -290,23 +290,43 @@ lltmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           }
         }
         
+      # LLTM beta---------
         if (isTRUE(self$options$beta)) {
           table <- self$results$ll$beta
           lltm.item <- as.data.frame(lltm$betapar)
           lltm.se <- lltm$se.beta
           lltm.ci <- as.data.frame(stats::confint(lltm, "beta"))
           
+          # MSQ 값 초기화
+          infit <- rep(NA_real_, length(vars))
+          outfit <- rep(NA_real_, length(vars))
+          
+          # 캐시에서 LLTM MSQ 가져오기
+          if (!is.null(all$lltm_msq)) {
+            msq <- all$lltm_msq
+            for (i in seq_along(vars)) {
+              if (vars[i] %in% rownames(msq)) {
+                infit[i] <- msq[vars[i], "infit"]
+                outfit[i] <- msq[vars[i], "outfit"]
+              }
+            }
+          }
+          
+          # 테이블에 행 추가
           for (i in seq_along(vars)) {
             row <- list(
               item = lltm.item[[1]][i],
               se = lltm.se[i],
               lower = lltm.ci[[1]][i],
-              upper = lltm.ci[[2]][i]
+              upper = lltm.ci[[2]][i],
+              infit = infit[i],
+              outfit = outfit[i]
             )
             table$addRow(rowKey = vars[i], values = row)
           }
-        }
+        }        
         
+#---------------------------------------------------
         if (isTRUE(self$options$comp)) {
           table <- self$results$ll$comp
           mod <- as.data.frame(stats::anova(rasch, lltm)$statistics)
@@ -598,72 +618,73 @@ lltmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         TRUE
       },
       
-      .computeRES = function() {
-        data <- self$data
-        data <- na.omit(data)
-        vars <- self$options$vars
-        mat <- self$options$mat
-        col <- self$options$col
-        
-        # Rasch model
-        rasch <- eRm::RM(data)
-        lr <- eRm::LRtest(rasch)
-        ml <- eRm::MLoef(rasch)
-        w <- eRm::Waldtest(rasch)
-        
-        # Person parameters (MSQ 계산용)
-        rasch_person <- tryCatch(
-          eRm::person.parameter(rasch),
-          error = function(e) {
-            warning("person.parameter() failed for Rasch: ", e$message)
-            return(NULL)
-          }
-        )
-        
-        # MSQ 추출 (person parameter 필요)
-        rasch_msq <- if (!is.null(rasch_person)) {
-          private$.extractMSQ(rasch, item_names = vars)
-        } else {
-          NULL
-        }
-        
-        # W matrix 생성
-        mat <- strsplit(mat, ',')
-        mat <- unlist(mat)
-        mat <- as.integer(mat)
-        mat1 <- matrix(as.matrix(mat), ncol = col)
-        
-        # LLTM
-        lltm <- eRm::LLTM(data, mat1)
-        
-        # LLTM person parameters
-        lltm_person <- tryCatch(
-          eRm::person.parameter(lltm),
-          error = function(e) {
-            warning("person.parameter() failed for LLTM: ", e$message)
-            return(NULL)
-          }
-        )
-        
-        # MSQ 추출 (LLTM)
-        lltm_msq <- if (!is.null(lltm_person)) {
-          private$.extractMSQ(lltm, item_names = vars)
-        } else {
-          NULL
-        }
-        
-        list(
-          rasch = rasch,
-          lr = lr,
-          ml = ml,
-          w = w,
-          lltm = lltm,
-          W = mat1,
-          rasch_msq = rasch_msq,
-          lltm_msq = lltm_msq,
-          rasch_person = rasch_person,
-          lltm_person = lltm_person
-        )
-      }
+.computeRES = function() {
+  data <- self$data
+  data <- na.omit(data)
+  vars <- self$options$vars
+  mat <- self$options$mat
+  col <- self$options$col
+  
+  # Rasch model
+  rasch <- eRm::RM(data)
+  lr <- eRm::LRtest(rasch)
+  ml <- eRm::MLoef(rasch)
+  w <- eRm::Waldtest(rasch)
+  
+  # Rasch Person parameters 계산 (한 번만)
+  rasch_person <- tryCatch(
+    eRm::person.parameter(rasch),
+    error = function(e) {
+      warning("person.parameter() failed for Rasch: ", e$message)
+      return(NULL)
+    }
+  )
+  
+  # Rasch MSQ 추출 (이미 계산된 person_obj 사용)
+  rasch_msq <- if (!is.null(rasch_person)) {
+    private$.extractMSQ(rasch_person, item_names = vars)
+  } else {
+    NULL
+  }
+  
+  # W matrix 생성
+  mat <- strsplit(mat, ',')
+  mat <- unlist(mat)
+  mat <- as.integer(mat)
+  mat1 <- matrix(as.matrix(mat), ncol = col)
+  
+  # LLTM
+  lltm <- eRm::LLTM(data, mat1)
+  
+  # LLTM Person parameters 계산 (한 번만)
+  lltm_person <- tryCatch(
+    eRm::person.parameter(lltm),
+    error = function(e) {
+      warning("person.parameter() failed for LLTM: ", e$message)
+      return(NULL)
+    }
+  )
+  
+  # LLTM MSQ 추출 (이미 계산된 person_obj 사용)
+  lltm_msq <- if (!is.null(lltm_person)) {
+    private$.extractMSQ(lltm_person, item_names = vars)
+  } else {
+    NULL
+  }
+  
+  list(
+    rasch = rasch,
+    lr = lr,
+    ml = ml,
+    w = w,
+    lltm = lltm,
+    W = mat1,
+    rasch_msq = rasch_msq,
+    lltm_msq = lltm_msq,
+    rasch_person = rasch_person,
+    lltm_person = lltm_person
+  )
+}
+
     )
   )
