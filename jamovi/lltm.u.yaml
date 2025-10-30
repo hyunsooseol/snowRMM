@@ -65,7 +65,7 @@ children:
         fitToGrid: true
         children:
           - type: Label
-            label: 'LLTM'
+            label: 'LLTM model'
             children:
               - type: CheckBox
                 name: eta

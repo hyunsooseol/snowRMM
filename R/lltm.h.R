@@ -592,7 +592,7 @@ lltmResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         `type`="number"),
                     list(
                         `name`="flag", 
-                        `title`="Note", 
+                        `title`="Diagnostics", 
                         `type`="text"))))}))
 
 lltmBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
