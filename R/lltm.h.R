@@ -23,7 +23,10 @@ lltmOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             width1 = 500,
             height1 = 500,
             con = FALSE,
-            wdiag = FALSE, ...) {
+            wdiag = FALSE,
+            plot2 = FALSE,
+            width2 = 500,
+            height2 = 500, ...) {
 
             super$initialize(
                 package="snowRMM",
@@ -108,6 +111,18 @@ lltmOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "wdiag",
                 wdiag,
                 default=FALSE)
+            private$..plot2 <- jmvcore::OptionBool$new(
+                "plot2",
+                plot2,
+                default=FALSE)
+            private$..width2 <- jmvcore::OptionInteger$new(
+                "width2",
+                width2,
+                default=500)
+            private$..height2 <- jmvcore::OptionInteger$new(
+                "height2",
+                height2,
+                default=500)
 
             self$.addOption(private$..vars)
             self$.addOption(private$..mat)
@@ -127,6 +142,9 @@ lltmOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..height1)
             self$.addOption(private$..con)
             self$.addOption(private$..wdiag)
+            self$.addOption(private$..plot2)
+            self$.addOption(private$..width2)
+            self$.addOption(private$..height2)
         }),
     active = list(
         vars = function() private$..vars$value,
@@ -146,7 +164,10 @@ lltmOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         width1 = function() private$..width1$value,
         height1 = function() private$..height1$value,
         con = function() private$..con$value,
-        wdiag = function() private$..wdiag$value),
+        wdiag = function() private$..wdiag$value,
+        plot2 = function() private$..plot2$value,
+        width2 = function() private$..width2$value,
+        height2 = function() private$..height2$value),
     private = list(
         ..vars = NA,
         ..mat = NA,
@@ -165,7 +186,10 @@ lltmOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..width1 = NA,
         ..height1 = NA,
         ..con = NA,
-        ..wdiag = NA)
+        ..wdiag = NA,
+        ..plot2 = NA,
+        ..width2 = NA,
+        ..height2 = NA)
 )
 
 lltmResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -178,7 +202,8 @@ lltmResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         con = function() private$.items[["con"]],
         wdiag = function() private$.items[["wdiag"]],
         plot = function() private$.items[["plot"]],
-        plot1 = function() private$.items[["plot1"]]),
+        plot1 = function() private$.items[["plot1"]],
+        plot2 = function() private$.items[["plot2"]]),
     private = list(),
     public=list(
         initialize=function(options) {
@@ -521,7 +546,19 @@ lltmResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "mat",
                     "col",
                     "width1",
-                    "height1")))}))
+                    "height1")))
+            self$add(jmvcore::Image$new(
+                options=options,
+                name="plot2",
+                title="Item Fit Residual Plot",
+                visible="(plot2)",
+                renderFun=".plot2",
+                clearWith=list(
+                    "vars",
+                    "mat",
+                    "col",
+                    "width2",
+                    "height2")))}))
 
 lltmBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "lltmBase",
@@ -566,6 +603,9 @@ lltmBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param height1 .
 #' @param con .
 #' @param wdiag .
+#' @param plot2 .
+#' @param width2 .
+#' @param height2 .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
@@ -580,6 +620,7 @@ lltmBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$wdiag} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
+#'   \code{results$plot2} \tab \tab \tab \tab \tab an image \cr
 #' }
 #'
 #' Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
@@ -608,7 +649,10 @@ lltm <- function(
     width1 = 500,
     height1 = 500,
     con = FALSE,
-    wdiag = FALSE) {
+    wdiag = FALSE,
+    plot2 = FALSE,
+    width2 = 500,
+    height2 = 500) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("lltm requires jmvcore to be installed (restart may be required)")
@@ -638,7 +682,10 @@ lltm <- function(
         width1 = width1,
         height1 = height1,
         con = con,
-        wdiag = wdiag)
+        wdiag = wdiag,
+        plot2 = plot2,
+        width2 = width2,
+        height2 = height2)
 
     analysis <- lltmClass$new(
         options = options,

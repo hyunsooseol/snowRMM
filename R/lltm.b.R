@@ -59,7 +59,11 @@ lltmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           width <- self$options$width1; height <- self$options$height1
           self$results$plot1$setSize(width, height)
         }
-        
+        if (isTRUE(self$options$plot2)) {
+          width <- self$options$width2; height <- self$options$height2
+          self$results$plot2$setSize(width, height)
+        }
+
         if (length(self$options$vars) <= 1)
           self$setStatus('complete')
       },
@@ -285,16 +289,40 @@ lltmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         }
         
         # ---------------- 비교 플롯(LLTM vs RM) ----------------
+        if (isTRUE(self$options$plot)) {
+        
         image <- self$results$plot
         rm <- rasch$betapar
         lltm_b <- lltm$betapar
         image$setState(list(lltm_b, rm))
+        }
         
         # -------- NEW: W-matrix Heatmap 상태 전달 ------------
         if (isTRUE(self$options$plot1)) {
           self$results$plot1$setState(list(W = all$W))
         }
-      },
+      
+       
+        # -------- 잔차 플롯용 상태 저장 (RM − LLTM) --------
+        if (isTRUE(self$options$plot2)) {
+          # 캐시에서 이미 꺼낸 객체들을 재사용
+          rm_b   <- as.numeric(rasch$betapar)
+          lltm_b <- as.numeric(lltm$betapar)
+          
+          # 아이템 라벨: vars가 비어있을 수 있으므로 안전 처리
+          itms <- self$options$vars
+          if (is.null(itms) || length(itms) == 0)
+            itms <- paste0("I", seq_len(min(length(rm_b), length(lltm_b))))
+          
+          self$results$plot2$setState(list(
+            rm_beta   = rm_b,
+            lltm_beta = lltm_b,
+            items     = itms
+          ))
+        }
+        
+        
+        },
       
       .plot = function(image, ggtheme, theme, ...) {
         if (is.null(image$state)) return(FALSE)
@@ -390,6 +418,45 @@ lltmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         }
         TRUE
       },
+      
+      
+      # 아이템 파라미터 잔차: RM − LLTM  (길이 = 문항수)
+      # ------------------- Item Parameter Residuals (RM − LLTM) -------------------
+      .plot2 = function(image, ggtheme, theme, ...) {
+        st <- image$state
+        if (is.null(st)) return(FALSE)
+        
+        rm_b   <- as.numeric(st$rm_beta)
+        lltm_b <- as.numeric(st$lltm_beta)
+        items  <- st$items
+        
+        # 길이 안전화
+        n <- min(length(rm_b), length(ltlm_b <- lltm_b), length(items))
+        if (n <= 0) return(FALSE)
+        
+        resid <- rm_b[seq_len(n)] - ltlm_b[seq_len(n)]
+        
+        df <- data.frame(
+          Item     = items[seq_len(n)],
+          Residual = resid,
+          stringsAsFactors = FALSE
+        )
+        
+        p <- ggplot2::ggplot(df, ggplot2::aes(x = Item, y = Residual)) +
+          ggplot2::geom_hline(yintercept = 0, linetype = "dashed", color = "gray55") +
+          ggplot2::geom_point(size = 2.8) +
+          ggplot2::geom_text(ggplot2::aes(label = round(Residual, 3)), vjust = -0.9, size = 3) +
+          ggplot2::labs(
+            title = "Item Parameter Residuals (RM \u2212 LLTM)",
+            y = "Residual (β_RM − β_LLTM)", x = "Item"
+          ) +
+          ggplot2::theme_minimal(base_size = 11)
+        
+        if (!is.null(ggtheme)) p <- p + ggtheme
+        print(p)
+        TRUE
+      },
+      
       
       # --------------------------------------------------------------------
       .computeRES = function(){

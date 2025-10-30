@@ -307,4 +307,16 @@ items:
         - width1
         - height1
 
+    - name:  plot2
+      title: "Item Fit Residual Plot"
+      type:  Image
+      visible: (plot2)
+      renderFun: .plot2 
+      clearWith:
+        - vars
+        - mat
+        - col
+        - width2
+        - height2
+
 ...
