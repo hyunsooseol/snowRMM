@@ -82,4 +82,29 @@ options:
       title: "X"
       default: 500
 
+    - name: plot1
+      title: 'W matrix heatmap' 
+      type: Bool
+      default: false 
+
+    - name: width1
+      type: Integer
+      title: "Size: "
+      default: 500
+      
+    - name: height1
+      type: Integer
+      title: "X"
+      default: 500
+
+    - name: con
+      title: 'Contrast test'
+      type: Bool
+      default: false
+
+    - name: wdiag
+      title: "W diagnostics"
+      type: Bool
+      default: false
+
 ...

@@ -235,6 +235,54 @@ items:
               title: 'p'
               format: zto, pvalue
           
+    - name: con
+      title: 'η Contrast Test'
+      type: Table
+      visible: (con)
+      clearWith:
+        - vars
+        - mat
+        - col
+
+      rows: 0
+      columns:
+        - name: contrast
+          title: "Contrast"
+          type: text
+        - name: est
+          title: "Estimate"
+          type: number
+        - name: se
+          title: "SE"
+          type: number
+        - name: z
+          title: "z"
+          type: number
+        - name: p
+          title: "p"
+          type: number
+          format: zto, pvalue
+
+    - name: wdiag
+      title: "W Design Diagnostics"
+      type: Table
+      visible: (wdiag)
+      clearWith:
+        - vars
+        - mat
+        - col
+      rows: 0
+      columns:
+        - name: metric
+          title: "Metric"
+          type: text
+        - name: value
+          title: "Value"
+          type: number
+        - name: note
+          title: "Diagnostics"
+          type: text
+
     - name:  plot
       title: "Comparison of item easiness parameters "
       type:  Image
@@ -246,4 +294,17 @@ items:
         - col
         - width
         - height
+
+    - name:  plot1
+      title: "W matrix Heatmap "
+      type:  Image
+      visible: (plot1)
+      renderFun: .plot1 
+      clearWith:
+        - vars
+        - mat
+        - col
+        - width1
+        - height1
+
 ...

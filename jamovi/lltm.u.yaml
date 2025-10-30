@@ -53,7 +53,7 @@ children:
               - type: CheckBox
                 name: lr
               - type: CheckBox
-                name: ml  
+                name: ml
               - type: CheckBox
                 name: wald
       - type: LayoutBox
@@ -72,7 +72,11 @@ children:
               - type: CheckBox
                 name: beta
               - type: CheckBox
-                name: comp      
+                name: comp
+              - type: CheckBox
+                name: con
+              - type: CheckBox
+                name: wdiag
       - type: LayoutBox
         stretchFactor: 1
         margin: large
@@ -82,10 +86,10 @@ children:
         fitToGrid: true
         children:
           - type: Label
-            label: 'Plot'
+            label: 'Plots'
             children:
               - type: CheckBox
-                name: plot    
+                name: plot
                 style: list-inline
                 children:
                   - type: TextBox
@@ -95,10 +99,17 @@ children:
                   - type: TextBox
                     name: height
                     format: number
-                    enable: (plot) 
-    
-    
-    
-    
-    
-    
+                    enable: (plot)
+              - type: CheckBox
+                name: plot1
+                style: list-inline
+                children: 
+                  - type: TextBox
+                    name: width1
+                    format: number
+                    enable: (plot1)
+                  - type: TextBox
+                    name: height1
+                    format: number
+                    enable: (plot1)
+                

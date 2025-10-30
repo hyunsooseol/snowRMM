@@ -18,7 +18,12 @@ lltmOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             plot = FALSE,
             comp = FALSE,
             width = 500,
-            height = 500, ...) {
+            height = 500,
+            plot1 = FALSE,
+            width1 = 500,
+            height1 = 500,
+            con = FALSE,
+            wdiag = FALSE, ...) {
 
             super$initialize(
                 package="snowRMM",
@@ -83,6 +88,26 @@ lltmOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "height",
                 height,
                 default=500)
+            private$..plot1 <- jmvcore::OptionBool$new(
+                "plot1",
+                plot1,
+                default=FALSE)
+            private$..width1 <- jmvcore::OptionInteger$new(
+                "width1",
+                width1,
+                default=500)
+            private$..height1 <- jmvcore::OptionInteger$new(
+                "height1",
+                height1,
+                default=500)
+            private$..con <- jmvcore::OptionBool$new(
+                "con",
+                con,
+                default=FALSE)
+            private$..wdiag <- jmvcore::OptionBool$new(
+                "wdiag",
+                wdiag,
+                default=FALSE)
 
             self$.addOption(private$..vars)
             self$.addOption(private$..mat)
@@ -97,6 +122,11 @@ lltmOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..comp)
             self$.addOption(private$..width)
             self$.addOption(private$..height)
+            self$.addOption(private$..plot1)
+            self$.addOption(private$..width1)
+            self$.addOption(private$..height1)
+            self$.addOption(private$..con)
+            self$.addOption(private$..wdiag)
         }),
     active = list(
         vars = function() private$..vars$value,
@@ -111,7 +141,12 @@ lltmOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         plot = function() private$..plot$value,
         comp = function() private$..comp$value,
         width = function() private$..width$value,
-        height = function() private$..height$value),
+        height = function() private$..height$value,
+        plot1 = function() private$..plot1$value,
+        width1 = function() private$..width1$value,
+        height1 = function() private$..height1$value,
+        con = function() private$..con$value,
+        wdiag = function() private$..wdiag$value),
     private = list(
         ..vars = NA,
         ..mat = NA,
@@ -125,7 +160,12 @@ lltmOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..plot = NA,
         ..comp = NA,
         ..width = NA,
-        ..height = NA)
+        ..height = NA,
+        ..plot1 = NA,
+        ..width1 = NA,
+        ..height1 = NA,
+        ..con = NA,
+        ..wdiag = NA)
 )
 
 lltmResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -135,7 +175,10 @@ lltmResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         instructions = function() private$.items[["instructions"]],
         ra = function() private$.items[["ra"]],
         ll = function() private$.items[["ll"]],
-        plot = function() private$.items[["plot"]]),
+        con = function() private$.items[["con"]],
+        wdiag = function() private$.items[["wdiag"]],
+        plot = function() private$.items[["plot"]],
+        plot1 = function() private$.items[["plot1"]]),
     private = list(),
     public=list(
         initialize=function(options) {
@@ -400,6 +443,61 @@ lltmResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                     `name`="p", 
                                     `title`="p", 
                                     `format`="zto, pvalue"))))}))$new(options=options))
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="con",
+                title="\u03B7 Contrast Test",
+                visible="(con)",
+                clearWith=list(
+                    "vars",
+                    "mat",
+                    "col"),
+                rows=0,
+                columns=list(
+                    list(
+                        `name`="contrast", 
+                        `title`="Contrast", 
+                        `type`="text"),
+                    list(
+                        `name`="est", 
+                        `title`="Estimate", 
+                        `type`="number"),
+                    list(
+                        `name`="se", 
+                        `title`="SE", 
+                        `type`="number"),
+                    list(
+                        `name`="z", 
+                        `title`="z", 
+                        `type`="number"),
+                    list(
+                        `name`="p", 
+                        `title`="p", 
+                        `type`="number", 
+                        `format`="zto, pvalue"))))
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="wdiag",
+                title="W Design Diagnostics",
+                visible="(wdiag)",
+                clearWith=list(
+                    "vars",
+                    "mat",
+                    "col"),
+                rows=0,
+                columns=list(
+                    list(
+                        `name`="metric", 
+                        `title`="Metric", 
+                        `type`="text"),
+                    list(
+                        `name`="value", 
+                        `title`="Value", 
+                        `type`="number"),
+                    list(
+                        `name`="note", 
+                        `title`="Diagnostics", 
+                        `type`="text"))))
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot",
@@ -411,7 +509,19 @@ lltmResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "mat",
                     "col",
                     "width",
-                    "height")))}))
+                    "height")))
+            self$add(jmvcore::Image$new(
+                options=options,
+                name="plot1",
+                title="W matrix Heatmap ",
+                visible="(plot1)",
+                renderFun=".plot1",
+                clearWith=list(
+                    "vars",
+                    "mat",
+                    "col",
+                    "width1",
+                    "height1")))}))
 
 lltmBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "lltmBase",
@@ -451,6 +561,11 @@ lltmBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param comp .
 #' @param width .
 #' @param height .
+#' @param plot1 .
+#' @param width1 .
+#' @param height1 .
+#' @param con .
+#' @param wdiag .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
@@ -461,8 +576,17 @@ lltmBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$ll$eta} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$ll$beta} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$ll$comp} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$con} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$wdiag} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
+#'   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
 #' }
+#'
+#' Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
+#'
+#' \code{results$con$asDF}
+#'
+#' \code{as.data.frame(results$con)}
 #'
 #' @export
 lltm <- function(
@@ -479,7 +603,12 @@ lltm <- function(
     plot = FALSE,
     comp = FALSE,
     width = 500,
-    height = 500) {
+    height = 500,
+    plot1 = FALSE,
+    width1 = 500,
+    height1 = 500,
+    con = FALSE,
+    wdiag = FALSE) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("lltm requires jmvcore to be installed (restart may be required)")
@@ -504,7 +633,12 @@ lltm <- function(
         plot = plot,
         comp = comp,
         width = width,
-        height = height)
+        height = height,
+        plot1 = plot1,
+        width1 = width1,
+        height1 = height1,
+        con = con,
+        wdiag = wdiag)
 
     analysis <- lltmClass$new(
         options = options,
