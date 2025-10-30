@@ -77,6 +77,8 @@ children:
                 name: con
               - type: CheckBox
                 name: wdiag
+              - type: CheckBox
+                name: resid
       - type: LayoutBox
         stretchFactor: 1
         margin: large

@@ -107,6 +107,11 @@ options:
       type: Bool
       default: false
 
+    - name: resid
+      title: "Item fit residuals"
+      type: Bool
+      default: false
+
     - name: plot2
       title: 'Residual plot' 
       type: Bool

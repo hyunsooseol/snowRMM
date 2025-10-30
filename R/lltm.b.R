@@ -302,7 +302,51 @@ lltmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           self$results$plot1$setState(list(W = all$W))
         }
       
-       
+        # -------- Residual table: β_RM − β_LLTM --------
+        if (isTRUE(self$options$resid)) {
+          tbl <- self$results$resid
+          
+          rm_b   <- as.numeric(all$rasch$betapar)
+          lltm_b <- as.numeric(all$lltm$betapar)
+          
+          itms <- self$options$vars
+          if (is.null(itms) || length(itms) == 0)
+            itms <- paste0("I", seq_len(min(length(rm_b), length(lltm_b))))
+          
+          n <- min(length(rm_b), length(lltm_b), length(itms))
+          if (n > 0) {
+            resid  <- rm_b[seq_len(n)] - lltm_b[seq_len(n)]
+            absres <- abs(resid)
+            
+            for (i in seq_len(n)) {
+              # 방향성 + 임계값(±2) 반영한 간단 영문 Note
+              note_i <- if (is.finite(resid[i])) {
+                if (abs(resid[i]) >= 2) {
+                  if (resid[i] > 0) "⚠ possible misfit (LLTM underestimates)"
+                  else              "⚠ possible misfit (LLTM overestimates)"
+                } else {
+                  if (resid[i] > 0)  "OK (slight underestimation)"
+                  else if (resid[i] < 0) "OK (slight overestimation)"
+                  else "OK (neutral)"
+                }
+              } else {
+                ""
+              }
+              
+              tbl$addRow(
+                rowKey = itms[i],
+                values = list(
+                  item   = as.character(itms[i]),
+                  resid  = as.numeric(resid[i]),
+                  absres = as.numeric(absres[i]),
+                  flag   = note_i
+                )
+              )
+            }
+            tbl$setNote("Rule", "Flag if |Residual| ≥ 2 (heuristic): 'underestimates' = LLTM predicts easier; 'overestimates' = LLTM predicts harder.")
+          }
+        }
+        
         # -------- 잔차 플롯용 상태 저장 (RM − LLTM) --------
         if (isTRUE(self$options$plot2)) {
           # 캐시에서 이미 꺼낸 객체들을 재사용

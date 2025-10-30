@@ -319,4 +319,18 @@ items:
         - width2
         - height2
 
+    - name: resid
+      title: "Item Fit Residuals (RM − LLTM)"
+      type: Table
+      visible: (resid)
+      clearWith:
+        - vars
+        - mat
+        - col
+      columns:
+        - { name: item,   title: "Item",      type: text }
+        - { name: resid,  title: "Residual",  type: number }
+        - { name: absres, title: "|Residual|",type: number }
+        - { name: flag,   title: "Diagnostics",      type: text }
+
 ...
