@@ -47,6 +47,15 @@ items:
               type: number
               superTitle: '95% CI'  
           
+            - name: infit
+              title: 'Infit MSQ'
+              type: number
+              superTitle: 'Fit'
+            - name: outfit
+              title: 'Outfit MSQ'
+              type: number
+              superTitle: 'Fit'
+
         - name: lr
           title: 'Andersen’s LR test'
           type: Table
@@ -160,7 +169,7 @@ items:
               title: Upper
               type: number
               superTitle: '95% CI'  
-          
+
         - name: beta
           title: 'LLTM Item easiness parameters(beta)'
           type: Table

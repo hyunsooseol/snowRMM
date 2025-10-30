@@ -273,7 +273,17 @@ lltmResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                     `name`="upper", 
                                     `title`="Upper", 
                                     `type`="number", 
-                                    `superTitle`="95% CI"))))
+                                    `superTitle`="95% CI"),
+                                list(
+                                    `name`="infit", 
+                                    `title`="Infit MSQ", 
+                                    `type`="number", 
+                                    `superTitle`="Fit"),
+                                list(
+                                    `name`="outfit", 
+                                    `title`="Outfit MSQ", 
+                                    `type`="number", 
+                                    `superTitle`="Fit"))))
                         self$add(jmvcore::Table$new(
                             options=options,
                             name="lr",
