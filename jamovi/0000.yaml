@@ -197,11 +197,6 @@ datasets:
     description: Linear logistic Test Model
     tags:
       - LLTM
-  - name: wmatrix
-    path: Wmatrix.omv
-    description: Example of creating vectors
-    tags:
-      - LLTM
 usesNative: true
 minApp: 1.8.0
 

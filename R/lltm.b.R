@@ -92,6 +92,71 @@ lltmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         )
       },
       
+      # --- safe parser for Vectors → W (column-wise by default) ---
+      .parseVecToMat = function(vecStr, ncol, byrow = FALSE, nrow_expect = NULL) {
+        # 1) 비어있음 검사
+        if (is.null(vecStr) || !nzchar(vecStr))
+          stop("Vectors is empty. Please enter a comma/space separated list of numbers.")
+        
+        # (선택) 유니코드 마이너스 → ASCII 하이픈으로 정규화
+        vecStr <- enc2utf8(vecStr)
+        vecStr <- gsub("[\u2212\u2013\u2014]", "-", vecStr)  # −(2212), –(2013), —(2014)
+        
+        # 허용 문자만 남기기: 하이픈은 클래스의 '끝'으로 이동
+        s <- gsub("[^0-9eE+.,\\s-]", "", vecStr)
+        
+        
+        # 3) 토큰화 및 숫자 변환
+        toks <- unlist(strsplit(s, "[,\\s]+"))
+        toks <- toks[nzchar(toks)]
+        v <- suppressWarnings(as.numeric(toks))
+        
+        if (anyNA(v))
+          stop("Vectors contains non-numeric tokens. Keep only numbers, commas, and spaces/newlines.")
+        
+        # 4) 열 수 점검
+        if (!is.numeric(ncol) || length(ncol) != 1L || is.na(ncol) || ncol < 1)
+          stop("Number of columns (k) must be a positive integer.")
+        
+        # 5) 길이 일치 점검
+        if (length(v) %% ncol != 0)
+          stop(sprintf(
+            "Vectors length = %d is not a multiple of the specified columns (k = %d).",
+            length(v), ncol
+          ))
+        
+        # 6) 행렬 복원 (기본: column-wise / byrow=FALSE)
+        W <- matrix(v, ncol = ncol, byrow = byrow)
+        
+        # 7) 선택: 변수 상자 선택 문항 수와 행 수 경고
+        if (!is.null(nrow_expect) && nrow(W) != nrow_expect) {
+          warning(sprintf(
+            "Vectors imply %d rows but %d items are selected in 'Variables'.",
+            nrow(W), nrow_expect
+          ))
+        }
+        
+        storage.mode(W) <- "numeric"
+        W
+      },
+      
+      # --- format W as compact ASCII for Preformatted result ---
+      .formatWascii = function(W, rmax = 15, cmax = 8, order_used = "column-wise") {
+        if (is.null(rownames(W))) rownames(W) <- paste0("I", seq_len(nrow(W)))
+        if (is.null(colnames(W))) colnames(W) <- paste0("F", seq_len(ncol(W)))
+        
+        R <- nrow(W); C <- ncol(W)
+        rshow <- seq_len(min(R, rmax))
+        cshow <- seq_len(min(C, cmax))
+        Wshow <- W[rshow, cshow, drop = FALSE]
+        
+        hdr  <- sprintf("W matrix  (%d × %d)  – interpreted as %s", R, C, order_used)
+        note <- if (R > rmax || C > cmax) sprintf("Showing top-left %d × %d (truncated).", nrow(Wshow), ncol(Wshow)) else NULL
+        
+        paste(c(hdr, note, capture.output(print(Wshow, quote = FALSE))), collapse = "\n")
+      },
+      
+      
 
       .init = function() {
         private$.htmlwidget <- HTMLWidget$new()
@@ -104,18 +169,43 @@ lltmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           private$.htmlwidget$generate_accordion(
             title = "Instructions",
             content = paste(
-              '<div style="border: 2px solid #e6f4fe; border-radius: 15px; padding: 15px; background-color: #e6f4fe; margin-top: 10px;">',
-              '<div style="text-align:justify;">',
-              '<ul>',
+              '<div style="border:2px solid #e6f4fe;border-radius:14px;padding:18px 20px;background-color:#f7fbff;">',
+              '<div style="text-align:justify;line-height:1.6;font-size:13.8px;">',
+              
+              '<ul style="margin:0 0 10px 0;padding-left:18px;">',
               '<li>Performs Linear Logistic Test Model (LLTM) for binary item responses by using CML estimation.</li>',
-              '<li>Design matrix(W matrix) for the LLTM will be computed by specifying <b>Vectors and Number of columns</b>.</li>',
-              '<li>Artificial data matrix and R codes for creating W matrix can be found in Data Library>snowRMM folder.</li>',
-              '<li>A description of the LLTM is described in the <a href="https://share.google/C20YJlOBWOX3FfiAH" target = "_blank">paper</a>.</li>',
+              '<li>A description of the LLTM is provided in the <a href="https://share.google/C20YJlOBWOX3FfiAH" target="_blank">paper</a>.</li>',
               '<li>Feature requests and bug reports can be made on my <a href="https://github.com/hyunsooseol/snowRMM/issues" target="_blank">GitHub</a>.</li>',
-              '</ul></div></div>'
+              '</ul>',
+              
+              # ▼▼ 접기/펼치기 블록 ▼▼
+              '<details style="margin-top:16px;">',
+              '<summary style="font-weight:600;color:#004a99;cursor:pointer;">📘 How to specify the W-matrix (click to expand)</summary>',
+              '<div style="margin-top:10px;padding:10px 14px;border-left:3px solid #bcd4ff;background:#f9fbff;">',
+              '<p style="margin:4px 0 6px 0;">Enter <b>Vectors</b> and <b>Number of columns</b> in <b>column-wise order</b> — all items for Factor&nbsp;1, then Factor&nbsp;2, then Factor&nbsp;3 …</p>',
+              
+              '<div style="margin:8px 0 10px 0;">',
+              '<table style="border-collapse:collapse;margin:auto;">',
+              '<tr style="background-color:#eaf2ff;font-weight:600;">',
+              '<th style="border:1px solid #c5d7f5;padding:3px 8px;">Item</th>',
+              '<th style="border:1px solid #c5d7f5;padding:3px 8px;">F1</th>',
+              '<th style="border:1px solid #c5d7f5;padding:3px 8px;">F2</th>',
+              '<th style="border:1px solid #c5d7f5;padding:3px 8px;">F3</th>',
+              '</tr>',
+              '<tr><td style="border:1px solid #d7e2fb;padding:3px 8px;">I1</td><td style="border:1px solid #d7e2fb;padding:3px 8px;">1</td><td style="border:1px solid #d7e2fb;padding:3px 8px;">0</td><td style="border:1px solid #d7e2fb;padding:3px 8px;">1</td></tr>',
+              '<tr><td style="border:1px solid #d7e2fb;padding:3px 8px;">I2</td><td style="border:1px solid #d7e2fb;padding:3px 8px;">1</td><td style="border:1px solid #d7e2fb;padding:3px 8px;">1</td><td style="border:1px solid #d7e2fb;padding:3px 8px;">0</td></tr>',
+              '<tr><td style="border:1px solid #d7e2fb;padding:3px 8px;">I3</td><td style="border:1px solid #d7e2fb;padding:3px 8px;">0</td><td style="border:1px solid #d7e2fb;padding:3px 8px;">1</td><td style="border:1px solid #d7e2fb;padding:3px 8px;">0</td></tr>',
+              '</table>',
+              '<p style="font-size:12.5px;color:#444;text-align:center;margin-top:5px;">→ Column-wise vector: <code>1,1,0, 0,1,1, 1,0,0</code></p>',
+              '</div>',
+              
+              '</details>',
+              
+              '</div></div>'
             )
           )
         )
+        
         
         if (self$options$items)
           self$results$ra$items$setNote(
@@ -172,6 +262,14 @@ lltmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           private$.allCache <- private$.computeRES()
         }
         all <- private$.allCache
+        
+        # --- Fill W preview (Preformatted) ---
+        if (!is.null(self$results$text)) {
+          W <- all$W
+          pretty <- private$.formatWascii(W, rmax = 15, cmax = 8, order_used = "column-wise")
+          note <- "\n\n(Note: Only the top-left portion of the W matrix is displayed for preview.)"
+          self$results$text$setContent(paste0(pretty, note))
+        }
         
         # -------- W diagnostics --------
         if (isTRUE(self$options$wdiag)) {
@@ -647,11 +745,13 @@ lltmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
     NULL
   }
   
-  # W matrix 생성
-  mat <- strsplit(mat, ',')
-  mat <- unlist(mat)
-  mat <- as.integer(mat)
-  mat1 <- matrix(as.matrix(mat), ncol = col)
+  # --- W matrix 생성 (column-wise 해석, 안전 파서 사용) ---
+  mat1 <- private$.parseVecToMat(
+    vecStr      = self$options$mat,
+    ncol        = self$options$col,
+    byrow       = FALSE,                  # column-wise 유지
+    nrow_expect = length(vars)
+  )
   
   # LLTM
   lltm <- eRm::LLTM(data, mat1)

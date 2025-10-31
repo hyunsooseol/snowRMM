@@ -9,6 +9,10 @@ items:
       type: Html
       visible: True
 
+    - name:  text
+      title: 'W matrix preview'
+      type:  Preformatted
+
     - name: ra
       title: 'Rasch Model'
       type: Group

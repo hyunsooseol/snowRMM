@@ -205,6 +205,7 @@ lltmResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     inherit = jmvcore::Group,
     active = list(
         instructions = function() private$.items[["instructions"]],
+        text = function() private$.items[["text"]],
         ra = function() private$.items[["ra"]],
         ll = function() private$.items[["ll"]],
         con = function() private$.items[["con"]],
@@ -226,6 +227,10 @@ lltmResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 name="instructions",
                 title="Instructions",
                 visible=TRUE))
+            self$add(jmvcore::Preformatted$new(
+                options=options,
+                name="text",
+                title="W matrix preview"))
             self$add(R6::R6Class(
                 inherit = jmvcore::Group,
                 active = list(
@@ -665,6 +670,7 @@ lltmBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
+#'   \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$ra$items} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$ra$lr} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$ra$ml} \tab \tab \tab \tab \tab a table \cr
