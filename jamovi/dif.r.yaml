@@ -81,8 +81,6 @@ items:
       clearWith:
         - vars
         - facs
-        - width1
-        - height1
         - model
 
     - name: plot2
@@ -94,8 +92,6 @@ items:
       clearWith:
         - vars
         - facs
-        - width2
-        - height2
         - angle
         - model
 
@@ -108,8 +104,6 @@ items:
       clearWith:
         - vars
         - facs
-        - width3
-        - height3
         - model
 
     - name: plot4
@@ -121,8 +115,6 @@ items:
       clearWith:
         - vars
         - facs
-        - width4
-        - height4
         - model
 
     - name: comp1
@@ -183,8 +175,6 @@ items:
       clearWith:
         - vars
         - facs
-        - width5
-        - height5
         - model        
 
     - name: plot6
@@ -196,8 +186,6 @@ items:
       clearWith:
         - vars
         - facs
-        - width6
-        - height6
         - angle1
         - model
 
@@ -210,8 +198,6 @@ items:
       clearWith:
         - vars
         - facs
-        - width7
-        - height7
         - model
 
     - name: plot8
@@ -223,7 +209,5 @@ items:
       clearWith:
         - vars
         - facs
-        - width8
-        - height8
         - model
 ...

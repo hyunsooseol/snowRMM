@@ -185,8 +185,6 @@ items:
             - vars
             - nc 
             - covs
-            - width3
-            - height3  
 
     - name: plot
       title: 'LCA Plot'
@@ -198,8 +196,6 @@ items:
             - vars
             - nc 
             - covs
-            - width
-            - height
 
     - name: plot1
       title: 'Item by class'
@@ -212,9 +208,7 @@ items:
             - nc 
             - covs 
             - angle
-            - width1
-            - height1
-            
+
     - name: plot2
       title: 'Profile Plot'
       type: Image
@@ -226,7 +220,5 @@ items:
             - nc 
             - covs 
             - angle
-            - width2
-            - height2            
 
 ...

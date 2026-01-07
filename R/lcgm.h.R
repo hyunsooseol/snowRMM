@@ -17,14 +17,8 @@ lcgmOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             plot1 = FALSE,
             plot = FALSE,
             raw = "FALSE",
-            width = 500,
-            height = 500,
-            width1 = 500,
-            height1 = 500,
             miss = "listwise",
             plot2 = FALSE,
-            width2 = 500,
-            height2 = 500,
             auxVar = NULL,
             use3step = FALSE, ...) {
 
@@ -93,22 +87,6 @@ lcgmOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "FALSE",
                     "TRUE"),
                 default="FALSE")
-            private$..width <- jmvcore::OptionInteger$new(
-                "width",
-                width,
-                default=500)
-            private$..height <- jmvcore::OptionInteger$new(
-                "height",
-                height,
-                default=500)
-            private$..width1 <- jmvcore::OptionInteger$new(
-                "width1",
-                width1,
-                default=500)
-            private$..height1 <- jmvcore::OptionInteger$new(
-                "height1",
-                height1,
-                default=500)
             private$..miss <- jmvcore::OptionList$new(
                 "miss",
                 miss,
@@ -120,14 +98,6 @@ lcgmOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "plot2",
                 plot2,
                 default=FALSE)
-            private$..width2 <- jmvcore::OptionInteger$new(
-                "width2",
-                width2,
-                default=500)
-            private$..height2 <- jmvcore::OptionInteger$new(
-                "height2",
-                height2,
-                default=500)
             private$..auxVar <- jmvcore::OptionVariable$new(
                 "auxVar",
                 auxVar,
@@ -155,14 +125,8 @@ lcgmOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..plot1)
             self$.addOption(private$..plot)
             self$.addOption(private$..raw)
-            self$.addOption(private$..width)
-            self$.addOption(private$..height)
-            self$.addOption(private$..width1)
-            self$.addOption(private$..height1)
             self$.addOption(private$..miss)
             self$.addOption(private$..plot2)
-            self$.addOption(private$..width2)
-            self$.addOption(private$..height2)
             self$.addOption(private$..auxVar)
             self$.addOption(private$..use3step)
         }),
@@ -179,14 +143,8 @@ lcgmOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         plot1 = function() private$..plot1$value,
         plot = function() private$..plot$value,
         raw = function() private$..raw$value,
-        width = function() private$..width$value,
-        height = function() private$..height$value,
-        width1 = function() private$..width1$value,
-        height1 = function() private$..height1$value,
         miss = function() private$..miss$value,
         plot2 = function() private$..plot2$value,
-        width2 = function() private$..width2$value,
-        height2 = function() private$..height2$value,
         auxVar = function() private$..auxVar$value,
         use3step = function() private$..use3step$value),
     private = list(
@@ -202,14 +160,8 @@ lcgmOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..plot1 = NA,
         ..plot = NA,
         ..raw = NA,
-        ..width = NA,
-        ..height = NA,
-        ..width1 = NA,
-        ..height1 = NA,
         ..miss = NA,
         ..plot2 = NA,
-        ..width2 = NA,
-        ..height2 = NA,
         ..auxVar = NA,
         ..use3step = NA)
 )
@@ -414,8 +366,6 @@ lcgmResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "model",
                     "nc",
                     "thr",
-                    "width2",
-                    "height2",
                     "miss")))
             self$add(jmvcore::Image$new(
                 options=options,
@@ -428,8 +378,6 @@ lcgmResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "model",
                     "nc",
                     "thr",
-                    "width1",
-                    "height1",
                     "miss")))
             self$add(jmvcore::Image$new(
                 options=options,
@@ -443,8 +391,6 @@ lcgmResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "nc",
                     "thr",
                     "raw",
-                    "width",
-                    "height",
                     "miss")))
             self$add(jmvcore::Preformatted$new(
                 options=options,
@@ -487,14 +433,8 @@ lcgmBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param plot1 .
 #' @param plot .
 #' @param raw .
-#' @param width .
-#' @param height .
-#' @param width1 .
-#' @param height1 .
 #' @param miss .
 #' @param plot2 .
-#' @param width2 .
-#' @param height2 .
 #' @param auxVar .
 #' @param use3step .
 #' @return A results object containing:
@@ -533,14 +473,8 @@ lcgm <- function(
     plot1 = FALSE,
     plot = FALSE,
     raw = "FALSE",
-    width = 500,
-    height = 500,
-    width1 = 500,
-    height1 = 500,
     miss = "listwise",
     plot2 = FALSE,
-    width2 = 500,
-    height2 = 500,
     auxVar,
     use3step = FALSE) {
 
@@ -568,14 +502,8 @@ lcgm <- function(
         plot1 = plot1,
         plot = plot,
         raw = raw,
-        width = width,
-        height = height,
-        width1 = width1,
-        height1 = height1,
         miss = miss,
         plot2 = plot2,
-        width2 = width2,
-        height2 = height2,
         auxVar = auxVar,
         use3step = use3step)
 

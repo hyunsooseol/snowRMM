@@ -314,8 +314,6 @@ items:
         - vars
         - mat
         - col
-        - width
-        - height
 
     - name:  plot1
       title: "W matrix Heatmap "
@@ -326,8 +324,6 @@ items:
         - vars
         - mat
         - col
-        - width1
-        - height1
 
     - name:  plot2
       title: "Item Fit Residual Plot"
@@ -338,8 +334,6 @@ items:
         - vars
         - mat
         - col
-        - width2
-        - height2
 
     - name: resid
       title: "Item Fit Residuals (RM − LLTM)"

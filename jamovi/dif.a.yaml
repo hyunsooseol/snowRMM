@@ -48,16 +48,6 @@ options:
       type: Bool
       default: false       
 
-    - name: width1
-      type: Integer
-      title: "Size: "
-      default: 500
-      
-    - name: height1
-      type: Integer
-      title: "X"
-      default: 500
-
     - name: comp
       title: 'Item measure'  
       type: Bool
@@ -75,60 +65,20 @@ options:
       max: 90
       default: 0
       
-    - name: width2
-      type: Integer
-      title: "Width "
-      default: 500
-      
-    - name: height2
-      type: Integer
-      title: "Height"
-      default: 500      
-
     - name: plot3
       title: 'Scatterplot of item difference'
       type: Bool
       default: FALSE
-
-    - name: width3
-      type: Integer
-      title: "Size: "
-      default: 500
-      
-    - name: height3
-      type: Integer
-      title: "X"
-      default: 500
 
     - name: plot4
       title: 'Bar plot of item difference'
       type: Bool
       default: FALSE
 
-    - name: width4
-      type: Integer
-      title: "Size: "
-      default: 500
-      
-    - name: height4
-      type: Integer
-      title: "X"
-      default: 500
-
     - name: plot5
       title: 'Z plot'
       type: Bool
       default: false   
-
-    - name: width5
-      type: Integer
-      title: "Size: "
-      default: 500
-      
-    - name: height5
-      type: Integer
-      title: "X"
-      default: 500
 
     - name: comp1
       title: 'Item difficulty'  
@@ -152,44 +102,14 @@ options:
       max: 90
       default: 0
       
-    - name: width6
-      type: Integer
-      title: "Width "
-      default: 500
-      
-    - name: height6
-      type: Integer
-      title: "Height"
-      default: 500      
-
     - name: plot7
       title: 'Scatterplot of item difference'
       type: Bool
       default: FALSE
 
-    - name: width7
-      type: Integer
-      title: "Size: "
-      default: 500
-      
-    - name: height7
-      type: Integer
-      title: "X"
-      default: 500
-
     - name: plot8
       title: 'Bar plot of item difference'
       type: Bool
       default: FALSE
-
-    - name: width8
-      type: Integer
-      title: "Size: "
-      default: 500
-      
-    - name: height8
-      type: Integer
-      title: "X"
-      default: 500
 
 ...

@@ -41,13 +41,7 @@ equatingClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                     "Note",
                     " y = \u2026 + \u2026 x "
                 )
-            if(isTRUE(self$options$plot)){
-              
-              width <- self$options$width
-              height <- self$options$height
-              
-              self$results$plot$setSize(width, height)
-            }
+           
             
           }
           
@@ -78,18 +72,9 @@ equatingClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 
               )
             )                       
-            
-            if(isTRUE(self$options$plot1)){
-              
-              width <- self$options$width1
-              height <- self$options$height1
-              
-              self$results$plot1$setSize(width, height)
-            }
-            
+          
           }  
-            
-            
+          
         },
         
         

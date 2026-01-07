@@ -19,11 +19,7 @@ equatingOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             con = FALSE,
             contabx1 = FALSE,
             contaby1 = FALSE,
-            plot1 = FALSE,
-            width = 500,
-            height = 500,
-            width1 = 500,
-            height1 = 500, ...) {
+            plot1 = FALSE, ...) {
 
             super$initialize(
                 package="snowRMM",
@@ -109,22 +105,6 @@ equatingOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "plot1",
                 plot1,
                 default=FALSE)
-            private$..width <- jmvcore::OptionInteger$new(
-                "width",
-                width,
-                default=500)
-            private$..height <- jmvcore::OptionInteger$new(
-                "height",
-                height,
-                default=500)
-            private$..width1 <- jmvcore::OptionInteger$new(
-                "width1",
-                width1,
-                default=500)
-            private$..height1 <- jmvcore::OptionInteger$new(
-                "height1",
-                height1,
-                default=500)
 
             self$.addOption(private$..mode)
             self$.addOption(private$..ind)
@@ -142,10 +122,6 @@ equatingOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..contaby1)
             self$.addOption(private$..escore1)
             self$.addOption(private$..plot1)
-            self$.addOption(private$..width)
-            self$.addOption(private$..height)
-            self$.addOption(private$..width1)
-            self$.addOption(private$..height1)
         }),
     active = list(
         mode = function() private$..mode$value,
@@ -163,11 +139,7 @@ equatingOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         contabx1 = function() private$..contabx1$value,
         contaby1 = function() private$..contaby1$value,
         escore1 = function() private$..escore1$value,
-        plot1 = function() private$..plot1$value,
-        width = function() private$..width$value,
-        height = function() private$..height$value,
-        width1 = function() private$..width1$value,
-        height1 = function() private$..height1$value),
+        plot1 = function() private$..plot1$value),
     private = list(
         ..mode = NA,
         ..ind = NA,
@@ -184,11 +156,7 @@ equatingOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..contabx1 = NA,
         ..contaby1 = NA,
         ..escore1 = NA,
-        ..plot1 = NA,
-        ..width = NA,
-        ..height = NA,
-        ..width1 = NA,
-        ..height1 = NA)
+        ..plot1 = NA)
 )
 
 equatingResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -284,9 +252,7 @@ equatingResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 renderFun=".plot",
                 clearWith=list(
                     "ind",
-                    "dep",
-                    "width",
-                    "height")))
+                    "dep")))
             self$add(jmvcore::Output$new(
                 options=options,
                 name="escore",
@@ -366,9 +332,7 @@ equatingResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 renderFun=".plot1",
                 clearWith=list(
                     "ind1",
-                    "dep1",
-                    "width1",
-                    "height1")))}))
+                    "dep1")))}))
 
 equatingBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "equatingBase",
@@ -409,10 +373,6 @@ equatingBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param contabx1 .
 #' @param contaby1 .
 #' @param plot1 .
-#' @param width .
-#' @param height .
-#' @param width1 .
-#' @param height1 .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
@@ -451,11 +411,7 @@ equating <- function(
     con = FALSE,
     contabx1 = FALSE,
     contaby1 = FALSE,
-    plot1 = FALSE,
-    width = 500,
-    height = 500,
-    width1 = 500,
-    height1 = 500) {
+    plot1 = FALSE) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("equating requires jmvcore to be installed (restart may be required)")
@@ -487,11 +443,7 @@ equating <- function(
         con = con,
         contabx1 = contabx1,
         contaby1 = contaby1,
-        plot1 = plot1,
-        width = width,
-        height = height,
-        width1 = width1,
-        height1 = height1)
+        plot1 = plot1)
 
     analysis <- equatingClass$new(
         options = options,

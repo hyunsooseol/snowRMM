@@ -23,9 +23,7 @@ bfitOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             infit = FALSE,
             nco = FALSE,
             noutfit = FALSE,
-            ninfit = FALSE,
-            width = 500,
-            height = 500, ...) {
+            ninfit = FALSE, ...) {
 
             super$initialize(
                 package="snowRMM",
@@ -128,14 +126,6 @@ bfitOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "ninfit",
                 ninfit,
                 default=FALSE)
-            private$..width <- jmvcore::OptionInteger$new(
-                "width",
-                width,
-                default=500)
-            private$..height <- jmvcore::OptionInteger$new(
-                "height",
-                height,
-                default=500)
 
             self$.addOption(private$..mode)
             self$.addOption(private$..vars)
@@ -155,8 +145,6 @@ bfitOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..nco)
             self$.addOption(private$..noutfit)
             self$.addOption(private$..ninfit)
-            self$.addOption(private$..width)
-            self$.addOption(private$..height)
         }),
     active = list(
         mode = function() private$..mode$value,
@@ -176,9 +164,7 @@ bfitOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         infit = function() private$..infit$value,
         nco = function() private$..nco$value,
         noutfit = function() private$..noutfit$value,
-        ninfit = function() private$..ninfit$value,
-        width = function() private$..width$value,
-        height = function() private$..height$value),
+        ninfit = function() private$..ninfit$value),
     private = list(
         ..mode = NA,
         ..vars = NA,
@@ -197,9 +183,7 @@ bfitOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..infit = NA,
         ..nco = NA,
         ..noutfit = NA,
-        ..ninfit = NA,
-        ..width = NA,
-        ..height = NA)
+        ..ninfit = NA)
 )
 
 bfitResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -325,9 +309,7 @@ bfitResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "vars",
                     "step",
                     "bn",
-                    "angle",
-                    "width",
-                    "height")))
+                    "angle")))
             self$add(jmvcore::Image$new(
                 options=options,
                 name="outplot",
@@ -338,9 +320,7 @@ bfitResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "vars",
                     "step",
                     "bn",
-                    "angle",
-                    "width",
-                    "height")))
+                    "angle")))
             self$add(jmvcore::Html$new(
                 options=options,
                 name="instructions1",
@@ -498,8 +478,6 @@ bfitBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param nco .
 #' @param noutfit .
 #' @param ninfit .
-#' @param width .
-#' @param height .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
@@ -542,9 +520,7 @@ bfit <- function(
     infit = FALSE,
     nco = FALSE,
     noutfit = FALSE,
-    ninfit = FALSE,
-    width = 500,
-    height = 500) {
+    ninfit = FALSE) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("bfit requires jmvcore to be installed (restart may be required)")
@@ -576,9 +552,7 @@ bfit <- function(
         infit = infit,
         nco = nco,
         noutfit = noutfit,
-        ninfit = ninfit,
-        width = width,
-        height = height)
+        ninfit = ninfit)
 
     analysis <- bfitClass$new(
         options = options,

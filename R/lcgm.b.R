@@ -331,14 +331,6 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           )
         )
         
-        if (isTRUE(self$options$plot1))
-          self$results$plot1$setSize(self$options$width1, self$options$height1)
-        
-        if (isTRUE(self$options$plot))
-          self$results$plot$setSize(self$options$width, self$options$height)
-        
-        if (isTRUE(self$options$plot2))
-          self$results$plot2$setSize(self$options$width2, self$options$height2)
       },
       
       .run = function() {

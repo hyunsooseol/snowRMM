@@ -88,8 +88,6 @@ items:
             - step
             - bn
             - angle
-            - width
-            - height
 
     - name: outplot
       title: 'Confidence interval for outfit'
@@ -101,8 +99,6 @@ items:
             - step
             - bn 
             - angle
-            - width
-            - height
 
     - name: instructions1
       title: 'Bootstrap Item Fit with p values'

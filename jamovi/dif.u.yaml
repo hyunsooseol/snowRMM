@@ -27,7 +27,7 @@ children:
       - type: ComboBox
         name: model
   - type: CollapseBox
-    label: 'Dichotomous model'
+    label: Dichotomous model
     margin: normal
     collapsed: true
     children:
@@ -43,7 +43,7 @@ children:
             stretchFactor: 1
             children:
               - type: Label
-                label: 'Tables'
+                label: Tables
                 children:
                   - type: CheckBox
                     name: comp
@@ -61,16 +61,6 @@ children:
             children:
               - type: CheckBox
                 name: plot1
-                style: list-inline
-                children:
-                  - type: TextBox
-                    name: width1
-                    format: number
-                    enable: (plot1)
-                  - type: TextBox
-                    name: height1
-                    format: number
-                    enable: (plot1)
               - type: CheckBox
                 name: plot2
                 children:
@@ -82,40 +72,12 @@ children:
                       - value: 0
                       - value: 45
                       - value: 90
-                  - type: TextBox
-                    name: width2
-                    format: number
-                    enable: (plot2)
-                  - type: TextBox
-                    name: height2
-                    format: number
-                    enable: (plot2)
               - type: CheckBox
                 name: plot3
-                style: list-inline
-                children:
-                  - type: TextBox
-                    name: width3
-                    format: number
-                    enable: (plot3)
-                  - type: TextBox
-                    name: height3
-                    format: number
-                    enable: (plot3)
               - type: CheckBox
                 name: plot4
-                style: list-inline
-                children:
-                  - type: TextBox
-                    name: width4
-                    format: number
-                    enable: (plot4)
-                  - type: TextBox
-                    name: height4
-                    format: number
-                    enable: (plot4)
   - type: CollapseBox
-    label: 'Partial credit model'
+    label: Partial credit model
     margin: normal
     collapsed: true
     children:
@@ -129,9 +91,9 @@ children:
               column: 0
               row: 0
             stretchFactor: 1
-            children:  
+            children:
               - type: Label
-                label: 'Tables'
+                label: Tables
                 children:
                   - type: CheckBox
                     name: comp1
@@ -145,20 +107,10 @@ children:
         stretchFactor: 1
         children:
           - type: Label
-            label: 'Plots'
+            label: Plots
             children:
               - type: CheckBox
                 name: plot5
-                style: list-inline
-                children:
-                  - type: TextBox
-                    name: width5
-                    format: number
-                    enable: (plot5)
-                  - type: TextBox
-                    name: height5
-                    format: number
-                    enable: (plot5)
               - type: CheckBox
                 name: plot6
                 children:
@@ -170,35 +122,7 @@ children:
                       - value: 0
                       - value: 45
                       - value: 90
-                  - type: TextBox
-                    name: width6
-                    format: number
-                    enable: (plot6)
-                  - type: TextBox
-                    name: height6
-                    format: number
-                    enable: (plot6)
               - type: CheckBox
                 name: plot7
-                style: list-inline
-                children:
-                  - type: TextBox
-                    name: width7
-                    format: number
-                    enable: (plot7)
-                  - type: TextBox
-                    name: height7
-                    format: number
-                    enable: (plot7)
               - type: CheckBox
                 name: plot8
-                style: list-inline
-                children:
-                  - type: TextBox
-                    name: width8
-                    format: number
-                    enable: (plot8)
-                  - type: TextBox
-                    name: height8
-                    format: number
-                    enable: (plot8)

@@ -17,17 +17,11 @@ lltmOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             beta = FALSE,
             plot = FALSE,
             comp = FALSE,
-            width = 500,
-            height = 500,
             plot1 = FALSE,
-            width1 = 500,
-            height1 = 500,
             con = FALSE,
             wdiag = FALSE,
             resid = FALSE,
-            plot2 = FALSE,
-            width2 = 500,
-            height2 = 500, ...) {
+            plot2 = FALSE, ...) {
 
             super$initialize(
                 package="snowRMM",
@@ -84,26 +78,10 @@ lltmOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "comp",
                 comp,
                 default=FALSE)
-            private$..width <- jmvcore::OptionInteger$new(
-                "width",
-                width,
-                default=500)
-            private$..height <- jmvcore::OptionInteger$new(
-                "height",
-                height,
-                default=500)
             private$..plot1 <- jmvcore::OptionBool$new(
                 "plot1",
                 plot1,
                 default=FALSE)
-            private$..width1 <- jmvcore::OptionInteger$new(
-                "width1",
-                width1,
-                default=500)
-            private$..height1 <- jmvcore::OptionInteger$new(
-                "height1",
-                height1,
-                default=500)
             private$..con <- jmvcore::OptionBool$new(
                 "con",
                 con,
@@ -120,14 +98,6 @@ lltmOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "plot2",
                 plot2,
                 default=FALSE)
-            private$..width2 <- jmvcore::OptionInteger$new(
-                "width2",
-                width2,
-                default=500)
-            private$..height2 <- jmvcore::OptionInteger$new(
-                "height2",
-                height2,
-                default=500)
 
             self$.addOption(private$..vars)
             self$.addOption(private$..mat)
@@ -140,17 +110,11 @@ lltmOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..beta)
             self$.addOption(private$..plot)
             self$.addOption(private$..comp)
-            self$.addOption(private$..width)
-            self$.addOption(private$..height)
             self$.addOption(private$..plot1)
-            self$.addOption(private$..width1)
-            self$.addOption(private$..height1)
             self$.addOption(private$..con)
             self$.addOption(private$..wdiag)
             self$.addOption(private$..resid)
             self$.addOption(private$..plot2)
-            self$.addOption(private$..width2)
-            self$.addOption(private$..height2)
         }),
     active = list(
         vars = function() private$..vars$value,
@@ -164,17 +128,11 @@ lltmOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         beta = function() private$..beta$value,
         plot = function() private$..plot$value,
         comp = function() private$..comp$value,
-        width = function() private$..width$value,
-        height = function() private$..height$value,
         plot1 = function() private$..plot1$value,
-        width1 = function() private$..width1$value,
-        height1 = function() private$..height1$value,
         con = function() private$..con$value,
         wdiag = function() private$..wdiag$value,
         resid = function() private$..resid$value,
-        plot2 = function() private$..plot2$value,
-        width2 = function() private$..width2$value,
-        height2 = function() private$..height2$value),
+        plot2 = function() private$..plot2$value),
     private = list(
         ..vars = NA,
         ..mat = NA,
@@ -187,17 +145,11 @@ lltmOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..beta = NA,
         ..plot = NA,
         ..comp = NA,
-        ..width = NA,
-        ..height = NA,
         ..plot1 = NA,
-        ..width1 = NA,
-        ..height1 = NA,
         ..con = NA,
         ..wdiag = NA,
         ..resid = NA,
-        ..plot2 = NA,
-        ..width2 = NA,
-        ..height2 = NA)
+        ..plot2 = NA)
 )
 
 lltmResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -566,9 +518,7 @@ lltmResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 clearWith=list(
                     "vars",
                     "mat",
-                    "col",
-                    "width",
-                    "height")))
+                    "col")))
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot1",
@@ -578,9 +528,7 @@ lltmResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 clearWith=list(
                     "vars",
                     "mat",
-                    "col",
-                    "width1",
-                    "height1")))
+                    "col")))
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot2",
@@ -590,9 +538,7 @@ lltmResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 clearWith=list(
                     "vars",
                     "mat",
-                    "col",
-                    "width2",
-                    "height2")))
+                    "col")))
             self$add(jmvcore::Table$new(
                 options=options,
                 name="resid",
@@ -656,17 +602,11 @@ lltmBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param beta .
 #' @param plot .
 #' @param comp .
-#' @param width .
-#' @param height .
 #' @param plot1 .
-#' @param width1 .
-#' @param height1 .
 #' @param con .
 #' @param wdiag .
 #' @param resid .
 #' @param plot2 .
-#' @param width2 .
-#' @param height2 .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
@@ -706,17 +646,11 @@ lltm <- function(
     beta = FALSE,
     plot = FALSE,
     comp = FALSE,
-    width = 500,
-    height = 500,
     plot1 = FALSE,
-    width1 = 500,
-    height1 = 500,
     con = FALSE,
     wdiag = FALSE,
     resid = FALSE,
-    plot2 = FALSE,
-    width2 = 500,
-    height2 = 500) {
+    plot2 = FALSE) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("lltm requires jmvcore to be installed (restart may be required)")
@@ -740,17 +674,11 @@ lltm <- function(
         beta = beta,
         plot = plot,
         comp = comp,
-        width = width,
-        height = height,
         plot1 = plot1,
-        width1 = width1,
-        height1 = height1,
         con = con,
         wdiag = wdiag,
         resid = resid,
-        plot2 = plot2,
-        width2 = width2,
-        height2 = height2)
+        plot2 = plot2)
 
     analysis <- lltmClass$new(
         options = options,

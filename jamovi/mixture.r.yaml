@@ -215,8 +215,6 @@ items:
             - step
             - type
             - angle
-            - width
-            - height
 
     - name: plot3
       title: 'Person distributions across class'
@@ -229,9 +227,7 @@ items:
             - nc
             - step
             - type
-            - width2
-            - height2
- 
+
     - name: plot2
       title: 'Elbow plot'
       type: Image
@@ -245,8 +241,6 @@ items:
             - nc
             - step
             - type
-            - width1
-            - height1
 
     - name: pmember
       title: Class membership
@@ -298,7 +292,6 @@ items:
         - nc
         - step
         - type                 
-
 
 ...
 

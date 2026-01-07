@@ -29,11 +29,7 @@ linkingClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
               )
             )
           )              
-            if(isTRUE(self$options$plot)){
-              width <- self$options$width
-              height <- self$options$height
-              self$results$plot$setSize(width, height)
-            }
+          
         },
         
                 .run = function() {

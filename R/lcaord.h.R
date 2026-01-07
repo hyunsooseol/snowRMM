@@ -12,11 +12,7 @@ lcaordOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             fit = FALSE,
             cp = FALSE,
             plot = FALSE,
-            width = 500,
-            height = 500,
             plot1 = FALSE,
-            width1 = 500,
-            height1 = 500,
             angle = 0,
             miss = "listwise",
             use3step = FALSE,
@@ -61,26 +57,10 @@ lcaordOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "plot",
                 plot,
                 default=FALSE)
-            private$..width <- jmvcore::OptionInteger$new(
-                "width",
-                width,
-                default=500)
-            private$..height <- jmvcore::OptionInteger$new(
-                "height",
-                height,
-                default=500)
             private$..plot1 <- jmvcore::OptionBool$new(
                 "plot1",
                 plot1,
                 default=FALSE)
-            private$..width1 <- jmvcore::OptionInteger$new(
-                "width1",
-                width1,
-                default=500)
-            private$..height1 <- jmvcore::OptionInteger$new(
-                "height1",
-                height1,
-                default=500)
             private$..angle <- jmvcore::OptionNumber$new(
                 "angle",
                 angle,
@@ -134,11 +114,7 @@ lcaordOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..cp)
             self$.addOption(private$..mem)
             self$.addOption(private$..plot)
-            self$.addOption(private$..width)
-            self$.addOption(private$..height)
             self$.addOption(private$..plot1)
-            self$.addOption(private$..width1)
-            self$.addOption(private$..height1)
             self$.addOption(private$..angle)
             self$.addOption(private$..miss)
             self$.addOption(private$..use3step)
@@ -155,11 +131,7 @@ lcaordOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         cp = function() private$..cp$value,
         mem = function() private$..mem$value,
         plot = function() private$..plot$value,
-        width = function() private$..width$value,
-        height = function() private$..height$value,
         plot1 = function() private$..plot1$value,
-        width1 = function() private$..width1$value,
-        height1 = function() private$..height1$value,
         angle = function() private$..angle$value,
         miss = function() private$..miss$value,
         use3step = function() private$..use3step$value,
@@ -175,11 +147,7 @@ lcaordOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..cp = NA,
         ..mem = NA,
         ..plot = NA,
-        ..width = NA,
-        ..height = NA,
         ..plot1 = NA,
-        ..width1 = NA,
-        ..height1 = NA,
         ..angle = NA,
         ..miss = NA,
         ..use3step = NA,
@@ -324,8 +292,6 @@ lcaordResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 clearWith=list(
                     "vars",
                     "nc",
-                    "width1",
-                    "height1",
                     "miss")))
             self$add(jmvcore::Image$new(
                 options=options,
@@ -336,8 +302,6 @@ lcaordResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 clearWith=list(
                     "vars",
                     "nc",
-                    "width",
-                    "height",
                     "angle",
                     "miss")))
             self$add(jmvcore::Preformatted$new(
@@ -380,11 +344,7 @@ lcaordBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param fit .
 #' @param cp .
 #' @param plot .
-#' @param width .
-#' @param height .
 #' @param plot1 .
-#' @param width1 .
-#' @param height1 .
 #' @param angle a number from 0 to 90 defining the angle of the x-axis labels,
 #'   where 0 degrees represents completely horizontal labels.
 #' @param miss .
@@ -423,11 +383,7 @@ lcaord <- function(
     fit = FALSE,
     cp = FALSE,
     plot = FALSE,
-    width = 500,
-    height = 500,
     plot1 = FALSE,
-    width1 = 500,
-    height1 = 500,
     angle = 0,
     miss = "listwise",
     use3step = FALSE,
@@ -458,11 +414,7 @@ lcaord <- function(
         fit = fit,
         cp = cp,
         plot = plot,
-        width = width,
-        height = height,
         plot1 = plot1,
-        width1 = width1,
-        height1 = height1,
         angle = angle,
         miss = miss,
         use3step = use3step,

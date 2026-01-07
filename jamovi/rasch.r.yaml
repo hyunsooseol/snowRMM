@@ -156,8 +156,6 @@ items:
         - vars
         - step
         - type
-        - width3
-        - height3
 
     - name: piplot
       title: 'Person-Item Map for Partial Credit Model '
@@ -170,8 +168,6 @@ items:
         - vars
         - step
         - type
-        - width4
-        - height4
 
     - name: gofplot
       title: 'Goodness-of-Fit for LR test'
@@ -186,8 +182,6 @@ items:
         - type
         - lrsplit
         - tlab
-        - width7
-        - height7       
 
     - name: plot1
       title: 'ICC for Dichotomous Item'
@@ -201,9 +195,7 @@ items:
         - step
         - type
         - num
-        - width6
-        - height6       
- 
+
     - name: plot2
       title: 'Category for Rating Scale Model'
       type: Image
@@ -216,9 +208,7 @@ items:
         - step
         - type
         - num
-        - width5
-        - height5
-        
+
     - name: plot3
       title: 'Category for Partial Credit Model'
       type: Image
@@ -231,9 +221,7 @@ items:
         - step
         - type 
         - num
-        - width5
-        - height5
-        
+
     - name: inplot
       title: 'Item Infit plot'
       type: Image
@@ -246,8 +234,6 @@ items:
         - step
         - type
         - angle
-        - width
-        - height
 
     - name: outplot
       title: 'Item Outfit plot'
@@ -261,8 +247,6 @@ items:
         - step
         - type
         - angle
-        - width
-        - height
 
     - name: ptotal
       title: Total
@@ -435,8 +419,6 @@ items:
             - vars
             - step
             - type
-            - width1
-            - height1
 
     - name:  plot8
       title: 'Plot of standardized residuals'
@@ -450,8 +432,6 @@ items:
             - step
             - type
             - num1
-            - width8
-            - height8
 
     - name:  plot5
       title: 'Rasch Residual Factor Plot'
@@ -465,9 +445,7 @@ items:
             - step
             - type
             - res
-            - width2
-            - height2
-    
+
     - name: q3
       title: 'Q3 statistic based on pearson correlation'
       type: Table
@@ -531,7 +509,5 @@ items:
             - mea2
             - se1
             - se2
-            - width9
-            - height9
-    
+
 ...

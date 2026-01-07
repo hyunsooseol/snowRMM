@@ -9,9 +9,7 @@ linkingOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             ind = NULL,
             dep = NULL,
             method = "linear",
-            plot = FALSE,
-            width = 500,
-            height = 500, ...) {
+            plot = FALSE, ...) {
 
             super$initialize(
                 package="snowRMM",
@@ -44,36 +42,22 @@ linkingOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "plot",
                 plot,
                 default=FALSE)
-            private$..width <- jmvcore::OptionInteger$new(
-                "width",
-                width,
-                default=500)
-            private$..height <- jmvcore::OptionInteger$new(
-                "height",
-                height,
-                default=500)
 
             self$.addOption(private$..ind)
             self$.addOption(private$..dep)
             self$.addOption(private$..method)
             self$.addOption(private$..plot)
-            self$.addOption(private$..width)
-            self$.addOption(private$..height)
         }),
     active = list(
         ind = function() private$..ind$value,
         dep = function() private$..dep$value,
         method = function() private$..method$value,
-        plot = function() private$..plot$value,
-        width = function() private$..width$value,
-        height = function() private$..height$value),
+        plot = function() private$..plot$value),
     private = list(
         ..ind = NA,
         ..dep = NA,
         ..method = NA,
-        ..plot = NA,
-        ..width = NA,
-        ..height = NA)
+        ..plot = NA)
 )
 
 linkingResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -122,9 +106,7 @@ linkingResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 clearWith=list(
                     "ind",
                     "dep",
-                    "method",
-                    "width",
-                    "height")))}))
+                    "method")))}))
 
 linkingBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "linkingBase",
@@ -155,8 +137,6 @@ linkingBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param dep .
 #' @param method .
 #' @param plot .
-#' @param width .
-#' @param height .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
@@ -176,9 +156,7 @@ linking <- function(
     ind,
     dep,
     method = "linear",
-    plot = FALSE,
-    width = 500,
-    height = 500) {
+    plot = FALSE) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("linking requires jmvcore to be installed (restart may be required)")
@@ -196,9 +174,7 @@ linking <- function(
         ind = ind,
         dep = dep,
         method = method,
-        plot = plot,
-        width = width,
-        height = height)
+        plot = plot)
 
     analysis <- linkingClass$new(
         options = options,

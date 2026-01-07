@@ -69,8 +69,6 @@ items:
       clearWith:
         - ind
         - dep
-        - width
-        - height
 
     - name: escore
       title: Equating score
@@ -148,7 +146,5 @@ items:
       clearWith:
         - ind1
         - dep1
-        - width1
-        - height1
 
 ...

@@ -79,16 +79,6 @@ children:
             children:
               - type: CheckBox
                 name: plot2
-                style: list-inline
-                children:
-                  - type: TextBox
-                    name: width1
-                    format: number
-                    enable: (plot2)
-                  - type: TextBox
-                    name: height1
-                    format: number
-                    enable: (plot2) 
               - type: CheckBox
                 name: iplot
                 children:
@@ -100,14 +90,6 @@ children:
                       - value: 0
                       - value: 45
                       - value: 90
-                  - type: TextBox
-                    name: width
-                    format: number
-                    enable: (iplot)
-                  - type: TextBox
-                    name: height
-                    format: number
-                    enable: (iplot)
   - type: CollapseBox
     label: Person Analysis
     margin: normal
@@ -149,13 +131,3 @@ children:
             children:
               - type: CheckBox
                 name: plot3
-                style: list-inline
-                children:
-                  - type: TextBox
-                    name: width2
-                    format: number
-                    enable: (plot3)
-                  - type: TextBox
-                    name: height2
-                    format: number
-                    enable: (plot3)  

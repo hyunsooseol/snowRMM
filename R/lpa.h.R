@@ -21,18 +21,6 @@ lpaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             plot5 = FALSE,
             angle = 0,
             line = "FALSE",
-            width = 500,
-            height = 500,
-            width1 = 500,
-            height1 = 500,
-            width2 = 500,
-            height2 = 500,
-            width3 = 500,
-            height3 = 500,
-            width4 = 500,
-            height4 = 500,
-            width5 = 500,
-            height5 = 500,
             use3step = FALSE,
             auxVar = NULL, ...) {
 
@@ -122,54 +110,6 @@ lpaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "FALSE",
                     "TRUE"),
                 default="FALSE")
-            private$..width <- jmvcore::OptionInteger$new(
-                "width",
-                width,
-                default=500)
-            private$..height <- jmvcore::OptionInteger$new(
-                "height",
-                height,
-                default=500)
-            private$..width1 <- jmvcore::OptionInteger$new(
-                "width1",
-                width1,
-                default=500)
-            private$..height1 <- jmvcore::OptionInteger$new(
-                "height1",
-                height1,
-                default=500)
-            private$..width2 <- jmvcore::OptionInteger$new(
-                "width2",
-                width2,
-                default=500)
-            private$..height2 <- jmvcore::OptionInteger$new(
-                "height2",
-                height2,
-                default=500)
-            private$..width3 <- jmvcore::OptionInteger$new(
-                "width3",
-                width3,
-                default=500)
-            private$..height3 <- jmvcore::OptionInteger$new(
-                "height3",
-                height3,
-                default=500)
-            private$..width4 <- jmvcore::OptionInteger$new(
-                "width4",
-                width4,
-                default=500)
-            private$..height4 <- jmvcore::OptionInteger$new(
-                "height4",
-                height4,
-                default=500)
-            private$..width5 <- jmvcore::OptionInteger$new(
-                "width5",
-                width5,
-                default=500)
-            private$..height5 <- jmvcore::OptionInteger$new(
-                "height5",
-                height5,
-                default=500)
             private$..use3step <- jmvcore::OptionBool$new(
                 "use3step",
                 use3step,
@@ -202,18 +142,6 @@ lpaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..plot5)
             self$.addOption(private$..angle)
             self$.addOption(private$..line)
-            self$.addOption(private$..width)
-            self$.addOption(private$..height)
-            self$.addOption(private$..width1)
-            self$.addOption(private$..height1)
-            self$.addOption(private$..width2)
-            self$.addOption(private$..height2)
-            self$.addOption(private$..width3)
-            self$.addOption(private$..height3)
-            self$.addOption(private$..width4)
-            self$.addOption(private$..height4)
-            self$.addOption(private$..width5)
-            self$.addOption(private$..height5)
             self$.addOption(private$..use3step)
             self$.addOption(private$..auxVar)
         }),
@@ -235,18 +163,6 @@ lpaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         plot5 = function() private$..plot5$value,
         angle = function() private$..angle$value,
         line = function() private$..line$value,
-        width = function() private$..width$value,
-        height = function() private$..height$value,
-        width1 = function() private$..width1$value,
-        height1 = function() private$..height1$value,
-        width2 = function() private$..width2$value,
-        height2 = function() private$..height2$value,
-        width3 = function() private$..width3$value,
-        height3 = function() private$..height3$value,
-        width4 = function() private$..width4$value,
-        height4 = function() private$..height4$value,
-        width5 = function() private$..width5$value,
-        height5 = function() private$..height5$value,
         use3step = function() private$..use3step$value,
         auxVar = function() private$..auxVar$value),
     private = list(
@@ -267,18 +183,6 @@ lpaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..plot5 = NA,
         ..angle = NA,
         ..line = NA,
-        ..width = NA,
-        ..height = NA,
-        ..width1 = NA,
-        ..height1 = NA,
-        ..width2 = NA,
-        ..height2 = NA,
-        ..width3 = NA,
-        ..height3 = NA,
-        ..width4 = NA,
-        ..height4 = NA,
-        ..width5 = NA,
-        ..height5 = NA,
         ..use3step = NA,
         ..auxVar = NA)
 )
@@ -484,9 +388,7 @@ lpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "vars",
                     "nc",
                     "variances",
-                    "covariances",
-                    "width",
-                    "height")))
+                    "covariances")))
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot3",
@@ -499,9 +401,7 @@ lpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "vars",
                     "nc",
                     "variances",
-                    "covariances",
-                    "width2",
-                    "height2")))
+                    "covariances")))
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot2",
@@ -513,9 +413,7 @@ lpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "vars",
                     "nc",
                     "variances",
-                    "covariances",
-                    "width3",
-                    "height3")))
+                    "covariances")))
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot1",
@@ -528,8 +426,6 @@ lpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "nc",
                     "variances",
                     "covariances",
-                    "width1",
-                    "height1",
                     "line",
                     "angle")))
             self$add(jmvcore::Image$new(
@@ -544,8 +440,6 @@ lpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "nc",
                     "variances",
                     "covariances",
-                    "width4",
-                    "height4",
                     "angle")))
             self$add(jmvcore::Image$new(
                 options=options,
@@ -559,8 +453,6 @@ lpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "nc",
                     "variances",
                     "covariances",
-                    "width5",
-                    "height5",
                     "angle")))
             self$add(jmvcore::Preformatted$new(
                 options=options,
@@ -608,18 +500,6 @@ lpaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param angle a number from 0 to 90 defining the angle of the x-axis labels,
 #'   where 0 degrees represents completely horizontal labels.
 #' @param line .
-#' @param width .
-#' @param height .
-#' @param width1 .
-#' @param height1 .
-#' @param width2 .
-#' @param height2 .
-#' @param width3 .
-#' @param height3 .
-#' @param width4 .
-#' @param height4 .
-#' @param width5 .
-#' @param height5 .
 #' @param use3step .
 #' @param auxVar .
 #' @return A results object containing:
@@ -665,18 +545,6 @@ lpa <- function(
     plot5 = FALSE,
     angle = 0,
     line = "FALSE",
-    width = 500,
-    height = 500,
-    width1 = 500,
-    height1 = 500,
-    width2 = 500,
-    height2 = 500,
-    width3 = 500,
-    height3 = 500,
-    width4 = 500,
-    height4 = 500,
-    width5 = 500,
-    height5 = 500,
     use3step = FALSE,
     auxVar) {
 
@@ -708,18 +576,6 @@ lpa <- function(
         plot5 = plot5,
         angle = angle,
         line = line,
-        width = width,
-        height = height,
-        width1 = width1,
-        height1 = height1,
-        width2 = width2,
-        height2 = height2,
-        width3 = width3,
-        height3 = height3,
-        width4 = width4,
-        height4 = height4,
-        width5 = width5,
-        height5 = height5,
         use3step = use3step,
         auxVar = auxVar)
 

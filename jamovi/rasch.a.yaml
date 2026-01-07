@@ -270,86 +270,6 @@ options:
       type: Bool
       default: false
 
-    - name: width
-      type: Integer
-      title: "Width "
-      default: 500
-      
-    - name: height
-      type: Integer
-      title: "Height"
-      default: 500
-
-    - name: width1
-      type: Integer
-      title: "Size: "
-      default: 500
-      
-    - name: height1
-      type: Integer
-      title: "X"
-      default: 500
-
-    - name: width2
-      type: Integer
-      title: "Width "
-      default: 500
-      
-    - name: height2
-      type: Integer
-      title: "Height"
-      default: 500      
-
-    - name: width3
-      type: Integer
-      title: "Size: "
-      default: 500
-      
-    - name: height3
-      type: Integer
-      title: "X"
-      default: 500
-
-    - name: width4
-      type: Integer
-      title: "Size: "
-      default: 500
-      
-    - name: height4
-      type: Integer
-      title: "X"
-      default: 500
-
-    - name: width5
-      type: Integer
-      title: "Width "
-      default: 500
-      
-    - name: height5
-      type: Integer
-      title: "Height"
-      default: 500    
-
-    - name: width6
-      type: Integer
-      title: "Size: "
-      default: 500
-      
-    - name: height6
-      type: Integer
-      title: "X"
-      default: 500
-
-    - name: width7
-      type: Integer
-      title: "Width "
-      default: 500
-      
-    - name: height7
-      type: Integer
-      title: "Height"
-      default: 500    
-
     - name: plot8
       title: 'Plot of std. residuals'
       type: Bool
@@ -360,16 +280,6 @@ options:
       default: 1
       type: Integer
       min: 1
-
-    - name: width8
-      type: Integer
-      title: "Size: "
-      default: 500
-      
-    - name: height8
-      type: Integer
-      title: "X"
-      default: 500
 
     - name: nptest
       title: 'NP test'
@@ -431,13 +341,4 @@ options:
       type: Bool
       default: false  
 
-    - name: width9
-      type: Integer
-      title: "Size: "
-      default: 500
-      
-    - name: height9
-      type: Integer
-      title: "X"
-      default: 500
 ...

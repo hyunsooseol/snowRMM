@@ -41,12 +41,6 @@ lpaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           )
         )
         
-        if (isTRUE(self$options$plot))  self$results$plot$setSize(self$options$width,  self$options$height)
-        if (isTRUE(self$options$plot1)) self$results$plot1$setSize(self$options$width1, self$options$height1)
-        if (isTRUE(self$options$plot2)) self$results$plot2$setSize(self$options$width2, self$options$height2)
-        if (isTRUE(self$options$plot3)) self$results$plot3$setSize(self$options$width3, self$options$height3)
-        if (isTRUE(self$options$plot4)) self$results$plot4$setSize(self$options$width4, self$options$height4)
-        if (isTRUE(self$options$plot5)) self$results$plot5$setSize(self$options$width5, self$options$height5)
       },
       
       .run = function() {

@@ -107,8 +107,6 @@ items:
       clearWith:
         - vars
         - nc
-        - width1
-        - height1
         - miss
         
     - name: plot
@@ -119,8 +117,6 @@ items:
       clearWith:
         - vars
         - nc
-        - width
-        - height
         - angle
         - miss
 

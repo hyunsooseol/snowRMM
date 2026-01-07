@@ -219,24 +219,7 @@ lltmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
             "LLs= Conditional log-likelihoods; npar= Number of parameters; LR= Likelihood ratio statistics."
           )
         
-        if (isTRUE(self$options$plot)) {
-          width <- self$options$width
-          height <- self$options$height
-          self$results$plot$setSize(width, height)
-        }
-        
-        if (isTRUE(self$options$plot1)) {
-          width <- self$options$width1
-          height <- self$options$height1
-          self$results$plot1$setSize(width, height)
-        }
-        
-        if (isTRUE(self$options$plot2)) {
-          width <- self$options$width2
-          height <- self$options$height2
-          self$results$plot2$setSize(width, height)
-        }
-        
+
         if (length(self$options$vars) <= 1)
           self$setStatus('complete')
       },

@@ -162,9 +162,7 @@ items:
         - nc
         - variances
         - covariances
-        - width
-        - height
- 
+
     - name: plot3
       title: 'Density plot'
       type: Image
@@ -177,8 +175,6 @@ items:
         - nc
         - variances
         - covariances
-        - width2
-        - height2
 
     - name: plot2
       title: 'Elbow plot'
@@ -191,8 +187,6 @@ items:
         - nc
         - variances
         - covariances    
-        - width3
-        - height3
 
     - name: plot1
       title: 'Latent profile: Box plot'
@@ -205,8 +199,6 @@ items:
         - nc
         - variances
         - covariances     
-        - width1
-        - height1
         - line
         - angle
  
@@ -221,8 +213,6 @@ items:
         - nc
         - variances
         - covariances     
-        - width4
-        - height4
         - angle
  
     - name: plot5
@@ -236,8 +226,6 @@ items:
         - nc
         - variances
         - covariances     
-        - width5
-        - height5
         - angle
 
     - name: use3step

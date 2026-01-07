@@ -45,26 +45,8 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             q3 = FALSE,
             res1 = "stdr",
             cormatrix = FALSE,
-            width = 500,
-            height = 500,
-            width1 = 500,
-            height1 = 500,
-            width2 = 500,
-            height2 = 500,
-            width3 = 500,
-            height3 = 500,
-            width4 = 500,
-            height4 = 500,
-            width5 = 500,
-            height5 = 500,
-            width6 = 500,
-            height6 = 500,
-            width7 = 500,
-            height7 = 500,
             plot8 = FALSE,
             num1 = 1,
-            width8 = 500,
-            height8 = 500,
             nptest = FALSE,
             matrix = 500,
             npmethod = "T11",
@@ -72,9 +54,7 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             se1 = NULL,
             mea2 = NULL,
             se2 = NULL,
-            plot9 = FALSE,
-            width9 = 500,
-            height9 = 500, ...) {
+            plot9 = FALSE, ...) {
 
             super$initialize(
                 package="snowRMM",
@@ -281,70 +261,6 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "cormatrix",
                 cormatrix,
                 default=FALSE)
-            private$..width <- jmvcore::OptionInteger$new(
-                "width",
-                width,
-                default=500)
-            private$..height <- jmvcore::OptionInteger$new(
-                "height",
-                height,
-                default=500)
-            private$..width1 <- jmvcore::OptionInteger$new(
-                "width1",
-                width1,
-                default=500)
-            private$..height1 <- jmvcore::OptionInteger$new(
-                "height1",
-                height1,
-                default=500)
-            private$..width2 <- jmvcore::OptionInteger$new(
-                "width2",
-                width2,
-                default=500)
-            private$..height2 <- jmvcore::OptionInteger$new(
-                "height2",
-                height2,
-                default=500)
-            private$..width3 <- jmvcore::OptionInteger$new(
-                "width3",
-                width3,
-                default=500)
-            private$..height3 <- jmvcore::OptionInteger$new(
-                "height3",
-                height3,
-                default=500)
-            private$..width4 <- jmvcore::OptionInteger$new(
-                "width4",
-                width4,
-                default=500)
-            private$..height4 <- jmvcore::OptionInteger$new(
-                "height4",
-                height4,
-                default=500)
-            private$..width5 <- jmvcore::OptionInteger$new(
-                "width5",
-                width5,
-                default=500)
-            private$..height5 <- jmvcore::OptionInteger$new(
-                "height5",
-                height5,
-                default=500)
-            private$..width6 <- jmvcore::OptionInteger$new(
-                "width6",
-                width6,
-                default=500)
-            private$..height6 <- jmvcore::OptionInteger$new(
-                "height6",
-                height6,
-                default=500)
-            private$..width7 <- jmvcore::OptionInteger$new(
-                "width7",
-                width7,
-                default=500)
-            private$..height7 <- jmvcore::OptionInteger$new(
-                "height7",
-                height7,
-                default=500)
             private$..plot8 <- jmvcore::OptionBool$new(
                 "plot8",
                 plot8,
@@ -354,14 +270,6 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 num1,
                 default=1,
                 min=1)
-            private$..width8 <- jmvcore::OptionInteger$new(
-                "width8",
-                width8,
-                default=500)
-            private$..height8 <- jmvcore::OptionInteger$new(
-                "height8",
-                height8,
-                default=500)
             private$..nptest <- jmvcore::OptionBool$new(
                 "nptest",
                 nptest,
@@ -411,14 +319,6 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "plot9",
                 plot9,
                 default=FALSE)
-            private$..width9 <- jmvcore::OptionInteger$new(
-                "width9",
-                width9,
-                default=500)
-            private$..height9 <- jmvcore::OptionInteger$new(
-                "height9",
-                height9,
-                default=500)
 
             self$.addOption(private$..vars)
             self$.addOption(private$..num)
@@ -464,26 +364,8 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..q3)
             self$.addOption(private$..res1)
             self$.addOption(private$..cormatrix)
-            self$.addOption(private$..width)
-            self$.addOption(private$..height)
-            self$.addOption(private$..width1)
-            self$.addOption(private$..height1)
-            self$.addOption(private$..width2)
-            self$.addOption(private$..height2)
-            self$.addOption(private$..width3)
-            self$.addOption(private$..height3)
-            self$.addOption(private$..width4)
-            self$.addOption(private$..height4)
-            self$.addOption(private$..width5)
-            self$.addOption(private$..height5)
-            self$.addOption(private$..width6)
-            self$.addOption(private$..height6)
-            self$.addOption(private$..width7)
-            self$.addOption(private$..height7)
             self$.addOption(private$..plot8)
             self$.addOption(private$..num1)
-            self$.addOption(private$..width8)
-            self$.addOption(private$..height8)
             self$.addOption(private$..nptest)
             self$.addOption(private$..matrix)
             self$.addOption(private$..npmethod)
@@ -492,8 +374,6 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..mea2)
             self$.addOption(private$..se2)
             self$.addOption(private$..plot9)
-            self$.addOption(private$..width9)
-            self$.addOption(private$..height9)
         }),
     active = list(
         vars = function() private$..vars$value,
@@ -540,26 +420,8 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         q3 = function() private$..q3$value,
         res1 = function() private$..res1$value,
         cormatrix = function() private$..cormatrix$value,
-        width = function() private$..width$value,
-        height = function() private$..height$value,
-        width1 = function() private$..width1$value,
-        height1 = function() private$..height1$value,
-        width2 = function() private$..width2$value,
-        height2 = function() private$..height2$value,
-        width3 = function() private$..width3$value,
-        height3 = function() private$..height3$value,
-        width4 = function() private$..width4$value,
-        height4 = function() private$..height4$value,
-        width5 = function() private$..width5$value,
-        height5 = function() private$..height5$value,
-        width6 = function() private$..width6$value,
-        height6 = function() private$..height6$value,
-        width7 = function() private$..width7$value,
-        height7 = function() private$..height7$value,
         plot8 = function() private$..plot8$value,
         num1 = function() private$..num1$value,
-        width8 = function() private$..width8$value,
-        height8 = function() private$..height8$value,
         nptest = function() private$..nptest$value,
         matrix = function() private$..matrix$value,
         npmethod = function() private$..npmethod$value,
@@ -567,9 +429,7 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         se1 = function() private$..se1$value,
         mea2 = function() private$..mea2$value,
         se2 = function() private$..se2$value,
-        plot9 = function() private$..plot9$value,
-        width9 = function() private$..width9$value,
-        height9 = function() private$..height9$value),
+        plot9 = function() private$..plot9$value),
     private = list(
         ..vars = NA,
         ..num = NA,
@@ -615,26 +475,8 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..q3 = NA,
         ..res1 = NA,
         ..cormatrix = NA,
-        ..width = NA,
-        ..height = NA,
-        ..width1 = NA,
-        ..height1 = NA,
-        ..width2 = NA,
-        ..height2 = NA,
-        ..width3 = NA,
-        ..height3 = NA,
-        ..width4 = NA,
-        ..height4 = NA,
-        ..width5 = NA,
-        ..height5 = NA,
-        ..width6 = NA,
-        ..height6 = NA,
-        ..width7 = NA,
-        ..height7 = NA,
         ..plot8 = NA,
         ..num1 = NA,
-        ..width8 = NA,
-        ..height8 = NA,
         ..nptest = NA,
         ..matrix = NA,
         ..npmethod = NA,
@@ -642,9 +484,7 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..se1 = NA,
         ..mea2 = NA,
         ..se2 = NA,
-        ..plot9 = NA,
-        ..width9 = NA,
-        ..height9 = NA)
+        ..plot9 = NA)
 )
 
 raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -864,9 +704,7 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 clearWith=list(
                     "vars",
                     "step",
-                    "type",
-                    "width3",
-                    "height3")))
+                    "type")))
             self$add(jmvcore::Image$new(
                 options=options,
                 name="piplot",
@@ -878,9 +716,7 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 clearWith=list(
                     "vars",
                     "step",
-                    "type",
-                    "width4",
-                    "height4")))
+                    "type")))
             self$add(jmvcore::Image$new(
                 options=options,
                 name="gofplot",
@@ -894,9 +730,7 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "step",
                     "type",
                     "lrsplit",
-                    "tlab",
-                    "width7",
-                    "height7")))
+                    "tlab")))
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot1",
@@ -909,9 +743,7 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "vars",
                     "step",
                     "type",
-                    "num",
-                    "width6",
-                    "height6")))
+                    "num")))
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot2",
@@ -924,9 +756,7 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "vars",
                     "step",
                     "type",
-                    "num",
-                    "width5",
-                    "height5")))
+                    "num")))
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot3",
@@ -939,9 +769,7 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "vars",
                     "step",
                     "type",
-                    "num",
-                    "width5",
-                    "height5")))
+                    "num")))
             self$add(jmvcore::Image$new(
                 options=options,
                 name="inplot",
@@ -954,9 +782,7 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "vars",
                     "step",
                     "type",
-                    "angle",
-                    "width",
-                    "height")))
+                    "angle")))
             self$add(jmvcore::Image$new(
                 options=options,
                 name="outplot",
@@ -969,9 +795,7 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "vars",
                     "step",
                     "type",
-                    "angle",
-                    "width",
-                    "height")))
+                    "angle")))
             self$add(jmvcore::Output$new(
                 options=options,
                 name="ptotal",
@@ -1162,9 +986,7 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 clearWith=list(
                     "vars",
                     "step",
-                    "type",
-                    "width1",
-                    "height1")))
+                    "type")))
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot8",
@@ -1177,9 +999,7 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "vars",
                     "step",
                     "type",
-                    "num1",
-                    "width8",
-                    "height8")))
+                    "num1")))
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot5",
@@ -1192,9 +1012,7 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "vars",
                     "step",
                     "type",
-                    "res",
-                    "width2",
-                    "height2")))
+                    "res")))
             self$add(jmvcore::Table$new(
                 options=options,
                 name="q3",
@@ -1263,9 +1081,7 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "mea1",
                     "mea2",
                     "se1",
-                    "se2",
-                    "width9",
-                    "height9")))}))
+                    "se2")))}))
 
 raschBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "raschBase",
@@ -1332,26 +1148,8 @@ raschBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param q3 .
 #' @param res1 .
 #' @param cormatrix .
-#' @param width .
-#' @param height .
-#' @param width1 .
-#' @param height1 .
-#' @param width2 .
-#' @param height2 .
-#' @param width3 .
-#' @param height3 .
-#' @param width4 .
-#' @param height4 .
-#' @param width5 .
-#' @param height5 .
-#' @param width6 .
-#' @param height6 .
-#' @param width7 .
-#' @param height7 .
 #' @param plot8 .
 #' @param num1 .
-#' @param width8 .
-#' @param height8 .
 #' @param nptest .
 #' @param matrix .
 #' @param npmethod .
@@ -1360,8 +1158,6 @@ raschBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param mea2 .
 #' @param se2 .
 #' @param plot9 .
-#' @param width9 .
-#' @param height9 .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
@@ -1446,26 +1242,8 @@ rasch <- function(
     q3 = FALSE,
     res1 = "stdr",
     cormatrix = FALSE,
-    width = 500,
-    height = 500,
-    width1 = 500,
-    height1 = 500,
-    width2 = 500,
-    height2 = 500,
-    width3 = 500,
-    height3 = 500,
-    width4 = 500,
-    height4 = 500,
-    width5 = 500,
-    height5 = 500,
-    width6 = 500,
-    height6 = 500,
-    width7 = 500,
-    height7 = 500,
     plot8 = FALSE,
     num1 = 1,
-    width8 = 500,
-    height8 = 500,
     nptest = FALSE,
     matrix = 500,
     npmethod = "T11",
@@ -1473,9 +1251,7 @@ rasch <- function(
     se1,
     mea2,
     se2,
-    plot9 = FALSE,
-    width9 = 500,
-    height9 = 500) {
+    plot9 = FALSE) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("rasch requires jmvcore to be installed (restart may be required)")
@@ -1535,26 +1311,8 @@ rasch <- function(
         q3 = q3,
         res1 = res1,
         cormatrix = cormatrix,
-        width = width,
-        height = height,
-        width1 = width1,
-        height1 = height1,
-        width2 = width2,
-        height2 = height2,
-        width3 = width3,
-        height3 = height3,
-        width4 = width4,
-        height4 = height4,
-        width5 = width5,
-        height5 = height5,
-        width6 = width6,
-        height6 = height6,
-        width7 = width7,
-        height7 = height7,
         plot8 = plot8,
         num1 = num1,
-        width8 = width8,
-        height8 = height8,
         nptest = nptest,
         matrix = matrix,
         npmethod = npmethod,
@@ -1562,9 +1320,7 @@ rasch <- function(
         se1 = se1,
         mea2 = mea2,
         se2 = se2,
-        plot9 = plot9,
-        width9 = width9,
-        height9 = height9)
+        plot9 = plot9)
 
     analysis <- raschClass$new(
         options = options,
