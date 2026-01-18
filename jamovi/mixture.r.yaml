@@ -9,12 +9,16 @@ items:
       type: Html
       visible: True
 
+    - name:  text
+      title: ''
+      type:  Preformatted
+
     - name: item
       title: Item Analysis
       type: Group
-      items:   
+      items:
         - name: fit
-          title: 'Model FIt Information' 
+          title: 'Model fit information'
           type: Table
           visible: (fit)
           clearWith:
@@ -23,7 +27,7 @@ items:
             - step
             - type
           refs: mixRasch
-  
+
           columns:
             - name: name
               title: 'Class'
@@ -33,20 +37,20 @@ items:
               title: AIC
               type: number
             - name: bic
-              title: BIC            
+              title: BIC
               type: number
             - name: caic
-              title: CAIC 
+              title: CAIC
               type: number
             - name: loglik
-              title: Log-likelihood  
+              title: Log-likelihood
               type: number
             - name: parm
               title: Parameters
               type: integer
             - name: person
               title: Persons
-              type: integer              
+              type: integer
 
         - name: imean
           title: Item mean
@@ -58,18 +62,18 @@ items:
             - step
             - type
           refs: mixRasch
-          
+
           columns:
             - name: name
               title: 'Item'
               type: 'text'
               content: ($key)
-             
+
             - name: pc1
               title: '1'
               type: number
               superTitle: 'Class'
-    
+
         - name: imeasure
           title: Measure
           type: Table
@@ -80,18 +84,18 @@ items:
             - step
             - type
           refs: mixRasch
-          
+
           columns:
             - name: name
               title: 'Item'
               type: 'text'
               content: ($key)
-             
+
             - name: pc1
               title: '1'
               type: number
               superTitle: 'Class'
-              
+
         - name: ise
           title: S.E.Measure
           type: Table
@@ -102,18 +106,18 @@ items:
             - step
             - type
           refs: mixRasch
-          
+
           columns:
             - name: name
               title: 'Item'
               type: 'text'
               content: ($key)
-             
+
             - name: pc1
               title: '1'
               type: number
-              superTitle: 'Class'      
-              
+              superTitle: 'Class'
+
         - name: infit
           title: Infit
           type: Table
@@ -124,18 +128,18 @@ items:
             - step
             - type
           refs: mixRasch
-          
+
           columns:
             - name: name
               title: 'Item'
               type: 'text'
               content: ($key)
-             
+
             - name: pc1
               title: '1'
               type: number
-              superTitle: 'Class'      
-              
+              superTitle: 'Class'
+
         - name: outfit
           title: Outfit
           type: Table
@@ -146,18 +150,18 @@ items:
             - step
             - type
           refs: mixRasch
-          
+
           columns:
             - name: name
               title: 'Item'
               type: 'text'
               content: ($key)
-             
+
             - name: pc1
               title: '1'
               type: number
-              superTitle: 'Class'      
-              
+              superTitle: 'Class'
+
         - name: pbis
           title: Point biserial
           type: Table
@@ -168,22 +172,22 @@ items:
             - step
             - type
           refs: mixRasch
-          
+
           columns:
             - name: name
               title: 'Item'
               type: 'text'
               content: ($key)
-             
+
             - name: pc1
               title: '1'
               type: number
-              superTitle: 'Class'      
-    
+              superTitle: 'Class'
+
     - name: person
       title: Person Analysis
       type: Group
-      items:          
+      items:
         - name: average
           title: 'Mean ability level for each class'
           type: Table
@@ -251,7 +255,7 @@ items:
         - vars
         - nc
         - step
-        - type  
+        - type
 
     - name: pmeasure
       title: Measure
@@ -261,7 +265,7 @@ items:
         - vars
         - nc
         - step
-        - type 
+        - type
 
     - name: pse
       title: SE
@@ -271,7 +275,7 @@ items:
         - vars
         - nc
         - step
-        - type         
+        - type
 
     - name: pinfit
       title: Infit
@@ -281,7 +285,7 @@ items:
         - vars
         - nc
         - step
-        - type         
+        - type
 
     - name: poutfit
       title: Outfit
@@ -291,7 +295,7 @@ items:
         - vars
         - nc
         - step
-        - type                 
+        - type
 
 ...
 

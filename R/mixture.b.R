@@ -4,7 +4,7 @@ mixtureClass <- if (requireNamespace('jmvcore'))
   R6::R6Class(
     "mixtureClass",
     inherit = mixtureBase,
-    
+
     active = list(
       res = function() {
         if (is.null(private$.allCache) || is.null(private$.allCache$res)) {
@@ -14,9 +14,9 @@ mixtureClass <- if (requireNamespace('jmvcore'))
         }
         return(private$.allCache$res)
       }
-    ),    
-    
-    
+    ),
+
+
     private = list(
       .allCache = NULL,
       .htmlwidget = NULL,
@@ -24,12 +24,12 @@ mixtureClass <- if (requireNamespace('jmvcore'))
       .init = function() {
         private$.htmlwidget <- HTMLWidget$new()
         private$.allCache <- NULL
-        
+
         if (is.null(self$data) | is.null(self$options$vars)) {
           self$results$instructions$setVisible(visible = TRUE)
-          
+
         }
-        
+
         self$results$instructions$setContent(private$.htmlwidget$generate_accordion(
           title = "Instructions",
           content = paste(
@@ -40,30 +40,30 @@ mixtureClass <- if (requireNamespace('jmvcore'))
             '<li>When <b>Step=1</b>, the partial credit model is not analyzed and an error occurs.</li>',
             '<li>Feature requests and bug reports can be made on my <a href="https://github.com/hyunsooseol/snowRMM/issues" target="_blank">GitHub</a>.</li>',
             '</ul></div></div>'
-            
+
           )
-          
+
         ))
-        
+
 
       },
 
       .run = function() {
 
         ready <- TRUE
-        
+
         if (is.null(self$options$vars) |
             length(self$options$vars) < 2)
-          
+
           ready <- FALSE
-        
+
         if (ready) {
           if (is.null(private$.allCache)) {
             data <- private$.cleanData()
             private$.allCache <- private$.compute(data)
           }
           results <- private$.allCache
-   
+
           #  populate Model information table-----
           private$.populateModelTable(results)
           # populate Item Statistics table-----
@@ -73,25 +73,25 @@ mixtureClass <- if (requireNamespace('jmvcore'))
           private$.populateInfitTable(results)
           private$.populateOutfitTable(results)
           private$.populatePbisTable(results)
-          
+
           # populate Average theta table----
           private$.populateAverageTable(results)
         }
       },
-      
+
       # compute results---
-      
+
       .compute = function(data) {
         vars <- self$options$vars
         nc <- self$options$nc
         step <- self$options$step
         type <- self$options$type
-        
+
         # # computing mixRasch-----------
-        # 
+        #
         # set.seed(1234)
         # #private$.checkpoint()
-        # 
+        #
         # res1 <-
         #   mixRasch::mixRasch(
         #     data = data,
@@ -103,18 +103,23 @@ mixtureClass <- if (requireNamespace('jmvcore'))
         res <- self$res
         # res1 <- private$.computeRES(data)
         # private$.allCache$res <- res1
-        
-        
+
+        # ---- Model information (Preformatted) ----
+        seed_used <- 1234
+        starts_used <- 1
+        private$.populateModelInfoText(res, seed_used, starts_used)
+
+
         # item statistics--------
-        
+
         imeasure <- sapply(res$LatentClass, function(x)
           x$item.par$delta.i)
         imeasure <- as.data.frame(imeasure)
-        
+
         ise <- sapply(res$LatentClass, function(x)
           x$item.par$SE.delta.i)
         ise <- as.data.frame(ise)
-        
+
         infit <- sapply(res$LatentClass, function(x)
           x$item.par$in.out[, 1])
         infit <- as.data.frame(infit)
@@ -125,13 +130,13 @@ mixtureClass <- if (requireNamespace('jmvcore'))
         imean <- sapply(res$LatentClass, function(x)
           x$item.par$itemDescriptives[, 1])
         imean <- as.data.frame(imean)
-        
+
         pbis <- sapply(res$LatentClass, function(x)
           x$item.par$itemDescriptives[, 2])
         pbis <- as.data.frame(pbis)
-        
+
         ######### Person analysis####################
-        
+
         # person measure--------------
         pmeasure <- sapply(res$LatentClass, function(x)
           x$person.par$theta)
@@ -139,22 +144,22 @@ mixtureClass <- if (requireNamespace('jmvcore'))
         # person error-------------------
         pse <- sapply(res$LatentClass, function(x)
           x$person.par$SE.theta)
-        pse <- as.data.frame(pmeasure)
+        pse <- as.data.frame(pse)
         # person fit--------------
         pinfit <- sapply(res$LatentClass, function(x)
           x$person.par$infit)
         pinfit <- as.data.frame(pinfit)
-        
+
         poutfit <- sapply(res$LatentClass, function(x)
           x$person.par$outfit)
         poutfit <- as.data.frame(poutfit)
-        
+
         # Person Outputs-------------------------
         #pmeasure--------------------------------
         if (isTRUE(self$options$pmeasure)) {
           n_row <- nrow(self$data)
           not_na_idx <- which(stats::complete.cases(self$data[, self$options$vars, drop=FALSE]))
-          
+
           keys <- 1:self$options$nc
           measureTypes <- rep("continuous", self$options$nc)
           titles <- paste("Measure_Class", keys)
@@ -172,16 +177,16 @@ mixtureClass <- if (requireNamespace('jmvcore'))
             self$results$pmeasure$setValues(index = i, scores)
           }
         }
-        
+
 
         #pse---------------------------------------
-        
+
         if (isTRUE(self$options$pse)) {
-          
+
           n_row <- nrow(self$data)
           not_na_idx <- which(stats::complete.cases(self$data[, self$options$vars, drop=FALSE]))
-          
-          
+
+
           keys <- 1:self$options$nc
           measureTypes <- rep("continuous", self$options$nc)
           titles <- paste("SE_Class", keys)
@@ -199,14 +204,14 @@ mixtureClass <- if (requireNamespace('jmvcore'))
             self$results$pse$setValues(index = i, scores)
           }
         }
-        
+
         #pinfit-------------------------------
         if (isTRUE(self$options$pinfit)) {
-          
+
           n_row <- nrow(self$data)
           not_na_idx <- which(stats::complete.cases(self$data[, self$options$vars, drop=FALSE]))
-          
-          
+
+
           keys <- 1:self$options$nc
           measureTypes <- rep("continuous", self$options$nc)
           titles <- paste("Infit_Class", keys)
@@ -224,14 +229,14 @@ mixtureClass <- if (requireNamespace('jmvcore'))
             self$results$pinfit$setValues(index = i, scores)
           }
         }
-        
+
         #poutfit----------------------------------------
         if (isTRUE(self$options$poutfit)) {
-          
+
           n_row <- nrow(self$data)
           not_na_idx <- which(stats::complete.cases(self$data[, self$options$vars, drop=FALSE]))
-          
-          
+
+
           keys <- 1:self$options$nc
           measureTypes <- rep("continuous", self$options$nc)
           titles <- paste("Outfit_Class", keys)
@@ -249,72 +254,72 @@ mixtureClass <- if (requireNamespace('jmvcore'))
             self$results$poutfit$setValues(index = i, scores)
           }
         }
-        
+
         # model fit information------
         if(isTRUE(self$options$fit) || isTRUE(self$options$plot2)){
-          
-        out <- NULL
-        
-        for (i in 1:nc) {
-          set.seed(1234)
-          res <-
-            mixRasch::mixRasch(
-              data = data,
-              steps = step,
-              model = type,
-              n.c = i
-            )
-          #res<- self$res
-          
-          model <- res$info.fit
-          df <- data.frame(model)
-          if (is.null(out)) {
-            out <- df
-          } else {
-            out <- rbind(out, df)
-          }
-        }
-        out <- out
-        # elbow plot----------
-        out1 <- out[, c(1:3)]
-        colnames(out1) <- c('AIC', 'BIC', 'CAIC')
 
-        df <-  as.data.frame(out1)
-        df$Class <- seq.int(nrow(df))
-        elbow <- reshape2::melt(
-          df,
-          id.vars = 'Class',
-          variable.name = "Fit",
-          value.name = 'Value'
-        )
- 
-        image <- self$results$plot2
-        image$setState(elbow)
-        }    
+          out <- NULL
+
+          for (i in 1:nc) {
+            set.seed(1234)
+            res_k <-
+              mixRasch::mixRasch(
+                data = data,
+                steps = step,
+                model = type,
+                n.c = i
+              )
+            #res<- self$res
+
+            model <- res_k$info.fit
+            df <- data.frame(model)
+            if (is.null(out)) {
+              out <- df
+            } else {
+              out <- rbind(out, df)
+            }
+          }
+          out <- out
+          # elbow plot----------
+          out1 <- out[, c(1:3)]
+          colnames(out1) <- c('AIC', 'BIC', 'CAIC')
+
+          df <-  as.data.frame(out1)
+          df$Class <- seq.int(nrow(df))
+          elbow <- reshape2::melt(
+            df,
+            id.vars = 'Class',
+            variable.name = "Fit",
+            value.name = 'Value'
+          )
+
+          image <- self$results$plot2
+          image$setState(elbow)
+        }
         # number of class
         set.seed(1234)
         res0 <- mixRasch::getEstDetails(res)
         class <- res0$nC
-        
+
         # Average Theta Values
         set.seed(1234)
         average <- mixRaschTools::avg.theta(res)
-        
+
 
         # class membership-------------
         pclass <- res$class
         mem <- as.numeric(apply(pclass, 1, which.max))
-        
+
         if (self$options$pmember == TRUE) {
           n_row <- nrow(self$data)
           not_na_idx <- which(stats::complete.cases(self$data[, self$options$vars, drop=FALSE]))
           mem_vec <- rep(NA, n_row)             # 전체 NA로 초기화
           mem_vec[not_na_idx] <- as.factor(mem) # 결측치 없는 row만 할당
-          
+
           self$results$pmember$setRowNums(rownames(self$data))
           self$results$pmember$setValues(mem_vec)
         }
-        
+
 
         # Person density across class-------------
         colnames(pmeasure) <- c(1:self$options$nc)
@@ -322,7 +327,7 @@ mixtureClass <- if (requireNamespace('jmvcore'))
                                 'Measure')
         image <- self$results$plot3
         image$setState(dat)
-        
+
         results <-
           list(
             'out' = out,
@@ -341,21 +346,64 @@ mixtureClass <- if (requireNamespace('jmvcore'))
             'poutfit' = poutfit
           )
       },
-      
+
       # populate Model information table-----
       .populateModelTable = function(results) {
         table <- self$results$item$fit
         fit <- as.data.frame(results$out)
-        
+
         # 열 이름을 명시적으로 설정 (필요 시)
         colnames(fit) <- c("aic", "bic", "caic", "loglik", "parm", "person")
-        
+
         # lapply를 사용하여 각 행(row)을 처리
         lapply(rownames(fit), function(name) {
           row <- as.list(fit[name, ])
           table$addRow(rowKey = name, values = row)
         })
       },
+
+      # ---- Model information (Preformatted) helpers ----
+      .safeLogLik = function(res) {
+        ll <- tryCatch(as.numeric(res$info.fit$loglik), error = function(e) NA_real_)
+        if (is.na(ll)) {
+          ll <- tryCatch(as.numeric(stats::logLik(res)), error = function(e) NA_real_)
+        }
+        ll
+      },
+
+      .safeConverged = function(res) {
+
+        get1 <- function(x) {
+          if (is.null(x)) return(NA)
+          if (length(x) < 1) return(NA)
+          as.logical(x)[1]
+        }
+
+        conv <- tryCatch(get1(res$converged), error = function(e) NA)
+
+        if (is.na(conv)) {
+          conv <- tryCatch(get1(res$conv), error = function(e) NA)
+        }
+
+        conv
+      },
+
+
+      .populateModelInfoText = function(res, seed_used, starts_used) {
+
+        conv <- private$.safeConverged(res)
+        conv_txt <- if (isTRUE(conv)) "Yes" else  "Not reported by model"
+
+        txt <- paste0(
+          "Converged: ", conv_txt
+        )
+
+        self$results$text$setContent(txt)
+        self$results$text$setVisible(TRUE)
+      },
+
+
+
       # populate Item Statistics table-----
       .populateImeasureTable = function(results) {
         table <- self$results$item$imeasure
@@ -379,9 +427,9 @@ mixtureClass <- if (requireNamespace('jmvcore'))
           }
           table$addRow(rowKey = i, values = row)
         }
-        
+
         # Prepare Data For Item Plot -------
-        
+
         image <- self$results$iplot
         imeasure$item <- seq.int(nrow(imeasure))
         n <- paste(1:self$options$nc, sep = '')
@@ -389,14 +437,14 @@ mixtureClass <- if (requireNamespace('jmvcore'))
         data <- tidyr::gather(data = imeasure, class, measure, -item)
         image$setState(data)
       },
-      
+
       .populateIseTable = function(results) {
         table <- self$results$item$ise
         nc <- self$options$nc
         vars <- self$options$vars
         ise <- results$ise
         nclass <- results$class
-        
+
         if (nclass > 1) {
           for (i in 2:nclass)
             table$addColumn(
@@ -414,7 +462,7 @@ mixtureClass <- if (requireNamespace('jmvcore'))
           table$addRow(rowKey = i, values = row)
         }
       },
-      
+
       #---
       .populateImeanTable = function(results) {
         table <- self$results$item$imean
@@ -439,15 +487,15 @@ mixtureClass <- if (requireNamespace('jmvcore'))
           table$addRow(rowKey = i, values = row)
         }
       },
-      
-      
+
+
       .populateInfitTable = function(results) {
         table <- self$results$item$infit
         nc <- self$options$nc
         vars <- self$options$vars
         infit <- results$infit
         nclass <- results$class
-        
+
         if (nclass > 1) {
           for (i in 2:nclass)
             table$addColumn(
@@ -465,7 +513,7 @@ mixtureClass <- if (requireNamespace('jmvcore'))
           table$addRow(rowKey = i, values = row)
         }
       },
-      
+
       .populateOutfitTable = function(results) {
         table <- self$results$item$outfit
         nc <- self$options$nc
@@ -489,7 +537,7 @@ mixtureClass <- if (requireNamespace('jmvcore'))
           table$addRow(rowKey = i, values = row)
         }
       },
-      
+
       .populatePbisTable = function(results) {
         table <- self$results$item$pbis
         nc <- self$options$nc
@@ -513,7 +561,7 @@ mixtureClass <- if (requireNamespace('jmvcore'))
           table$addRow(rowKey = i, values = row)
         }
       },
-      
+
       # populate Average theta table-----
       .populateAverageTable = function(results) {
         nc <- self$options$nc
@@ -526,9 +574,9 @@ mixtureClass <- if (requireNamespace('jmvcore'))
           table$setRow(rowNo = i, values = row)
         }
       },
-      
+
       # plot--------------
-      
+
       .itemPlot = function(image, ggtheme, theme, ...) {
         if (is.null(image$state))
           return(FALSE)
@@ -548,14 +596,14 @@ mixtureClass <- if (requireNamespace('jmvcore'))
             color = 'Class'
           ) +
           ggtheme
-        
+
         if (self$options$angle > 0) {
           plot <- plot + ggplot2::theme(axis.text.x = ggplot2::element_text(angle = self$options$angle, hjust = 1))
         }
         print(plot)
         TRUE
       },
-      
+
       .plot3 = function(image, ggtheme, theme, ...) {
         if (is.null(image$state))
           return(FALSE)
@@ -567,7 +615,7 @@ mixtureClass <- if (requireNamespace('jmvcore'))
         print(plot3)
         TRUE
       },
-      
+
       .plot2 = function(image, ggtheme, theme, ...) {
         if (is.null(image$state))
           return(FALSE)
@@ -581,7 +629,7 @@ mixtureClass <- if (requireNamespace('jmvcore'))
         TRUE
       },
       #--------------------------
-      
+
       .cleanData = function() {
         items <- self$options$vars
         data <- list()
@@ -593,9 +641,9 @@ mixtureClass <- if (requireNamespace('jmvcore'))
         data <- jmvcore::naOmit(data)
         return(data)
       },
-      
+
       .computeRES = function(data = NULL) {
-        if (is.null(data)) data <- private$.cleanData()     
+        if (is.null(data)) data <- private$.cleanData()
         # computing mixRasch-----------
         set.seed(1234)
         res <-
