@@ -170,7 +170,9 @@ lcaordResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         mem = function() private$.items[["mem"]],
         plot1 = function() private$.items[["plot1"]],
         plot = function() private$.items[["plot"]],
-        use3step = function() private$.items[["use3step"]],
+        use3step_means = function() private$.items[["use3step_means"]],
+        use3step_omnibus = function() private$.items[["use3step_omnibus"]],
+        use3step_pairwise = function() private$.items[["use3step_pairwise"]],
         reg = function() private$.items[["reg"]]),
     private = list(),
     public=list(
@@ -304,14 +306,131 @@ lcaordResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "nc",
                     "angle",
                     "miss")))
-            self$add(jmvcore::Preformatted$new(
+            self$add(jmvcore::Table$new(
                 options=options,
-                name="use3step",
-                title="3-step analysis (BCH/DCAT)"))
-            self$add(jmvcore::Preformatted$new(
+                name="use3step_means",
+                title="3-step auxiliary: Class-weighted means",
+                visible="(use3step)",
+                clearWith=list(
+                    "vars",
+                    "nc",
+                    "miss",
+                    "auxVar"),
+                columns=list(
+                    list(
+                        `name`="class", 
+                        `title`="Class", 
+                        `type`="text"),
+                    list(
+                        `name`="mean", 
+                        `title`="Mean", 
+                        `type`="number"))))
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="use3step_omnibus",
+                title="3-step auxiliary: Omnibus test",
+                visible="(use3step)",
+                clearWith=list(
+                    "vars",
+                    "nc",
+                    "miss",
+                    "auxVar"),
+                columns=list(
+                    list(
+                        `name`="method", 
+                        `title`="Method", 
+                        `type`="text"),
+                    list(
+                        `name`="variable", 
+                        `title`="Variable", 
+                        `type`="text"),
+                    list(
+                        `name`="statistic", 
+                        `title`="Statistic", 
+                        `type`="number"),
+                    list(
+                        `name`="df1", 
+                        `title`="df1", 
+                        `type`="number"),
+                    list(
+                        `name`="df2", 
+                        `title`="df2", 
+                        `type`="number"),
+                    list(
+                        `name`="p", 
+                        `title`="p", 
+                        `type`="number", 
+                        `format`="zto,pvalue"))))
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="use3step_pairwise",
+                title="3-step auxiliary: Pairwise comparisons",
+                visible="(use3step)",
+                clearWith=list(
+                    "vars",
+                    "nc",
+                    "miss",
+                    "auxVar"),
+                columns=list(
+                    list(
+                        `name`="comparison", 
+                        `title`="Comparison", 
+                        `type`="text"),
+                    list(
+                        `name`="z", 
+                        `title`="z", 
+                        `type`="number"),
+                    list(
+                        `name`="p", 
+                        `title`="p", 
+                        `type`="number", 
+                        `format`="zto,pvalue"),
+                    list(
+                        `name`="p_bh", 
+                        `title`="p (BH)", 
+                        `type`="number", 
+                        `format`="zto,pvalue"),
+                    list(
+                        `name`="p_bonf", 
+                        `title`="p (Bonf.)", 
+                        `type`="number", 
+                        `format`="zto,pvalue"),
+                    list(
+                        `name`="d", 
+                        `title`="d", 
+                        `type`="number"))))
+            self$add(jmvcore::Table$new(
                 options=options,
                 name="reg",
-                title="Class-wise regression"))}))
+                title="Class-wise regression",
+                visible="(reg)",
+                clearWith=list(
+                    "vars",
+                    "nc",
+                    "miss",
+                    "auxFormula"),
+                columns=list(
+                    list(
+                        `name`="method", 
+                        `title`="Method", 
+                        `type`="text"),
+                    list(
+                        `name`="variable", 
+                        `title`="Variable", 
+                        `type`="text"),
+                    list(
+                        `name`="wald", 
+                        `title`="Wald", 
+                        `type`="number"),
+                    list(
+                        `name`="df", 
+                        `title`="df", 
+                        `type`="number"),
+                    list(
+                        `name`="p", 
+                        `title`="p", 
+                        `type`="number", 
+                        `format`="zto,pvalue"))))}))
 
 lcaordBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "lcaordBase",
@@ -364,8 +483,10 @@ lcaordBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$mem} \tab \tab \tab \tab \tab an output \cr
 #'   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
-#'   \code{results$use3step} \tab \tab \tab \tab \tab a preformatted \cr
-#'   \code{results$reg} \tab \tab \tab \tab \tab a preformatted \cr
+#'   \code{results$use3step_means} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$use3step_omnibus} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$use3step_pairwise} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$reg} \tab \tab \tab \tab \tab a table \cr
 #' }
 #'
 #' Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:

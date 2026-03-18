@@ -120,11 +120,109 @@ items:
         - angle
         - miss
 
-    - name: use3step
-      title: "3-step analysis (BCH/DCAT)"
-      type: Preformatted
- 
+    - name: use3step_means
+      title: "3-step auxiliary: Class-weighted means"
+      type: Table
+      visible: (use3step)
+      clearWith:
+        - vars
+        - nc
+        - miss
+        - auxVar
+      columns:
+        - name: class
+          title: Class
+          type: text
+        - name: mean
+          title: Mean
+          type: number
+
+    - name: use3step_omnibus
+      title: "3-step auxiliary: Omnibus test"
+      type: Table
+      visible: (use3step)
+      clearWith:
+        - vars
+        - nc
+        - miss
+        - auxVar
+      columns:
+        - name: method
+          title: Method
+          type: text
+        - name: variable
+          title: Variable
+          type: text
+        - name: statistic
+          title: Statistic
+          type: number
+        - name: df1
+          title: df1
+          type: number
+        - name: df2
+          title: df2
+          type: number
+        - name: p
+          title: p
+          type: number
+          format: zto,pvalue
+
+    - name: use3step_pairwise
+      title: "3-step auxiliary: Pairwise comparisons"
+      type: Table
+      visible: (use3step)
+      clearWith:
+        - vars
+        - nc
+        - miss
+        - auxVar
+      columns:
+        - name: comparison
+          title: Comparison
+          type: text
+        - name: z
+          title: z
+          type: number
+        - name: p
+          title: p
+          type: number
+          format: zto,pvalue
+        - name: p_bh
+          title: p (BH)
+          type: number
+          format: zto,pvalue
+        - name: p_bonf
+          title: p (Bonf.)
+          type: number
+          format: zto,pvalue
+        - name: d
+          title: d
+          type: number
+
     - name: reg
       title: "Class-wise regression"
-      type: Preformatted
+      type: Table
+      visible: (reg)
+      clearWith:
+        - vars
+        - nc
+        - miss
+        - auxFormula
+      columns:
+        - name: method
+          title: Method
+          type: text
+        - name: variable
+          title: Variable
+          type: text
+        - name: wald
+          title: Wald
+          type: number
+        - name: df
+          title: df
+          type: number
+        - name: p
+          title: p
+          type: number
+          format: zto,pvalue
 ...

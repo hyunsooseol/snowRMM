@@ -11,7 +11,7 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly = TRUE))
     active = list(
       res = function() {
         if (is.null(private$.res_cache)) {
-          # --- 전체 데이터(보조분석용) & 지표 데이터(모형용) 분리 ---
+          # --- Separate full data for auxiliary analyses and indicator data for the LCA model ---
           data_all <- self$data
           if (self$options$miss == 'listwise')
             data_all <- jmvcore::naOmit(data_all)
@@ -23,7 +23,7 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           
           data_ind <- data_all[, ind_names, drop = FALSE]
           
-          # mx_lca 요구사항: 모든 지표는 binary 또는 ordered factor
+          # mx_lca requirement: all indicators must be binary or ordered factors
           data_ind[] <- lapply(data_ind, function(x) {
             if (is.ordered(x)) return(x)
             if (is.factor(x))  return(ordered(x))
@@ -40,7 +40,7 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly = TRUE))
       
       desc = function() {
         if (is.null(private$.desc_cache)) {
-          # 지표 변수만 요약
+          # Summary of indicator variables only
           data_all <- self$data
           if (self$options$miss == 'listwise')
             data_all <- jmvcore::naOmit(data_all)
@@ -82,7 +82,13 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           )
         )
         
-
+        if (!is.null(self$results$reg))
+          self$results$reg$setNote(
+            "Note",
+            "Class-wise regression is performed using the distal variable as outcome."
+          )
+        
+        
         private$.registerCallbacks()
       },
       
@@ -91,7 +97,11 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           desc = private$.populateDescTable,
           fit  = private$.populateFitTable,
           cp   = private$.populateClassSizeTable,
-          mem  = private$.populateClassMemberTable
+          mem  = private$.populateClassMemberTable,
+          use3step_means    = private$.populateThreeStepMeansTable,
+          use3step_omnibus  = private$.populateThreeStepOmnibusTable,
+          use3step_pairwise = private$.populateThreeStepPairwiseTable,
+          reg  = private$.populateRegressionTable
         )
         for (name in names(callbacks)) {
           if (name %in% names(self$results) &&
@@ -112,8 +122,8 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         self$results$progressBarHTML$setContent(html)
         private$.checkpoint()
         
-        # --- 전체 데이터 & 지표 데이터 분리(캐시에 둘 다 보관) ---
-        # (!) formula/auxVar에 등장하는 변수까지 강제로 로드 시도
+        # --- Separate full data and indicator data (with cached loading of needed variables) ---
+        # (!) Force-load columns referenced by formula/auxVar as well
         ind_names <- self$options$vars
         needed <- ind_names
         
@@ -128,7 +138,7 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly = TRUE))
             needed <- unique(c(needed, all.vars(f_need)))
         }
         
-        # 실제 존재하는 컬럼만 선택 (없는 이름은 드롭하고 기록)
+        # Keep only columns that actually exist; ignore missing names but record them
         all_cols <- try(colnames(self$data), silent = TRUE)
         if (inherits(all_cols, "try-error") || is.null(all_cols))
           all_cols <- names(as.data.frame(self$data))
@@ -137,20 +147,20 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         missing_cols <- setdiff(needed, all_cols)
         needed_present <- intersect(needed, all_cols)
         
-        # 지표(필수) 중 빠진 것이 있으면 바로 에러
+        # Stop immediately if any indicator variable is missing
         miss_ind <- setdiff(ind_names, needed_present)
         if (length(miss_ind) > 0)
           stop(sprintf("Indicators not found in data: %s", paste(miss_ind, collapse = ", ")))
         
-        # 존재하는 것만 먼저 subset → jamovi가 해당 컬럼을 로드
+        # Subset only existing columns so jamovi loads those columns
         data_all <- self$data[needed_present]
         
-        # 이후 결측처리/프레임화
+        # Missing-value handling / data.frame conversion
         if (self$options$miss == 'listwise')
           data_all <- jmvcore::naOmit(data_all)
         data_all <- as.data.frame(data_all)
         
-        # LCA 지표 데이터(ordinal 강제)
+        # LCA indicator data (force ordinal when possible)
         data_ind  <- data_all[, ind_names, drop = FALSE]
         data_ind[] <- lapply(data_ind, function(x) {
           if (is.ordered(x)) x else if (is.factor(x)) ordered(x) else x
@@ -181,14 +191,18 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           cp  <- data.frame(cp1$sum.posterior)
           
           private$.results_cache <- list(
-            data_all = data_all,   # 보조분석/회귀용(연속/범주 변수 포함)
-            data_ind = data_ind,   # LCA 지표용(모두 ordinal)
+            data_all = data_all,   # Full data used for auxiliary analyses and formulas
+            data_ind = data_ind,   # Indicator data used for ordinal LCA
             res  = res,
             desc = desc,
             fit  = fit,
             cp   = cp,
             cp1  = cp1,
-            missing_aux_cols = missing_cols  # formula/auxVar 중 데이터에 없던 컬럼 기록
+            three_step_means    = private$.emptyThreeMeansRows(),
+            three_step_omnibus  = private$.emptyThreeOmnibusRows(),
+            three_step_pairwise = private$.emptyThreePairwiseRows(),
+            reg_tests = private$.emptyInferentialRows(),
+            missing_aux_cols = missing_cols  # Columns referenced in auxVar/formula but not found in data
           )
           
           # 45%: populate desc
@@ -238,70 +252,41 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly = TRUE))
             private$.checkpoint()
             private$.setBarPlot()
           }
-      
-          # ===================== 96%: 3-STEP (텍스트 출력) =====================
+          
+          # ===================== 96%: 3-step result tables =====================
           if (isTRUE(self$options$use3step)) {
-            html <- progressBarH(96, 100, 'Running 3-STEP (BCH/DCAT)...')
+            html <- progressBarH(96, 100, 'Running 3-step analysis (BCH/DCAT)...')
             self$results$progressBarHTML$setContent(html)
             private$.checkpoint()
             
-            dat <- private$.results_cache$data_all  # 보조변수 포함 전체 데이터
+            dat <- private$.results_cache$data_all
             
-            ## (A) Distal 결과 텍스트 (효과크기 + 보정 포함)
-            out_lines <- c("=== 3-STEP auxiliary (tidySEM) ===")
+            # (A) Distal BCH/DCAT tables
             vname <- self$options$auxVar
             if (!is.null(vname) && nzchar(vname)) {
               tres <- private$.computeThreeStep(dat, vname)
-              out_lines <- c(out_lines, tres)
-            } else {
-              out_lines <- c(out_lines, "[Distal] no variable selected.")
+              private$.results_cache$three_step_means    <- tres$means
+              private$.results_cache$three_step_omnibus  <- tres$omnibus
+              private$.results_cache$three_step_pairwise <- tres$pairwise
             }
+            private$.populateThreeStepMeansTable()
+            private$.populateThreeStepOmnibusTable()
+            private$.populateThreeStepPairwiseTable()
             
-            ## (B) Class-wise 회귀 텍스트: 옵션 reg가 켜진 경우에만 별도 출력
-            reg_lines <- NULL
+            # (B) Class-wise regression table
             if (isTRUE(self$options$reg)) {
               fstr <- self$options$auxFormula
-              reg_lines <- c("=== Class-wise regression (3-STEP BCH) ===")
               if (!is.null(fstr) && nzchar(fstr)) {
                 rres <- private$.run3stepReg(self$res, dat, fstr)
-                reg_lines <- c(reg_lines, rres$msg)
-              } else {
-                reg_lines <- c(reg_lines, "[Regression] no formula.")
+                private$.results_cache$reg_tests <- rres$rows
               }
+              private$.populateRegressionTable()
             }
             
-            ## 데이터에 없던 보조/회귀 변수 각주
-            miss_aux <- private$.results_cache$missing_aux_cols
-            if (!is.null(miss_aux) && length(miss_aux) > 0) {
-              note <- sprintf("[Note] columns not found and ignored: %s", paste(miss_aux, collapse = ", "))
-              out_lines <- c(out_lines, note)
-              if (!is.null(reg_lines)) reg_lines <- c(reg_lines, note)
-            }
-            
-            ## ━━━ 굵은 유니코드 구분선으로 감싸서 출력 ━━━
-            sep_line <- strrep("━", 60)
-            
-            if (!is.null(self$results$use3step)) {
-              formatted <- paste0(
-                sep_line, "\n",
-                paste(out_lines, collapse = "\n"),
-                "\n", sep_line
-              )
-              self$results$use3step$setContent(formatted)
-            }
-            
-            if (!is.null(reg_lines) && !is.null(self$results$reg)) {
-              formatted_reg <- paste0(
-                sep_line, "\n",
-                paste(reg_lines, collapse = "\n"),
-                "\n", sep_line
-              )
-              self$results$reg$setContent(formatted_reg)
-            }
           }
         }
- 
-
+        
+        
         # 100%: complete and hide
         html <- progressBarH(100,100,'Analysis complete!')
         self$results$progressBarHTML$setContent(html)
@@ -355,13 +340,53 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         }
       },
       
+      .populateThreeStepMeansTable = function() {
+        table <- self$results$use3step_means
+        d     <- private$.results_cache$three_step_means
+        if (is.null(table) || is.null(d) || nrow(d) == 0)
+          return()
+        lapply(seq_len(nrow(d)), function(i) {
+          table$addRow(rowKey = i, values = as.list(d[i, , drop = FALSE]))
+        })
+      },
+      
+      .populateThreeStepOmnibusTable = function() {
+        table <- self$results$use3step_omnibus
+        d     <- private$.results_cache$three_step_omnibus
+        if (is.null(table) || is.null(d) || nrow(d) == 0)
+          return()
+        lapply(seq_len(nrow(d)), function(i) {
+          table$addRow(rowKey = i, values = as.list(d[i, , drop = FALSE]))
+        })
+      },
+      
+      .populateThreeStepPairwiseTable = function() {
+        table <- self$results$use3step_pairwise
+        d     <- private$.results_cache$three_step_pairwise
+        if (is.null(table) || is.null(d) || nrow(d) == 0)
+          return()
+        lapply(seq_len(nrow(d)), function(i) {
+          table$addRow(rowKey = i, values = as.list(d[i, , drop = FALSE]))
+        })
+      },
+      
+      .populateRegressionTable = function() {
+        table <- self$results$reg
+        d     <- private$.results_cache$reg_tests
+        if (is.null(table) || is.null(d) || nrow(d) == 0)
+          return()
+        lapply(seq_len(nrow(d)), function(i) {
+          table$addRow(rowKey = i, values = as.list(d[i, , drop = FALSE]))
+        })
+      },
+      
       .setResponseProbPlot = function() {
         image <- self$results$plot
         image$setState(private$.results_cache$res)
       },
       
       .setBarPlot = function() {
-        # 지표 데이터만 사용해야 막대그래프가 올바름
+        # Use indicator data only so the bar plot remains valid
         df <- as.data.frame(private$.results_cache$data_ind)
         names(df) <- paste0("Value.", names(df))
         df_long <- reshape(df, varying = names(df), direction = "long")
@@ -383,11 +408,57 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         print(p); TRUE
       },
       
+      .emptyInferentialRows = function() {
+        data.frame(
+          method = character(0),
+          variable = character(0),
+          wald = numeric(0),
+          df = numeric(0),
+          p = numeric(0),
+          stringsAsFactors = FALSE
+        )
+      },
+      
+      .emptyThreeMeansRows = function() {
+        data.frame(
+          class = character(0),
+          mean = numeric(0),
+          stringsAsFactors = FALSE
+        )
+      },
+      
+      .emptyThreeOmnibusRows = function() {
+        data.frame(
+          method = character(0),
+          variable = character(0),
+          statistic = numeric(0),
+          df1 = numeric(0),
+          df2 = numeric(0),
+          p = numeric(0),
+          stringsAsFactors = FALSE
+        )
+      },
+      
+      .emptyThreePairwiseRows = function() {
+        data.frame(
+          comparison = character(0),
+          z = numeric(0),
+          p = numeric(0),
+          p_bh = numeric(0),
+          p_bonf = numeric(0),
+          d = numeric(0),
+          stringsAsFactors = FALSE
+        )
+      },
+      
       # ------------------------------------------------------------------
-      # 3-STEP (BCH/DCAT) with effect sizes & multiple-comparison control
+      # 3-step (BCH/DCAT): split output into means, omnibus, and pairwise
       # ------------------------------------------------------------------
       .computeThreeStep = function(dat_all, auxName) {
-        # posterior 가져오기 (results_cache가 있으면 거기서)
+        means_rows    <- private$.emptyThreeMeansRows()
+        omnibus_rows  <- private$.emptyThreeOmnibusRows()
+        pairwise_rows <- private$.emptyThreePairwiseRows()
+        
         ind <- NULL
         if (!is.null(private$.results_cache$cp1$individual)) {
           ind <- data.frame(private$.results_cache$cp1$individual)
@@ -396,159 +467,265 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           if (!inherits(cp, "try-error") && !is.null(cp$individual))
             ind <- data.frame(cp$individual)
         }
-        if (is.null(ind))
-          return("[3-step] posterior probabilities not found.")
         
-        # posterior 열 찾기
+        if (is.null(ind)) {
+          return(list(
+            means = means_rows,
+            omnibus = omnibus_rows,
+            pairwise = pairwise_rows
+          ))
+        }
+        
         .findPcols <- function(nms) {
-          pats <- c("^CPROB[0-9]+$","^Class[_\\.]?[0-9]+$","^C[0-9]+$",
-                    "^p[0-9]+$","^posterior[_\\.]?[0-9]+$")
+          pats <- c("^CPROB[0-9]+$", "^Class[_\\.]?[0-9]+$", "^C[0-9]+$",
+                    "^p[0-9]+$", "^posterior[_\\.]?[0-9]+$")
           hits <- unique(unlist(lapply(pats, function(p) grep(p, nms))))
-          if (length(hits)) return(nms[hits])
+          if (length(hits))
+            return(nms[hits])
+          
           num <- nms[vapply(ind, is.numeric, TRUE)]
-          cand <- setdiff(num, c("id","ID","predicted","Predicted"))
+          cand <- setdiff(num, c("id", "ID", "predicted", "Predicted"))
           if (length(cand) > 1) {
-            S <- rowSums(ind[, cand, drop=FALSE], na.rm=TRUE)
-            if (all(is.finite(S)) && mean(abs(S-1)) < 1e-3) return(cand)
+            S <- rowSums(ind[, cand, drop = FALSE], na.rm = TRUE)
+            if (all(is.finite(S)) && mean(abs(S - 1)) < 1e-3)
+              return(cand)
           }
           character(0)
         }
+        
         pcols <- .findPcols(names(ind))
-        if (length(pcols) == 0)
-          return("[3-step] posterior columns could not be identified.")
+        if (length(pcols) == 0) {
+          return(list(
+            means = means_rows,
+            omnibus = omnibus_rows,
+            pairwise = pairwise_rows
+          ))
+        }
         
         K <- length(pcols)
+        if (K < 2) {
+          return(list(
+            means = means_rows,
+            omnibus = omnibus_rows,
+            pairwise = pairwise_rows
+          ))
+        }
         
-        if (is.null(dat_all[[auxName]]))
-          return(sprintf("[Distal] variable '%s' not found.", auxName))
+        
+        if (is.null(dat_all[[auxName]])) {
+          return(list(
+            means = means_rows,
+            omnibus = omnibus_rows,
+            pairwise = pairwise_rows
+          ))
+        }
         
         yraw <- dat_all[[auxName]]
-        # y 결측이면 그 행의 모든 가중치 0으로
         ok <- if (is.numeric(yraw)) is.finite(yraw) else !is.na(yraw)
-        for (pc in pcols) ind[[pc]][!ok] <- 0
+        for (pc in pcols)
+          ind[[pc]][!ok] <- 0
         
-        # ====== BCH (numeric) ======
         if (is.numeric(yraw) && !(is.factor(yraw) || is.ordered(yraw))) {
           y <- yraw
-          eff <- sapply(pcols, function(pc) sum(ind[[pc]], na.rm=TRUE))
-          m   <- sapply(pcols, function(pc) sum(ind[[pc]]*y, na.rm=TRUE) / pmax(sum(ind[[pc]],na.rm=TRUE), .Machine$double.eps))
-          v   <- mapply(function(pc, mu) {
-            w <- ind[[pc]]; sum(w*(y-mu)^2, na.rm=TRUE) / pmax(sum(w,na.rm=TRUE), .Machine$double.eps)
+          
+          eff <- sapply(pcols, function(pc) sum(ind[[pc]], na.rm = TRUE))
+          m <- sapply(pcols, function(pc) {
+            sum(ind[[pc]] * y, na.rm = TRUE) /
+              pmax(sum(ind[[pc]], na.rm = TRUE), .Machine$double.eps)
+          })
+          v <- mapply(function(pc, mu) {
+            w <- ind[[pc]]
+            sum(w * (y - mu)^2, na.rm = TRUE) /
+              pmax(sum(w, na.rm = TRUE), .Machine$double.eps)
           }, pcols, m)
-          se  <- sqrt(v / pmax(eff,1))
           
-          # 전체 F
-          wbar <- sum(y * rowSums(ind[, pcols, drop=FALSE]), na.rm=TRUE) /
-            sum(rowSums(ind[, pcols, drop=FALSE]), na.rm=TRUE)
-          ssb  <- sum(eff * (m - wbar)^2, na.rm=TRUE)
-          ssw  <- 0
-          for (i in seq_along(pcols)) {
-            w <- ind[[pcols[i]]]; mu <- m[i]
-            ssw <- ssw + sum(w*(y-mu)^2, na.rm=TRUE)
-          }
-          df1 <- K - 1; df2 <- max(1, sum(eff,na.rm=TRUE) - K)
-          Fst <- (ssb/df1) / (ssw/df2); pF <- stats::pf(Fst, df1, df2, lower.tail = FALSE)
+          se <- sqrt(v / pmax(eff, 1))
           
-          lines <- c(
-            "3-step analysis (BCH/DCAT)",
-            "=== 3-STEP auxiliary (ordinal LCA, BCH) ===",
-            sprintf("[Distal: %s, numeric] K=%d", auxName, K),
-            sprintf("Class-weighted means: %s",
-                    paste(paste0("C", seq_len(K), "=", round(m,3)), collapse=", ")),
-            sprintf("Wald/ANOVA approx: F(%d,%.1f)=%.3f, p=%.4f", df1, df2, Fst, pF)
+          means_rows <- data.frame(
+            class = paste0("Class ", seq_len(K)),
+            mean = as.numeric(m),
+            stringsAsFactors = FALSE
           )
           
-          # 쌍별: z, p, BH/Bonf, Cohen's d
-          if (K >= 2) {
-            lab <- c(); z <- c(); p <- c(); d <- c()
-            for (a in 1:(K-1)) for (b in (a+1):K) {
-              za <- (m[a]-m[b]) / sqrt(se[a]^2 + se[b]^2)
-              pa <- 2*stats::pnorm(-abs(za))
-              sp <- sqrt(((eff[a]-1)*v[a] + (eff[b]-1)*v[b]) /
-                           pmax(eff[a]+eff[b]-2, 1))
-              d  <- c(d, (m[a]-m[b]) / sp); lab <- c(lab, sprintf("%d vs %d", a,b))
-              z  <- c(z, za); p <- c(p, pa)
+          weights <- rowSums(ind[, pcols, drop = FALSE], na.rm = TRUE)
+          total_weight <- sum(weights, na.rm = TRUE)
+          
+          if (is.finite(total_weight) && total_weight > 0) {
+            wbar <- sum(y * weights, na.rm = TRUE) / total_weight
+            ssb <- sum(eff * (m - wbar)^2, na.rm = TRUE)
+            
+            ssw <- 0
+            for (i in seq_along(pcols)) {
+              w <- ind[[pcols[i]]]
+              mu <- m[i]
+              ssw <- ssw + sum(w * (y - mu)^2, na.rm = TRUE)
             }
-            p_bh <- stats::p.adjust(p, "BH")
-            p_bonf <- stats::p.adjust(p, "bonferroni")
-            lines <- c(lines, "Pairwise (z, p, p_BH, p_Bonf, Cohen's d):")
-            for (i in seq_along(lab))
-              lines <- c(lines, sprintf("  Class %s: z=%.3f, p=%.3g, p_BH=%.3g, p_Bonf=%.3g, d=%.3f",
-                                        lab[i], z[i], p[i], p_bh[i], p_bonf[i], d[i]))
+            
+            df1 <- K - 1
+            df2 <- max(1, sum(eff, na.rm = TRUE) - K)
+            Fst <- (ssb / df1) / (ssw / df2)
+            pF <- stats::pf(Fst, df1, df2, lower.tail = FALSE)
+            
+            if (is.finite(Fst) && is.finite(pF)) {
+              omnibus_rows <- rbind(
+                omnibus_rows,
+                data.frame(
+                  method = "BCH omnibus",
+                  variable = auxName,
+                  statistic = as.numeric(Fst),
+                  df1 = as.numeric(df1),
+                  df2 = as.numeric(df2),
+                  p = as.numeric(pF),
+                  stringsAsFactors = FALSE
+                )
+              )
+            }
+            
+            if (K >= 2) {
+              pw_list <- list()
+              idx <- 1L
+              
+              for (a in 1:(K - 1)) {
+                for (b in (a + 1):K) {
+                  zval <- (m[a] - m[b]) / sqrt(se[a]^2 + se[b]^2)
+                  pval <- 2 * stats::pnorm(-abs(zval))
+                  
+                  s_pooled <- sqrt(((eff[a] - 1) * v[a] + (eff[b] - 1) * v[b]) /
+                                     pmax(eff[a] + eff[b] - 2, 1))
+                  dval <- if (is.finite(s_pooled) && s_pooled > 0)
+                    (m[a] - m[b]) / s_pooled else NA_real_
+                  
+                  pw_list[[idx]] <- data.frame(
+                    comparison = sprintf("Class %d vs %d", a, b),
+                    z = as.numeric(zval),
+                    p = as.numeric(pval),
+                    p_bh = NA_real_,
+                    p_bonf = NA_real_,
+                    d = as.numeric(dval),
+                    stringsAsFactors = FALSE
+                  )
+                  idx <- idx + 1L
+                }
+              }
+              
+              if (length(pw_list) > 0) {
+                pairwise_rows <- do.call(rbind, pw_list)
+                pairwise_rows$p_bh <- stats::p.adjust(pairwise_rows$p, method = "BH")
+                pairwise_rows$p_bonf <- stats::p.adjust(pairwise_rows$p, method = "bonferroni")
+              }
+            }
           }
-          return(paste(lines, collapse="\n"))
+          
+          return(list(
+            means = means_rows,
+            omnibus = omnibus_rows,
+            pairwise = pairwise_rows
+          ))
         }
         
-        # ====== DCAT (categorical/ordinal) ======
         f <- as.factor(yraw)
         J <- nlevels(f)
-        W <- matrix(0, nrow=K, ncol=J, dimnames=list(paste0("C",1:K), levels(f)))
-        for (k in 1:K) for (j in 1:J)
-          W[k,j] <- sum( (f==levels(f)[j]) * ind[[pcols[k]]], na.rm=TRUE )
+        if (J < 2) {
+          return(list(
+            means = means_rows,
+            omnibus = omnibus_rows,
+            pairwise = pairwise_rows
+          ))
+        }
+        W <- matrix(0, nrow = K, ncol = J, dimnames = list(paste0("C", 1:K), levels(f)))
         
-        rs <- rowSums(W); cs <- colSums(W); N <- sum(rs)
-        E  <- outer(rs, cs) / ifelse(N>0, N, NA_real_)
-        chi <- sum((W - E)^2 / pmax(E, .Machine$double.eps), na.rm=TRUE)
-        df  <- (K-1)*(J-1)
-        pchi <- stats::pchisq(chi, df=df, lower.tail=FALSE)
-        Vall <- sqrt( chi / (N * max(1, min(K-1, J-1))) )
+        for (k in 1:K) {
+          for (j in 1:J) {
+            W[k, j] <- sum((f == levels(f)[j]) * ind[[pcols[k]]], na.rm = TRUE)
+          }
+        }
         
-        lines <- c(
-          "3-step analysis (BCH/DCAT)",
-          "=== 3-STEP auxiliary (ordinal LCA, DCAT) ===",
-          sprintf("[Distal: %s, categorical/ordinal] K=%d, J=%d", auxName, K, J),
-          sprintf("Wald/Chi-square: X^2(%d)=%.3f, p=%.4f, Cramer's V=%.3f", df, chi, pchi, Vall)
-        )
+        rs <- rowSums(W)
+        cs <- colSums(W)
+        N <- sum(rs)
+        E <- outer(rs, cs) / ifelse(N > 0, N, NA_real_)
+        chi <- sum((W - E)^2 / pmax(E, .Machine$double.eps), na.rm = TRUE)
+        df <- (K - 1) * (J - 1)
+        pchi <- stats::pchisq(chi, df = df, lower.tail = FALSE)
+        
+        if (is.finite(chi) && is.finite(pchi)) {
+          omnibus_rows <- rbind(
+            omnibus_rows,
+            data.frame(
+              method = "DCAT omnibus",
+              variable = auxName,
+              statistic = as.numeric(chi),
+              df1 = as.numeric(df),
+              df2 = NA_real_,
+              p = as.numeric(pchi),
+              stringsAsFactors = FALSE
+            )
+          )
+        }
         
         if (K >= 2) {
-          lab <- c(); p <- c(); X2 <- c(); dfv <- c(); Vpair <- c()
-          for (a in 1:(K-1)) for (b in (a+1):K) {
-            sub <- rbind(W[a,], W[b,])
-            rs2 <- rowSums(sub); cs2 <- colSums(sub); N2 <- sum(rs2)
-            E2  <- outer(rs2, cs2) / ifelse(N2>0, N2, NA_real_)
-            chi2 <- sum((sub - E2)^2 / pmax(E2, .Machine$double.eps), na.rm=TRUE)
-            df2  <- J-1; p2 <- stats::pchisq(chi2, df=df2, lower.tail=FALSE)
-            V2   <- sqrt( chi2 / pmax(N2, .Machine$double.eps) )   # 2×J → min=1
-            lab <- c(lab, sprintf("%d vs %d", a,b)); p <- c(p,p2)
-            X2 <- c(X2, chi2); dfv <- c(dfv, df2); Vpair <- c(Vpair, V2)
+          pw_list <- list()
+          idx <- 1L
+          
+          for (a in 1:(K - 1)) {
+            for (b in (a + 1):K) {
+              sub <- rbind(W[a, ], W[b, ])
+              rs2 <- rowSums(sub)
+              cs2 <- colSums(sub)
+              N2 <- sum(rs2)
+              E2 <- outer(rs2, cs2) / ifelse(N2 > 0, N2, NA_real_)
+              chi2 <- sum((sub - E2)^2 / pmax(E2, .Machine$double.eps), na.rm = TRUE)
+              df2 <- J - 1
+              p2 <- stats::pchisq(chi2, df = df2, lower.tail = FALSE)
+              
+              pw_list[[idx]] <- data.frame(
+                comparison = sprintf("Class %d vs %d", a, b),
+                z = as.numeric(sqrt(chi2)),
+                p = as.numeric(p2),
+                p_bh = NA_real_,
+                p_bonf = NA_real_,
+                d = NA_real_,
+                stringsAsFactors = FALSE
+              )
+              idx <- idx + 1L
+            }
           }
-          p_bh <- stats::p.adjust(p, "BH")
-          p_bonf <- stats::p.adjust(p, "bonferroni")
-          lines <- c(lines, "Pairwise (chi-square; p, p_BH, p_Bonf, Cramer's V):")
-          for (i in seq_along(lab))
-            lines <- c(lines, sprintf("  Class %s: X^2(%d)=%.3f, p=%.3g, p_BH=%.3g, p_Bonf=%.3g, V=%.3f",
-                                      lab[i], dfv[i], X2[i], p[i], p_bh[i], p_bonf[i], Vpair[i]))
+          
+          if (length(pw_list) > 0) {
+            pairwise_rows <- do.call(rbind, pw_list)
+            pairwise_rows$p_bh <- stats::p.adjust(pairwise_rows$p, method = "BH")
+            pairwise_rows$p_bonf <- stats::p.adjust(pairwise_rows$p, method = "bonferroni")
+          }
         }
-        paste(lines, collapse="\n")
+        
+        list(
+          means = means_rows,
+          omnibus = omnibus_rows,
+          pairwise = pairwise_rows
+        )
       },
       
-      # ---- 회귀(기존 유지) ----------------------------------------------------
+      # ---- 3-step regression (existing logic retained) -------------------
       .run3stepReg = function(res_final, dat, formula_str) {
         if (is.null(formula_str) || !nzchar(formula_str))
-          return(list(msg = "[Regression] no formula.", tests = NULL))
+          return(list(rows = private$.emptyInferentialRows()))
         
-        # 1) formula 파싱
         f <- try(stats::as.formula(formula_str), silent = TRUE)
         if (inherits(f, "try-error"))
-          return(list(msg = sprintf("[Regression] invalid formula: %s",
-                                    conditionMessage(attr(f, "condition"))),
-                      tests = NULL))
+          return(list(rows = private$.emptyInferentialRows()))
         vars <- all.vars(f)
         if (length(vars) < 2)
-          return(list(msg = "[Regression] need outcome ~ predictor(s).", tests = NULL))
+          return(list(rows = private$.emptyInferentialRows()))
         
         y     <- vars[1]
         xvars <- vars[-1]
         
-        # 2) 예측변수 전처리
+        # 2) Preprocess predictor variables
         use_x      <- character(0)
-        ref_notes  <- character(0)
         
         for (vx in xvars) {
           if (is.null(dat[[vx]]))
-            return(list(
-              msg = sprintf("[Regression] predictor '%s' not found. Add it to data/options.", vx),
-              tests = NULL))
+            return(list(rows = private$.emptyInferentialRows()))
           
           v <- dat[[vx]]
           if (is.character(v)) v <- factor(v)
@@ -556,12 +733,10 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly = TRUE))
             v <- droplevels(v)
             nl <- nlevels(v)
             if (nl <= 1) {
-              ref_notes <- c(ref_notes, sprintf("%s: single level → dropped", vx))
               next
             } else if (nl == 2) {
               dat[[vx]] <- as.integer(v) - 1L
               use_x <- c(use_x, vx)
-              ref_notes <- c(ref_notes, sprintf("%s: binary factor, ref='%s'→0/1", vx, levels(v)[1]))
             } else {
               tab <- table(v); ref <- names(tab)[which.max(tab)]
               for (lev in levels(v)) {
@@ -570,9 +745,6 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly = TRUE))
                 dat[[new_name]] <- as.integer(v == lev)
                 use_x <- c(use_x, new_name)
               }
-              ref_notes <- c(ref_notes,
-                             sprintf("%s: %d-level factor → %d dummies (ref='%s')",
-                                     vx, nl, nl - 1, ref))
             }
           } else {
             dat[[vx]] <- suppressWarnings(as.numeric(v))
@@ -581,30 +753,25 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         }
         
         if (is.null(dat[[y]]))
-          return(list(msg = sprintf("[Regression] outcome '%s' not found.", y), tests = NULL))
+          return(list(rows = private$.emptyInferentialRows()))
         if (is.character(dat[[y]]) || is.factor(dat[[y]]))
           dat[[y]] <- suppressWarnings(as.numeric(dat[[y]]))
         
         if (length(use_x) == 0)
-          return(list(msg = "[Regression] no usable predictors after processing.", tests = NULL))
+          return(list(rows = private$.emptyInferentialRows()))
         
         needed_cols <- unique(c(y, use_x))
         cc <- stats::complete.cases(dat[, needed_cols, drop = FALSE])
         ncc <- sum(cc)
         if (ncc < 10)
-          return(list(msg = sprintf("[Regression] insufficient complete cases (n=%d).", ncc),
-                      tests = NULL))
+          return(list(rows = private$.emptyInferentialRows()))
         dat_cc <- dat[cc, , drop = FALSE]
         
         new_formula <- sprintf("%s ~ %s", y, paste(use_x, collapse = " + "))
         
         fit2 <- try(tidySEM::BCH(res_final, model = new_formula, data = dat_cc), silent = TRUE)
-        if (inherits(fit2, "try-error")) {
-          emsg <- conditionMessage(attr(fit2, "condition"))
-          note <- if (length(ref_notes)) paste0(" (", paste(ref_notes, collapse="; "), ")") else ""
-          return(list(msg = sprintf("[Regression] BCH(model=...) fit failed: %s%s", emsg, note),
-                      tests = NULL))
-        }
+        if (inherits(fit2, "try-error"))
+          return(list(rows = private$.emptyInferentialRows()))
         
         lrA <- try(tidySEM::lr_test(fit2, compare = "A"), silent = TRUE)
         if (!inherits(lrA, "try-error") && is.data.frame(lrA) && nrow(lrA) > 0) {
@@ -613,15 +780,17 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           dff  <- suppressWarnings(as.integer(get(c("df","dof"))[1]))
           stat <- suppressWarnings(as.numeric(get(c("lr","chisq","x2","lrchisq"))[1]))
           pv   <- suppressWarnings(as.numeric(get(c("p","p.value"))[1]))
-          note <- if (length(ref_notes)) paste0(" (", paste(ref_notes, collapse="; "), ")") else ""
-          msg  <- sprintf("[Regression: %s] LR_A(df=%s) = %.2f, p = %.3g%s",
-                          new_formula, as.character(dff), stat, pv, note)
-          tests <- data.frame(method="LR (compare='A')", df=dff, stat=stat, p=pv,
-                              constraint="", stringsAsFactors=FALSE)
-          return(list(msg = msg, tests = tests))
+          rows <- data.frame(
+            method = "LR (compare='A')",
+            variable = new_formula,
+            wald = stat,
+            df = dff,
+            p = pv,
+            stringsAsFactors = FALSE
+          )
+          return(list(rows = rows))
         }
         
-        K <- length(self$options$nc); if (is.null(K) || K < 2) K <- 2L
         p <- length(use_x)
         cons_list <- character(0)
         for (j in seq_len(p)) {
@@ -638,15 +807,18 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           dff  <- suppressWarnings(as.integer(get2(c("df","dof"))[1])); if (is.na(dff) || !is.finite(dff)) dff <- (2 - 1L) * p
           stat <- suppressWarnings(as.numeric(get2(c("wald","w","statistic"))[1]))
           pv   <- suppressWarnings(as.numeric(get2(c("p","p.value"))[1])); if (is.na(stat) && is.finite(pv)) stat <- stats::qchisq(1 - pv, dff)
-          note <- if (length(ref_notes)) paste0(" (", paste(ref_notes, collapse="; "), ")") else ""
-          msg  <- sprintf("[Regression: %s] Wald(df=%s) = %.2f, p = %.3g%s",
-                          new_formula, as.character(dff), stat, pv, note)
-          tests <- data.frame(method="Wald equality of slopes", df=dff, stat=stat, p=pv,
-                              constraint=cons, stringsAsFactors=FALSE)
-          return(list(msg = msg, tests = tests))
+          rows <- data.frame(
+            method = "Wald equality of slopes",
+            variable = new_formula,
+            wald = stat,
+            df = dff,
+            p = pv,
+            stringsAsFactors = FALSE
+          )
+          return(list(rows = rows))
         }
         
-        list(msg = "[Regression] LR/Wald both failed.", tests = NULL)
+        list(rows = private$.emptyInferentialRows())
       }
       
     )
