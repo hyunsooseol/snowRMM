@@ -129,6 +129,7 @@ items:
         - nc
         - miss
         - auxVar
+        - auxFormula
       columns:
         - name: class
           title: Class
@@ -146,6 +147,7 @@ items:
         - nc
         - miss
         - auxVar
+        - auxFormula
       columns:
         - name: method
           title: Method
@@ -176,6 +178,7 @@ items:
         - nc
         - miss
         - auxVar
+        - auxFormula
       columns:
         - name: comparison
           title: Comparison
@@ -207,7 +210,9 @@ items:
         - vars
         - nc
         - miss
+        - auxVar
         - auxFormula
+        - regvars
       columns:
         - name: method
           title: Method

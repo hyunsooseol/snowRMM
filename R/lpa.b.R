@@ -174,7 +174,7 @@ lpaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         if (isTRUE(self$options$plot3)) self$results$plot3$setState(all$res)
         
         # =========================
-        # 3-step 보조분석 (BCH / DCAT)
+        # 3-step auxiliary analysis (BCH / DCAT)
         # =========================
         if (isTRUE(self$options$use3step)) {
           aux_name <- self$options$auxVar
@@ -194,59 +194,104 @@ lpaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
               colnames(P) <- paste0("Class", seq_len(ncol(P)))
               
               aux <- self$data[[aux_name]]
-              out_blocks <- list()
+              if (is.character(aux))
+                aux <- factor(aux)
               
               # -------------------
               # Numeric distal (BCH)
               # -------------------
               if (is.numeric(aux)) {
+                means_table <- self$results$lpa3_means
+                means_table$setTitle(if (is.numeric(aux)) "3-step auxiliary: Class-weighted means" else "3-step auxiliary: Class-by-category distribution")
+                omnibus_table <- self$results$lpa3_omnibus
+                pairwise_table <- self$results$lpa3_pairwise
+                
                 mu <- se <- Neff <- rep(NA_real_, ncol(P))
-                SSW <- 0; w_all_sum <- 0; y_w_sum <- 0
+                SSW <- 0
+                w_all_sum <- 0
+                y_w_sum <- 0
+                
                 for (k in seq_len(ncol(P))) {
-                  w <- P[,k]; v <- aux
+                  w <- P[,k]
+                  v <- aux
                   ok <- (!is.na(w)) & (!is.na(v))
-                  if (sum(ok)>0) {
+                  if (sum(ok) > 0) {
                     mu[k] <- stats::weighted.mean(v[ok], w[ok])
-                    Neff[k] <- (sum(w[ok])^2)/sum(w[ok]^2)
-                    s2 <- sum(w[ok]*(v[ok]-mu[k])^2)/sum(w[ok])
-                    se[k] <- sqrt(s2/Neff[k])
+                    Neff[k] <- (sum(w[ok])^2) / sum(w[ok]^2)
+                    s2 <- sum(w[ok] * (v[ok] - mu[k])^2) / sum(w[ok])
+                    se[k] <- sqrt(s2 / Neff[k])
                     w_all_sum <- w_all_sum + sum(w[ok])
-                    y_w_sum <- y_w_sum + sum(w[ok]*v[ok])
-                    SSW <- SSW + sum(w[ok]*(v[ok]-mu[k])^2)
+                    y_w_sum <- y_w_sum + sum(w[ok] * v[ok])
+                    SSW <- SSW + sum(w[ok] * (v[ok] - mu[k])^2)
                   }
                 }
-                est_df <- data.frame(Class=paste0("Class",seq_along(mu)),
-                                     Mean=mu, SE=se, N_eff=Neff)
-                out_blocks[[length(out_blocks)+1]] <- text_table(est_df,"Class-wise means (BCH)")
                 
-                # overall test
+                if (!is.null(means_table)) {
+                  for (k in seq_along(mu)) {
+                    means_table$addRow(
+                      rowKey = k,
+                      values = list(
+                        class = paste0("Class ", k),
+                        category = "Mean",
+                        value = as.numeric(mu[k])
+                      )
+                    )
+                  }
+                }
+                
                 mu_all <- y_w_sum / w_all_sum
-                SSB <- sum(Neff*(mu-mu_all)^2, na.rm=TRUE)
-                df1 <- ncol(P)-1
-                df2 <- sum(Neff, na.rm=TRUE)-ncol(P)
-                Fval <- (SSB/df1)/(SSW/df2)
-                pF <- stats::pf(Fval, df1, df2, lower.tail=FALSE)
-                out_blocks[[length(out_blocks)+1]] <- sprintf("Overall weighted ANOVA: F(%d, %.1f)=%.3f, p=%.3g", df1, df2, Fval, pF)
+                SSB <- sum(Neff * (mu - mu_all)^2, na.rm = TRUE)
+                df1 <- ncol(P) - 1
+                df2 <- sum(Neff, na.rm = TRUE) - ncol(P)
+                Fval <- (SSB / df1) / (SSW / df2)
+                pF <- stats::pf(Fval, df1, df2, lower.tail = FALSE)
                 
-                # pairwise
-                labs <- c(); zvec <- c(); pvec <- c(); dvec <- c()
+                if (!is.null(omnibus_table)) {
+                  omnibus_table$addRow(
+                    rowKey = 1,
+                    values = list(
+                      method = "BCH omnibus",
+                      statistic = as.numeric(Fval),
+                      df = as.numeric(df1),
+                      p = as.numeric(pF),
+                      V = NA_real_
+                    )
+                  )
+                }
+                
+                labs <- c()
+                X2vec <- c()
+                pvec <- c()
+                Vvec <- c()
+                
                 for (a in 1:(ncol(P)-1)) for (b in (a+1):ncol(P)) {
                   if (is.finite(mu[a]) && is.finite(mu[b])) {
-                    z <- (mu[a]-mu[b])/sqrt(se[a]^2+se[b]^2)
-                    pz <- 2*stats::pnorm(-abs(z))
-                    sp <- sqrt(((Neff[a]-1)*se[a]^2*Neff[a] + (Neff[b]-1)*se[b]^2*Neff[b])/(Neff[a]+Neff[b]-2))
-                    d <- (mu[a]-mu[b])/sp
-                    labs <- c(labs, sprintf("%d vs %d",a,b))
-                    zvec <- c(zvec,z); pvec <- c(pvec,pz); dvec <- c(dvec,d)
+                    z <- (mu[a] - mu[b]) / sqrt(se[a]^2 + se[b]^2)
+                    pz <- 2 * stats::pnorm(-abs(z))
+                    labs <- c(labs, sprintf("%d vs %d", a, b))
+                    X2vec <- c(X2vec, z^2)
+                    pvec <- c(pvec, pz)
+                    Vvec <- c(Vvec, NA_real_)
                   }
                 }
-                if (length(pvec)) {
-                  pw_df <- data.frame(Contrast=labs,z=round(zvec,3),
-                                      p=signif(pvec,3),
-                                      p_BH=signif(p.adjust(pvec,"BH"),3),
-                                      p_Bonf=signif(p.adjust(pvec,"bonf"),3),
-                                      d=round(dvec,3))
-                  out_blocks[[length(out_blocks)+1]] <- text_table(pw_df,"Pairwise (z,p,p_BH,p_Bonf,d)")
+                
+                if (length(pvec) && !is.null(pairwise_table)) {
+                  p_bh <- p.adjust(pvec, "BH")
+                  p_bonf <- p.adjust(pvec, "bonf")
+                  for (i in seq_along(pvec)) {
+                    pairwise_table$addRow(
+                      rowKey = i,
+                      values = list(
+                        comparison = labs[i],
+                        chi2 = as.numeric(X2vec[i]),
+                        df = 1,
+                        p = as.numeric(pvec[i]),
+                        p_bh = as.numeric(p_bh[i]),
+                        p_bonf = as.numeric(p_bonf[i]),
+                        V = Vvec[i]
+                      )
+                    )
+                  }
                 }
               }
               
@@ -254,76 +299,106 @@ lpaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
               # Categorical distal (DCAT)
               # -------------------
               if (is.factor(aux)) {
+                means_table <- self$results$lpa3_means
+                omnibus_table <- self$results$lpa3_omnibus
+                pairwise_table <- self$results$lpa3_pairwise
+                
                 Lv <- levels(aux)
-                counts <- matrix(0,nrow=ncol(P),ncol=length(Lv),
-                                 dimnames=list(paste0("Class",1:ncol(P)),Lv))
-                rowsum <- rep(0,ncol(P))
-                for (k in seq_len(ncol(P))) {
-                  w <- P[,k]; ok <- (!is.na(w))&(!is.na(aux))
-                  rowsum[k] <- sum(w[ok])
-                  tmp <- tapply(w[ok],aux[ok],sum)
-                  counts[k,names(tmp)] <- tmp
-                }
-                dist_df <- as.data.frame(counts)
-                out_blocks[[length(out_blocks)+1]] <- text_table(dist_df,"Class-by-category distribution")
-                
-                # overall chi-square
-                colsum <- colSums(counts); grand <- sum(rowsum)
-                E <- outer(rowsum,colsum)/grand
-                chi <- sum((counts-E)^2/E)
-                df <- (ncol(P)-1)*(length(Lv)-1)
-                pchi <- stats::pchisq(chi,df,lower.tail=FALSE)
-                V <- sqrt(chi/(grand*min(ncol(P)-1,length(Lv)-1)))
-                out_blocks[[length(out_blocks)+1]] <- sprintf("Overall chi-square: χ²(%d)=%.3f, p=%.3g, V=%.3f",df,chi,pchi,V)
-                
-                # pairwise
-                labs <- c(); X2vec <- c(); pvec <- c(); Vvec <- c()
-                for (a in 1:(ncol(P)-1)) for (b in (a+1):ncol(P)) {
-                  sub <- rbind(counts[a,],counts[b,])
-                  rs <- rowSums(sub); cs <- colSums(sub); g <- sum(rs)
-                  Eab <- outer(rs,cs)/g
-                  chiab <- sum((sub-Eab)^2/Eab)
-                  dfab <- length(Lv)-1
-                  pab <- stats::pchisq(chiab,dfab,lower.tail=FALSE)
-                  Vab <- sqrt(chiab/(g*1))
-                  labs <- c(labs,sprintf("%d vs %d",a,b))
-                  X2vec <- c(X2vec,chiab); pvec <- c(pvec,pab); Vvec <- c(Vvec,Vab)
-                }
-                if (length(pvec)) {
-                  pwc_df <- data.frame(Contrast=labs,
-                                       X2=round(X2vec,3),
-                                       df=dfab,
-                                       p=signif(pvec,3),
-                                       p_BH=signif(p.adjust(pvec,"BH"),3),
-                                       p_Bonf=signif(p.adjust(pvec,"bonf"),3),
-                                       V=round(Vvec,3))
-                  out_blocks[[length(out_blocks)+1]] <- text_table(pwc_df,"Pairwise chi-square")
-                }
-              }
-              
-              # # 최종 출력
-              # if (!is.null(self$results$use3step))
-              #   self$results$use3step$setContent(paste(out_blocks,collapse="\n\n"))
-              
-              
-              # 최종 출력
-              if (!is.null(self$results$use3step)) {
-               
-                sep_line <- strrep("━", 60)
-                
-                formatted <- paste0(
-                  sep_line, "\n",
-                  paste(out_blocks, collapse = paste0("\n", sep_line, "\n")),
-                  "\n", sep_line
+                counts <- matrix(
+                  0,
+                  nrow = ncol(P),
+                  ncol = length(Lv),
+                  dimnames = list(paste0("Class", 1:ncol(P)), Lv)
                 )
+                rowsum <- rep(0, ncol(P))
                 
-                self$results$use3step$setContent(formatted)
+                for (k in seq_len(ncol(P))) {
+                  w <- P[,k]
+                  ok <- (!is.na(w)) & (!is.na(aux))
+                  rowsum[k] <- sum(w[ok])
+                  tmp <- tapply(w[ok], aux[ok], sum)
+                  counts[k, names(tmp)] <- tmp
+                }
+                
+                if (!is.null(means_table)) {
+                  rk <- 1
+                  for (k in seq_len(nrow(counts))) {
+                    for (j in seq_len(ncol(counts))) {
+                      means_table$addRow(
+                        rowKey = rk,
+                        values = list(
+                          class = paste0("Class ", k),
+                          category = colnames(counts)[j],
+                          value = as.numeric(counts[k, j])
+                        )
+                      )
+                      rk <- rk + 1
+                    }
+                  }
+                }
+                
+                colsum <- colSums(counts)
+                grand <- sum(rowsum)
+                E <- outer(rowsum, colsum) / grand
+                chi <- sum((counts - E)^2 / E)
+                df <- (ncol(P) - 1) * (length(Lv) - 1)
+                pchi <- stats::pchisq(chi, df, lower.tail = FALSE)
+                V <- sqrt(chi / (grand * min(ncol(P) - 1, length(Lv) - 1)))
+                
+                if (!is.null(omnibus_table)) {
+                  omnibus_table$addRow(
+                    rowKey = 1,
+                    values = list(
+                      method = "DCAT omnibus",
+                      statistic = as.numeric(chi),
+                      df = as.numeric(df),
+                      p = as.numeric(pchi),
+                      V = as.numeric(V)
+                    )
+                  )
+                }
+                
+                labs <- c()
+                X2vec <- c()
+                pvec <- c()
+                Vvec <- c()
+                
+                for (a in 1:(ncol(P)-1)) for (b in (a+1):ncol(P)) {
+                  sub <- rbind(counts[a,], counts[b,])
+                  rs <- rowSums(sub)
+                  cs <- colSums(sub)
+                  g <- sum(rs)
+                  Eab <- outer(rs, cs) / g
+                  chiab <- sum((sub - Eab)^2 / Eab)
+                  dfab <- length(Lv) - 1
+                  pab <- stats::pchisq(chiab, dfab, lower.tail = FALSE)
+                  Vab <- sqrt(chiab / (g * 1))
+                  labs <- c(labs, sprintf("%d vs %d", a, b))
+                  X2vec <- c(X2vec, chiab)
+                  pvec <- c(pvec, pab)
+                  Vvec <- c(Vvec, Vab)
+                }
+                
+                if (length(pvec) && !is.null(pairwise_table)) {
+                  p_bh <- p.adjust(pvec, "BH")
+                  p_bonf <- p.adjust(pvec, "bonf")
+                  for (i in seq_along(pvec)) {
+                    pairwise_table$addRow(
+                      rowKey = i,
+                      values = list(
+                        comparison = labs[i],
+                        chi2 = as.numeric(X2vec[i]),
+                        df = as.numeric(dfab),
+                        p = as.numeric(pvec[i]),
+                        p_bh = as.numeric(p_bh[i]),
+                        p_bonf = as.numeric(p_bonf[i]),
+                        V = as.numeric(Vvec[i])
+                      )
+                    )
+                  }
+                }
               }
-              
             }
-          } else {
-            if (!is.null(self$results$use3step))
-              self$results$use3step$setContent("[3-step] Not selected or invalid — skipped.")
           }
         }
         

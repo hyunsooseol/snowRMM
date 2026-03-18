@@ -28,6 +28,7 @@ items:
         - nc
         - thr
         - miss
+        - auxVar
       refs: tidySEM
 
       columns:
@@ -67,6 +68,7 @@ items:
         - nc
         - thr
         - miss
+        - auxVar
       refs: tidySEM 
 
       columns:
@@ -88,6 +90,7 @@ items:
         - nc
         - thr
         - miss
+        - auxVar
       refs: tidySEM
 
       columns:
@@ -128,6 +131,7 @@ items:
         - nc
         - thr
         - miss
+        - auxVar
       columns:
         - name: name
           title: 'Class'
@@ -151,6 +155,7 @@ items:
         - nc
         - thr
         - miss
+        - auxVar
 
     - name: plot2
       title: 'Class size plot'
@@ -163,6 +168,7 @@ items:
         - nc
         - thr
         - miss
+        - auxVar
 
     - name: plot1
       title: 'Density plot'
@@ -175,6 +181,7 @@ items:
         - nc
         - thr
         - miss
+        - auxVar
         
     - name: plot
       title: 'Trajectory plot'
@@ -188,9 +195,157 @@ items:
         - thr
         - raw
         - miss
+        - auxVar
 
-    - name: threeStep
-      title: "3-step analysis (BCH/DCAT)"
-      type: Preformatted
+    - name: threeStepSummary
+      title: '3-Step Analysis Summary'
+      type: Table
+      visible: (use3step)
+      refs: tidySEM
+      clearWith:
+        - vars
+        - auxVar
+        - model
+        - nc
+        - thr
+        - miss
+      columns:
+        - name: distal
+          title: Distal variable
+          type: text
+  
+        - name: dtype
+          title: Type
+          type: text
+  
+        - name: method
+          title: Method
+          type: text
+  
+        - name: k
+          title: K
+          type: integer
+  
+        - name: j
+          title: J
+          type: integer
+  
+        - name: test
+          title: Test
+          type: text
 
+        - name: df1
+          title: df1
+          type: integer
+
+        - name: df2
+          title: df2
+          type: number
+  
+        - name: statistic
+          title: Statistic
+          type: number
+          format: zto
+  
+        - name: p
+          title: p
+          type: number
+          format: pvalue
+  
+        - name: effect
+          title: Effect size
+          type: number
+          format: zto
+  
+        - name: effectLabel
+          title: Effect size type
+          type: text
+  
+    - name: threeStepClassStats
+      title: 'Class-specific Results'
+      type: Table
+      visible: (use3step)
+      refs: tidySEM
+      clearWith:
+        - vars
+        - auxVar
+        - model
+        - nc
+        - thr
+        - miss
+      columns:
+        - name: class
+          title: Class
+          type: text
+  
+        - name: category
+          title: Category
+          type: text
+  
+        - name: estimate
+          title: Estimate
+          type: number
+          format: zto
+  
+        - name: statLabel
+          title: Statistic
+          type: text
+  
+    - name: threeStepPairwise
+      title: 'Pairwise Comparisons'
+      type: Table
+      visible: (use3step)
+      refs: tidySEM
+      clearWith:
+        - vars
+        - auxVar
+        - model
+        - nc
+        - thr
+        - miss
+      columns:
+        - name: comparison
+          title: Comparison
+          type: text
+  
+        - name: test
+          title: Test
+          type: text
+
+        - name: df1
+          title: df1
+          type: integer
+
+        - name: df2
+          title: df2
+          type: number
+  
+        - name: statistic
+          title: Statistic
+          type: number
+          format: zto
+  
+        - name: p
+          title: p
+          type: number
+          format: pvalue
+  
+        - name: pBH
+          title: p(BH)
+          type: number
+          format: pvalue
+  
+        - name: pBonf
+          title: p(Bonf)
+          type: number
+          format: pvalue
+  
+        - name: effect
+          title: Effect size
+          type: number
+          format: zto
+  
+        - name: effectLabel
+          title: Effect size type
+          type: text
 ...

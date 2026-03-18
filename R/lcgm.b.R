@@ -1,7 +1,4 @@
 
-# This file is a generated template, your changes will not be overwritten
-#' @importFrom magrittr %>%
-
 lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
   R6::R6Class(
     "lcgmClass",
@@ -51,7 +48,7 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
       classProbabilities = function() {
         if (is.null(private$.cp_cache)) {
           cp1 <- tidySEM::class_prob(self$res)
-          individual_data <- data.frame(cp1$individual)   # predicted & posterior probs
+          individual_data <- data.frame(cp1$individual)
           predicted_classes <- individual_data$predicted
           
           class_counts <- table(predicted_classes)
@@ -80,7 +77,6 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
       .para_cache   = NULL,
       .cp_cache     = NULL,
       
-      # ---------- 안전 텍스트 출력 ----------
       .setTextSafe = function(txt) {
         slots <- c("three", "threeStep", "threeStepText", "text1", "text", "auxText")
         for (id in slots) {
@@ -94,7 +90,103 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         invisible(TRUE)
       },
       
-      # ---------- 3-STEP 계산 (효과크기 + 다중비교 보정 포함) ----------
+      .clearThreeStepTables = function() {
+        for (nm in c("threeStepSummary", "threeStepClassStats", "threeStepPairwise")) {
+          obj <- try(eval(parse(text = sprintf("self$results$%s", nm))), silent = TRUE)
+          if (!inherits(obj, "try-error"))
+            try(obj$clear(), silent = TRUE)
+        }
+        invisible(TRUE)
+      },
+      
+      .populateThreeStepTables = function(res3) {
+        private$.clearThreeStepTables()
+        
+        if (is.null(res3))
+          return(invisible(NULL))
+        
+        if (!is.null(res3$msg)) {
+          private$.setTextSafe(res3$msg)
+          return(invisible(NULL))
+        }
+        
+        # jamovi numeric cells: NA를 그대로 넣으면 NaN처럼 보일 수 있어 빈값 처리
+        cell_num <- function(x) {
+          if (length(x) == 0 || is.null(x) || is.na(x) || is.nan(x))
+            return(NULL)
+          x
+        }
+        cell_txt <- function(x) {
+          if (length(x) == 0 || is.null(x) || is.na(x))
+            return("")
+          as.character(x)
+        }
+        
+        if (!is.null(res3$summary) && nrow(res3$summary) > 0) {
+          tab <- self$results$threeStepSummary
+          for (i in seq_len(nrow(res3$summary))) {
+            rw <- res3$summary[i, , drop = FALSE]
+            vals <- list(
+              distal      = cell_txt(rw$distal[[1]]),
+              dtype       = cell_txt(rw$dtype[[1]]),
+              method      = cell_txt(rw$method[[1]]),
+              k           = cell_num(rw$k[[1]]),
+              j           = cell_num(rw$j[[1]]),
+              test        = cell_txt(rw$test[[1]]),
+              df1         = cell_num(rw$df1[[1]]),
+              df2         = cell_num(rw$df2[[1]]),
+              statistic   = cell_num(rw$statistic[[1]]),
+              p           = cell_num(rw$p[[1]]),
+              effect      = cell_num(rw$effect[[1]]),
+              effectLabel = cell_txt(rw$effectLabel[[1]])
+            )
+            vals <- vals[!vapply(vals, is.null, logical(1))]
+            tab$addRow(rowKey = i, values = vals)
+          }
+        }
+        
+        if (!is.null(res3$classStats) && nrow(res3$classStats) > 0) {
+          tab <- self$results$threeStepClassStats
+          for (i in seq_len(nrow(res3$classStats))) {
+            rw <- res3$classStats[i, , drop = FALSE]
+            vals <- list(
+              class     = cell_txt(rw$class[[1]]),
+              category  = cell_txt(rw$category[[1]]),
+              estimate  = cell_num(rw$estimate[[1]]),
+              statLabel = cell_txt(rw$statLabel[[1]])
+            )
+            vals <- vals[!vapply(vals, is.null, logical(1))]
+            tab$addRow(rowKey = i, values = vals)
+          }
+        }
+        
+        if (!is.null(res3$pairwise) && nrow(res3$pairwise) > 0) {
+          tab <- self$results$threeStepPairwise
+          for (i in seq_len(nrow(res3$pairwise))) {
+            rw <- res3$pairwise[i, , drop = FALSE]
+            vals <- list(
+              comparison  = cell_txt(rw$comparison[[1]]),
+              test        = cell_txt(rw$test[[1]]),
+              df1         = cell_num(rw$df1[[1]]),
+              df2         = cell_num(rw$df2[[1]]),
+              statistic   = cell_num(rw$statistic[[1]]),
+              p           = cell_num(rw$p[[1]]),
+              pBH         = cell_num(rw$pBH[[1]]),
+              pBonf       = cell_num(rw$pBonf[[1]]),
+              effect      = cell_num(rw$effect[[1]]),
+              effectLabel = cell_txt(rw$effectLabel[[1]])
+            )
+            vals <- vals[!vapply(vals, is.null, logical(1))]
+            tab$addRow(rowKey = i, values = vals)
+          }
+        }
+        
+        if (!is.null(res3$notes) && length(res3$notes) > 0)
+          private$.setTextSafe(paste(res3$notes, collapse = "\n"))
+        
+        invisible(TRUE)
+      },
+      
       .computeThreeStep = function() {
         auxName <- self$options$auxVar
         if (is.null(auxName) || !nzchar(auxName))
@@ -104,10 +196,8 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         if (!(auxName %in% names(dat)))
           return(list(msg = sprintf("[3-step] '%s' not found in data.", auxName)))
         
-        # posterior 가져오기
         ind <- self$classProbabilities$individual
         
-        # posterior 열 탐색
         .findPosteriorCols <- function(nms) {
           pats <- c(
             "^Class[_\\.]?[0-9]+$", "^class[_\\.]?[0-9]+$",
@@ -117,6 +207,7 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           hits <- unique(unlist(lapply(pats, function(p) grep(p, nms))))
           nms[hits]
         }
+        
         pcols <- .findPosteriorCols(names(ind))
         if (length(pcols) == 0) {
           num <- names(ind)[vapply(ind, is.numeric, TRUE)]
@@ -133,7 +224,6 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         K <- length(pcols)
         cls_levels <- seq_len(K)
         
-        # ---- 보조변수 타입 결정 ----
         yraw <- dat[[auxName]]
         n <- NROW(yraw)
         if (n != NROW(ind))
@@ -147,9 +237,11 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         }
         
         if (is.factor(yraw) || is.ordered(yraw) || is.character(yraw) || is.logical(yraw)) {
-          ytype <- "categorical"; yfac <- as.factor(yraw)
+          ytype <- "categorical"
+          yfac <- as.factor(yraw)
         } else if (is_cat_like(yraw)) {
-          ytype <- "categorical"; yfac <- factor(yraw)
+          ytype <- "categorical"
+          yfac <- factor(yraw)
           notes <- c(notes, sprintf("[note] '%s' has few integer levels; treated as categorical (DCAT).", auxName))
         } else if (is.numeric(yraw)) {
           ytype <- "numeric"
@@ -157,21 +249,26 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           return(list(msg = sprintf("[3-step] Unsupported type for '%s'.", auxName)))
         }
         
-        # ---- 결측 처리: y 결측이면 해당 행 가중치 0 ----
         if (ytype == "numeric") {
-          y <- yraw; wmask <- is.finite(y)
+          y <- yraw
+          wmask <- is.finite(y)
         } else {
-          y <- yfac; wmask <- !is.na(y)
+          y <- yfac
+          wmask <- !is.na(y)
         }
-        for (pc in pcols) ind[[pc]][!wmask] <- 0
+        for (pc in pcols)
+          ind[[pc]][!wmask] <- 0
         
         # =========================
-        # BCH (연속형)
+        # BCH (numeric)
         # =========================
         if (ytype == "numeric") {
           long <- lapply(seq_len(K), function(k) {
-            data.frame(class = factor(k, levels = cls_levels),
-                       y = y, w = ind[[pcols[k]]])
+            data.frame(
+              class = factor(k, levels = cls_levels),
+              y = y,
+              w = ind[[pcols[k]]]
+            )
           })
           long <- do.call(rbind, long)
           
@@ -181,130 +278,211 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           if (stats::var(long$y[long$w > 0], na.rm = TRUE) < 1e-10)
             notes <- c(notes, "[warn] Near-zero variance in distal variable (BCH may be unreliable).")
           
-          # 클래스별 평균/분산/SE/N_eff
           wmean <- tapply(long$y * long$w, long$class, sum) / pmax(eff_nk, .Machine$double.eps)
-          # 가중 분산
+          
           wvar <- sapply(levels(long$class), function(k) {
             idx <- long$class == k
-            wk <- long$w[idx]; yk <- long$y[idx]
+            wk <- long$w[idx]
+            yk <- long$y[idx]
             mk <- if (eff_nk[k] > 0) sum(wk * yk) / eff_nk[k] else NA_real_
-            if (!is.finite(mk) || eff_nk[k] <= 0) return(NA_real_)
+            if (!is.finite(mk) || eff_nk[k] <= 0)
+              return(NA_real_)
             sum(wk * (yk - mk)^2) / eff_nk[k]
           })
+          
           wse <- sqrt(wvar / pmax(eff_nk, 1))
           
-          # 전체 F 근사
           wbar <- sum(long$y * long$w) / sum(long$w)
-          ssb  <- sum(eff_nk * (wmean - wbar)^2, na.rm=TRUE)
+          ssb  <- sum(eff_nk * (wmean - wbar)^2, na.rm = TRUE)
           long$gmean <- wmean[as.character(long$class)]
-          ssw  <- sum(long$w * (long$y - long$gmean)^2, na.rm=TRUE)
+          ssw  <- sum(long$w * (long$y - long$gmean)^2, na.rm = TRUE)
           dfb  <- K - 1
-          dfw  <- max(1, sum(eff_nk, na.rm=TRUE) - K)
+          dfw  <- max(1, sum(eff_nk, na.rm = TRUE) - K)
           msb  <- ssb / dfb
           msw  <- ssw / dfw
           Fst  <- if (msw > 0) msb / msw else Inf
           pF   <- tryCatch(stats::pf(Fst, dfb, dfw, lower.tail = FALSE), error = function(e) NA_real_)
           
-          # 텍스트: 클래스별
-          lines <- c(
-            "3-step analysis (BCH/DCAT)",
-            "=== 3-STEP auxiliary (tidySEM, BCH_basic) ===",
-            sprintf("[Distal: %s, numeric] K=%d", auxName, K),
-            sprintf("Class-weighted means: %s",
-                    paste(paste0("C", names(wmean), "=", round(wmean, 3)), collapse = ", ")),
-            sprintf("Wald/ANOVA approx: F(%d,%.1f)=%.3f, p=%.4f", dfb, dfw, Fst, pF)
+          summary_df <- data.frame(
+            distal      = auxName,
+            dtype       = "numeric",
+            method      = "BCH",
+            k           = K,
+            j           = NA_integer_,
+            test        = "Wald/ANOVA approx",
+            df1         = as.integer(dfb),
+            df2         = as.numeric(dfw),
+            statistic   = as.numeric(Fst),
+            p           = as.numeric(pF),
+            effect      = NA_real_,
+            effectLabel = "",
+            stringsAsFactors = FALSE
           )
           
-          # 쌍별 비교: z, p, p_BH, p_Bonf, Cohen's d
+          class_df <- data.frame(
+            class     = paste0("Class ", seq_len(K)),
+            category  = "",
+            estimate  = as.numeric(wmean),
+            statLabel = "Weighted mean",
+            stringsAsFactors = FALSE
+          )
+          
+          pair_df <- NULL
           if (K >= 2) {
-            pair_lab <- c(); p_raw <- c(); zvals <- c(); dvals <- c()
+            pair_lab <- c()
+            p_raw <- c()
+            zvals <- c()
+            dvals <- c()
+            
             for (a in 1:(K-1)) for (b in (a+1):K) {
               za <- (wmean[a] - wmean[b]) / sqrt(wse[a]^2 + wse[b]^2)
-              pa <- 2*stats::pnorm(-abs(za))
-              # Cohen's d (가중 pooled SD)
-              spooled <- sqrt( ((eff_nk[a]-1)*wvar[a] + (eff_nk[b]-1)*wvar[b]) /
-                                 pmax(eff_nk[a]+eff_nk[b]-2, 1) )
-              d_ab <- (wmean[a] - wmean[b]) / spooled
-              pair_lab <- c(pair_lab, sprintf("%d vs %d", a, b))
+              pa <- 2 * stats::pnorm(-abs(za))
+              
+              spooled <- sqrt(((eff_nk[a]-1) * wvar[a] + (eff_nk[b]-1) * wvar[b]) /
+                                pmax(eff_nk[a] + eff_nk[b] - 2, 1))
+              d_ab <- if (is.finite(spooled) && spooled > 0)
+                (wmean[a] - wmean[b]) / spooled
+              else
+                NA_real_
+              
+              pair_lab <- c(pair_lab, sprintf("Class %d vs %d", a, b))
               p_raw    <- c(p_raw, pa)
               zvals    <- c(zvals, za)
               dvals    <- c(dvals, d_ab)
             }
+            
             p_bh   <- stats::p.adjust(p_raw, method = "BH")
             p_bonf <- stats::p.adjust(p_raw, method = "bonferroni")
-            lines <- c(lines, "Pairwise differences (z, p, p_BH, p_Bonf, Cohen's d):")
-            for (i in seq_along(pair_lab)) {
-              lines <- c(lines, sprintf("  Class %s: z=%.3f, p=%.3g, p_BH=%.3g, p_Bonf=%.3g, d=%.3f",
-                                        pair_lab[i], zvals[i], p_raw[i], p_bh[i], p_bonf[i], dvals[i]))
-            }
+            
+            pair_df <- data.frame(
+              comparison  = pair_lab,
+              test        = "z",
+              df1         = NA_integer_,
+              df2         = NA_real_,
+              statistic   = as.numeric(zvals),
+              p           = as.numeric(p_raw),
+              pBH         = as.numeric(p_bh),
+              pBonf       = as.numeric(p_bonf),
+              effect      = as.numeric(dvals),
+              effectLabel = "Cohen's d",
+              stringsAsFactors = FALSE
+            )
           }
           
-          if (length(notes)) lines <- c(lines, notes)
-          return(list(text = paste(lines, collapse = "\n")))
+          return(list(
+            summary    = summary_df,
+            classStats = class_df,
+            pairwise   = pair_df,
+            notes      = notes
+          ))
         }
         
         # =========================
-        # DCAT (범주형)
+        # DCAT (categorical)
         # =========================
         cats <- levels(y)
         W <- matrix(0, nrow = K, ncol = length(cats),
                     dimnames = list(paste0("C", cls_levels), cats))
+        
         for (k in seq_len(K)) {
           for (j in seq_along(cats)) {
-            W[k, j] <- sum( (y == cats[j]) * ind[[pcols[k]]] )
+            W[k, j] <- sum((y == cats[j]) * ind[[pcols[k]]])
           }
         }
         
-        # 전체 χ² + Cramér's V
-        rowsum <- rowSums(W, na.rm=TRUE)
-        colsum <- colSums(W, na.rm=TRUE)
-        grand  <- sum(rowsum, na.rm=TRUE)
+        rowsum <- rowSums(W, na.rm = TRUE)
+        colsum <- colSums(W, na.rm = TRUE)
+        grand  <- sum(rowsum, na.rm = TRUE)
         E <- outer(rowsum, colsum) / ifelse(grand > 0, grand, NA_real_)
+        
         if (any(E < 1))
           notes <- c(notes, "[warn] Some expected weighted counts < 1 (chi-square may be inaccurate).")
         if (mean(E < 5) > 0.2)
           notes <- c(notes, "[note] >20% of expected weighted counts < 5 (use caution).")
         
-        chi  <- sum((W - E)^2 / pmax(E, .Machine$double.eps), na.rm=TRUE)
+        chi  <- sum((W - E)^2 / pmax(E, .Machine$double.eps), na.rm = TRUE)
         df   <- (K - 1) * (length(cats) - 1)
-        pchi <- stats::pchisq(chi, df=df, lower.tail=FALSE)
-        Vall <- sqrt( chi / (grand * max(1, min(K-1, length(cats)-1))) )
+        pchi <- stats::pchisq(chi, df = df, lower.tail = FALSE)
+        Vall <- sqrt(chi / (grand * max(1, min(K - 1, length(cats) - 1))))
         
-        lines <- c(
-          "3-step analysis (BCH/DCAT)",
-          "=== 3-STEP auxiliary (tidySEM, DCAT) ===",
-          sprintf("[Distal: %s, categorical] K=%d, J=%d", auxName, K, ncol(W)),
-          sprintf("Wald/Chi-square: X^2(%d)=%.3f, p=%.4f, Cramer's V=%.3f", df, chi, pchi, Vall)
+        summary_df <- data.frame(
+          distal      = auxName,
+          dtype       = "categorical",
+          method      = "DCAT",
+          k           = K,
+          j           = length(cats),
+          test        = "Wald/Chi-square",
+          df1         = as.integer(df),
+          df2         = NA_real_,
+          statistic   = as.numeric(chi),
+          p           = as.numeric(pchi),
+          effect      = as.numeric(Vall),
+          effectLabel = "Cramer's V",
+          stringsAsFactors = FALSE
         )
         
-        # 쌍별 2×C: χ², p, 보정 p, V
+        class_list <- lapply(seq_len(K), function(k) {
+          props <- if (sum(W[k, ]) > 0) W[k, ] / sum(W[k, ]) else rep(NA_real_, length(cats))
+          data.frame(
+            class     = paste0("Class ", k),
+            category  = cats,
+            estimate  = as.numeric(props),
+            statLabel = "Proportion",
+            stringsAsFactors = FALSE
+          )
+        })
+        class_df <- do.call(rbind, class_list)
+        
+        pair_df <- NULL
         if (K >= 2) {
-          pair_lab <- c(); p_raw <- c(); chis <- c(); df2 <- c(); Vpair <- c()
+          pair_lab <- c()
+          p_raw <- c()
+          chis <- c()
+          df2v <- c()
+          Vpair <- c()
+          
           for (a in 1:(K-1)) for (b in (a+1):K) {
             sub <- rbind(W[a, ], W[b, ])
-            rs  <- rowSums(sub); cs <- colSums(sub); g <- sum(rs)
+            rs  <- rowSums(sub)
+            cs  <- colSums(sub)
+            g   <- sum(rs)
             Eab <- outer(rs, cs) / ifelse(g > 0, g, NA_real_)
-            chiab <- sum((sub - Eab)^2 / pmax(Eab, .Machine$double.eps), na.rm=TRUE)
+            chiab <- sum((sub - Eab)^2 / pmax(Eab, .Machine$double.eps), na.rm = TRUE)
             dfab  <- ncol(W) - 1
-            pab   <- stats::pchisq(chiab, df=dfab, lower.tail=FALSE)
-            Vab   <- sqrt( chiab / pmax(g, .Machine$double.eps) )  # 2×C → min(r-1,c-1)=1
-            pair_lab <- c(pair_lab, sprintf("%d vs %d", a, b))
+            pab   <- stats::pchisq(chiab, df = dfab, lower.tail = FALSE)
+            Vab   <- sqrt(chiab / pmax(g, .Machine$double.eps))
+            
+            pair_lab <- c(pair_lab, sprintf("Class %d vs %d", a, b))
             p_raw    <- c(p_raw, pab)
             chis     <- c(chis, chiab)
-            df2      <- c(df2, dfab)
+            df2v     <- c(df2v, dfab)
             Vpair    <- c(Vpair, Vab)
           }
+          
           p_bh   <- stats::p.adjust(p_raw, method = "BH")
           p_bonf <- stats::p.adjust(p_raw, method = "bonferroni")
-          lines <- c(lines, "Pairwise association (chi-square; p, p_BH, p_Bonf, Cramer's V):")
-          for (i in seq_along(pair_lab)) {
-            lines <- c(lines, sprintf("  Class %s: X^2(%d)=%.3f, p=%.3g, p_BH=%.3g, p_Bonf=%.3g, V=%.3f",
-                                      pair_lab[i], df2[i], chis[i], p_raw[i], p_bh[i], p_bonf[i], Vpair[i]))
-          }
+          
+          pair_df <- data.frame(
+            comparison  = pair_lab,
+            test        = "Chi-square",
+            df1         = as.integer(df2v),
+            df2         = NA_real_,
+            statistic   = as.numeric(chis),
+            p           = as.numeric(p_raw),
+            pBH         = as.numeric(p_bh),
+            pBonf       = as.numeric(p_bonf),
+            effect      = as.numeric(Vpair),
+            effectLabel = "Cramer's V",
+            stringsAsFactors = FALSE
+          )
         }
         
-        if (length(notes)) lines <- c(lines, notes)
-        return(list(text = paste(lines, collapse = "\n")))
+        return(list(
+          summary    = summary_df,
+          classStats = class_df,
+          pairwise   = pair_df,
+          notes      = notes
+        ))
       },
       
       .init = function() {
@@ -330,7 +508,6 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
             )
           )
         )
-        
       },
       
       .run = function() {
@@ -338,7 +515,7 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           return()
         
         self$results$progressBarHTML$setVisible(TRUE)
-        html <- progressBarH(5,  100, 'Starting analysis...')
+        html <- progressBarH(5, 100, 'Starting analysis...')
         self$results$progressBarHTML$setContent(html)
         private$.checkpoint()
         
@@ -400,35 +577,16 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           private$.setPlot()
         }
         
-        # ---------- 3-STEP 실행 ----------
-        if (isTRUE(self$options$use3step) && !is.null(self$options$auxVar)) {
+        if (isTRUE(self$options$use3step) && !is.null(self$options$auxVar) && nzchar(self$options$auxVar)) {
           html <- progressBarH(98, 100, 'Running 3-step auxiliary (BCH/DCAT)...')
           self$results$progressBarHTML$setContent(html)
           private$.checkpoint()
           
           res3 <- private$.computeThreeStep()
-          
-          sep_line <- strrep("━", 60)  # 굵은 유니코드 줄
-          
-          if (is.null(res3)) {
-            self$results$threeStep$setContent(
-              paste0(sep_line, "\n[3-step] No auxiliary variable specified.\n", sep_line)
-            )
-          } else if (!is.null(res3$text)) {
-            formatted <- paste0(sep_line, "\n", res3$text, "\n", sep_line)
-            self$results$threeStep$setContent(formatted)
-          } else if (!is.null(res3$msg)) {
-            self$results$threeStep$setContent(
-              paste0(sep_line, "\n", res3$msg, "\n", sep_line)
-            )
-          } else {
-            self$results$threeStep$setContent(
-              paste0(sep_line, "\n[3-step] Completed.\n", sep_line)
-            )
-          }
+          private$.populateThreeStepTables(res3)
         }
         
-        html <- progressBarH(100,100, 'Analysis complete!')
+        html <- progressBarH(100, 100, 'Analysis complete!')
         self$results$progressBarHTML$setContent(html)
         private$.checkpoint()
         self$results$progressBarHTML$setVisible(FALSE)
@@ -439,14 +597,14 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         table <- self$results$desc
         d     <- as.data.frame(self$desc)
         for (i in seq_along(vars))
-          table$addRow(rowKey = vars[i], values = as.list(d[i,2:8]))
+          table$addRow(rowKey = vars[i], values = as.list(d[i, 2:8]))
       },
       
       .populateFitTable = function() {
         table <- self$results$fit
         df    <- as.data.frame(t(self$fit))
         for (nm in rownames(df))
-          table$addRow(rowKey = nm, values = list(value = df[nm,1]))
+          table$addRow(rowKey = nm, values = list(value = df[nm, 1]))
       },
       
       .populateEST = function() {
@@ -454,13 +612,13 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         e     <- as.data.frame(self$parameters)
         for (nm in rownames(e))
           table$addRow(rowKey = nm, values = list(
-            cat  = e[nm,1],
-            lhs  = e[nm,2],
-            est  = e[nm,3],
-            se   = e[nm,4],
-            p    = e[nm,5],
-            ci   = e[nm,6],
-            na   = e[nm,7]
+            cat  = e[nm, 1],
+            lhs  = e[nm, 2],
+            est  = e[nm, 3],
+            se   = e[nm, 4],
+            p    = e[nm, 5],
+            ci   = e[nm, 6],
+            na   = e[nm, 7]
           ))
       },
       
@@ -558,7 +716,7 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         long <- long[is.finite(long$value), , drop = FALSE]
         p <- ggplot(long, aes(x = value)) +
           geom_density() +
-          facet_wrap(~ time, ncol = 2) +   
+          facet_wrap(~ time, ncol = 2) +
           theme_bw()
         print(p + ggtheme)
         TRUE
@@ -566,16 +724,17 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
       
       .plot = function(image, ggtheme, theme, ...) {
         if (is.null(image$state)) return(FALSE)
-        p <- tidySEM::plot_growth(image$state,
-                                  rawdata = self$options$raw,
-                                  alpha_range = c(0, 0.05))
+        p <- tidySEM::plot_growth(
+          image$state,
+          rawdata = self$options$raw,
+          alpha_range = c(0, 0.05)
+        )
         print(p + ggtheme); TRUE
       }
     )
   )
 
 
-# Progress Bar HTML (R/progressBarH.R)
 progressBarH <- function(progress = 0, total = 100, message = '') {
   percentage <- round(progress / total * 100)
   width      <- 400 * percentage / 100

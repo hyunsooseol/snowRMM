@@ -315,7 +315,8 @@ lcaordResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "vars",
                     "nc",
                     "miss",
-                    "auxVar"),
+                    "auxVar",
+                    "auxFormula"),
                 columns=list(
                     list(
                         `name`="class", 
@@ -334,7 +335,8 @@ lcaordResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "vars",
                     "nc",
                     "miss",
-                    "auxVar"),
+                    "auxVar",
+                    "auxFormula"),
                 columns=list(
                     list(
                         `name`="method", 
@@ -370,7 +372,8 @@ lcaordResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "vars",
                     "nc",
                     "miss",
-                    "auxVar"),
+                    "auxVar",
+                    "auxFormula"),
                 columns=list(
                     list(
                         `name`="comparison", 
@@ -408,7 +411,9 @@ lcaordResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "vars",
                     "nc",
                     "miss",
-                    "auxFormula"),
+                    "auxVar",
+                    "auxFormula",
+                    "regvars"),
                 columns=list(
                     list(
                         `name`="method", 

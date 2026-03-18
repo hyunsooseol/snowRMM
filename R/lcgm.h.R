@@ -181,7 +181,9 @@ lcgmResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         plot2 = function() private$.items[["plot2"]],
         plot1 = function() private$.items[["plot1"]],
         plot = function() private$.items[["plot"]],
-        threeStep = function() private$.items[["threeStep"]]),
+        threeStepSummary = function() private$.items[["threeStepSummary"]],
+        threeStepClassStats = function() private$.items[["threeStepClassStats"]],
+        threeStepPairwise = function() private$.items[["threeStepPairwise"]]),
     private = list(),
     public=list(
         initialize=function(options) {
@@ -214,7 +216,8 @@ lcgmResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "model",
                     "nc",
                     "thr",
-                    "miss"),
+                    "miss",
+                    "auxVar"),
                 refs="tidySEM",
                 columns=list(
                     list(
@@ -260,7 +263,8 @@ lcgmResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "model",
                     "nc",
                     "thr",
-                    "miss"),
+                    "miss",
+                    "auxVar"),
                 refs="tidySEM",
                 columns=list(
                     list(
@@ -281,7 +285,8 @@ lcgmResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "model",
                     "nc",
                     "thr",
-                    "miss"),
+                    "miss",
+                    "auxVar"),
                 refs="tidySEM",
                 columns=list(
                     list(
@@ -328,7 +333,8 @@ lcgmResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "model",
                     "nc",
                     "thr",
-                    "miss"),
+                    "miss",
+                    "auxVar"),
                 columns=list(
                     list(
                         `name`="name", 
@@ -354,7 +360,8 @@ lcgmResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "model",
                     "nc",
                     "thr",
-                    "miss")))
+                    "miss",
+                    "auxVar")))
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot2",
@@ -366,7 +373,8 @@ lcgmResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "model",
                     "nc",
                     "thr",
-                    "miss")))
+                    "miss",
+                    "auxVar")))
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot1",
@@ -378,7 +386,8 @@ lcgmResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "model",
                     "nc",
                     "thr",
-                    "miss")))
+                    "miss",
+                    "auxVar")))
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot",
@@ -391,11 +400,163 @@ lcgmResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "nc",
                     "thr",
                     "raw",
-                    "miss")))
-            self$add(jmvcore::Preformatted$new(
+                    "miss",
+                    "auxVar")))
+            self$add(jmvcore::Table$new(
                 options=options,
-                name="threeStep",
-                title="3-step analysis (BCH/DCAT)"))}))
+                name="threeStepSummary",
+                title="3-Step Analysis Summary",
+                visible="(use3step)",
+                refs="tidySEM",
+                clearWith=list(
+                    "vars",
+                    "auxVar",
+                    "model",
+                    "nc",
+                    "thr",
+                    "miss"),
+                columns=list(
+                    list(
+                        `name`="distal", 
+                        `title`="Distal variable", 
+                        `type`="text"),
+                    list(
+                        `name`="dtype", 
+                        `title`="Type", 
+                        `type`="text"),
+                    list(
+                        `name`="method", 
+                        `title`="Method", 
+                        `type`="text"),
+                    list(
+                        `name`="k", 
+                        `title`="K", 
+                        `type`="integer"),
+                    list(
+                        `name`="j", 
+                        `title`="J", 
+                        `type`="integer"),
+                    list(
+                        `name`="test", 
+                        `title`="Test", 
+                        `type`="text"),
+                    list(
+                        `name`="df1", 
+                        `title`="df1", 
+                        `type`="integer"),
+                    list(
+                        `name`="df2", 
+                        `title`="df2", 
+                        `type`="number"),
+                    list(
+                        `name`="statistic", 
+                        `title`="Statistic", 
+                        `type`="number", 
+                        `format`="zto"),
+                    list(
+                        `name`="p", 
+                        `title`="p", 
+                        `type`="number", 
+                        `format`="pvalue"),
+                    list(
+                        `name`="effect", 
+                        `title`="Effect size", 
+                        `type`="number", 
+                        `format`="zto"),
+                    list(
+                        `name`="effectLabel", 
+                        `title`="Effect size type", 
+                        `type`="text"))))
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="threeStepClassStats",
+                title="Class-specific Results",
+                visible="(use3step)",
+                refs="tidySEM",
+                clearWith=list(
+                    "vars",
+                    "auxVar",
+                    "model",
+                    "nc",
+                    "thr",
+                    "miss"),
+                columns=list(
+                    list(
+                        `name`="class", 
+                        `title`="Class", 
+                        `type`="text"),
+                    list(
+                        `name`="category", 
+                        `title`="Category", 
+                        `type`="text"),
+                    list(
+                        `name`="estimate", 
+                        `title`="Estimate", 
+                        `type`="number", 
+                        `format`="zto"),
+                    list(
+                        `name`="statLabel", 
+                        `title`="Statistic", 
+                        `type`="text"))))
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="threeStepPairwise",
+                title="Pairwise Comparisons",
+                visible="(use3step)",
+                refs="tidySEM",
+                clearWith=list(
+                    "vars",
+                    "auxVar",
+                    "model",
+                    "nc",
+                    "thr",
+                    "miss"),
+                columns=list(
+                    list(
+                        `name`="comparison", 
+                        `title`="Comparison", 
+                        `type`="text"),
+                    list(
+                        `name`="test", 
+                        `title`="Test", 
+                        `type`="text"),
+                    list(
+                        `name`="df1", 
+                        `title`="df1", 
+                        `type`="integer"),
+                    list(
+                        `name`="df2", 
+                        `title`="df2", 
+                        `type`="number"),
+                    list(
+                        `name`="statistic", 
+                        `title`="Statistic", 
+                        `type`="number", 
+                        `format`="zto"),
+                    list(
+                        `name`="p", 
+                        `title`="p", 
+                        `type`="number", 
+                        `format`="pvalue"),
+                    list(
+                        `name`="pBH", 
+                        `title`="p(BH)", 
+                        `type`="number", 
+                        `format`="pvalue"),
+                    list(
+                        `name`="pBonf", 
+                        `title`="p(Bonf)", 
+                        `type`="number", 
+                        `format`="pvalue"),
+                    list(
+                        `name`="effect", 
+                        `title`="Effect size", 
+                        `type`="number", 
+                        `format`="zto"),
+                    list(
+                        `name`="effectLabel", 
+                        `title`="Effect size type", 
+                        `type`="text"))))}))
 
 lcgmBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "lcgmBase",
@@ -450,7 +611,9 @@ lcgmBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$plot2} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
-#'   \code{results$threeStep} \tab \tab \tab \tab \tab a preformatted \cr
+#'   \code{results$threeStepSummary} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$threeStepClassStats} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$threeStepPairwise} \tab \tab \tab \tab \tab a table \cr
 #' }
 #'
 #' Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:

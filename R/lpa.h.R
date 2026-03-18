@@ -205,7 +205,9 @@ lpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         plot1 = function() private$.items[["plot1"]],
         plot4 = function() private$.items[["plot4"]],
         plot5 = function() private$.items[["plot5"]],
-        use3step = function() private$.items[["use3step"]]),
+        lpa3_means = function() private$.items[["lpa3_means"]],
+        lpa3_omnibus = function() private$.items[["lpa3_omnibus"]],
+        lpa3_pairwise = function() private$.items[["lpa3_pairwise"]]),
     private = list(),
     public=list(
         initialize=function(options) {
@@ -454,10 +456,105 @@ lpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "variances",
                     "covariances",
                     "angle")))
-            self$add(jmvcore::Preformatted$new(
+            self$add(jmvcore::Table$new(
                 options=options,
-                name="use3step",
-                title="3-step analysis (BCH/DCAT)"))}))
+                name="lpa3_means",
+                title="3-step auxiliary: Class-by-category distribution",
+                visible="(use3step)",
+                refs="tidyLPA",
+                clearWith=list(
+                    "vars",
+                    "auxVar",
+                    "nc",
+                    "variances",
+                    "covariances"),
+                columns=list(
+                    list(
+                        `name`="class", 
+                        `title`="Class", 
+                        `type`="text"),
+                    list(
+                        `name`="category", 
+                        `title`="Category", 
+                        `type`="text"),
+                    list(
+                        `name`="value", 
+                        `title`="Value", 
+                        `type`="number"))))
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="lpa3_omnibus",
+                title="3-step auxiliary: Overall test",
+                visible="(use3step)",
+                refs="tidyLPA",
+                clearWith=list(
+                    "vars",
+                    "auxVar",
+                    "nc",
+                    "variances",
+                    "covariances"),
+                columns=list(
+                    list(
+                        `name`="method", 
+                        `title`="Method", 
+                        `type`="text"),
+                    list(
+                        `name`="statistic", 
+                        `title`="Statistic", 
+                        `type`="number"),
+                    list(
+                        `name`="df", 
+                        `title`="df", 
+                        `type`="number"),
+                    list(
+                        `name`="p", 
+                        `title`="p", 
+                        `type`="number"),
+                    list(
+                        `name`="V", 
+                        `title`="V", 
+                        `type`="number"))))
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="lpa3_pairwise",
+                title="3-step auxiliary: Pairwise comparisons",
+                visible="(use3step)",
+                refs="tidyLPA",
+                clearWith=list(
+                    "vars",
+                    "auxVar",
+                    "nc",
+                    "variances",
+                    "covariances"),
+                columns=list(
+                    list(
+                        `name`="comparison", 
+                        `title`="Comparison", 
+                        `type`="text"),
+                    list(
+                        `name`="chi2", 
+                        `title`="X\u00B2", 
+                        `type`="number"),
+                    list(
+                        `name`="df", 
+                        `title`="df", 
+                        `type`="number"),
+                    list(
+                        `name`="p", 
+                        `title`="p", 
+                        `type`="number"),
+                    list(
+                        `name`="p_bh", 
+                        `title`="p (BH)", 
+                        `type`="number"),
+                    list(
+                        `name`="p_bonf", 
+                        `title`="p (Bonf.)", 
+                        `type`="number"),
+                    list(
+                        `name`="V", 
+                        `title`="V", 
+                        `type`="number"))))}))
 
 lpaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "lpaBase",
@@ -518,7 +615,9 @@ lpaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$plot4} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$plot5} \tab \tab \tab \tab \tab an image \cr
-#'   \code{results$use3step} \tab \tab \tab \tab \tab a preformatted \cr
+#'   \code{results$lpa3_means} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$lpa3_omnibus} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$lpa3_pairwise} \tab \tab \tab \tab \tab a table \cr
 #' }
 #'
 #' Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
