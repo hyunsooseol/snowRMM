@@ -228,8 +228,87 @@ items:
         - covariances     
         - angle
 
-    - name: use3step
-      title: "3-step analysis (BCH/DCAT)"
-      type: Preformatted
-            
+    - name: lpa3_means
+      title: '3-step auxiliary: Class-by-category distribution'
+      type: Table
+      visible: (use3step)
+      refs: tidyLPA
+      clearWith:
+        - vars
+        - auxVar
+        - nc
+        - variances
+        - covariances
+      columns:
+        - name: class
+          title: Class
+          type: text
+        - name: category
+          title: Category
+          type: text
+        - name: value
+          title: Value
+          type: number
+  
+    - name: lpa3_omnibus
+      title: '3-step auxiliary: Overall test'
+      type: Table
+      visible: (use3step)
+      refs: tidyLPA
+      clearWith:
+        - vars
+        - auxVar
+        - nc
+        - variances
+        - covariances
+      columns:
+        - name: method
+          title: Method
+          type: text
+        - name: statistic
+          title: Statistic
+          type: number
+        - name: df
+          title: df
+          type: number
+        - name: p
+          title: p
+          type: number
+        - name: V
+          title: V
+          type: number
+  
+    - name: lpa3_pairwise
+      title: '3-step auxiliary: Pairwise comparisons'
+      type: Table
+      visible: (use3step)
+      refs: tidyLPA
+      clearWith:
+        - vars
+        - auxVar
+        - nc
+        - variances
+        - covariances
+      columns:
+        - name: comparison
+          title: Comparison
+          type: text
+        - name: chi2
+          title: X²
+          type: number
+        - name: df
+          title: df
+          type: number
+        - name: p
+          title: p
+          type: number
+        - name: p_bh
+          title: p (BH)
+          type: number
+        - name: p_bonf
+          title: p (Bonf.)
+          type: number
+        - name: V
+          title: V
+          type: number
 ...
