@@ -180,7 +180,7 @@ datasets:
     description: LCGM with ordinal data
     tags:
       - Growth Model
-      - Ordinal data
+      - 3-step
   - name: linear
     path: lin.omv
     description: Linear equating
