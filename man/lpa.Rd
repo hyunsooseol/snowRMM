@@ -21,18 +21,8 @@ lpa(
   plot5 = FALSE,
   angle = 0,
   line = "FALSE",
-  width = 500,
-  height = 500,
-  width1 = 500,
-  height1 = 500,
-  width2 = 500,
-  height2 = 500,
-  width3 = 500,
-  height3 = 500,
-  width4 = 500,
-  height4 = 500,
-  width5 = 500,
-  height5 = 500
+  use3step = FALSE,
+  auxVar
 )
 }
 \arguments{
@@ -69,29 +59,9 @@ where 0 degrees represents completely horizontal labels.}
 
 \item{line}{.}
 
-\item{width}{.}
+\item{use3step}{.}
 
-\item{height}{.}
-
-\item{width1}{.}
-
-\item{height1}{.}
-
-\item{width2}{.}
-
-\item{height2}{.}
-
-\item{width3}{.}
-
-\item{height3}{.}
-
-\item{width4}{.}
-
-\item{height4}{.}
-
-\item{width5}{.}
-
-\item{height5}{.}
+\item{auxVar}{.}
 }
 \value{
 A results object containing:
@@ -110,6 +80,9 @@ A results object containing:
   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
   \code{results$plot4} \tab \tab \tab \tab \tab an image \cr
   \code{results$plot5} \tab \tab \tab \tab \tab an image \cr
+  \code{results$lpa3_means} \tab \tab \tab \tab \tab a table \cr
+  \code{results$lpa3_omnibus} \tab \tab \tab \tab \tab a table \cr
+  \code{results$lpa3_pairwise} \tab \tab \tab \tab \tab a table \cr
 }
 
 Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:

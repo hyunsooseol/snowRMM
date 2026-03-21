@@ -1,7 +1,6 @@
 # This file is a generated template, your changes will not be overwritten
 #' @import ggplot2
 
-
 raschClass <- if (requireNamespace('jmvcore'))
   R6::R6Class(
     "raschClass",
@@ -396,24 +395,86 @@ raschClass <- if (requireNamespace('jmvcore'))
             res = self$options$res
           )
           
-          summ <- capture.output(summary(rf))
+          eig <- rf$pca$eigen.values
+          load <- rf$pca$loadings
+          prop <- rf$pca$variance.proportion
+          totalvar <- rf$pca$variance.total
+          transposed <- if (length(rf$pca$transposed) > 0) as.character(rf$pca$transposed[[1]]) else NA
           
-          body <- gsub("\\$eigen.values", 
-                       "\n\n[Eigenvalues]\n", 
-                       paste(summ, collapse="\n"))
-          body <- gsub("\\$loadings", 
-                       "\n\n[Loadings]\n", body)
-          body <- gsub("\\$variance.proportion", 
-                       "\n\n[Variance proportion]\n", body)
-          body <- gsub("\\$variance.total", 
-                       "\n\n[Variance total]\n", body)
-          body <- gsub("\\$transposed", 
-                       "\n\n[Transposed]\n", body)
+          keep_idx <- which(eig >= 1)
           
-          self$results$text$setContent(body)
+          # Eigenvalues table
+          table <- self$results$rfEigen
+          for (i in seq_along(eig)) {
+            table$addRow(
+              rowKey = paste0("comp", i),
+              values = list(
+                component = sprintf("Comp.%02d", i),
+                eigen = eig[i],
+                prop = if (length(prop) >= i) prop[i] else NA
+              )
+            )
+          }
+          
+          # Loadings table (wide format; eigenvalue >= 1 only)
+          table <- self$results$rfLoadings
+          
+          load_df <- as.data.frame(load)
+          
+          item_names <- rownames(load_df)
+          if (is.null(item_names))
+            item_names <- paste0("Item", seq_len(nrow(load_df)))
+          
+          if (length(keep_idx) > 0) {
+            
+            # retained component columns 추가
+            for (k in seq_along(keep_idx)) {
+              j <- keep_idx[k]
+              table$addColumn(
+                name = paste0("comp", j),
+                title = sprintf("Comp.%02d", j),
+                type = "number"
+              )
+            }
+            
+            # item별 row 추가
+            for (i in seq_len(nrow(load_df))) {
+              row <- list(item = item_names[i])
+              
+              for (j in keep_idx) {
+                row[[paste0("comp", j)]] <- load_df[i, j]
+              }
+              
+              table$addRow(
+                rowKey = item_names[i],
+                values = row
+              )
+            }
+          }
+          
+          retained_labels <- if (length(keep_idx) > 0)
+            paste(sprintf("Comp.%02d", keep_idx), collapse = ", ")
+          else
+            "None"
+          
+          table$setNote(
+            "Note",
+            "Only components with eigenvalues greater than or equal to 1 are displayed."
+          )
+          
+          
+          # Summary table
+          table <- self$results$rfSummary
+          table$setRow(rowNo = 1, values = list(
+            nitems = length(self$options$vars),
+            ncomp = length(keep_idx),
+            totalvar = if (length(totalvar) > 0) totalvar[1] else NA,
+            transposed = transposed
+          ))
+          
           self$results$plot5$setState(rf)
         }
-
+        
         # Q3 fit statistics proposed by Yen(1984)
         
         if (isTRUE(self$options$q3)) {
@@ -520,7 +581,7 @@ raschClass <- if (requireNamespace('jmvcore'))
             self$results$text1$setContent(capture.output(res))
             
           } else {
- 
+            
             msg <- "NP test is only available for dichotomous Rasch models (step = 1)."
             self$results$text1$setContent(msg)
           }

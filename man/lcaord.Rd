@@ -12,13 +12,14 @@ lcaord(
   fit = FALSE,
   cp = FALSE,
   plot = FALSE,
-  width = 500,
-  height = 500,
   plot1 = FALSE,
-  width1 = 500,
-  height1 = 500,
   angle = 0,
-  miss = "listwise"
+  miss = "listwise",
+  use3step = FALSE,
+  auxVar,
+  auxFormula = "depression~peer_support",
+  reg = FALSE,
+  regvars
 )
 }
 \arguments{
@@ -36,20 +37,22 @@ lcaord(
 
 \item{plot}{.}
 
-\item{width}{.}
-
-\item{height}{.}
-
 \item{plot1}{.}
-
-\item{width1}{.}
-
-\item{height1}{.}
 
 \item{angle}{a number from 0 to 90 defining the angle of the x-axis labels,
 where 0 degrees represents completely horizontal labels.}
 
 \item{miss}{.}
+
+\item{use3step}{.}
+
+\item{auxVar}{.}
+
+\item{auxFormula}{.}
+
+\item{reg}{.}
+
+\item{regvars}{.}
 }
 \value{
 A results object containing:
@@ -63,6 +66,10 @@ A results object containing:
   \code{results$mem} \tab \tab \tab \tab \tab an output \cr
   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
+  \code{results$use3step_means} \tab \tab \tab \tab \tab a table \cr
+  \code{results$use3step_omnibus} \tab \tab \tab \tab \tab a table \cr
+  \code{results$use3step_pairwise} \tab \tab \tab \tab \tab a table \cr
+  \code{results$reg} \tab \tab \tab \tab \tab a table \cr
 }
 
 Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:

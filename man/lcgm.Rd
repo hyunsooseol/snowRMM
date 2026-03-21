@@ -17,14 +17,10 @@ lcgm(
   plot1 = FALSE,
   plot = FALSE,
   raw = "FALSE",
-  width = 500,
-  height = 500,
-  width1 = 500,
-  height1 = 500,
   miss = "listwise",
   plot2 = FALSE,
-  width2 = 500,
-  height2 = 500
+  auxVar,
+  use3step = FALSE
 )
 }
 \arguments{
@@ -52,21 +48,13 @@ lcgm(
 
 \item{raw}{.}
 
-\item{width}{.}
-
-\item{height}{.}
-
-\item{width1}{.}
-
-\item{height1}{.}
-
 \item{miss}{.}
 
 \item{plot2}{.}
 
-\item{width2}{.}
+\item{auxVar}{.}
 
-\item{height2}{.}
+\item{use3step}{.}
 }
 \value{
 A results object containing:
@@ -82,6 +70,9 @@ A results object containing:
   \code{results$plot2} \tab \tab \tab \tab \tab an image \cr
   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
+  \code{results$threeStepSummary} \tab \tab \tab \tab \tab a table \cr
+  \code{results$threeStepClassStats} \tab \tab \tab \tab \tab a table \cr
+  \code{results$threeStepPairwise} \tab \tab \tab \tab \tab a table \cr
 }
 
 Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:

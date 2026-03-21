@@ -37,7 +37,7 @@ Imports:
     dbscan,
     RANN,
     bain,
-    nonnest2,       
+    nonnest2      
 Remotes: twolodzko/equi,
          cran/mixRasch,
          hyunsooseol/tidySEM@1731cb3

@@ -21,13 +21,7 @@ mixture(
   angle = 0,
   iplot = FALSE,
   plot3 = FALSE,
-  plot2 = TRUE,
-  width = 500,
-  height = 500,
-  width1 = 500,
-  height1 = 500,
-  width2 = 500,
-  height2 = 500
+  plot2 = TRUE
 )
 }
 \arguments{
@@ -65,23 +59,12 @@ where 0 degrees represents completely horizontal labels.}
 \item{plot3}{.}
 
 \item{plot2}{.}
-
-\item{width}{.}
-
-\item{height}{.}
-
-\item{width1}{.}
-
-\item{height1}{.}
-
-\item{width2}{.}
-
-\item{height2}{.}
 }
 \value{
 A results object containing:
 \tabular{llllll}{
   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
+  \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
   \code{results$item$fit} \tab \tab \tab \tab \tab a table \cr
   \code{results$item$imean} \tab \tab \tab \tab \tab a table \cr
   \code{results$item$imeasure} \tab \tab \tab \tab \tab a table \cr

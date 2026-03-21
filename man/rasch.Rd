@@ -45,26 +45,8 @@ rasch(
   q3 = FALSE,
   res1 = "stdr",
   cormatrix = FALSE,
-  width = 500,
-  height = 500,
-  width1 = 500,
-  height1 = 500,
-  width2 = 500,
-  height2 = 500,
-  width3 = 500,
-  height3 = 500,
-  width4 = 500,
-  height4 = 500,
-  width5 = 500,
-  height5 = 500,
-  width6 = 500,
-  height6 = 500,
-  width7 = 500,
-  height7 = 500,
   plot8 = FALSE,
   num1 = 1,
-  width8 = 500,
-  height8 = 500,
   nptest = FALSE,
   matrix = 500,
   npmethod = "T11",
@@ -72,9 +54,7 @@ rasch(
   se1,
   mea2,
   se2,
-  plot9 = FALSE,
-  width9 = 500,
-  height9 = 500
+  plot9 = FALSE
 )
 }
 \arguments{
@@ -159,45 +139,9 @@ where 0 degrees represents completely horizontal labels.}
 
 \item{cormatrix}{.}
 
-\item{width}{.}
-
-\item{height}{.}
-
-\item{width1}{.}
-
-\item{height1}{.}
-
-\item{width2}{.}
-
-\item{height2}{.}
-
-\item{width3}{.}
-
-\item{height3}{.}
-
-\item{width4}{.}
-
-\item{height4}{.}
-
-\item{width5}{.}
-
-\item{height5}{.}
-
-\item{width6}{.}
-
-\item{height6}{.}
-
-\item{width7}{.}
-
-\item{height7}{.}
-
 \item{plot8}{.}
 
 \item{num1}{.}
-
-\item{width8}{.}
-
-\item{height8}{.}
 
 \item{nptest}{.}
 
@@ -214,10 +158,6 @@ where 0 degrees represents completely horizontal labels.}
 \item{se2}{.}
 
 \item{plot9}{.}
-
-\item{width9}{.}
-
-\item{height9}{.}
 }
 \value{
 A results object containing:
@@ -249,9 +189,11 @@ A results object containing:
   \code{results$plot4} \tab \tab \tab \tab \tab an image \cr
   \code{results$plot8} \tab \tab \tab \tab \tab an image \cr
   \code{results$plot5} \tab \tab \tab \tab \tab an image \cr
+  \code{results$rfEigen} \tab \tab \tab \tab \tab a table \cr
+  \code{results$rfLoadings} \tab \tab \tab \tab \tab a table \cr
+  \code{results$rfSummary} \tab \tab \tab \tab \tab a table \cr
   \code{results$q3} \tab \tab \tab \tab \tab a table \cr
   \code{results$cormatrix} \tab \tab \tab \tab \tab a table \cr
-  \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
   \code{results$text1} \tab \tab \tab \tab \tab a preformatted \cr
   \code{results$plot9} \tab \tab \tab \tab \tab an image \cr
 }

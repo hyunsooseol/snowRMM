@@ -11,34 +11,18 @@ dif(
   model = "dicho",
   z = FALSE,
   plot1 = FALSE,
-  width1 = 500,
-  height1 = 500,
   comp = FALSE,
   plot2 = FALSE,
   angle = 0,
-  width2 = 500,
-  height2 = 500,
   plot3 = FALSE,
-  width3 = 500,
-  height3 = 500,
   plot4 = FALSE,
-  width4 = 500,
-  height4 = 500,
   plot5 = FALSE,
-  width5 = 500,
-  height5 = 500,
   comp1 = FALSE,
   z1 = FALSE,
   plot6 = FALSE,
   angle1 = 0,
-  width6 = 500,
-  height6 = 500,
   plot7 = FALSE,
-  width7 = 500,
-  height7 = 500,
-  plot8 = FALSE,
-  width8 = 500,
-  height8 = 500
+  plot8 = FALSE
 )
 }
 \arguments{
@@ -54,37 +38,17 @@ dif(
 
 \item{plot1}{.}
 
-\item{width1}{.}
-
-\item{height1}{.}
-
 \item{comp}{.}
 
 \item{plot2}{.}
 
 \item{angle}{.}
 
-\item{width2}{.}
-
-\item{height2}{.}
-
 \item{plot3}{.}
-
-\item{width3}{.}
-
-\item{height3}{.}
 
 \item{plot4}{.}
 
-\item{width4}{.}
-
-\item{height4}{.}
-
 \item{plot5}{.}
-
-\item{width5}{.}
-
-\item{height5}{.}
 
 \item{comp1}{.}
 
@@ -94,21 +58,9 @@ dif(
 
 \item{angle1}{.}
 
-\item{width6}{.}
-
-\item{height6}{.}
-
 \item{plot7}{.}
 
-\item{width7}{.}
-
-\item{height7}{.}
-
 \item{plot8}{.}
-
-\item{width8}{.}
-
-\item{height8}{.}
 }
 \value{
 A results object containing:

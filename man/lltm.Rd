@@ -17,8 +17,11 @@ lltm(
   beta = FALSE,
   plot = FALSE,
   comp = FALSE,
-  width = 500,
-  height = 500
+  plot1 = FALSE,
+  con = FALSE,
+  wdiag = FALSE,
+  resid = FALSE,
+  plot2 = FALSE
 )
 }
 \arguments{
@@ -46,14 +49,21 @@ lltm(
 
 \item{comp}{.}
 
-\item{width}{.}
+\item{plot1}{.}
 
-\item{height}{.}
+\item{con}{.}
+
+\item{wdiag}{.}
+
+\item{resid}{.}
+
+\item{plot2}{.}
 }
 \value{
 A results object containing:
 \tabular{llllll}{
   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
+  \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
   \code{results$ra$items} \tab \tab \tab \tab \tab a table \cr
   \code{results$ra$lr} \tab \tab \tab \tab \tab a table \cr
   \code{results$ra$ml} \tab \tab \tab \tab \tab a table \cr
@@ -61,8 +71,19 @@ A results object containing:
   \code{results$ll$eta} \tab \tab \tab \tab \tab a table \cr
   \code{results$ll$beta} \tab \tab \tab \tab \tab a table \cr
   \code{results$ll$comp} \tab \tab \tab \tab \tab a table \cr
+  \code{results$con} \tab \tab \tab \tab \tab a table \cr
+  \code{results$wdiag} \tab \tab \tab \tab \tab a table \cr
   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
+  \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
+  \code{results$plot2} \tab \tab \tab \tab \tab an image \cr
+  \code{results$resid} \tab \tab \tab \tab \tab a table \cr
 }
+
+Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
+
+\code{results$con$asDF}
+
+\code{as.data.frame(results$con)}
 }
 \description{
 Linear Logisitic Test Model

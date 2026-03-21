@@ -514,9 +514,11 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         plot4 = function() private$.items[["plot4"]],
         plot8 = function() private$.items[["plot8"]],
         plot5 = function() private$.items[["plot5"]],
+        rfEigen = function() private$.items[["rfEigen"]],
+        rfLoadings = function() private$.items[["rfLoadings"]],
+        rfSummary = function() private$.items[["rfSummary"]],
         q3 = function() private$.items[["q3"]],
         cormatrix = function() private$.items[["cormatrix"]],
-        text = function() private$.items[["text"]],
         text1 = function() private$.items[["text1"]],
         plot9 = function() private$.items[["plot9"]]),
     private = list(),
@@ -1003,7 +1005,7 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot5",
-                title="Rasch Residual Factor Plot",
+                title="Residual factor analysis",
                 requiresData=TRUE,
                 visible="(plot5)",
                 renderFun=".plot5",
@@ -1013,6 +1015,72 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "step",
                     "type",
                     "res")))
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="rfEigen",
+                title="Residual factor eigenvalues",
+                visible="(plot5)",
+                clearWith=list(
+                    "vars",
+                    "step",
+                    "type",
+                    "res"),
+                columns=list(
+                    list(
+                        `name`="component", 
+                        `title`="Component", 
+                        `type`="text"),
+                    list(
+                        `name`="eigen", 
+                        `title`="Eigenvalue", 
+                        `type`="number"),
+                    list(
+                        `name`="prop", 
+                        `title`="Variance proportion", 
+                        `type`="number"))))
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="rfLoadings",
+                title="Residual factor loadings",
+                visible="(plot5)",
+                clearWith=list(
+                    "vars",
+                    "step",
+                    "type",
+                    "res"),
+                columns=list(
+                    list(
+                        `name`="item", 
+                        `title`="Item", 
+                        `type`="text"))))
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="rfSummary",
+                title="Residual factor analysis summary",
+                visible="(plot5)",
+                rows=1,
+                clearWith=list(
+                    "vars",
+                    "step",
+                    "type",
+                    "res"),
+                columns=list(
+                    list(
+                        `name`="nitems", 
+                        `title`="Number of items", 
+                        `type`="integer"),
+                    list(
+                        `name`="ncomp", 
+                        `title`="Number of components", 
+                        `type`="integer"),
+                    list(
+                        `name`="totalvar", 
+                        `title`="Total variance", 
+                        `type`="number"),
+                    list(
+                        `name`="transposed", 
+                        `title`="Transposed", 
+                        `type`="text"))))
             self$add(jmvcore::Table$new(
                 options=options,
                 name="q3",
@@ -1061,10 +1129,6 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         `title`="", 
                         `type`="text", 
                         `content`="($key)"))))
-            self$add(jmvcore::Preformatted$new(
-                options=options,
-                name="text",
-                title="Rasch residual factor analysis"))
             self$add(jmvcore::Preformatted$new(
                 options=options,
                 name="text1",
@@ -1187,9 +1251,11 @@ raschBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$plot4} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$plot8} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$plot5} \tab \tab \tab \tab \tab an image \cr
+#'   \code{results$rfEigen} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$rfLoadings} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$rfSummary} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$q3} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$cormatrix} \tab \tab \tab \tab \tab a table \cr
-#'   \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$text1} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$plot9} \tab \tab \tab \tab \tab an image \cr
 #' }

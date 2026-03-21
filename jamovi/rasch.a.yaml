@@ -236,7 +236,7 @@ options:
       default: false  
 
     - name: plot5
-      title: Residual factor plot
+      title: 'Residual factor analysis'
       type: Bool
       default: false  
 

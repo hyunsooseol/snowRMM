@@ -23,9 +23,7 @@ bfit(
   infit = FALSE,
   nco = FALSE,
   noutfit = FALSE,
-  ninfit = FALSE,
-  width = 500,
-  height = 500
+  ninfit = FALSE
 )
 }
 \arguments{
@@ -66,10 +64,6 @@ bfit(
 \item{noutfit}{.}
 
 \item{ninfit}{.}
-
-\item{width}{.}
-
-\item{height}{.}
 }
 \value{
 A results object containing:

@@ -434,7 +434,7 @@ items:
             - num1
 
     - name:  plot5
-      title: 'Rasch Residual Factor Plot'
+      title: 'Residual factor analysis'
       type:  Image
       requiresData: true
       visible: (plot5)
@@ -445,6 +445,64 @@ items:
             - step
             - type
             - res
+
+    - name: rfEigen
+      title: 'Residual factor eigenvalues'
+      type: Table
+      visible: (plot5)
+      clearWith:
+        - vars
+        - step
+        - type
+        - res
+      columns:
+        - name: component
+          title: Component
+          type: text
+        - name: eigen
+          title: Eigenvalue
+          type: number
+        - name: prop
+          title: Variance proportion
+          type: number
+
+    - name: rfLoadings
+      title: 'Residual factor loadings'
+      type: Table
+      visible: (plot5)
+      clearWith:
+        - vars
+        - step
+        - type
+        - res
+      columns:
+        - name: item
+          title: Item
+          type: text
+          
+    - name: rfSummary
+      title: 'Residual factor analysis summary'
+      type: Table
+      visible: (plot5)
+      rows: 1
+      clearWith:
+        - vars
+        - step
+        - type
+        - res
+      columns:
+        - name: nitems
+          title: Number of items
+          type: integer
+        - name: ncomp
+          title: Number of components
+          type: integer
+        - name: totalvar
+          title: Total variance
+          type: number
+        - name: transposed
+          title: Transposed
+          type: text
 
     - name: q3
       title: 'Q3 statistic based on pearson correlation'
@@ -488,10 +546,6 @@ items:
           title: ""
           type: text
           content: ($key)
-
-    - name:  text
-      title: 'Rasch residual factor analysis'
-      type:  Preformatted
 
     - name:  text1
       title: 'Nonparametric Rasch Model Tests'

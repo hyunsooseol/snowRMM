@@ -4,15 +4,7 @@
 \alias{linking}
 \title{Composite Linking}
 \usage{
-linking(
-  data,
-  ind,
-  dep,
-  method = "linear",
-  plot = FALSE,
-  width = 500,
-  height = 500
-)
+linking(data, ind, dep, method = "linear", plot = FALSE)
 }
 \arguments{
 \item{data}{.}
@@ -24,10 +16,6 @@ linking(
 \item{method}{.}
 
 \item{plot}{.}
-
-\item{width}{.}
-
-\item{height}{.}
 }
 \value{
 A results object containing:
