@@ -49,12 +49,7 @@ rasch(
   num1 = 1,
   nptest = FALSE,
   matrix = 500,
-  npmethod = "T11",
-  mea1,
-  se1,
-  mea2,
-  se2,
-  plot9 = FALSE
+  npmethod = "T11"
 )
 }
 \arguments{
@@ -148,16 +143,6 @@ where 0 degrees represents completely horizontal labels.}
 \item{matrix}{.}
 
 \item{npmethod}{.}
-
-\item{mea1}{.}
-
-\item{se1}{.}
-
-\item{mea2}{.}
-
-\item{se2}{.}
-
-\item{plot9}{.}
 }
 \value{
 A results object containing:
@@ -195,7 +180,6 @@ A results object containing:
   \code{results$q3} \tab \tab \tab \tab \tab a table \cr
   \code{results$cormatrix} \tab \tab \tab \tab \tab a table \cr
   \code{results$text1} \tab \tab \tab \tab \tab a preformatted \cr
-  \code{results$plot9} \tab \tab \tab \tab \tab an image \cr
 }
 
 Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:

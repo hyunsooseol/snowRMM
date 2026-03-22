@@ -49,12 +49,7 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             num1 = 1,
             nptest = FALSE,
             matrix = 500,
-            npmethod = "T11",
-            mea1 = NULL,
-            se1 = NULL,
-            mea2 = NULL,
-            se2 = NULL,
-            plot9 = FALSE, ...) {
+            npmethod = "T11", ...) {
 
             super$initialize(
                 package="snowRMM",
@@ -287,38 +282,6 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "T1m",
                     "T11"),
                 default="T11")
-            private$..mea1 <- jmvcore::OptionVariable$new(
-                "mea1",
-                mea1,
-                suggested=list(
-                    "continuous"),
-                permitted=list(
-                    "numeric"))
-            private$..se1 <- jmvcore::OptionVariable$new(
-                "se1",
-                se1,
-                suggested=list(
-                    "continuous"),
-                permitted=list(
-                    "numeric"))
-            private$..mea2 <- jmvcore::OptionVariable$new(
-                "mea2",
-                mea2,
-                suggested=list(
-                    "continuous"),
-                permitted=list(
-                    "numeric"))
-            private$..se2 <- jmvcore::OptionVariable$new(
-                "se2",
-                se2,
-                suggested=list(
-                    "continuous"),
-                permitted=list(
-                    "numeric"))
-            private$..plot9 <- jmvcore::OptionBool$new(
-                "plot9",
-                plot9,
-                default=FALSE)
 
             self$.addOption(private$..vars)
             self$.addOption(private$..num)
@@ -369,11 +332,6 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..nptest)
             self$.addOption(private$..matrix)
             self$.addOption(private$..npmethod)
-            self$.addOption(private$..mea1)
-            self$.addOption(private$..se1)
-            self$.addOption(private$..mea2)
-            self$.addOption(private$..se2)
-            self$.addOption(private$..plot9)
         }),
     active = list(
         vars = function() private$..vars$value,
@@ -424,12 +382,7 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         num1 = function() private$..num1$value,
         nptest = function() private$..nptest$value,
         matrix = function() private$..matrix$value,
-        npmethod = function() private$..npmethod$value,
-        mea1 = function() private$..mea1$value,
-        se1 = function() private$..se1$value,
-        mea2 = function() private$..mea2$value,
-        se2 = function() private$..se2$value,
-        plot9 = function() private$..plot9$value),
+        npmethod = function() private$..npmethod$value),
     private = list(
         ..vars = NA,
         ..num = NA,
@@ -479,12 +432,7 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..num1 = NA,
         ..nptest = NA,
         ..matrix = NA,
-        ..npmethod = NA,
-        ..mea1 = NA,
-        ..se1 = NA,
-        ..mea2 = NA,
-        ..se2 = NA,
-        ..plot9 = NA)
+        ..npmethod = NA)
 )
 
 raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -519,8 +467,7 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         rfSummary = function() private$.items[["rfSummary"]],
         q3 = function() private$.items[["q3"]],
         cormatrix = function() private$.items[["cormatrix"]],
-        text1 = function() private$.items[["text1"]],
-        plot9 = function() private$.items[["plot9"]]),
+        text1 = function() private$.items[["text1"]]),
     private = list(),
     public=list(
         initialize=function(options) {
@@ -1132,20 +1079,7 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Preformatted$new(
                 options=options,
                 name="text1",
-                title="Nonparametric Rasch Model Tests"))
-            self$add(jmvcore::Image$new(
-                options=options,
-                name="plot9",
-                title="Cross-plot with 95% confidence intervals",
-                requiresData=TRUE,
-                visible="(plot9)",
-                renderFun=".plot9",
-                refs="snowRMM",
-                clearWith=list(
-                    "mea1",
-                    "mea2",
-                    "se1",
-                    "se2")))}))
+                title="Nonparametric Rasch Model Tests"))}))
 
 raschBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "raschBase",
@@ -1217,11 +1151,6 @@ raschBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param nptest .
 #' @param matrix .
 #' @param npmethod .
-#' @param mea1 .
-#' @param se1 .
-#' @param mea2 .
-#' @param se2 .
-#' @param plot9 .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
@@ -1257,7 +1186,6 @@ raschBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$q3} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$cormatrix} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$text1} \tab \tab \tab \tab \tab a preformatted \cr
-#'   \code{results$plot9} \tab \tab \tab \tab \tab an image \cr
 #' }
 #'
 #' Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
@@ -1312,29 +1240,16 @@ rasch <- function(
     num1 = 1,
     nptest = FALSE,
     matrix = 500,
-    npmethod = "T11",
-    mea1,
-    se1,
-    mea2,
-    se2,
-    plot9 = FALSE) {
+    npmethod = "T11") {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("rasch requires jmvcore to be installed (restart may be required)")
 
     if ( ! missing(vars)) vars <- jmvcore::resolveQuo(jmvcore::enquo(vars))
-    if ( ! missing(mea1)) mea1 <- jmvcore::resolveQuo(jmvcore::enquo(mea1))
-    if ( ! missing(se1)) se1 <- jmvcore::resolveQuo(jmvcore::enquo(se1))
-    if ( ! missing(mea2)) mea2 <- jmvcore::resolveQuo(jmvcore::enquo(mea2))
-    if ( ! missing(se2)) se2 <- jmvcore::resolveQuo(jmvcore::enquo(se2))
     if (missing(data))
         data <- jmvcore::marshalData(
             parent.frame(),
-            `if`( ! missing(vars), vars, NULL),
-            `if`( ! missing(mea1), mea1, NULL),
-            `if`( ! missing(se1), se1, NULL),
-            `if`( ! missing(mea2), mea2, NULL),
-            `if`( ! missing(se2), se2, NULL))
+            `if`( ! missing(vars), vars, NULL))
 
 
     options <- raschOptions$new(
@@ -1381,12 +1296,7 @@ rasch <- function(
         num1 = num1,
         nptest = nptest,
         matrix = matrix,
-        npmethod = npmethod,
-        mea1 = mea1,
-        se1 = se1,
-        mea2 = mea2,
-        se2 = se2,
-        plot9 = plot9)
+        npmethod = npmethod)
 
     analysis <- raschClass$new(
         options = options,
