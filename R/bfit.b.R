@@ -68,12 +68,27 @@ bfitClass <- if (requireNamespace('jmvcore'))
             )
           )
           
-          if (self$options$outfit)
-            self$results$outfit$setNote("Note", "Adj.p= Adjusted p-values for Multiple Comparisons.")
+          self$results$outfit$setNote(
+            "Note",
+            "Adj.p = Adjusted p-values for Multiple Comparisons. Diagnosis is based on adjusted p-values: * p < .05, ** p < .01."
+          )
           
-          if (self$options$infit)
-            self$results$infit$setNote("Note", "Adj.p= Adjusted p-values for Multiple Comparisons.")
-        }
+          self$results$infit$setNote(
+            "Note",
+            "Adj.p = Adjusted p-values for Multiple Comparisons. Diagnosis is based on adjusted p-values: * p < .05, ** p < .01."
+          )
+          
+          self$results$noutfit$setNote(
+            "Note",
+            "Diagnosis: * p < .05, ** p < .01."
+          )
+          
+          self$results$ninfit$setNote(
+            "Note",
+            "Diagnosis: * p < .05, ** p < .01."
+          )
+          
+    }
         
         # Progress bar 10%
         html <- progressBarH(10, 100, 'Ready to start analysis...')
@@ -142,6 +157,7 @@ bfitClass <- if (requireNamespace('jmvcore'))
               row <- list()
               row[["fit"]] <- outfit[i]
               row[["p"]] <- pvalue[i]
+              row[["diagnosis"]] <- if (is.na(pvalue[i])) "" else if (pvalue[i] < .01) "**" else if (pvalue[i] < .05) "*" else ""
               table$setRow(rowKey = vars1[i], values = row)
             }
             
@@ -163,6 +179,7 @@ bfitClass <- if (requireNamespace('jmvcore'))
               row <- list()
               row[["fit"]] <- infit[i]
               row[["p"]] <- pvalue[i]
+              row[["diagnosis"]] <- if (is.na(pvalue[i])) "" else if (pvalue[i] < .01) "**" else if (pvalue[i] < .05) "*" else ""
               table$setRow(rowKey = vars1[i], values = row)
             }
             
@@ -192,6 +209,7 @@ bfitClass <- if (requireNamespace('jmvcore'))
               row[["fit"]] <- outfit[i]
               row[["p"]] <- pvalue[i]
               row[["adp"]] <- padj[i]
+              row[["diagnosis"]] <- if (is.na(padj[i])) "" else if (padj[i] < .01) "**" else if (padj[i] < .05) "*" else ""
               table$setRow(rowKey = vars1[i], values = row)
             }
             
@@ -217,6 +235,7 @@ bfitClass <- if (requireNamespace('jmvcore'))
               row[["fit"]] <- infit[i]
               row[["p"]] <- pvalue[i]
               row[["adp"]] <- padj[i]
+              row[["diagnosis"]] <- if (is.na(padj[i])) "" else if (padj[i] < .01) "**" else if (padj[i] < .05) "*" else ""
               table$setRow(rowKey = vars1[i], values = row)
             }
           }

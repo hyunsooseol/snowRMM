@@ -61,6 +61,7 @@ bfitOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "bn",
                 bn,
                 min=2,
+                max=1000,
                 default=100)
             private$..binfit <- jmvcore::OptionBool$new(
                 "binfit",
@@ -105,6 +106,7 @@ bfitOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "bn1",
                 bn1,
                 min=2,
+                max=1000,
                 default=100)
             private$..outfit <- jmvcore::OptionBool$new(
                 "outfit",
@@ -351,7 +353,11 @@ bfitResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     list(
                         `name`="p", 
                         `title`="p", 
-                        `format`="zto,pvalue"))))
+                        `format`="zto,pvalue"),
+                    list(
+                        `name`="diagnosis", 
+                        `title`="Diagnosis", 
+                        `type`="text"))))
             self$add(jmvcore::Table$new(
                 options=options,
                 name="ninfit",
@@ -375,7 +381,11 @@ bfitResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     list(
                         `name`="p", 
                         `title`="p", 
-                        `format`="zto,pvalue"))))
+                        `format`="zto,pvalue"),
+                    list(
+                        `name`="diagnosis", 
+                        `title`="Diagnosis", 
+                        `type`="text"))))
             self$add(jmvcore::Table$new(
                 options=options,
                 name="outfit",
@@ -404,7 +414,11 @@ bfitResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     list(
                         `name`="adp", 
                         `title`="Adj.p", 
-                        `format`="zto,pvalue"))))
+                        `format`="zto,pvalue"),
+                    list(
+                        `name`="diagnosis", 
+                        `title`="Diagnosis", 
+                        `type`="text"))))
             self$add(jmvcore::Table$new(
                 options=options,
                 name="infit",
@@ -433,7 +447,11 @@ bfitResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     list(
                         `name`="adp", 
                         `title`="Adj.p", 
-                        `format`="zto,pvalue"))))}))
+                        `format`="zto,pvalue"),
+                    list(
+                        `name`="diagnosis", 
+                        `title`="Diagnosis", 
+                        `type`="text"))))}))
 
 bfitBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "bfitBase",
