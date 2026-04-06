@@ -35,6 +35,7 @@ lpaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
               '<ul>',
               '<li><b>tidyLPA</b> R package is described in the <a href="https://cran.r-project.org/web/packages/tidyLPA/vignettes/Introduction_to_tidyLPA.html" target = "_blank">page</a>.</li>',
               '<li>Four models(1,2,3,6) are specified using <b>mclust</b> R package.</li>',
+              '<li>3-step auxiliary results are provided as approximate posterior-probability-based comparisons and should be interpreted with caution for strict methodological applications.</li>',
               '<li>Feature requests and bug reports can be made on my <a href="https://github.com/hyunsooseol/snowRMM/issues" target="_blank">GitHub</a>.</li>',
               '</ul></div></div>'
             )
@@ -565,28 +566,63 @@ lpaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
       },
       
       .plot5 = function(image5, ggtheme, theme, ...) {
-        if (is.null(image5$state)) return(FALSE)
+        if (is.null(image5$state))
+          return(FALSE)
+        
         res <- image5$state
         
-        model_name <- names(res)[grepl("^model_1_class_", names(res))][1]
-        if (is.na(model_name)) return(FALSE)
+        model_candidates <- names(res)[vapply(names(res), function(nm) {
+          obj <- res[[nm]]
+          is.list(obj) && !is.null(obj[["estimates"]])
+        }, logical(1))]
+        
+        if (length(model_candidates) == 0)
+          return(FALSE)
+        
+        model_name <- NULL
+        for (nm in model_candidates) {
+          est <- res[[nm]][["estimates"]]
+          if (!is.null(est) && "Category" %in% names(est)) {
+            if (any(est$Category == "Means", na.rm = TRUE)) {
+              model_name <- nm
+              break
+            }
+          }
+        }
+        
+        if (is.null(model_name))
+          return(FALSE)
         
         estimates <- res[[model_name]][["estimates"]]
-        if (is.null(estimates)) return(FALSE)
+        if (is.null(estimates))
+          return(FALSE)
         
         means_df <- estimates[estimates$Category == "Means", c("Class", "Parameter", "Estimate")]
-        if (nrow(means_df) == 0) return(FALSE)
+        if (nrow(means_df) == 0)
+          return(FALSE)
         
-        means_df$Estimate <- as.numeric(as.character(means_df$Estimate))
-        means_df <- means_df[!is.na(means_df$Estimate), ]
-        means_df$Centered <- stats::ave(means_df$Estimate, means_df$Parameter, FUN = function(x) x - mean(x))
+        means_df$Estimate <- suppressWarnings(as.numeric(as.character(means_df$Estimate)))
+        means_df <- means_df[!is.na(means_df$Estimate), , drop = FALSE]
+        if (nrow(means_df) == 0)
+          return(FALSE)
+        
+        means_df$Centered <- stats::ave(
+          means_df$Estimate,
+          means_df$Parameter,
+          FUN = function(x) x - mean(x, na.rm = TRUE)
+        )
         
         plot5 <- ggplot(means_df, aes(x = Parameter, y = Centered, group = Class, color = factor(Class))) +
-          geom_line(size = 1.2) + geom_point(size = 3) + geom_hline(yintercept = 0, linetype = "dashed") +
-          labs(y = "Deviation from Variable Mean", x = "Variables", color = "Class") + theme_minimal()
+          geom_line(size = 1.2) +
+          geom_point(size = 3) +
+          geom_hline(yintercept = 0, linetype = "dashed") +
+          labs(y = "Deviation from Variable Mean", x = "Variables", color = "Class") +
+          theme_minimal()
         
         if (self$options$angle > 0) {
-          plot5 <- plot5 + ggplot2::theme(axis.text.x = ggplot2::element_text(angle = self$options$angle, hjust = 1))
+          plot5 <- plot5 + ggplot2::theme(
+            axis.text.x = ggplot2::element_text(angle = self$options$angle, hjust = 1)
+          )
         }
         
         print(plot5)

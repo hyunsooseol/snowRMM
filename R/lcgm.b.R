@@ -500,6 +500,7 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
               '<ul>',
               '<li>Set <b>Thresholds=TRUE</b> for ordinal data.</li>',
               '<li>To select the optimal number of classes, change the Classes option and compare the Model fit values.</li>',
+              '<li>3-step auxiliary results are provided as approximate posterior-probability-based comparisons and should be interpreted with caution for strict methodological applications.</li>',
               '<li>Latent class growth analysis is described in the ',
               '<a href="https://cjvanlissa.github.io/tidySEM/articles/lca_lcga.html" target="_blank">tidySEM article</a>.</li>',
               '<li>Feature requests and bug reports: ',
