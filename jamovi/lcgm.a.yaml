@@ -40,6 +40,11 @@ options:
           name:  'TRUE'
       default: 'FALSE'  
 
+    - name: run
+      title: 'Run when ready'
+      type: Bool
+      default: FALSE
+
     - name: fit
       title: 'Model fit'
       type: Bool

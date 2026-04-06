@@ -24,20 +24,37 @@ children:
             maxItemCount: 1
             isTarget: true
   - type: LayoutBox
-    margin: large
-    style: inline
     children:
-      - type: Label
-        label: Model options
-        margin: large
-        style: list-inline
+      - name: run
+        type: CheckBox
+  - type: CollapseBox
+    label: Model options
+    collapsed: false
+    stretchFactor: 1
+    children:
+      - type: LayoutBox
+        margin: small
+        stretchFactor: 1
         children:
-          - name: nc
-            type: TextBox
-            label: Class
-            format: number
-          - type: ComboBox
-            name: thr
+          - type: LayoutBox
+            cell:
+              column: 0
+              row: 0
+            stretchFactor: 1
+            children:
+              - name: nc
+                type: TextBox
+                label: Class
+                format: number
+          - type: LayoutBox
+            cell:
+              column: 1
+              row: 0
+            stretchFactor: 1
+            children:
+              - name: thr
+                type: ComboBox
+                label: Thresholds
   - type: CollapseBox
     label: Custom model settings
     collapsed: true

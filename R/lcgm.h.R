@@ -10,6 +10,7 @@ lcgmOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             model = list(),
             nc = 2,
             thr = "FALSE",
+            run = FALSE,
             fit = FALSE,
             est = FALSE,
             desc = TRUE,
@@ -54,6 +55,10 @@ lcgmOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "FALSE",
                     "TRUE"),
                 default="FALSE")
+            private$..run <- jmvcore::OptionBool$new(
+                "run",
+                run,
+                default=FALSE)
             private$..fit <- jmvcore::OptionBool$new(
                 "fit",
                 fit,
@@ -117,6 +122,7 @@ lcgmOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..model)
             self$.addOption(private$..nc)
             self$.addOption(private$..thr)
+            self$.addOption(private$..run)
             self$.addOption(private$..fit)
             self$.addOption(private$..est)
             self$.addOption(private$..desc)
@@ -135,6 +141,7 @@ lcgmOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         model = function() private$..model$value,
         nc = function() private$..nc$value,
         thr = function() private$..thr$value,
+        run = function() private$..run$value,
         fit = function() private$..fit$value,
         est = function() private$..est$value,
         desc = function() private$..desc$value,
@@ -152,6 +159,7 @@ lcgmOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..model = NA,
         ..nc = NA,
         ..thr = NA,
+        ..run = NA,
         ..fit = NA,
         ..est = NA,
         ..desc = NA,
@@ -587,6 +595,7 @@ lcgmBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param model .
 #' @param nc .
 #' @param thr .
+#' @param run .
 #' @param fit .
 #' @param est .
 #' @param desc .
@@ -629,6 +638,7 @@ lcgm <- function(
     model = list(),
     nc = 2,
     thr = "FALSE",
+    run = FALSE,
     fit = FALSE,
     est = FALSE,
     desc = TRUE,
@@ -658,6 +668,7 @@ lcgm <- function(
         model = model,
         nc = nc,
         thr = thr,
+        run = run,
         fit = fit,
         est = est,
         desc = desc,

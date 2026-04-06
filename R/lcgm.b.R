@@ -76,7 +76,7 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
       .fit_cache    = NULL,
       .para_cache   = NULL,
       .cp_cache     = NULL,
-      
+
       .setTextSafe = function(txt) {
         slots <- c("three", "threeStep", "threeStepText", "text1", "text", "auxText")
         for (id in slots) {
@@ -511,6 +511,10 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
       },
       
       .run = function() {
+        
+        if (!isTRUE(self$options$run))
+          return()
+        
         if (is.null(self$options$vars) || length(self$options$vars) < 3)
           return()
         
