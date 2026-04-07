@@ -45,6 +45,11 @@ options:
         title: 'Partial credit'
       default: RSM
 
+    - name: run
+      title: 'Run when ready'
+      type: Bool
+      default: FALSE
+
     - name: fit
       title: Fit measures
       type: Bool

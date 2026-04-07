@@ -10,6 +10,7 @@ raschClass <- if (requireNamespace('jmvcore'))
       .resCache = NULL,
       .ermCache = NULL,
       .htmlwidget = NULL,
+      .validRows = NULL,
       
       .init = function() {
         private$.htmlwidget <- HTMLWidget$new()
@@ -135,47 +136,37 @@ raschClass <- if (requireNamespace('jmvcore'))
           )
         }
         
-        # 수정된 Person analysis 부분 ---------
-        # 클린 데이터와 결측값이 있는 원본 데이터 모두 필요
+        # Person analysis ---------
         cleanData <- private$.cleanData()
         
-        ptotal <- res$person.par$r
+        ptotal   <- res$person.par$r
         pmeasure <- res$person.par$theta
-        pse <- res$person.par$SE.theta
-        pinfit <- res$person.par$infit
-        poutfit <- res$person.par$outfit
+        pse      <- res$person.par$SE.theta
+        pinfit   <- res$person.par$infit
+        poutfit  <- res$person.par$outfit
         
-        # 원본 데이터의 행 수와 클린 데이터의 행 수가 다를 경우 처리
         originalRowCount <- nrow(self$data)
-        cleanRowCount <- nrow(cleanData)
+        validRows <- private$.validRows
         
-        # 결측값으로 인해 제거된 행의 인덱스 찾기
-        if (originalRowCount != cleanRowCount) {
-          # 결측값이 없는 행의 인덱스를 찾기
-          complete_cases_index <- complete.cases(self$data[self$options$vars])
-          valid_row_names <- rownames(self$data)[complete_cases_index]
-          
-          # Person analysis 결과를 원본 데이터 구조에 맞게 확장
-          extended_ptotal <- rep(NA, originalRowCount)
-          extended_pmeasure <- rep(NA, originalRowCount)
-          extended_pse <- rep(NA, originalRowCount)
-          extended_pinfit <- rep(NA, originalRowCount)
-          extended_poutfit <- rep(NA, originalRowCount)
-          
-          # 유효한 케이스에만 값 할당
-          extended_ptotal[complete_cases_index] <- ptotal
-          extended_pmeasure[complete_cases_index] <- pmeasure
-          extended_pse[complete_cases_index] <- pse
-          extended_pinfit[complete_cases_index] <- pinfit
-          extended_poutfit[complete_cases_index] <- poutfit
-          
-          # 확장된 벡터 사용
-          ptotal <- extended_ptotal
-          pmeasure <- extended_pmeasure
-          pse <- extended_pse
-          pinfit <- extended_pinfit
-          poutfit <- extended_poutfit
-        }
+        extended_ptotal   <- rep(NA, originalRowCount)
+        extended_pmeasure <- rep(NA, originalRowCount)
+        extended_pse      <- rep(NA, originalRowCount)
+        extended_pinfit   <- rep(NA, originalRowCount)
+        extended_poutfit  <- rep(NA, originalRowCount)
+        
+        extended_ptotal[validRows]   <- ptotal
+        extended_pmeasure[validRows] <- pmeasure
+        extended_pse[validRows]      <- pse
+        extended_pinfit[validRows]   <- pinfit
+        extended_poutfit[validRows]  <- poutfit
+        
+        ptotal   <- extended_ptotal
+        pmeasure <- extended_pmeasure
+        pse      <- extended_pse
+        pinfit   <- extended_pinfit
+        poutfit  <- extended_poutfit
+        
+        
         
         if (isTRUE(self$options$ptotal)) {
           self$results$ptotal$setRowNums(rownames(self$data))
@@ -544,14 +535,11 @@ raschClass <- if (requireNamespace('jmvcore'))
           # Rasch model, estimation of item and person parameters
           # Using eRm package
           
-          if (self$options$step == 1 &&
-              (self$options$type == 'RSM' ||
-               self$options$type == 'PCM')) {
+          if (self$options$step == 1) {
             set.seed(1234)
             p.res <- eRm::person.parameter(erm$rasch)
             item.fit <- eRm::itemfit(p.res)
             std.resids <- item.fit$st.res
-            
           }
           
           if (self$options$step > 1 && self$options$type == 'RSM') {
@@ -567,6 +555,7 @@ raschClass <- if (requireNamespace('jmvcore'))
             item.fit <- eRm::itemfit(p.res)
             std.resids <- item.fit$st.res
           }
+          
           image8 <- self$results$plot8
           image8$setState(std.resids)
         }
@@ -651,7 +640,11 @@ raschClass <- if (requireNamespace('jmvcore'))
       # wrightmap Plot-----------
       
       .plot = function(image, ...) {
-        res <- private$.computeRES()
+        res <- private$.resCache
+        if (is.null(res)) {
+          private$.resCache <- private$.computeRES()
+          res <- private$.resCache
+        }
         
         pmeasure <- res$person.par$theta
         imeasure <- res$item.par$delta.i
@@ -670,7 +663,12 @@ raschClass <- if (requireNamespace('jmvcore'))
       # fit plot---
       
       .inPlot = function(image, ggtheme, theme, ...) {
-        res <- private$.computeRES()
+        res <- private$.resCache
+        if (is.null(res)) {
+          private$.resCache <- private$.computeRES()
+          res <- private$.resCache
+        }
+        
         infit <- res$item.par$in.out[, 1]
         
         item <- self$options$vars
@@ -750,7 +748,11 @@ raschClass <- if (requireNamespace('jmvcore'))
       },
       
       .outPlot = function(image, ggtheme, theme, ...) {
-        res <- private$.computeRES()
+        res <- private$.resCache
+        if (is.null(res)) {
+          private$.resCache <- private$.computeRES()
+          res <- private$.resCache
+        }
         
         outfit <- res$item.par$in.out[, 3]
         item <- self$options$vars
@@ -830,7 +832,14 @@ raschClass <- if (requireNamespace('jmvcore'))
       # PREPARE PERSON-ITEM PLOT FOR PCM-------------
       
       .piPlot = function(image, ...) {
-        erm <- private$.computeERM()
+        erm <- private$.ermCache
+        if (is.null(erm)) {
+          private$.ermCache <- private$.computeERM()
+          erm <- private$.ermCache
+        }
+        if (is.null(erm$rasch))
+          return(FALSE)
+        
         autopcm <- erm$pcm.res
         plot <- eRm::plotPImap(autopcm, sorted = TRUE, warn.ord.colour = "red")
         print(plot)
@@ -838,7 +847,14 @@ raschClass <- if (requireNamespace('jmvcore'))
       },
       
       .plot1 = function(image, ...) {
-        erm <- private$.computeERM()
+        erm <- private$.ermCache
+        if (is.null(erm)) {
+          private$.ermCache <- private$.computeERM()
+          erm <- private$.ermCache
+        }
+        if (is.null(erm$rasch))
+          return(FALSE)
+        
         rasch <- erm$rasch
         num <- self$options$num
         
@@ -872,7 +888,14 @@ raschClass <- if (requireNamespace('jmvcore'))
         if (self$options$step <= 1)
           return()
         
-        erm <- private$.computeERM()
+        erm <- private$.ermCache
+        if (is.null(erm)) {
+          private$.ermCache <- private$.computeERM()
+          erm <- private$.ermCache
+        }
+        if (is.null(erm$rasch))
+          return(FALSE)
+        
         pcm.res <- erm$pcm.res
         plot3 <- eRm::plotICC(pcm.res, legpos = "top", item.subset = num)
         print(plot3)
@@ -973,18 +996,22 @@ raschClass <- if (requireNamespace('jmvcore'))
       },
       
 #### Helper functions =================================
-      .cleanData = function() {
-        items <- self$options$vars
-        data <- list()
-        for (item in items)
-          data[[item]] <-
-          jmvcore::toNumeric(self$data[[item]])
-        
-        attr(data, 'row.names') <- seq_len(length(data[[1]]))
-        attr(data, 'class') <- 'data.frame'
-        data <- jmvcore::naOmit(data)
-        return(data)
-      },
+.cleanData = function() {
+  items <- self$options$vars
+  data <- list()
+  
+  for (item in items)
+    data[[item]] <- jmvcore::toNumeric(self$data[[item]])
+  
+  attr(data, 'row.names') <- rownames(self$data)
+  attr(data, 'class') <- 'data.frame'
+  
+  valid <- complete.cases(data)
+  private$.validRows <- which(valid)
+  
+  data <- data[valid, , drop = FALSE]
+  return(data)
+},
       
       .computeRES = function(data = NULL) {
         if (is.null(data))

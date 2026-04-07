@@ -20,23 +20,46 @@ children:
             isTarget: true
   - type: LayoutBox
     margin: large
-    style: inline
     children:
-      - type: Label
-        label: ''
-        margin: large
-        style: list-inline
+      - type: CheckBox
+        name: run
+  - type: CollapseBox
+    label: Model options
+    collapsed: false
+    stretchFactor: 1
+    children:
+      - type: LayoutBox
+        margin: small
+        stretchFactor: 1
         children:
-          - name: nc
-            type: TextBox
-            label: class
-            format: number
-          - name: step
-            type: TextBox
-            label: Step
-            format: number
-          - type: ComboBox
-            name: type
+          - type: LayoutBox
+            cell:
+              column: 0
+              row: 0
+            stretchFactor: 1
+            children:
+              - name: nc
+                type: TextBox
+                label: class
+                format: number
+          - type: LayoutBox
+            cell:
+              column: 1
+              row: 0
+            stretchFactor: 1
+            children:
+              - name: step
+                type: TextBox
+                label: Step
+                format: number
+          - type: LayoutBox
+            cell:
+              column: 2
+              row: 0
+            stretchFactor: 1
+            children:
+              - type: ComboBox
+                name: type
   - type: CollapseBox
     label: Item Analysis
     margin: normal

@@ -10,6 +10,7 @@ mixtureOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             nc = 2,
             step = 1,
             type = "RSM",
+            run = FALSE,
             fit = TRUE,
             imean = TRUE,
             imeasure = FALSE,
@@ -55,6 +56,10 @@ mixtureOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "RSM",
                     "PCM"),
                 default="RSM")
+            private$..run <- jmvcore::OptionBool$new(
+                "run",
+                run,
+                default=FALSE)
             private$..fit <- jmvcore::OptionBool$new(
                 "fit",
                 fit,
@@ -120,6 +125,7 @@ mixtureOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..nc)
             self$.addOption(private$..step)
             self$.addOption(private$..type)
+            self$.addOption(private$..run)
             self$.addOption(private$..fit)
             self$.addOption(private$..imean)
             self$.addOption(private$..imeasure)
@@ -143,6 +149,7 @@ mixtureOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         nc = function() private$..nc$value,
         step = function() private$..step$value,
         type = function() private$..type$value,
+        run = function() private$..run$value,
         fit = function() private$..fit$value,
         imean = function() private$..imean$value,
         imeasure = function() private$..imeasure$value,
@@ -165,6 +172,7 @@ mixtureOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..nc = NA,
         ..step = NA,
         ..type = NA,
+        ..run = NA,
         ..fit = NA,
         ..imean = NA,
         ..imeasure = NA,
@@ -558,6 +566,7 @@ mixtureBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param nc .
 #' @param step .
 #' @param type .
+#' @param run .
 #' @param fit .
 #' @param imean .
 #' @param imeasure .
@@ -600,6 +609,7 @@ mixture <- function(
     nc = 2,
     step = 1,
     type = "RSM",
+    run = FALSE,
     fit = TRUE,
     imean = TRUE,
     imeasure = FALSE,
@@ -628,6 +638,7 @@ mixture <- function(
         nc = nc,
         step = step,
         type = type,
+        run = run,
         fit = fit,
         imean = imean,
         imeasure = imeasure,

@@ -1,7 +1,6 @@
 
 # This file is a generated template, your changes will not be overwritten
 
-
 lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
   R6::R6Class(
     "lcaClass",
@@ -88,45 +87,28 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
       },
       
       .compute = function(data) {
-        # # library(poLCA)
-        # # data(values)
-        # # f <- cbind(A,B,C,D)~1
-        # # res<- poLCA::poLCA(f,values,nclass=2, na.rm = F,calc.se = FALSE)
-        
         nc <- self$options$nc
-
+        
         ############ Construct formula###################
-
+        
         vars <- self$options$vars
         vars <- vapply(vars, function(x)
           jmvcore::composeTerm(x), '')
         vars <- paste0(vars, collapse = ',')
         formula <- as.formula(paste0('cbind(', vars, ')~1'))
-
-
+        
+        
         if (length(self$options$covs) >= 1) {
-          # if( !is.null(self$options$covs) ) {
           covs <- self$options$covs
           covs <- vapply(covs, function(x)
             jmvcore::composeTerm(x), '')
           covs <- paste0(covs, collapse = '+')
-
+          
           formula <- as.formula(paste0('cbind(', vars, ') ~', covs))
         }
-        # ################ Model Estimates############################
-        # set.seed(1126)
-        # res <- poLCA::poLCA(formula,
-        #                     data,
-        #                     nclass = nc,
-        #                     na.rm = FALSE,
-        #                     calc.se = FALSE)
-        # 
-        # 
-        # ###############################################################
-
         
         res <- self$res
-        #res <- private$.computeRES(data)
+        
         txt <- paste0(
           "============================================================\n",
           "Fit for ", length(res$P), " latent classes:\n",
@@ -157,8 +139,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
               disp <- data.frame(
                 coeff = round(res$coeff[, (r - 1)], 5),
                 se = round(res$coeff.se[, (r - 1)], 5),
-                tval = round(res$coeff[, (r - 1)] / res$coeff.se[, (r -
-                                                                      1)], 3),
+                tval = round(res$coeff[, (r - 1)] / res$coeff.se[, (r - 1)], 3),
                 pr = round(1 - (2 * abs(
                   pt(res$coeff[, (r - 1)] / res$coeff.se[, (r - 1)], res$resid.df) - 0.5
                 )), 3)
@@ -172,25 +153,20 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           out <- utils::capture.output(mzout())
           self$results$text$setContent(out)
         }
-        # Model Fit---------
+        
         aic <- res$aic
         bic <- res$bic
         Chisq <- res$Chisq
         Gsq <- res$Gsq
         
-        #sample-size adjusted bic
         SABIC = (-2 * res$llik) + (log((res$N + 2) / 24) * res$npar)
-        
         CAIC = (-2 * res$llik) + res$npar * (1 + log(res$N))
-        
-        # Akaike Information Criterion 3
         aic3 <- (-2 * res$llik) + (3 * res$npar)
-        # Model comparison-------
         
         out <- NULL
         
         for (i in 1:self$options$nc) {
-            set.seed(1234)
+          set.seed(1234)
           res <- poLCA::poLCA(
             formula,
             data,
@@ -198,7 +174,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
             na.rm = FALSE,
             calc.se = FALSE
           )
-
+          
           aic <- res$aic
           aic3 <- (-2 * res$llik) + (3 * res$npar)
           bic <- res$bic
@@ -207,7 +183,6 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           Gsq <- res$Gsq
           
           SABIC = (-2 * res$llik) + (log((res$N + 2) / 24) * res$npar)
-          
           CAIC = (-2 * res$llik) + res$npar * (1 + log(res$N))
           
           df <- data.frame(aic, aic3, bic, SABIC, CAIC, loglik, Chisq, Gsq)
@@ -217,8 +192,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
             out <- rbind(out, df)
           }
         }
-        #out <- out
-        # Elbow plot-------------
+        
         out1 <- out[, c(1:5)]
         cla <- c(1:self$options$nc)
         out1 <- data.frame(out1, cla)
@@ -232,67 +206,42 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         image <- self$results$plot3
         image$setState(elbow)
         
-        # Caculating Chi and Gsp p values----------
-        
+        # Caculating Chi and Gsq p values----------
         y <- res$y
-        K.j <- t(matrix(apply(y, 2, max)))
-        C <- max(K.j)
-        J <- ncol(y)
-        #I <- J # number of items
-        
-        df <- C ^ J - res$npar - 1 # Degrees of freedom
+        K.j <- apply(y, 2, max)
+        df <- prod(K.j) - res$npar - 1
         
         cp <- 1 - pchisq(res$Chisq, df)
         gp <- 1 - pchisq(res$Gsq, df)
         
-        # pvalue-----
-        
-        # C <- max(K.j) # number of categories
-        # I <- J # number of items
-        # df <- C^I - ret$npar - 1 # Degrees of freedom
-        # Chisq.pvalue <- 1-pchisq(ret$Chisq,df)
-        # Gsq.pvalue <- 1-pchisq(ret$Gsq,df)
-        
-        
-        #########################################
-        # ref:https://stackoverflow.com/questions/33000511/entropy-measure-polca-mplus
-        # caculating R2_Entropy
         entropy <- function (p)
-          sum(na.omit(-p * log(p))) #sum(-p*log(p))
-        error_prior <- entropy(res$P) # Class proportions
+          sum(na.omit(-p * log(p)))
+        error_prior <- entropy(res$P)
         error_post <- mean(apply(res$posterior, 1, entropy))
         entro <- (error_prior - error_post) / error_prior
-        #########################################################################
-        ####### result###############################
+        
         classprob <- res$P
         itemprob <- res$probs
-        # cell frequencies-------
         cell <- res$predcell
-        # output results------------
         base::options(max.print = .Machine$integer.max)
         cm <- res$predclass
-        #Predicted cell percentages in a latent class model
-        # pc<- poLCA::poLCA.predcell(lc=res,res$y)
-        # Posterior probabilities---------------
-        #post <- res$posterior
-        # plot----------
+        
         image <- self$results$plot
         image$setState(res)
-        # plot1------
+        
         lcModelProbs <- reshape2::melt(res$probs)
         colnames(lcModelProbs) <- c("Class", "Level", "value", "L1")
         image1 <- self$results$plot1
         image1$setState(lcModelProbs)
         
-        # profile plot2------
         profile <- reshape2::melt(res$probs)
         colnames(profile) <- c("Class", "Level", "value", "Variable")
         levels(profile$Class) <- c(1:self$options$nc)
         image2 <- self$results$plot2
         image2$setState(profile)
-        # log-likelihood--------
+        
         like <- res[["llik"]]
-
+        
         results <-
           list(
             'classprob' = classprob,
@@ -311,11 +260,11 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
             'df' = df,
             'like' = like,
             'SABIC' = SABIC,
-            'CAIC' = CAIC
+            'CAIC' = CAIC,
+            'rowNums' = rownames(data)
           )
       },
       
-      # Model table-----
       .populateFitTable = function(results) {
         table <- self$results$mf$fit
         row <- list(
@@ -336,7 +285,6 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         table$setRow(rowNo = 1, values = row)
       },
       
-      # Model comparison table----------
       .populateModelTable = function(results) {
         table <- self$results$mf$comp
         fit <- as.data.frame(results$out)
@@ -354,7 +302,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           table$addRow(rowKey = name, values = row)
         }
       },
-      # populate class probability table---------------
+      
       .populateClassTable = function(results) {
         classprob <- as.data.frame(results$classprob)
         table <- self$results$pro$cp
@@ -365,13 +313,12 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         })
       },
       
-      # populate item probability table---------------
       .populateItemTable = function(results) {
         tables <- self$results$ip
         itemprob <- results$itemprob
         vars <- self$options$vars
         for (i in seq_along(vars)) {
-          item <- results$item[[vars[i]]]
+          item <- itemprob[[vars[i]]]
           table <- tables[[i]]
           names <- row.names(item)
           dims <- colnames(item)
@@ -389,7 +336,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           }
         }
       },
-      # populate cell frequencies------------
+      
       .populateCfTable = function(results) {
         table <- self$results$pro$cf
         cell <- results$cell
@@ -407,25 +354,22 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           table$addRow(rowKey = name, values = row)
         }
       },
-      # populate class membership-------
+      
       .populateOutputs = function(results) {
         cm <- results$cm
         if (self$options$cm
             && self$results$cm$isNotFilled()) {
           
-          self$results$cm$setRowNums(rownames(self$data))
+          self$results$cm$setRowNums(results$rowNums)
           self$results$cm$setValues(cm)
-         
+          
         }
       },
       
-      #plot---
       .plot = function(image, ...) {
         if (is.null(image$state))
           return(FALSE)
         x <- image$state
-        
-        ### plot function-----
         
         poLCA.makeplot.dich <-
           function(probs, P, y, ti) {
@@ -529,7 +473,6 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           facet_wrap(~ L1) +
           scale_x_discrete("Class", expand = c(0, 0)) +
           scale_y_continuous("Proportion", expand = c(0, 0)) +
-          #  scale_fill_discrete("Factor Level") +
           theme_bw()
         
         plot1 <- plot1 + ggtheme
@@ -573,18 +516,14 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         TRUE
       },
       
-      ### Helper functions =================================
-      
       .cleanData = function() {
         data <- list()
         
         if (!is.null(self$options$covs))
-          
           for (cov in self$options$covs)
             data[[cov]] <- jmvcore::toNumeric(self$data[[cov]])
         
         for (var in self$options$vars)
-          
           data[[var]] <- jmvcore::toNumeric(self$data[[var]])
         
         attr(data, 'row.names') <- seq_len(length(data[[1]]))
@@ -600,21 +539,15 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
       .computeRES= function(data = NULL) {
         if (is.null(data)) data <- private$.cleanData()
         
-        # library(poLCA)
-        # data(values)
-        # f <- cbind(A,B,C,D)~1
-        # res<- poLCA::poLCA(f,values,nclass=2, na.rm = F,calc.se = FALSE)
         nc <- self$options$nc
         
-        ############ Construct formula###################
         vars <- self$options$vars
         vars <- vapply(vars, function(x)
           jmvcore::composeTerm(x), '')
         vars <- paste0(vars, collapse = ',')
         formula <- as.formula(paste0('cbind(', vars, ')~1'))
-
+        
         if (length(self$options$covs) >= 1) {
-          # if( !is.null(self$options$covs) ) {
           covs <- self$options$covs
           covs <- vapply(covs, function(x)
             jmvcore::composeTerm(x), '')
@@ -622,17 +555,18 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           
           formula <- as.formula(paste0('cbind(', vars, ') ~', covs))
         }
-        ################ Model Estimates############################
+        
         set.seed(1234)
         res <- poLCA::poLCA(formula,
                             data,
                             nclass = nc,
                             na.rm = FALSE,
                             calc.se = FALSE)
-          return(res)
+        return(res)
       }
     )
   )
+
 
 
 # Multinomial logit coefficients--------
