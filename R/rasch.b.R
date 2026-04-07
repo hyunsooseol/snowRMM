@@ -47,6 +47,9 @@ raschClass <- if (requireNamespace('jmvcore'))
       
       .run = function() {
         
+        if (!isTRUE(self$options$run))
+          return()
+        
         if (is.null(self$options$vars) || length(self$options$vars) < 2)
           return()
         

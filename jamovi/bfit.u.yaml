@@ -27,23 +27,40 @@ children:
                         isTarget: true
               - type: LayoutBox
                 margin: large
-                style: inline
                 children:
-                  - type: Label
-                    label: ''
-                    margin: large
-                    style: list-inline
-                    children:
-                      - name: step
-                        type: TextBox
-                        label: Step
-                        format: number
-                      - name: bn
-                        type: TextBox
-                        label: Bootstrap N
-                        format: number
+                  - type: CheckBox
+                    name: run
               - type: CollapseBox
-                label: Analysis
+                label: 'Model options'
+                collapsed: false
+                stretchFactor: 1
+                children:
+                  - type: LayoutBox
+                    margin: small
+                    stretchFactor: 1
+                    children:
+                      - type: LayoutBox
+                        cell:
+                          column: 0
+                          row: 0
+                        stretchFactor: 1
+                        children:
+                          - name: step
+                            type: TextBox
+                            label: Step
+                            format: number
+                      - type: LayoutBox
+                        cell:
+                          column: 1
+                          row: 0
+                        stretchFactor: 1
+                        children:
+                          - name: bn
+                            type: TextBox
+                            label: Bootstrap N
+                            format: number
+              - type: CollapseBox
+                label: 'Analysis'
                 margin: normal
                 collapsed: true
                 children:
@@ -100,21 +117,38 @@ children:
                     isTarget: true
           - type: LayoutBox
             margin: large
-            style: inline
             children:
-              - type: Label
-                label: ''
-                margin: large
-                style: list-inline
-                children:
-                  - type: ComboBox
-                    name: type
-                  - name: bn1
-                    type: TextBox
-                    label: Bootstrap N
-                    format: number
+              - type: CheckBox
+                name: run1
           - type: CollapseBox
-            label: Analysis
+            label: 'Model options'
+            collapsed: false
+            stretchFactor: 1
+            children:
+              - type: LayoutBox
+                margin: small
+                stretchFactor: 1
+                children:
+                  - type: LayoutBox
+                    cell:
+                      column: 0
+                      row: 0
+                    stretchFactor: 1
+                    children:
+                      - type: ComboBox
+                        name: type
+                  - type: LayoutBox
+                    cell:
+                      column: 1
+                      row: 0
+                    stretchFactor: 1
+                    children:
+                      - name: bn1
+                        type: TextBox
+                        label: Bootstrap N
+                        format: number
+          - type: CollapseBox
+            label: 'Analysis'
             margin: normal
             collapsed: true
             children:

@@ -51,6 +51,16 @@ options:
       max: 1000
       default: 100
 
+    - name: run
+      title: 'Run when ready'
+      type: Bool
+      default: FALSE
+
+    - name: run1
+      title: 'Run when ready'
+      type: Bool
+      default: FALSE
+
     - name: binfit
       title: Infit
       type: Bool

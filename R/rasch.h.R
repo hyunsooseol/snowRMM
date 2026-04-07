@@ -10,6 +10,7 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             num = 1,
             step = 1,
             type = "RSM",
+            run = FALSE,
             fit = FALSE,
             rel = FALSE,
             imean = TRUE,
@@ -83,6 +84,10 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "RSM",
                     "PCM"),
                 default="RSM")
+            private$..run <- jmvcore::OptionBool$new(
+                "run",
+                run,
+                default=FALSE)
             private$..fit <- jmvcore::OptionBool$new(
                 "fit",
                 fit,
@@ -287,6 +292,7 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..num)
             self$.addOption(private$..step)
             self$.addOption(private$..type)
+            self$.addOption(private$..run)
             self$.addOption(private$..fit)
             self$.addOption(private$..rel)
             self$.addOption(private$..imean)
@@ -338,6 +344,7 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         num = function() private$..num$value,
         step = function() private$..step$value,
         type = function() private$..type$value,
+        run = function() private$..run$value,
         fit = function() private$..fit$value,
         rel = function() private$..rel$value,
         imean = function() private$..imean$value,
@@ -388,6 +395,7 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..num = NA,
         ..step = NA,
         ..type = NA,
+        ..run = NA,
         ..fit = NA,
         ..rel = NA,
         ..imean = NA,
@@ -1110,6 +1118,7 @@ raschBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param num .
 #' @param step .
 #' @param type .
+#' @param run .
 #' @param fit .
 #' @param rel .
 #' @param imean .
@@ -1201,6 +1210,7 @@ rasch <- function(
     num = 1,
     step = 1,
     type = "RSM",
+    run = FALSE,
     fit = FALSE,
     rel = FALSE,
     imean = TRUE,
@@ -1257,6 +1267,7 @@ rasch <- function(
         num = num,
         step = step,
         type = type,
+        run = run,
         fit = fit,
         rel = rel,
         imean = imean,

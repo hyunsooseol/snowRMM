@@ -88,7 +88,7 @@ bfitClass <- if (requireNamespace('jmvcore'))
             "Diagnosis: * p < .05, ** p < .01."
           )
           
-    }
+        }
         
         # Progress bar 10%
         html <- progressBarH(10, 100, 'Ready to start analysis...')
@@ -96,13 +96,35 @@ bfitClass <- if (requireNamespace('jmvcore'))
       },
       
       .run = function() {
+        
+        # mode별 run 체크
+        if (self$options$mode == 'simple' && !isTRUE(self$options$run))
+          return()
+        
+        if (self$options$mode == 'complex' && !isTRUE(self$options$run1))
+          return()
+        
+        # mode별 필수 변수 체크
+        if (self$options$mode == 'simple') {
+          if (is.null(self$options$vars) || length(self$options$vars) < 2)
+            return()
+        }
+        
+        if (self$options$mode == 'complex') {
+          if (is.null(self$options$vars1) || length(self$options$vars1) < 2)
+            return()
+        }
+        
+        
         # Progress bar 15%
         html <- progressBarH(15, 100, 'Starting analysis...')
         self$results$progressBarHTML$setContent(html)
         private$.checkpoint()
         
         if (self$options$mode == 'complex') {
-          if (is.null(self$options$vars1) |
+          
+          
+          if (is.null(self$options$vars1) ||
               length(self$options$vars1) < 2)
             return()
           
@@ -239,6 +261,10 @@ bfitClass <- if (requireNamespace('jmvcore'))
               table$setRow(rowKey = vars1[i], values = row)
             }
           }
+          
+          self$results$progressBarHTML$setVisible(FALSE)
+          return()
+          
         }
         
         # Progress bar 25%
@@ -253,7 +279,7 @@ bfitClass <- if (requireNamespace('jmvcore'))
         # Ready--------
         ready <- TRUE
         
-        if (is.null(self$options$vars) |
+        if (is.null(self$options$vars) ||
             length(self$options$vars) < 2)
           ready <- FALSE
         
@@ -418,10 +444,23 @@ bfitClass <- if (requireNamespace('jmvcore'))
       .inPlot = function(image, ggtheme, theme, ...) {
         inplot <- self$options$inplot
         
-        if (is.null(self$options$vars))
-          return()
+        if (self$options$mode != 'simple')
+          return(FALSE)
+        
+        if (!isTRUE(self$options$run))
+          return(FALSE)
+        
+        if (is.null(self$options$vars) || length(self$options$vars) < 2)
+          return(FALSE)
         
         infit1 <- image$state
+        
+        if (is.null(infit1) || !is.data.frame(infit1))
+          return(FALSE)
+        
+        needed <- c("item", "infit", "infitlow", "infithigh")
+        if (!all(needed %in% names(infit1)))
+          return(FALSE)
         
         plot <- ggplot(infit1, aes(x = item, y = infit, color = item)) +
           geom_point(size = 3) +
@@ -462,10 +501,23 @@ bfitClass <- if (requireNamespace('jmvcore'))
       .outPlot = function(image, ggtheme, theme, ...) {
         outplot <- self$options$outplot
         
-        if (is.null(self$options$vars))
-          return()
+        if (self$options$mode != 'simple')
+          return(FALSE)
+        
+        if (!isTRUE(self$options$run))
+          return(FALSE)
+        
+        if (is.null(self$options$vars) || length(self$options$vars) < 2)
+          return(FALSE)
         
         outfit1 <- image$state
+        
+        if (is.null(outfit1) || !is.data.frame(outfit1))
+          return(FALSE)
+        
+        needed <- c("item", "outfit", "outfitlow", "outfithigh")
+        if (!all(needed %in% names(outfit1)))
+          return(FALSE)
         
         plot <- ggplot(outfit1, aes(x = item, y = outfit, color = item)) +
           geom_point(size = 3) +

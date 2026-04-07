@@ -10,6 +10,7 @@ lcgm(
   model = list(),
   nc = 2,
   thr = "FALSE",
+  run = FALSE,
   fit = FALSE,
   est = FALSE,
   desc = TRUE,
@@ -33,6 +34,8 @@ lcgm(
 \item{nc}{.}
 
 \item{thr}{.}
+
+\item{run}{.}
 
 \item{fit}{.}
 

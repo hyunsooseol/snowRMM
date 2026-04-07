@@ -10,6 +10,7 @@ rasch(
   num = 1,
   step = 1,
   type = "RSM",
+  run = FALSE,
   fit = FALSE,
   rel = FALSE,
   imean = TRUE,
@@ -62,6 +63,8 @@ rasch(
 \item{step}{.}
 
 \item{type}{.}
+
+\item{run}{.}
 
 \item{fit}{.}
 
