@@ -74,7 +74,7 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly = TRUE))
             content = paste(
               '<div style="border:2px solid #e6f4fe;border-radius:15px;padding:15px;',
               'background-color:#e6f4fe;margin-top:10px;"><ul>',
-              '<li>3-step auxiliary results are provided as approximate posterior-probability-based comparisons and should be interpreted with caution for strict methodological applications.<li>',
+              '<li>3-step auxiliary results are provided as approximate posterior-probability-based comparisons and should be interpreted with caution for strict methodological applications.</li>',
               '<li>Latent class analysis for ordinal indicators is described in the ',              
               '<a href="https://cjvanlissa.github.io/tidySEM/articles/lca_ordinal.html" target="_blank">tidySEM article</a>.</li>',
               '<li>Feature requests and bug reports can be made on my <a href="https://github.com/hyunsooseol/snowRMM/issues" target="_blank">GitHub</a>.</li>',
@@ -89,6 +89,10 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly = TRUE))
             "Class-wise regression is performed using the distal variable as outcome."
           )
         
+        self$results$cp$setNote(
+          "Note",
+          "Count is based on summed posterior probabilities, so non-integer values can appear."
+        )
         
         private$.registerCallbacks()
       },
@@ -114,8 +118,19 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly = TRUE))
       },
       
       .run = function() {
+        
+        
+        if (!isTRUE(self$options$run))
+          return()
+        
+        
         if (is.null(self$options$vars) || length(self$options$vars) < 3)
           return()
+        
+        # ---- reset caches on each run so option changes are respected ----
+        private$.results_cache <- NULL
+        private$.res_cache <- NULL
+        private$.desc_cache <- NULL
         
         # Show progress bar
         self$results$progressBarHTML$setVisible(TRUE)
@@ -190,6 +205,7 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           private$.checkpoint()
           cp1 <- tidySEM::class_prob(res)
           cp  <- data.frame(cp1$sum.posterior)
+          
           
           private$.results_cache <- list(
             data_all = data_all,   # Full data used for auxiliary analyses and formulas
@@ -324,10 +340,17 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly = TRUE))
       .populateClassSizeTable = function() {
         table <- self$results$cp
         d     <- private$.results_cache$cp
-        vars  <- self$options$vars
+        
         lapply(seq_len(nrow(d)), function(i) {
-          table$addRow(rowKey = vars[i],
-                       values = list(name = d[[1]][i], count = d[[2]][i], prop = d[[3]][i]))
+          rk <- if (!is.null(rownames(d)) && nzchar(rownames(d)[i])) rownames(d)[i] else i
+          table$addRow(
+            rowKey = rk,
+            values = list(
+              name  = d[[1]][i],
+              count = d[[2]][i],
+              prop  = d[[3]][i]
+            )
+          )
         })
       },
       
@@ -335,8 +358,18 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         table <- self$results$mem
         mem   <- data.frame(private$.results_cache$cp1$individual)
         m     <- as.factor(mem$predicted)
+       
+        
+                
         if (table$isNotFilled()) {
-          table$setRowNums(rownames(self$data))
+          # match displayed row numbers to the actually analyzed data after listwise deletion
+          analyzed_n <- NROW(private$.results_cache$data_all)
+          if (!is.null(rownames(private$.results_cache$data_all)) &&
+              length(rownames(private$.results_cache$data_all)) == analyzed_n) {
+            table$setRowNums(rownames(private$.results_cache$data_all))
+          } else {
+            table$setRowNums(seq_len(analyzed_n))
+          }
           table$setValues(m)
         }
       },
@@ -706,7 +739,7 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         )
       },
       
-      # ---- 3-step regression (existing logic retained) -------------------
+      # ---- 3-step regression (generalized to K classes) -------------------
       .run3stepReg = function(res_final, dat, formula_str) {
         if (is.null(formula_str) || !nzchar(formula_str))
           return(list(rows = private$.emptyInferentialRows()))
@@ -721,8 +754,7 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         y     <- vars[1]
         xvars <- vars[-1]
         
-        # 2) Preprocess predictor variables
-        use_x      <- character(0)
+        use_x <- character(0)
         
         for (vx in xvars) {
           if (is.null(dat[[vx]]))
@@ -739,7 +771,8 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly = TRUE))
               dat[[vx]] <- as.integer(v) - 1L
               use_x <- c(use_x, vx)
             } else {
-              tab <- table(v); ref <- names(tab)[which.max(tab)]
+              tab <- table(v)
+              ref <- names(tab)[which.max(tab)]
               for (lev in levels(v)) {
                 if (lev == ref) next
                 new_name <- paste0(vx, "_", make.names(lev))
@@ -777,7 +810,7 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         lrA <- try(tidySEM::lr_test(fit2, compare = "A"), silent = TRUE)
         if (!inherits(lrA, "try-error") && is.data.frame(lrA) && nrow(lrA) > 0) {
           nml <- tolower(names(lrA))
-          get <- function(cs) { i <- which(nml %in% cs)[1]; if (length(i)==0 || is.na(i)) NA else lrA[[i]] }
+          get <- function(cs) { i <- which(nml %in% cs)[1]; if (length(i) == 0 || is.na(i)) NA else lrA[[i]] }
           dff  <- suppressWarnings(as.integer(get(c("df","dof"))[1]))
           stat <- suppressWarnings(as.numeric(get(c("lr","chisq","x2","lrchisq"))[1]))
           pv   <- suppressWarnings(as.numeric(get(c("p","p.value"))[1]))
@@ -792,22 +825,43 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           return(list(rows = rows))
         }
         
+        # Generalized Wald equality constraints across all classes
+        K <- NA_integer_
+        cp_try <- try(tidySEM::class_prob(res_final), silent = TRUE)
+        if (!inherits(cp_try, "try-error") && !is.null(cp_try$sum.posterior)) {
+          K <- NROW(as.data.frame(cp_try$sum.posterior))
+        }
+        if (is.na(K) || !is.finite(K) || K < 2)
+          K <- 2L
+        
         p <- length(use_x)
         cons_list <- character(0)
-        for (j in seq_len(p)) {
-          idx <- paste0("[1,", j + 1L, "]")
-          eq  <- paste0("class1.A", idx, "=class2.A", idx)
-          cons_list <- c(cons_list, eq)
+        
+        if (K >= 2 && p >= 1) {
+          for (j in seq_len(p)) {
+            idx <- paste0("[1,", j + 1L, "]")
+            for (k in 2:K) {
+              cons_list <- c(cons_list, paste0("class1.A", idx, "=class", k, ".A", idx))
+            }
+          }
         }
+        
+        if (length(cons_list) == 0)
+          return(list(rows = private$.emptyInferentialRows()))
+        
         cons <- paste(cons_list, collapse = "&")
         
         wd <- try(tidySEM::wald_test(fit2, cons), silent = TRUE)
         if (!inherits(wd, "try-error") && is.data.frame(wd) && nrow(wd) > 0) {
           nmt <- tolower(names(wd))
-          get2 <- function(cs) { i <- which(nmt %in% cs)[1]; if (length(i)==0 || is.na(i)) NA else wd[[i]] }
-          dff  <- suppressWarnings(as.integer(get2(c("df","dof"))[1])); if (is.na(dff) || !is.finite(dff)) dff <- (2 - 1L) * p
+          get2 <- function(cs) { i <- which(nmt %in% cs)[1]; if (length(i) == 0 || is.na(i)) NA else wd[[i]] }
+          dff  <- suppressWarnings(as.integer(get2(c("df","dof"))[1]))
+          if (is.na(dff) || !is.finite(dff))
+            dff <- (K - 1L) * p
           stat <- suppressWarnings(as.numeric(get2(c("wald","w","statistic"))[1]))
-          pv   <- suppressWarnings(as.numeric(get2(c("p","p.value"))[1])); if (is.na(stat) && is.finite(pv)) stat <- stats::qchisq(1 - pv, dff)
+          pv   <- suppressWarnings(as.numeric(get2(c("p","p.value"))[1]))
+          if (is.na(stat) && is.finite(pv))
+            stat <- stats::qchisq(1 - pv, dff)
           rows <- data.frame(
             method = "Wald equality of slopes",
             variable = new_formula,

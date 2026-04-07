@@ -8,6 +8,7 @@ lcaordOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         initialize = function(
             vars = NULL,
             nc = 2,
+            run = FALSE,
             desc = TRUE,
             fit = FALSE,
             cp = FALSE,
@@ -39,6 +40,10 @@ lcaordOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 nc,
                 min=2,
                 default=2)
+            private$..run <- jmvcore::OptionBool$new(
+                "run",
+                run,
+                default=FALSE)
             private$..desc <- jmvcore::OptionBool$new(
                 "desc",
                 desc,
@@ -109,6 +114,7 @@ lcaordOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 
             self$.addOption(private$..vars)
             self$.addOption(private$..nc)
+            self$.addOption(private$..run)
             self$.addOption(private$..desc)
             self$.addOption(private$..fit)
             self$.addOption(private$..cp)
@@ -126,6 +132,7 @@ lcaordOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     active = list(
         vars = function() private$..vars$value,
         nc = function() private$..nc$value,
+        run = function() private$..run$value,
         desc = function() private$..desc$value,
         fit = function() private$..fit$value,
         cp = function() private$..cp$value,
@@ -142,6 +149,7 @@ lcaordOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     private = list(
         ..vars = NA,
         ..nc = NA,
+        ..run = NA,
         ..desc = NA,
         ..fit = NA,
         ..cp = NA,
@@ -464,6 +472,7 @@ lcaordBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param data .
 #' @param vars .
 #' @param nc .
+#' @param run .
 #' @param desc .
 #' @param fit .
 #' @param cp .
@@ -505,6 +514,7 @@ lcaord <- function(
     data,
     vars,
     nc = 2,
+    run = FALSE,
     desc = TRUE,
     fit = FALSE,
     cp = FALSE,
@@ -536,6 +546,7 @@ lcaord <- function(
     options <- lcaordOptions$new(
         vars = vars,
         nc = nc,
+        run = run,
         desc = desc,
         fit = fit,
         cp = cp,

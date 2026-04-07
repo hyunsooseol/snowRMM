@@ -28,10 +28,8 @@ children:
   - type: LayoutBox
     margin: large
     children:
-      - name: nc
-        type: TextBox
-        label: Class
-        format: number
+      - type: CheckBox
+        name: run
   - type: CollapseBox
     label: LCA Analysis
     collapsed: true
@@ -39,68 +37,71 @@ children:
     children:
       - type: LayoutBox
         margin: large
+        cell:
+          column: 0
+          row: 0
         stretchFactor: 1
         children:
-          - type: LayoutBox
-            margin: large
-            cell:
-              column: 0
-              row: 0
-            stretchFactor: 1
+          - type: Label
+            label: ''
             children:
-              - type: Label
-                label: Missing Values Method
-                children:
-                  - type: RadioButton
-                    name: miss_fiml
-                    optionName: miss
-                    optionPart: fiml
-                    label: Full information maximum likelihood
-                  - type: RadioButton
-                    name: miss_listwise
-                    optionName: miss
-                    optionPart: listwise
-                    label: Exclude cases listwise
-              - type: Label
-                label: Tables
-                children:
-                  - type: LayoutBox
-                    margin: large
-                    children:
-                      - type: CheckBox
-                        name: desc
-                      - type: CheckBox
-                        name: fit
-                      - type: CheckBox
-                        name: cp
-              - type: Label
-                label: Save
-                children:
-                  - type: Output
-                    name: mem
-          - type: LayoutBox
-            margin: large
-            cell:
-              column: 1
-              row: 0
-            stretchFactor: 1
+              - name: nc
+                type: TextBox
+                label: Class
+                format: number
+          - type: Label
+            label: Missing Values Method
             children:
-              - type: Label
-                label: Plots
+              - type: RadioButton
+                name: miss_fiml
+                optionName: miss
+                optionPart: fiml
+                label: Full information maximum likelihood
+              - type: RadioButton
+                name: miss_listwise
+                optionName: miss
+                optionPart: listwise
+                label: Exclude cases listwise
+          - type: Label
+            label: Tables
+            children:
+              - type: LayoutBox
+                margin: large
                 children:
                   - type: CheckBox
-                    name: plot1
+                    name: desc
                   - type: CheckBox
-                    name: plot
-                    children:
-                      - type: TextBox
-                        name: angle
-                        format: number
-                        suggestedValues:
-                          - value: 0
-                          - value: 45
-                          - value: 90
-                        enable: (plot)
+                    name: fit
+                  - type: CheckBox
+                    name: cp
+          - type: Label
+            label: Save
+            children:
+              - type: Output
+                name: mem
+      - type: LayoutBox
+        margin: large
+        cell:
+          column: 1
+          row: 0
+        stretchFactor: 1
+        children:
+          - type: Label
+            label: Plots
+            children:
+              - type: CheckBox
+                name: plot1
+              - type: CheckBox
+                name: plot
+                children:
+                  - type: TextBox
+                    name: angle
+                    format: number
+                    suggestedValues:
+                      - value: 0
+                      - value: 45
+                      - value: 90
+                    enable: (plot)
   - type: CollapseBox
     label: 3-step and Class-wise regression
     collapsed: true
