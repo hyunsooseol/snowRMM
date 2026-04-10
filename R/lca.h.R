@@ -152,7 +152,7 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         mf = function() private$.items[["mf"]],
         ip = function() private$.items[["ip"]],
         pro = function() private$.items[["pro"]],
-        text = function() private$.items[["text"]],
+        coef = function() private$.items[["coef"]],
         cm = function() private$.items[["cm"]],
         plot3 = function() private$.items[["plot3"]],
         plot = function() private$.items[["plot"]],
@@ -356,16 +356,41 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                     `title`="", 
                                     `type`="text", 
                                     `content`="($key)"))))}))$new(options=options))
-            self$add(jmvcore::Preformatted$new(
+            self$add(jmvcore::Table$new(
                 options=options,
-                name="text",
-                title="Logistic regression coefficients",
-                visible="(text)",
-                refs="poLCA",
+                name="coef",
+                title="Logistic regression",
+                visible="(coef)",
                 clearWith=list(
                     "vars",
-                    "nc",
-                    "covs")))
+                    "covs",
+                    "nc"),
+                columns=list(
+                    list(
+                        `name`="contrast", 
+                        `title`="Contrast", 
+                        `type`="text"),
+                    list(
+                        `name`="term", 
+                        `title`="Term", 
+                        `type`="text"),
+                    list(
+                        `name`="estimate", 
+                        `title`="Estimate", 
+                        `type`="number"),
+                    list(
+                        `name`="se", 
+                        `title`="Std. Error", 
+                        `type`="number"),
+                    list(
+                        `name`="tvalue", 
+                        `title`="t", 
+                        `type`="number"),
+                    list(
+                        `name`="pvalue", 
+                        `title`="p", 
+                        `type`="number", 
+                        `format`="zto,pvalue"))))
             self$add(jmvcore::Output$new(
                 options=options,
                 name="cm",
@@ -472,13 +497,19 @@ lcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$ip} \tab \tab \tab \tab \tab an array of tables \cr
 #'   \code{results$pro$cp} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$pro$cf} \tab \tab \tab \tab \tab a table \cr
-#'   \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
+#'   \code{results$coef} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$cm} \tab \tab \tab \tab \tab an output \cr
 #'   \code{results$plot3} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$plot2} \tab \tab \tab \tab \tab an image \cr
 #' }
+#'
+#' Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
+#'
+#' \code{results$coef$asDF}
+#'
+#' \code{as.data.frame(results$coef)}
 #'
 #' @export
 lca <- function(

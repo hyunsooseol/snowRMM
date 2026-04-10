@@ -73,6 +73,8 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           
           # populate Model comparison-----------
           private$.populateModelTable(results)
+          # populate logistic regression coefficients -----
+          private$.populateCoefTable(results)
           # populate class probability table-----
           private$.populateClassTable(results)
           # populate item probability table-------
@@ -125,33 +127,69 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         
         self$results$text1$setContent(txt)            
         
+        # if (length(self$options$covs) >= 1 &&
+        #     isTRUE(self$options$coef)) {
+        #   R <- length(res$P)
+        #   
+        #   mzout <- function() {
+        #     cat("_________________________________________________________\n")
+        #     cat("Fit for", R, "latent classes\n")
+        #     cat("_________________________________________________________\n")
+        #     
+        #     for (r in 2:R) {
+        #       cat(paste(r, "/ 1\n"))
+        #       disp <- data.frame(
+        #         coeff = round(res$coeff[, (r - 1)], 5),
+        #         se = round(res$coeff.se[, (r - 1)], 5),
+        #         tval = round(res$coeff[, (r - 1)] / res$coeff.se[, (r - 1)], 3),
+        #         pr = round(1 - (2 * abs(
+        #           pt(res$coeff[, (r - 1)] / res$coeff.se[, (r - 1)], res$resid.df) - 0.5
+        #         )), 3)
+        #       )
+        #       
+        #       colnames(disp) <- c("Coefficient", " Std. error", " t value", " Pr(>|t|)")
+        #       print(disp)
+        #       cat("_________________________________________________________\n")
+        #     }
+        #   }
+        #   out <- utils::capture.output(mzout())
+        #   self$results$text$setContent(out)
+        # }
+        coefTable <- NULL
+        
         if (length(self$options$covs) >= 1 &&
             isTRUE(self$options$coef)) {
           R <- length(res$P)
           
-          mzout <- function() {
-            cat("_________________________________________________________\n")
-            cat("Fit for", R, "latent classes\n")
-            cat("_________________________________________________________\n")
+          for (r in 2:R) {
+            est <- res$coeff[, (r - 1)]
+            se  <- res$coeff.se[, (r - 1)]
+            tv  <- est / se
+            pv  <- 1 - (2 * abs(pt(tv, res$resid.df) - 0.5))
             
-            for (r in 2:R) {
-              cat(paste(r, "/ 1\n"))
-              disp <- data.frame(
-                coeff = round(res$coeff[, (r - 1)], 5),
-                se = round(res$coeff.se[, (r - 1)], 5),
-                tval = round(res$coeff[, (r - 1)] / res$coeff.se[, (r - 1)], 3),
-                pr = round(1 - (2 * abs(
-                  pt(res$coeff[, (r - 1)] / res$coeff.se[, (r - 1)], res$resid.df) - 0.5
-                )), 3)
-              )
-              
-              colnames(disp) <- c("Coefficient", " Std. error", " t value", " Pr(>|t|)")
-              print(disp)
-              cat("_________________________________________________________\n")
-            }
+            disp <- data.frame(
+              contrast = paste0(r, " / 1"),
+              term     = rownames(res$coeff),
+              estimate = as.numeric(est),
+              se       = as.numeric(se),
+              tvalue   = as.numeric(tv),
+              pvalue   = as.numeric(pv),
+              stringsAsFactors = FALSE
+            )
+            
+            disp$se[!is.finite(disp$se)] <- NA
+            disp$tvalue[!is.finite(disp$tvalue)] <- NA
+            disp$pvalue[!is.finite(disp$pvalue)] <- NA
+            
+            if (is.null(coefTable))
+              coefTable <- disp
+            else
+              coefTable <- rbind(coefTable, disp)
           }
-          out <- utils::capture.output(mzout())
-          self$results$text$setContent(out)
+          
+          # 기존 콘솔형 출력은 사용하지 않음
+          # out <- utils::capture.output(mzout())
+          # self$results$text$setContent(out)
         }
         
         aic <- res$aic
@@ -247,6 +285,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
             'classprob' = classprob,
             'itemprob' = itemprob,
             'out' = out,
+            'coef' = coefTable,
             'aic' = aic,
             'aic3' = aic3,
             'bic' = bic,
@@ -300,6 +339,39 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
                           "Chisq",
                           "Gsq")
           table$addRow(rowKey = name, values = row)
+        }
+      },
+      
+      .populateCoefTable = function(results) {
+        if (is.null(results$coef) || nrow(results$coef) == 0)
+          return()
+        
+        table <- self$results$coef
+        d <- results$coef
+        
+        for (i in seq_len(nrow(d))) {
+          rowKey <- paste0(d$contrast[i], "_", d$term[i])
+          
+          tv <- d$tvalue[i]
+          pv <- d$pvalue[i]
+          
+          if (!is.finite(tv))
+            tv <- NA
+          
+          if (!is.finite(pv))
+            pv <- NA
+          
+          table$addRow(
+            rowKey = rowKey,
+            values = list(
+              contrast = d$contrast[i],
+              term     = d$term[i],
+              estimate = d$estimate[i],
+              se       = d$se[i],
+              tvalue   = tv,
+              pvalue   = pv
+            )
+          )
         }
       },
       

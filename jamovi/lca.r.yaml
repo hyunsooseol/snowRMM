@@ -155,15 +155,49 @@ items:
               type: 'text'
               content: ($key)
 
-    - name:  text
-      title: 'Logistic regression coefficients'
-      type:  Preformatted
-      visible: (text)
-      refs: poLCA
+    # - name:  text
+    #   title: 'Logistic regression coefficients'
+    #   type:  Preformatted
+    #   visible: (text)
+    #   refs: poLCA
+    #   clearWith:
+    #     - vars
+    #     - nc
+    #     - covs
+
+    - name: coef
+      title: Logistic regression
+      type: Table
+      visible: (coef)
       clearWith:
         - vars
-        - nc
         - covs
+        - nc
+      columns:
+        - name: contrast
+          title: Contrast
+          type: text
+    
+        - name: term
+          title: Term
+          type: text
+    
+        - name: estimate
+          title: Estimate
+          type: number
+
+        - name: se
+          title: Std. Error
+          type: number
+
+        - name: tvalue
+          title: t
+          type: number
+
+        - name: pvalue
+          title: p
+          type: number
+          format: zto,pvalue
 
     - name: cm
       title: Class membership
