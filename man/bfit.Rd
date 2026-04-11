@@ -11,6 +11,8 @@ bfit(
   vars1,
   step = 1,
   bn = 100,
+  run = FALSE,
+  run1 = FALSE,
   binfit = TRUE,
   boutfit = TRUE,
   inplot = TRUE,
@@ -38,6 +40,10 @@ bfit(
 \item{step}{.}
 
 \item{bn}{.}
+
+\item{run}{.}
+
+\item{run1}{.}
 
 \item{binfit}{.}
 

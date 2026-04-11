@@ -53,6 +53,7 @@ lpaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         }
         
         all <- private$.allCache
+        
         if (is.null(all) || is.null(all$res))
           return()
         

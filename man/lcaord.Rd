@@ -8,6 +8,7 @@ lcaord(
   data,
   vars,
   nc = 2,
+  run = FALSE,
   desc = TRUE,
   fit = FALSE,
   cp = FALSE,
@@ -28,6 +29,8 @@ lcaord(
 \item{vars}{.}
 
 \item{nc}{.}
+
+\item{run}{.}
 
 \item{desc}{.}
 

@@ -10,6 +10,7 @@ mixture(
   nc = 2,
   step = 1,
   type = "RSM",
+  run = FALSE,
   fit = TRUE,
   imean = TRUE,
   imeasure = FALSE,
@@ -34,6 +35,8 @@ mixture(
 \item{step}{.}
 
 \item{type}{.}
+
+\item{run}{.}
 
 \item{fit}{.}
 
