@@ -19,6 +19,7 @@ items:
       clearWith:
         - ind
         - dep
+        - mode
       refs: equi 
 
       columns:
@@ -38,6 +39,7 @@ items:
       clearWith:
         - ind
         - dep
+        - mode
       
       columns:
         - name: score
@@ -52,6 +54,7 @@ items:
       clearWith:
         - ind
         - dep
+        - mode
       
       columns:
         - name: score
@@ -69,6 +72,7 @@ items:
       clearWith:
         - ind
         - dep
+        - mode
 
     - name: escore
       title: Equating score
@@ -78,6 +82,7 @@ items:
       clearWith:
         - ind
         - dep
+        - mode
 
     - name: instructions1
       title: 'Instructions'
@@ -93,6 +98,7 @@ items:
         - ind1
         - dep1
         - design
+        - mode
       
       columns:
         - name: x
@@ -107,6 +113,7 @@ items:
       clearWith:
         - ind1
         - dep1
+        - mode
       
       columns:
         - name: score
@@ -121,6 +128,7 @@ items:
       clearWith:
         - ind1
         - dep1
+        - mode
       
       columns:
         - name: score
@@ -136,6 +144,7 @@ items:
       clearWith:
         - ind1
         - dep1
+        - mode
   
     - name:  plot1
       title: Presmoothing and postsmoothing of empirical distribution
@@ -146,5 +155,6 @@ items:
       clearWith:
         - ind1
         - dep1
+        - mode
 
 ...

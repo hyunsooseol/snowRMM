@@ -198,7 +198,8 @@ equatingResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 visible="(lineq)",
                 clearWith=list(
                     "ind",
-                    "dep"),
+                    "dep",
+                    "mode"),
                 refs="equi",
                 columns=list(
                     list(
@@ -219,7 +220,8 @@ equatingResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 visible="(contabx)",
                 clearWith=list(
                     "ind",
-                    "dep"),
+                    "dep",
+                    "mode"),
                 columns=list(
                     list(
                         `name`="score", 
@@ -234,7 +236,8 @@ equatingResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 visible="(contaby)",
                 clearWith=list(
                     "ind",
-                    "dep"),
+                    "dep",
+                    "mode"),
                 columns=list(
                     list(
                         `name`="score", 
@@ -252,7 +255,8 @@ equatingResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 renderFun=".plot",
                 clearWith=list(
                     "ind",
-                    "dep")))
+                    "dep",
+                    "mode")))
             self$add(jmvcore::Output$new(
                 options=options,
                 name="escore",
@@ -261,7 +265,8 @@ equatingResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 measureType="nominal",
                 clearWith=list(
                     "ind",
-                    "dep")))
+                    "dep",
+                    "mode")))
             self$add(jmvcore::Html$new(
                 options=options,
                 name="instructions1",
@@ -276,7 +281,8 @@ equatingResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 clearWith=list(
                     "ind1",
                     "dep1",
-                    "design"),
+                    "design",
+                    "mode"),
                 columns=list(
                     list(
                         `name`="x", 
@@ -291,7 +297,8 @@ equatingResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 visible="(contabx1)",
                 clearWith=list(
                     "ind1",
-                    "dep1"),
+                    "dep1",
+                    "mode"),
                 columns=list(
                     list(
                         `name`="score", 
@@ -306,7 +313,8 @@ equatingResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 visible="(contaby1)",
                 clearWith=list(
                     "ind1",
-                    "dep1"),
+                    "dep1",
+                    "mode"),
                 columns=list(
                     list(
                         `name`="score", 
@@ -322,7 +330,8 @@ equatingResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 measureType="nominal",
                 clearWith=list(
                     "ind1",
-                    "dep1")))
+                    "dep1",
+                    "mode")))
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot1",
@@ -332,7 +341,8 @@ equatingResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 renderFun=".plot1",
                 clearWith=list(
                     "ind1",
-                    "dep1")))}))
+                    "dep1",
+                    "mode")))}))
 
 equatingBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "equatingBase",

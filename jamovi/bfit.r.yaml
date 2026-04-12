@@ -34,6 +34,7 @@ items:
             - step
             - bn
             - angle
+            - mode
           columns:
             - name: name
               title: 'Item'
@@ -61,6 +62,7 @@ items:
             - step
             - bn
             - angle
+            - mode
           columns:
             - name: name
               title: 'Item'
@@ -88,6 +90,7 @@ items:
             - step
             - bn
             - angle
+            - mode
 
     - name: outplot
       title: 'Confidence interval for outfit'
@@ -99,6 +102,7 @@ items:
             - step
             - bn 
             - angle
+            - mode
 
     - name: instructions1
       title: 'Bootstrap Item Fit with p values'
@@ -116,6 +120,7 @@ items:
         - vars1
         - type
         - bn1
+        - mode
       refs: iarm
         
       columns:
@@ -144,6 +149,7 @@ items:
         - vars1
         - type
         - bn1
+        - mode
       refs: iarm
         
       columns:
@@ -173,6 +179,7 @@ items:
         - type
         - bn1
         - adj
+        - mode
       refs: iarm
         
       columns:
@@ -206,6 +213,7 @@ items:
         - type
         - bn1
         - adj
+        - mode
       refs: iarm
         
       columns:

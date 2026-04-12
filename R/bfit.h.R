@@ -263,7 +263,8 @@ bfitResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "vars",
                                 "step",
                                 "bn",
-                                "angle"),
+                                "angle",
+                                "mode"),
                             columns=list(
                                 list(
                                     `name`="name", 
@@ -294,7 +295,8 @@ bfitResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "vars",
                                 "step",
                                 "bn",
-                                "angle"),
+                                "angle",
+                                "mode"),
                             columns=list(
                                 list(
                                     `name`="name", 
@@ -325,7 +327,8 @@ bfitResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "vars",
                     "step",
                     "bn",
-                    "angle")))
+                    "angle",
+                    "mode")))
             self$add(jmvcore::Image$new(
                 options=options,
                 name="outplot",
@@ -336,7 +339,8 @@ bfitResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "vars",
                     "step",
                     "bn",
-                    "angle")))
+                    "angle",
+                    "mode")))
             self$add(jmvcore::Html$new(
                 options=options,
                 name="instructions1",
@@ -353,7 +357,8 @@ bfitResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 clearWith=list(
                     "vars1",
                     "type",
-                    "bn1"),
+                    "bn1",
+                    "mode"),
                 refs="iarm",
                 columns=list(
                     list(
@@ -381,7 +386,8 @@ bfitResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 clearWith=list(
                     "vars1",
                     "type",
-                    "bn1"),
+                    "bn1",
+                    "mode"),
                 refs="iarm",
                 columns=list(
                     list(
@@ -410,7 +416,8 @@ bfitResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "vars1",
                     "type",
                     "bn1",
-                    "adj"),
+                    "adj",
+                    "mode"),
                 refs="iarm",
                 columns=list(
                     list(
@@ -443,7 +450,8 @@ bfitResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "vars1",
                     "type",
                     "bn1",
-                    "adj"),
+                    "adj",
+                    "mode"),
                 refs="iarm",
                 columns=list(
                     list(
