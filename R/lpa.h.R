@@ -7,6 +7,7 @@ lpaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     public = list(
         initialize = function(
             vars = NULL,
+            run = NULL,
             nc = 2,
             variances = "equal",
             covariances = "zero",
@@ -37,6 +38,9 @@ lpaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "continuous"),
                 permitted=list(
                     "numeric"))
+            private$..run <- jmvcore::OptionAction$new(
+                "run",
+                run)
             private$..nc <- jmvcore::OptionInteger$new(
                 "nc",
                 nc,
@@ -126,6 +130,7 @@ lpaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "factor"))
 
             self$.addOption(private$..vars)
+            self$.addOption(private$..run)
             self$.addOption(private$..nc)
             self$.addOption(private$..variances)
             self$.addOption(private$..covariances)
@@ -147,6 +152,7 @@ lpaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         }),
     active = list(
         vars = function() private$..vars$value,
+        run = function() private$..run$value,
         nc = function() private$..nc$value,
         variances = function() private$..variances$value,
         covariances = function() private$..covariances$value,
@@ -167,6 +173,7 @@ lpaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         auxVar = function() private$..auxVar$value),
     private = list(
         ..vars = NA,
+        ..run = NA,
         ..nc = NA,
         ..variances = NA,
         ..covariances = NA,
@@ -582,6 +589,7 @@ lpaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' 
 #' @param data .
 #' @param vars .
+#' @param run .
 #' @param nc .
 #' @param variances .
 #' @param covariances .
@@ -630,6 +638,7 @@ lpaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 lpa <- function(
     data,
     vars,
+    run,
     nc = 2,
     variances = "equal",
     covariances = "zero",
@@ -661,6 +670,7 @@ lpa <- function(
 
     options <- lpaOptions$new(
         vars = vars,
+        run = run,
         nc = nc,
         variances = variances,
         covariances = covariances,

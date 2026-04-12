@@ -45,10 +45,19 @@ options:
         title: 'Partial credit'
       default: RSM
 
+    # - name: run
+    #   title: 'Run when ready'
+    #   type: Bool
+    #   default: FALSE
+
     - name: run
-      title: 'Run when ready'
-      type: Bool
-      default: FALSE
+      type: Action
+      title: Run
+
+    # - name: seed
+    #   title: "Random Seed: "
+    #   type: Integer
+    #   default: 1234
 
     - name: fit
       title: Fit measures

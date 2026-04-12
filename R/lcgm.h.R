@@ -10,7 +10,7 @@ lcgmOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             model = list(),
             nc = 2,
             thr = "FALSE",
-            run = FALSE,
+            run = NULL,
             fit = FALSE,
             est = FALSE,
             desc = TRUE,
@@ -55,10 +55,9 @@ lcgmOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "FALSE",
                     "TRUE"),
                 default="FALSE")
-            private$..run <- jmvcore::OptionBool$new(
+            private$..run <- jmvcore::OptionAction$new(
                 "run",
-                run,
-                default=FALSE)
+                run)
             private$..fit <- jmvcore::OptionBool$new(
                 "fit",
                 fit,
@@ -638,7 +637,7 @@ lcgm <- function(
     model = list(),
     nc = 2,
     thr = "FALSE",
-    run = FALSE,
+    run,
     fit = FALSE,
     est = FALSE,
     desc = TRUE,

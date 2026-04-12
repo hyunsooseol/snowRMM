@@ -10,7 +10,7 @@ rasch(
   num = 1,
   step = 1,
   type = "RSM",
-  run = FALSE,
+  run,
   fit = FALSE,
   rel = FALSE,
   imean = TRUE,

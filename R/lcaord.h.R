@@ -8,7 +8,7 @@ lcaordOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         initialize = function(
             vars = NULL,
             nc = 2,
-            run = FALSE,
+            run = NULL,
             desc = TRUE,
             fit = FALSE,
             cp = FALSE,
@@ -40,10 +40,9 @@ lcaordOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 nc,
                 min=2,
                 default=2)
-            private$..run <- jmvcore::OptionBool$new(
+            private$..run <- jmvcore::OptionAction$new(
                 "run",
-                run,
-                default=FALSE)
+                run)
             private$..desc <- jmvcore::OptionBool$new(
                 "desc",
                 desc,
@@ -514,7 +513,7 @@ lcaord <- function(
     data,
     vars,
     nc = 2,
-    run = FALSE,
+    run,
     desc = TRUE,
     fit = FALSE,
     cp = FALSE,

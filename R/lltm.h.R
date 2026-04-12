@@ -7,6 +7,7 @@ lltmOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     public = list(
         initialize = function(
             vars = NULL,
+            run = NULL,
             mat = "1,0,1,1,1,0,1,0,1,0,1,1,1,1,1,0,0,0,1,1,0,1,0,1,1,  -0.5, 1,  1, -1,0",
             col = 3,
             items = TRUE,
@@ -36,6 +37,9 @@ lltmOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "continuous"),
                 permitted=list(
                     "numeric"))
+            private$..run <- jmvcore::OptionAction$new(
+                "run",
+                run)
             private$..mat <- jmvcore::OptionString$new(
                 "mat",
                 mat,
@@ -100,6 +104,7 @@ lltmOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 default=FALSE)
 
             self$.addOption(private$..vars)
+            self$.addOption(private$..run)
             self$.addOption(private$..mat)
             self$.addOption(private$..col)
             self$.addOption(private$..items)
@@ -118,6 +123,7 @@ lltmOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         }),
     active = list(
         vars = function() private$..vars$value,
+        run = function() private$..run$value,
         mat = function() private$..mat$value,
         col = function() private$..col$value,
         items = function() private$..items$value,
@@ -135,6 +141,7 @@ lltmOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         plot2 = function() private$..plot2$value),
     private = list(
         ..vars = NA,
+        ..run = NA,
         ..mat = NA,
         ..col = NA,
         ..items = NA,
@@ -592,6 +599,7 @@ lltmBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' 
 #' @param data The data as a data frame.
 #' @param vars .
+#' @param run .
 #' @param mat .
 #' @param col .
 #' @param items .
@@ -636,6 +644,7 @@ lltmBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 lltm <- function(
     data,
     vars,
+    run,
     mat = "1,0,1,1,1,0,1,0,1,0,1,1,1,1,1,0,0,0,1,1,0,1,0,1,1,  -0.5, 1,  1, -1,0",
     col = 3,
     items = TRUE,
@@ -664,6 +673,7 @@ lltm <- function(
 
     options <- lltmOptions$new(
         vars = vars,
+        run = run,
         mat = mat,
         col = col,
         items = items,

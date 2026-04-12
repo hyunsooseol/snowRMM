@@ -10,7 +10,7 @@ mixture(
   nc = 2,
   step = 1,
   type = "RSM",
-  run = FALSE,
+  run,
   fit = TRUE,
   imean = TRUE,
   imeasure = FALSE,

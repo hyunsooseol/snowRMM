@@ -23,10 +23,14 @@ options:
       min: 2
       default: 2     
 
+    # - name: run
+    #   title: 'Run when ready'
+    #   type: Bool
+    #   default: FALSE
+
     - name: run
-      title: 'Run when ready'
-      type: Bool
-      default: FALSE
+      type: Action
+      title: Run
 
     - name: desc
       title: 'Descriptives'

@@ -26,9 +26,10 @@ children:
             isTarget: true
             maxItemCount: 1
   - type: LayoutBox
-    margin: large
+    margin: none
+    style: inline
     children:
-      - type: CheckBox
+      - type: ActionButton
         name: run
   - type: CollapseBox
     label: LCA Analysis

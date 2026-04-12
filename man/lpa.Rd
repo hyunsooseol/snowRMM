@@ -7,6 +7,7 @@
 lpa(
   data,
   vars,
+  run,
   nc = 2,
   variances = "equal",
   covariances = "zero",
@@ -29,6 +30,8 @@ lpa(
 \item{data}{.}
 
 \item{vars}{.}
+
+\item{run}{.}
 
 \item{nc}{.}
 

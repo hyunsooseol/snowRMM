@@ -7,6 +7,7 @@
 lltm(
   data,
   vars,
+  run,
   mat = "1,0,1,1,1,0,1,0,1,0,1,1,1,1,1,0,0,0,1,1,0,1,0,1,1,  -0.5, 1,  1, -1,0",
   col = 3,
   items = TRUE,
@@ -28,6 +29,8 @@ lltm(
 \item{data}{The data as a data frame.}
 
 \item{vars}{.}
+
+\item{run}{.}
 
 \item{mat}{.}
 

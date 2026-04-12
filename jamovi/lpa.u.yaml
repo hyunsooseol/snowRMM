@@ -21,24 +21,48 @@ children:
             maxItemCount: 1
             isTarget: true
   - type: LayoutBox
-    margin: large
+    margin: none
     style: inline
     children:
-      - type: Label
-        label: Model Fit options
-        margin: large
-        style: list-inline
-        children:
-          - name: nc
-            type: TextBox
-            label: Class
-            format: number
-          - type: ComboBox
-            name: variances
-          - type: ComboBox
-            name: covariances
+      - type: ActionButton
+        name: run
   - type: CollapseBox
-    label: Statistics
+    label: 'Model options'
+    collapsed: false
+    stretchFactor: 1
+    children:
+      - type: LayoutBox
+        margin: small
+        stretchFactor: 1
+        children:
+          - type: LayoutBox
+            cell:
+              column: 0
+              row: 0
+            stretchFactor: 1
+            children:
+              - name: nc
+                type: TextBox
+                label: Class
+                format: number
+          - type: LayoutBox
+            cell:
+              column: 1
+              row: 0
+            stretchFactor: 1
+            children:
+              - type: ComboBox
+                name: variances
+          - type: LayoutBox
+            cell:
+              column: 2
+              row: 0
+            stretchFactor: 1
+            children:
+              - type: ComboBox
+                name: covariances
+  - type: CollapseBox
+    label: 'Analysis'
     margin: normal
     collapsed: true
     children:

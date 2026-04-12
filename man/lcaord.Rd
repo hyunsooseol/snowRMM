@@ -8,7 +8,7 @@ lcaord(
   data,
   vars,
   nc = 2,
-  run = FALSE,
+  run,
   desc = TRUE,
   fit = FALSE,
   cp = FALSE,

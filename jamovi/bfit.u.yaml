@@ -26,9 +26,10 @@ children:
                         name: vars
                         isTarget: true
               - type: LayoutBox
-                margin: large
+                margin: none
+                style: inline
                 children:
-                  - type: CheckBox
+                  - type: ActionButton
                     name: run
               - type: CollapseBox
                 label: 'Model options'
@@ -116,9 +117,10 @@ children:
                     name: vars1
                     isTarget: true
           - type: LayoutBox
-            margin: large
+            margin: none
+            style: inline
             children:
-              - type: CheckBox
+              - type: ActionButton
                 name: run1
           - type: CollapseBox
             label: 'Model options'

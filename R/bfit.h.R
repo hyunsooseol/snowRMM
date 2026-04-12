@@ -11,8 +11,8 @@ bfitOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             vars1 = NULL,
             step = 1,
             bn = 100,
-            run = FALSE,
-            run1 = FALSE,
+            run = NULL,
+            run1 = NULL,
             binfit = TRUE,
             boutfit = TRUE,
             inplot = TRUE,
@@ -65,14 +65,12 @@ bfitOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 min=2,
                 max=1000,
                 default=100)
-            private$..run <- jmvcore::OptionBool$new(
+            private$..run <- jmvcore::OptionAction$new(
                 "run",
-                run,
-                default=FALSE)
-            private$..run1 <- jmvcore::OptionBool$new(
+                run)
+            private$..run1 <- jmvcore::OptionAction$new(
                 "run1",
-                run1,
-                default=FALSE)
+                run1)
             private$..binfit <- jmvcore::OptionBool$new(
                 "binfit",
                 binfit,
@@ -544,8 +542,8 @@ bfit <- function(
     vars1,
     step = 1,
     bn = 100,
-    run = FALSE,
-    run1 = FALSE,
+    run,
+    run1,
     binfit = TRUE,
     boutfit = TRUE,
     inplot = TRUE,

@@ -226,6 +226,11 @@ lltmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
       
       # --------------------------------------------------------------------
       .run = function() {
+        
+        if (!isTRUE(self$options$run))
+          return()
+        
+        
         vars <- self$options$vars
         
         # 변수 검증

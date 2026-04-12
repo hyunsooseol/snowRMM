@@ -10,7 +10,7 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             num = 1,
             step = 1,
             type = "RSM",
-            run = FALSE,
+            run = NULL,
             fit = FALSE,
             rel = FALSE,
             imean = TRUE,
@@ -84,10 +84,9 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "RSM",
                     "PCM"),
                 default="RSM")
-            private$..run <- jmvcore::OptionBool$new(
+            private$..run <- jmvcore::OptionAction$new(
                 "run",
-                run,
-                default=FALSE)
+                run)
             private$..fit <- jmvcore::OptionBool$new(
                 "fit",
                 fit,
@@ -1210,7 +1209,7 @@ rasch <- function(
     num = 1,
     step = 1,
     type = "RSM",
-    run = FALSE,
+    run,
     fit = FALSE,
     rel = FALSE,
     imean = TRUE,

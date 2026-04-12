@@ -24,9 +24,11 @@ children:
             maxItemCount: 1
             isTarget: true
   - type: LayoutBox
+    margin: none
+    style: inline
     children:
-      - name: run
-        type: CheckBox
+      - type: ActionButton
+        name: run
   - type: CollapseBox
     label: Model options
     collapsed: false

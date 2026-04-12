@@ -10,7 +10,7 @@ mixtureOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             nc = 2,
             step = 1,
             type = "RSM",
-            run = FALSE,
+            run = NULL,
             fit = TRUE,
             imean = TRUE,
             imeasure = FALSE,
@@ -56,10 +56,9 @@ mixtureOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "RSM",
                     "PCM"),
                 default="RSM")
-            private$..run <- jmvcore::OptionBool$new(
+            private$..run <- jmvcore::OptionAction$new(
                 "run",
-                run,
-                default=FALSE)
+                run)
             private$..fit <- jmvcore::OptionBool$new(
                 "fit",
                 fit,
@@ -609,7 +608,7 @@ mixture <- function(
     nc = 2,
     step = 1,
     type = "RSM",
-    run = FALSE,
+    run,
     fit = TRUE,
     imean = TRUE,
     imeasure = FALSE,

@@ -19,10 +19,12 @@ children:
             name: vars
             isTarget: true
   - type: LayoutBox
-    margin: large
+    margin: none
+    style: inline
     children:
-      - type: CheckBox
+      - type: ActionButton
         name: run
+
   - type: CollapseBox
     label: Model options
     collapsed: false

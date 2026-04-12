@@ -20,6 +20,10 @@ options:
       permitted:
         - numeric
 
+    - name: run
+      type: Action
+      title: Run
+
     - name: mat
       title: 'Vectors'
       type: String

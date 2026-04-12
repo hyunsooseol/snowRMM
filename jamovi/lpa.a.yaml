@@ -18,6 +18,10 @@ options:
       permitted:
         - numeric  
         
+    - name: run
+      type: Action
+      title: Run
+
     - name: nc
       title: Class
       type: Integer

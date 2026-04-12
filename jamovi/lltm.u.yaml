@@ -19,23 +19,34 @@ children:
             name: vars
             isTarget: true
   - type: LayoutBox
-    margin: large
+    margin: none
+    style: inline
+    children:
+      - type: ActionButton
+        name: run
+  - type: CollapseBox
+    label: 'Model options'
+    collapsed: false
     stretchFactor: 1
     children:
       - type: LayoutBox
         margin: large
-        cell:
-          column: 0
-          row: 0
         stretchFactor: 1
         children:
-          - type: TextBox
-            name: col
-            format: number
-          - name: mat
-            type: TextBox
-            format: string
-            stretchFactor: 2
+          - type: LayoutBox
+            margin: large
+            cell:
+              column: 0
+              row: 0
+            stretchFactor: 1
+            children:
+              - type: TextBox
+                name: col
+                format: number
+              - name: mat
+                type: TextBox
+                format: string
+                stretchFactor: 2
   - type: CollapseBox
     label: Analysis
     margin: normal
