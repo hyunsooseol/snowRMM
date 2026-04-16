@@ -24,6 +24,10 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
       desc = function() {
         if (is.null(private$.desc_cache)) {
           data <- self$data
+          
+          if (self$options$miss == "listwise")
+            data <- jmvcore::naOmit(data)
+          
           private$.desc_cache <- tidySEM::descriptives(data)[,
                                                              c("name","n","missing","mean","median","sd","min","max")]
         }

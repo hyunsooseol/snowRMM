@@ -24,11 +24,12 @@ items:
       visible: (desc)
       clearWith:
         - vars
-        - model
-        - nc
-        - thr
         - miss
-        - auxVar
+        # - model
+        # - nc
+        # - thr
+        # - miss
+        # - auxVar
       refs: tidySEM
 
       columns:
@@ -68,7 +69,7 @@ items:
         - nc
         - thr
         - miss
-        - auxVar
+#        - auxVar
       refs: tidySEM 
 
       columns:
@@ -90,7 +91,7 @@ items:
         - nc
         - thr
         - miss
-        - auxVar
+#        - auxVar
       refs: tidySEM
 
       columns:
@@ -131,7 +132,6 @@ items:
         - nc
         - thr
         - miss
-        - auxVar
       columns:
         - name: name
           title: 'Class'
@@ -155,7 +155,6 @@ items:
         - nc
         - thr
         - miss
-        - auxVar
 
     - name: plot2
       title: 'Class size plot'
@@ -168,7 +167,6 @@ items:
         - nc
         - thr
         - miss
-        - auxVar
 
     - name: plot1
       title: 'Density plot'
@@ -177,11 +175,11 @@ items:
       renderFun: .plot1
       clearWith:
         - vars
-        - model
-        - nc
-        - thr
-        - miss
-        - auxVar
+        # - model
+        # - nc
+        # - thr
+        # - miss
+        # - auxVar
         
     - name: plot
       title: 'Trajectory plot'
@@ -195,7 +193,7 @@ items:
         - thr
         - raw
         - miss
-        - auxVar
+#        - auxVar
 
     - name: threeStepSummary
       title: '3-Step Analysis Summary'

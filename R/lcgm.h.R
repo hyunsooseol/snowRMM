@@ -220,11 +220,7 @@ lcgmResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 visible="(desc)",
                 clearWith=list(
                     "vars",
-                    "model",
-                    "nc",
-                    "thr",
-                    "miss",
-                    "auxVar"),
+                    "miss"),
                 refs="tidySEM",
                 columns=list(
                     list(
@@ -270,8 +266,7 @@ lcgmResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "model",
                     "nc",
                     "thr",
-                    "miss",
-                    "auxVar"),
+                    "miss"),
                 refs="tidySEM",
                 columns=list(
                     list(
@@ -292,8 +287,7 @@ lcgmResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "model",
                     "nc",
                     "thr",
-                    "miss",
-                    "auxVar"),
+                    "miss"),
                 refs="tidySEM",
                 columns=list(
                     list(
@@ -340,8 +334,7 @@ lcgmResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "model",
                     "nc",
                     "thr",
-                    "miss",
-                    "auxVar"),
+                    "miss"),
                 columns=list(
                     list(
                         `name`="name", 
@@ -367,8 +360,7 @@ lcgmResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "model",
                     "nc",
                     "thr",
-                    "miss",
-                    "auxVar")))
+                    "miss")))
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot2",
@@ -380,8 +372,7 @@ lcgmResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "model",
                     "nc",
                     "thr",
-                    "miss",
-                    "auxVar")))
+                    "miss")))
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot1",
@@ -389,12 +380,7 @@ lcgmResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 visible="(plot1)",
                 renderFun=".plot1",
                 clearWith=list(
-                    "vars",
-                    "model",
-                    "nc",
-                    "thr",
-                    "miss",
-                    "auxVar")))
+                    "vars")))
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot",
@@ -407,8 +393,7 @@ lcgmResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "nc",
                     "thr",
                     "raw",
-                    "miss",
-                    "auxVar")))
+                    "miss")))
             self$add(jmvcore::Table$new(
                 options=options,
                 name="threeStepSummary",
