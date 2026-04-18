@@ -61,6 +61,7 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly = TRUE))
       .results_cache   = NULL,
       .res_cache       = NULL,
       .desc_cache      = NULL,
+ 
       
       .init = function() {
         private$.htmlwidget <- HTMLWidget$new()
@@ -118,19 +119,12 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly = TRUE))
       },
       
       .run = function() {
-        
-        
+
         if (!isTRUE(self$options$run))
           return()
         
-        
         if (is.null(self$options$vars) || length(self$options$vars) < 3)
           return()
-        
-        # ---- reset caches on each run so option changes are respected ----
-        private$.results_cache <- NULL
-        private$.res_cache <- NULL
-        private$.desc_cache <- NULL
         
         # Show progress bar
         self$results$progressBarHTML$setVisible(TRUE)
