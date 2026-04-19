@@ -29,7 +29,6 @@ Imports:
     pairwise,
     reshape2,
     ltm,
-    memoise,
     magrittr,
     igraph (>= 2.0.0),
     parallelly (>= 1.44.0),

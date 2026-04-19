@@ -34,9 +34,9 @@ bfitClass <- if (requireNamespace('jmvcore'))
                 '<div style="border: 2px solid #e6f4fe; border-radius: 15px; padding: 15px; background-color: #e6f4fe; margin-top: 10px;">',
                 '<div style="text-align:justify;">',
                 '<ul>',
-                '<li>The traditional Rasch model is performed by <b>mixRasch</b> R package using Jonint Maximum Liklihood(JML).</li>',
+                '<li>The traditional Rasch model is performed by the mixRasch R package using Joint Maximum Likelihood (JML).</li>',
                 '<li>Specify <b>Step(number of category-1) and Bootstrap N</b> in the Analysis options.</li>',
-                '<li>Please, be patient. The bootstrapped confidence interval is quite time-consuming.</li>',
+                '<li>For methodological details, see Seol, H. (2016). Using the Bootstrap Method to Evaluate the Critical Range of Misfit for Polytomous Rasch Fit Statistics. Psychological Reports, 118, 937–956.</li>',
                 '<li>Feature requests and bug reports can be made on my <a href="https://github.com/hyunsooseol/snowRMM/issues" target="_blank">GitHub</a>.</li>',
                 '</ul></div></div>'
               )
@@ -317,47 +317,38 @@ bfitClass <- if (requireNamespace('jmvcore'))
       },
       
       .compute = function(data) {
-        # get variables--------
         vars <- self$options$vars
         step <- self$options$step
-        bn <- self$options$bn
+        bn   <- self$options$bn
         
         set.seed(1234)
         
-        # Using memoise package---
-        boot_stat_memoised <- memoise::memoise(function(data, indices, stat) {
-          d <- data[indices, ]
+        # infit + outfit을 한 번의 bootstrap에서 같이 계산
+        boot_stat <- function(data, indices) {
+          d <- data[indices, , drop = FALSE]
+          
           res1 <- mixRasch::mixRasch(
-            data = d,
+            data  = d,
             steps = step,
             model = "RSM",
-            n.c = 1
+            n.c   = 1
           )
-          stat.raw <- res1$item.par$in.out[, stat]
-          return(stat.raw)
-        })
+          
+          io <- res1$item.par$in.out
+          
+          c(
+            io[, 1],  # infit
+            io[, 3]   # outfit
+          )
+        }
         
-        # Progress update within bootstrap
-        html <- progressBarH(45, 100, 'Running infit bootstrap...')
+        html <- progressBarH(45, 100, 'Running bootstrap...')
         self$results$progressBarHTML$setContent(html)
         private$.checkpoint()
         
-        # Perform bootstrapping for infit and outfit
-        boot.in <- boot::boot(
+        boot.res <- boot::boot(
           data = data,
-          statistic = boot_stat_memoised,
-          stat = 1,
-          R = bn
-        )
-        
-        html <- progressBarH(55, 100, 'Running outfit bootstrap...')
-        self$results$progressBarHTML$setContent(html)
-        private$.checkpoint()
-        
-        boot.out <- boot::boot(
-          data = data,
-          statistic = boot_stat_memoised,
-          stat = 3,
+          statistic = boot_stat,
           R = bn
         )
         
@@ -365,26 +356,33 @@ bfitClass <- if (requireNamespace('jmvcore'))
         self$results$progressBarHTML$setContent(html)
         private$.checkpoint()
         
-        # Extract original infit and outfit statistics and confidence intervals
-        infit.raw <- boot.in$t0
-        infit <- boot.in$t
-        infitlow <- apply(infit, 2, quantile, prob = 0.025)
-        infithigh <- apply(infit, 2, quantile, prob = 0.975)
+        nItems <- length(vars)
         
-        outfit.raw <- boot.out$t0
-        outfit <- boot.out$t
-        outfitlow <- apply(outfit, 2, quantile, prob = 0.025)
-        outfithigh <- apply(outfit, 2, quantile, prob = 0.975)
+        all.raw  <- boot.res$t0
+        all.boot <- boot.res$t
         
-        results <-
-          list(
-            'infit' = infit.raw,
-            'outfit' = outfit.raw,
-            'infitlow' = infitlow,
-            'infithigh' = infithigh,
-            'outfitlow' = outfitlow,
-            'outfithigh' = outfithigh
-          )
+        infit.raw  <- all.raw[1:nItems]
+        outfit.raw <- all.raw[(nItems + 1):(2 * nItems)]
+        
+        infit.mat  <- all.boot[, 1:nItems, drop = FALSE]
+        outfit.mat <- all.boot[, (nItems + 1):(2 * nItems), drop = FALSE]
+        
+        infitlow   <- apply(infit.mat, 2, quantile, prob = 0.025, na.rm = TRUE)
+        infithigh  <- apply(infit.mat, 2, quantile, prob = 0.975, na.rm = TRUE)
+        
+        outfitlow  <- apply(outfit.mat, 2, quantile, prob = 0.025, na.rm = TRUE)
+        outfithigh <- apply(outfit.mat, 2, quantile, prob = 0.975, na.rm = TRUE)
+        
+        results <- list(
+          infit      = infit.raw,
+          outfit     = outfit.raw,
+          infitlow   = infitlow,
+          infithigh  = infithigh,
+          outfitlow  = outfitlow,
+          outfithigh = outfithigh
+        )
+        
+        return(results)
       },
       
       
