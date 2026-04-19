@@ -91,26 +91,49 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
       .compute = function(data) {
         nc <- self$options$nc
         
-        ############ Construct formula###################
+        ############ Construct formula ###################
         
         vars <- self$options$vars
-        vars <- vapply(vars, function(x)
-          jmvcore::composeTerm(x), '')
+        vars <- vapply(vars, function(x) jmvcore::composeTerm(x), '')
         vars <- paste0(vars, collapse = ',')
-        formula <- as.formula(paste0('cbind(', vars, ')~1'))
-        
+        formula <- as.formula(paste0('cbind(', vars, ') ~ 1'))
         
         if (length(self$options$covs) >= 1) {
           covs <- self$options$covs
-          covs <- vapply(covs, function(x)
-            jmvcore::composeTerm(x), '')
+          covs <- vapply(covs, function(x) jmvcore::composeTerm(x), '')
           covs <- paste0(covs, collapse = '+')
-          
-          formula <- as.formula(paste0('cbind(', vars, ') ~', covs))
+          formula <- as.formula(paste0('cbind(', vars, ') ~ ', covs))
         }
         
-        res <- self$res
+        coefTable <- NULL
+        out <- NULL
+        res <- NULL
         
+        # model comparison: 1 ~ nc classes
+        for (i in 1:self$options$nc) {
+          set.seed(1234)
+          res <- poLCA::poLCA(
+            formula,
+            data,
+            nclass = i,
+            na.rm = FALSE,
+            calc.se = FALSE
+          )
+          
+          aic <- res$aic
+          aic3 <- (-2 * res$llik) + (3 * res$npar)
+          bic <- res$bic
+          loglik <- res$llik
+          Chisq <- res$Chisq
+          Gsq <- res$Gsq
+          SABIC <- (-2 * res$llik) + (log((res$N + 2) / 24) * res$npar)
+          CAIC  <- (-2 * res$llik) + res$npar * (1 + log(res$N))
+          
+          df_row <- data.frame(aic, aic3, bic, SABIC, CAIC, loglik, Chisq, Gsq)
+          out <- if (is.null(out)) df_row else rbind(out, df_row)
+        }
+        
+        # final model summary text (res is now the nc-class model)
         txt <- paste0(
           "============================================================\n",
           "Fit for ", length(res$P), " latent classes:\n",
@@ -125,40 +148,10 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           "X^2(", length(res$P), "): ", round(res$Chisq, 2), " (Chi-square goodness of fit)\n"
         )
         
-        self$results$text1$setContent(txt)            
+        self$results$text1$setContent(txt)
         
-        # if (length(self$options$covs) >= 1 &&
-        #     isTRUE(self$options$coef)) {
-        #   R <- length(res$P)
-        #   
-        #   mzout <- function() {
-        #     cat("_________________________________________________________\n")
-        #     cat("Fit for", R, "latent classes\n")
-        #     cat("_________________________________________________________\n")
-        #     
-        #     for (r in 2:R) {
-        #       cat(paste(r, "/ 1\n"))
-        #       disp <- data.frame(
-        #         coeff = round(res$coeff[, (r - 1)], 5),
-        #         se = round(res$coeff.se[, (r - 1)], 5),
-        #         tval = round(res$coeff[, (r - 1)] / res$coeff.se[, (r - 1)], 3),
-        #         pr = round(1 - (2 * abs(
-        #           pt(res$coeff[, (r - 1)] / res$coeff.se[, (r - 1)], res$resid.df) - 0.5
-        #         )), 3)
-        #       )
-        #       
-        #       colnames(disp) <- c("Coefficient", " Std. error", " t value", " Pr(>|t|)")
-        #       print(disp)
-        #       cat("_________________________________________________________\n")
-        #     }
-        #   }
-        #   out <- utils::capture.output(mzout())
-        #   self$results$text$setContent(out)
-        # }
-        coefTable <- NULL
-        
-        if (length(self$options$covs) >= 1 &&
-            isTRUE(self$options$coef)) {
+        # logistic regression coefficients for final model only
+        if (length(self$options$covs) >= 1 && isTRUE(self$options$coef)) {
           R <- length(res$P)
           
           for (r in 2:R) {
@@ -186,65 +179,31 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
             else
               coefTable <- rbind(coefTable, disp)
           }
-          
-          # 기존 콘솔형 출력은 사용하지 않음
-          # out <- utils::capture.output(mzout())
-          # self$results$text$setContent(out)
         }
         
+        # fit indices for final model
         aic <- res$aic
         bic <- res$bic
         Chisq <- res$Chisq
         Gsq <- res$Gsq
-        
-        SABIC = (-2 * res$llik) + (log((res$N + 2) / 24) * res$npar)
-        CAIC = (-2 * res$llik) + res$npar * (1 + log(res$N))
-        aic3 <- (-2 * res$llik) + (3 * res$npar)
-        
-        out <- NULL
-        
-        for (i in 1:self$options$nc) {
-          set.seed(1234)
-          res <- poLCA::poLCA(
-            formula,
-            data,
-            nclass = i,
-            na.rm = FALSE,
-            calc.se = FALSE
-          )
-          
-          aic <- res$aic
-          aic3 <- (-2 * res$llik) + (3 * res$npar)
-          bic <- res$bic
-          loglik <- res$llik
-          Chisq <- res$Chisq
-          Gsq <- res$Gsq
-          
-          SABIC = (-2 * res$llik) + (log((res$N + 2) / 24) * res$npar)
-          CAIC = (-2 * res$llik) + res$npar * (1 + log(res$N))
-          
-          df <- data.frame(aic, aic3, bic, SABIC, CAIC, loglik, Chisq, Gsq)
-          if (is.null(out)) {
-            out <- df
-          } else {
-            out <- rbind(out, df)
-          }
-        }
+        SABIC <- (-2 * res$llik) + (log((res$N + 2) / 24) * res$npar)
+        CAIC  <- (-2 * res$llik) + res$npar * (1 + log(res$N))
+        aic3  <- (-2 * res$llik) + (3 * res$npar)
         
         out1 <- out[, c(1:5)]
         cla <- c(1:self$options$nc)
         out1 <- data.frame(out1, cla)
         colnames(out1) <- c('AIC', 'AIC3', 'BIC', 'SABIC', 'CAIC', 'Class')
+        
         elbow <- reshape2::melt(
           out1,
           id.vars = 'Class',
           variable.name = "Fit",
           value.name = 'Value'
         )
-        image <- self$results$plot3
-        image$setState(elbow)
+        self$results$plot3$setState(elbow)
         
-        # Caculating Chi and Gsq p values----------
+        # calculating Chi and Gsq p values
         y <- res$y
         K.j <- apply(y, 2, max)
         df <- prod(K.j) - res$npar - 1
@@ -252,8 +211,9 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         cp <- 1 - pchisq(res$Chisq, df)
         gp <- 1 - pchisq(res$Gsq, df)
         
-        entropy <- function (p)
+        entropy <- function(p)
           sum(na.omit(-p * log(p)))
+        
         error_prior <- entropy(res$P)
         error_post <- mean(apply(res$posterior, 1, entropy))
         entro <- (error_prior - error_post) / error_prior
@@ -264,44 +224,44 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         base::options(max.print = .Machine$integer.max)
         cm <- res$predclass
         
-        image <- self$results$plot
-        image$setState(res)
+        self$results$plot$setState(res)
         
-        lcModelProbs <- reshape2::melt(res$probs)
+        probs_melt <- reshape2::melt(res$probs)
+        
+        lcModelProbs <- probs_melt
         colnames(lcModelProbs) <- c("Class", "Level", "value", "L1")
-        image1 <- self$results$plot1
-        image1$setState(lcModelProbs)
+        self$results$plot1$setState(lcModelProbs)
         
-        profile <- reshape2::melt(res$probs)
+        profile <- probs_melt
         colnames(profile) <- c("Class", "Level", "value", "Variable")
         levels(profile$Class) <- c(1:self$options$nc)
-        image2 <- self$results$plot2
-        image2$setState(profile)
+        self$results$plot2$setState(profile)
         
         like <- res[["llik"]]
         
-        results <-
-          list(
-            'classprob' = classprob,
-            'itemprob' = itemprob,
-            'out' = out,
-            'coef' = coefTable,
-            'aic' = aic,
-            'aic3' = aic3,
-            'bic' = bic,
-            'Chisq' = Chisq,
-            'Gsq' = Gsq,
-            'entro' = entro,
-            'cell' = cell,
-            'cp' = cp,
-            'gp' = gp,
-            'cm' = cm,
-            'df' = df,
-            'like' = like,
-            'SABIC' = SABIC,
-            'CAIC' = CAIC,
-            'rowNums' = rownames(data)
-          )
+        results <- list(
+          'classprob' = classprob,
+          'itemprob' = itemprob,
+          'out' = out,
+          'coef' = coefTable,
+          'aic' = aic,
+          'aic3' = aic3,
+          'bic' = bic,
+          'Chisq' = Chisq,
+          'Gsq' = Gsq,
+          'entro' = entro,
+          'cell' = cell,
+          'cp' = cp,
+          'gp' = gp,
+          'cm' = cm,
+          'df' = df,
+          'like' = like,
+          'SABIC' = SABIC,
+          'CAIC' = CAIC,
+          'rowNums' = rownames(data)
+        )
+        
+        return(results)
       },
       
       .populateFitTable = function(results) {

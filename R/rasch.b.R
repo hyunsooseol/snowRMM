@@ -11,11 +11,13 @@ raschClass <- if (requireNamespace('jmvcore'))
       .ermCache = NULL,
       .htmlwidget = NULL,
       .validRows = NULL,
+      .cleanDataCache = NULL,
       
       .init = function() {
         private$.htmlwidget <- HTMLWidget$new()
         private$.resCache <- NULL
         private$.ermCache <- NULL
+        private$.cleanDataCache <- NULL
         
         if (is.null(self$data) | is.null(self$options$vars)) {
           self$results$instructions$setVisible(visible = TRUE)
@@ -50,6 +52,8 @@ raschClass <- if (requireNamespace('jmvcore'))
         
         if (!isTRUE(self$options$run))
           return()
+        
+        private$.cleanDataCache <- NULL
         
         if (is.null(self$options$vars) || length(self$options$vars) < 2)
           return()
@@ -996,22 +1000,26 @@ raschClass <- if (requireNamespace('jmvcore'))
       },
       
 #### Helper functions =================================
-.cleanData = function() {
-  items <- self$options$vars
-  data <- list()
-  
-  for (item in items)
-    data[[item]] <- jmvcore::toNumeric(self$data[[item]])
-  
-  attr(data, 'row.names') <- rownames(self$data)
-  attr(data, 'class') <- 'data.frame'
-  
-  valid <- complete.cases(data)
-  private$.validRows <- which(valid)
-  
-  data <- data[valid, , drop = FALSE]
-  return(data)
-},
+      .cleanData = function() {
+        if (!is.null(private$.cleanDataCache))
+          return(private$.cleanDataCache)
+        
+        items <- self$options$vars
+        data <- list()
+        
+        for (item in items)
+          data[[item]] <- jmvcore::toNumeric(self$data[[item]])
+        
+        attr(data, 'row.names') <- rownames(self$data)
+        attr(data, 'class') <- 'data.frame'
+        
+        valid <- complete.cases(data)
+        private$.validRows <- which(valid)
+        
+        data <- data[valid, , drop = FALSE]
+        private$.cleanDataCache <- data
+        return(data)
+      },
       
       .computeRES = function(data = NULL) {
         if (is.null(data))

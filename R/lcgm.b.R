@@ -80,7 +80,8 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
       .fit_cache    = NULL,
       .para_cache   = NULL,
       .cp_cache     = NULL,
-
+      .plot1_cache  = NULL,
+#--------------------------------------------
       .setTextSafe = function(txt) {
         slots <- c("three", "threeStep", "threeStepText", "text1", "text", "auxText")
         for (id in slots) {
@@ -189,6 +190,40 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           private$.setTextSafe(paste(res3$notes, collapse = "\n"))
         
         invisible(TRUE)
+      },
+
+      .getPlot1Data = function() {
+        if (!is.null(private$.plot1_cache))
+          return(private$.plot1_cache)
+        
+        df   <- as.data.frame(self$data)
+        vars <- self$options$vars
+        
+        if (is.null(vars) || length(vars) < 1)
+          return(NULL)
+        
+        isNum <- vapply(df[vars], is.numeric, TRUE)
+        xvars <- vars[isNum]
+        
+        if (length(xvars) < 1)
+          return(NULL)
+        
+        if (!("id" %in% names(df)))
+          df$id <- seq_len(nrow(df))
+        
+        long <- reshape(
+          df[, c("id", xvars), drop = FALSE],
+          direction = "long",
+          varying   = xvars,
+          v.names   = "value",
+          idvar     = "id",
+          timevar   = "time"
+        )
+        
+        long$time <- factor(long$time, labels = xvars)
+        
+        private$.plot1_cache <- long
+        private$.plot1_cache
       },
       
       .computeThreeStep = function() {
@@ -489,6 +524,7 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         ))
       },
       
+#----------------------------------------------------      
       .init = function() {
         private$.htmlwidget <- HTMLWidget$new()
         
@@ -529,6 +565,7 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         private$.checkpoint()
         
         set.seed(1234)
+        private$.plot1_cache <- NULL
         
         if (isTRUE(self$options$desc)) {
           html <- progressBarH(15, 100, 'Computing descriptives...')
@@ -631,22 +668,17 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           ))
       },
       
-      .populateClassSizeTable = function() {
-        table <- self$results$cp
-        individual_data <- self$classProbabilities$individual
-        predicted_classes <- individual_data$predicted
-        class_counts <- table(predicted_classes)
-        total_n <- sum(class_counts)
-        
-        for (class_num in sort(unique(predicted_classes))) {
-          count_val <- as.integer(class_counts[as.character(class_num)])
-          prop_val <- round(count_val / total_n, 3)
-          table$addRow(rowKey = as.integer(class_num), values = list(
-            count = count_val,
-            prop  = prop_val
-          ))
-        }
-      },
+    .populateClassSizeTable = function() {
+      table <- self$results$cp
+      cpdf  <- as.data.frame(self$classProbabilities$summary)
+      
+      for (i in seq_len(nrow(cpdf))) {
+        table$addRow(rowKey = as.integer(cpdf$Class[i]), values = list(
+          count = as.integer(cpdf$Count[i]),
+          prop  = as.numeric(cpdf$Proportion[i])
+        ))
+      }
+    },
       
       .populateClassMemberTable = function() {
         table <- self$results$mem
@@ -658,36 +690,23 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
       },
       
       .setPlot2 = function() {
-        individual_data <- self$classProbabilities$individual
-        predicted_classes <- individual_data$predicted
-        class_counts <- table(predicted_classes)
-        total_n <- sum(class_counts)
+        cpdf <- as.data.frame(self$classProbabilities$summary)
         
         plot_data <- data.frame(
-          Class = factor(names(class_counts), levels = sort(as.numeric(names(class_counts)))),
-          Count = as.numeric(class_counts),
-          Proportion = round(as.numeric(class_counts) / total_n, 3),
-          Percentage = round(as.numeric(class_counts) / total_n * 100, 1)
+          Class = factor(cpdf$Class, levels = sort(unique(cpdf$Class))),
+          Count = as.numeric(cpdf$Count),
+          Proportion = as.numeric(cpdf$Proportion),
+          Percentage = round(as.numeric(cpdf$Proportion) * 100, 1)
         )
         
         self$results$plot2$setState(plot_data)
       },
       
       .setPlot1 = function() {
-        df   <- as.data.frame(self$data)
-        vars <- self$options$vars
-        if (is.null(vars) || length(vars) < 1) return()
-        isNum <- vapply(df[vars], is.numeric, TRUE)
-        xvars <- vars[isNum]
-        if (length(xvars) < 1) return()
-        if (!("id" %in% names(df))) df$id <- seq_len(nrow(df))
-        long <- reshape(df[, c("id", xvars), drop = FALSE],
-                        direction = "long",
-                        varying   = xvars,
-                        v.names   = "value",
-                        idvar     = "id",
-                        timevar   = "time")
-        long$time <- factor(long$time, labels = xvars)
+        long <- private$.getPlot1Data()
+        if (is.null(long))
+          return()
+        
         self$results$plot1$setState(long)
       },
       

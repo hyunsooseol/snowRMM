@@ -119,7 +119,9 @@ lpaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         # person class---------
         if (isTRUE(self$options$pc)) {
           base::options(max.print = .Machine$integer.max)
-          pc_data <- tidyLPA::get_data(all$res)
+          #pc_data <- tidyLPA::get_data(all$res)
+          pc_data <- all$class_data
+          
           n_row <- nrow(self$data)
           not_na_idx <- which(stats::complete.cases(self$data[, self$options$vars, drop=FALSE]))
           pc_vec <- rep(NA, n_row)
@@ -139,7 +141,9 @@ lpaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         
         # Posterior probabilities---
         if (isTRUE(self$options$post)) {
-          post_data <- tidyLPA::get_data(all$res, "posterior_probabilities")
+          #post_data <- tidyLPA::get_data(all$res, "posterior_probabilities")
+          post_data <- all$post_data
+          
           post_cols <- grep("^CPROB", names(post_data))
           K <- if (!is.null(self$options$nc)) self$options$nc else if (!is.null(self$options$nclass)) self$options$nclass else 2
           if (length(post_cols) == 0) post_cols <- seq_len(min(K, ncol(post_data)))
@@ -186,7 +190,9 @@ lpaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           aux_name <- self$options$auxVar
           if (!is.null(aux_name) && aux_name %in% names(self$data)) {
             
-            post_df <- try(tidyLPA::get_data(all$res, "posterior_probabilities"), silent = TRUE)
+            #post_df <- try(tidyLPA::get_data(all$res, "posterior_probabilities"), silent = TRUE)
+            post_df <- all$post_data
+            
             if (!inherits(post_df, "try-error") && !is.null(post_df)) {
               
               post_cols <- grep("^CPROB", names(post_df))
@@ -434,8 +440,12 @@ lpaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         
         set.seed(1234)
         out <- NULL
+        res <- NULL
+        
         for (i in 1:nc) {
-          self$results$progressBarHTML$setContent(progressBarH(10 + (i / nc) * 40, 100, paste('Computing model for', i, 'classes...')))
+          self$results$progressBarHTML$setContent(
+            progressBarH(10 + (i / nc) * 40, 100, paste('Computing model for', i, 'classes...'))
+          )
           private$.checkpoint()
           
           temp_res <- tidyLPA::estimate_profiles(
@@ -445,7 +455,8 @@ lpaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
             covariances = covariances
           )
           
-          if (i == nc) res <- temp_res
+          if (i == nc)
+            res <- temp_res
           
           tr <- temp_res[[1]]
           df <- data.frame(tr$fit)
@@ -467,10 +478,9 @@ lpaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           out <- if (is.null(out)) df else rbind(out, df)
         }
         
-        # 최종 모델 추정
         self$results$progressBarHTML$setContent(progressBarH(60, 100, 'Computing final profile model...'))
         private$.checkpoint()
-        res <- tidyLPA::estimate_profiles(datX, nc, variances = variances, covariances = covariances)
+        #res <- tidyLPA::estimate_profiles(datX, nc, variances = variances, covariances = covariances)
         
         # Best fit 비교/요약
         self$results$progressBarHTML$setContent(progressBarH(80, 100, 'Comparing model solutions...'))
@@ -485,10 +495,15 @@ lpaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         private$.checkpoint()
         self$results$progressBarHTML$setVisible(FALSE)
         
+        class_data <- tidyLPA::get_data(res)
+        post_data  <- tidyLPA::get_data(res, "posterior_probabilities")
+        
         list(
           res = res,
           bestfit = bestfit,
-          elbow_data = out
+          elbow_data = out,
+          class_data = class_data,
+          post_data = post_data
         )
       },
       

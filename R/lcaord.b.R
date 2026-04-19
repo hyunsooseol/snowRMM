@@ -61,6 +61,7 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly = TRUE))
       .results_cache   = NULL,
       .res_cache       = NULL,
       .desc_cache      = NULL,
+      .barplot_cache = NULL,
  
       
       .init = function() {
@@ -178,7 +179,9 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         
         # Compute results once
         if (is.null(private$.results_cache)) {
+          
           set.seed(1234)
+          private$.barplot_cache <- NULL
           
           # 15%: model fitting
           html <- progressBarH(15, 100, 'Performing LCA model...')
@@ -414,11 +417,13 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly = TRUE))
       },
       
       .setBarPlot = function() {
-        # Use indicator data only so the bar plot remains valid
-        df <- as.data.frame(private$.results_cache$data_ind)
-        names(df) <- paste0("Value.", names(df))
-        df_long <- reshape(df, varying = names(df), direction = "long")
-        self$results$plot1$setState(df_long)
+        if (is.null(private$.barplot_cache)) {
+          df <- as.data.frame(private$.results_cache$data_ind)
+          names(df) <- paste0("Value.", names(df))
+          private$.barplot_cache <- reshape(df, varying = names(df), direction = "long")
+        }
+        
+        self$results$plot1$setState(private$.barplot_cache)
       },
       
       .plot = function(image, ggtheme, theme, ...) {
