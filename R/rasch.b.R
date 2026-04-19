@@ -940,7 +940,7 @@ raschClass <- if (requireNamespace('jmvcore'))
             alpha = 0.8
           ) +
           ggplot2::coord_cartesian(xlim = c(-4, 4), ylim = c(0, 4)) +
-          ggtitle("Task Fit Plot") +
+          ggtitle("") +
           labs(
             x = "Measure",
             y = "Value"
