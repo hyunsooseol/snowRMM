@@ -1,13 +1,14 @@
 # snowRMM
-This module allows users to conduct Latent class analysis, Latent Profile Analysis,  Latent class growth modeling, Latent class for ordinal indicators, Linear Logisitic Test Model, Linear and Equipercentile Equating, Rasch model and Rasch mixture model including model information,fit statistics, and bootstrap item fit.
+
+`snowRMM` is a jamovi module developed and maintained by snowsoft Inc.
+
+It is part of the snowsoft statistical module series for jamovi and provides latent class analysis, latent profile analysis, latent growth modeling, Rasch measurement, Rasch mixture modeling, linear logistic test modeling, test equating, model fit, and bootstrap item fit tools for education, research, and applied data analysis.
 
 <img width="209" height="489" alt="image" src="https://github.com/user-attachments/assets/55ced5e4-6fd5-4869-958e-09f85c5e3148" />
 
-# Installation
-At the moment, snowRMM is not in CRAN yet, so you need to install it via devtools.
+# Support
 
-devtools::install_github("twolodzko/equi")
-devtools::install_github("cran/mixRasch")
-devtools::install_github("hyunsooseol/snowRMM")
+Please use the Issues tab for bug reports, feature requests, and questions.
 
+Please do not upload confidential data, personal information, or private research data when reporting issues.
 
