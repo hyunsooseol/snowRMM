@@ -82,27 +82,32 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
       .cp_cache     = NULL,
       .plot1_cache  = NULL,
 #--------------------------------------------
-      .setTextSafe = function(txt) {
-        slots <- c("three", "threeStep", "threeStepText", "text1", "text", "auxText")
-        for (id in slots) {
-          out <- try(eval(parse(text = sprintf("self$results$%s$setContent", id))), silent = TRUE)
-          if (!inherits(out, "try-error")) {
-            try(eval(parse(text = sprintf("self$results$%s$setContent(txt)", id))), silent = TRUE)
-            return(invisible(TRUE))
-          }
-        }
-        try(self$results$instructions$setContent(txt), silent = TRUE)
-        invisible(TRUE)
-      },
+.setTextSafe = function(txt) {
+  slots <- c("three", "threeStep", "threeStepText", "text1", "text", "auxText")
+  
+  for (id in slots) {
+    slot_obj <- tryCatch(self$results[[id]], error = function(e) NULL)
+    
+    if (!is.null(slot_obj) && is.function(slot_obj$setContent)) {
+      try(slot_obj$setContent(txt), silent = TRUE)
+      return(invisible(TRUE))
+    }
+  }
+  
+  try(self$results$instructions$setContent(txt), silent = TRUE)
+  invisible(TRUE)
+},
       
-      .clearThreeStepTables = function() {
-        for (nm in c("threeStepSummary", "threeStepClassStats", "threeStepPairwise")) {
-          obj <- try(eval(parse(text = sprintf("self$results$%s", nm))), silent = TRUE)
-          if (!inherits(obj, "try-error"))
-            try(obj$clear(), silent = TRUE)
-        }
-        invisible(TRUE)
-      },
+.clearThreeStepTables = function() {
+  for (nm in c("threeStepSummary", "threeStepClassStats", "threeStepPairwise")) {
+    obj <- tryCatch(self$results[[nm]], error = function(e) NULL)
+    
+    if (!is.null(obj))
+      try(obj$clear(), silent = TRUE)
+  }
+  
+  invisible(TRUE)
+},
       
       .populateThreeStepTables = function(res3) {
         private$.clearThreeStepTables()
