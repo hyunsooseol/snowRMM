@@ -35,6 +35,7 @@ lcaordOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "vars",
                 vars,
                 suggested=list(
+                    "nominal",
                     "ordinal"),
                 permitted=list(
                     "factor"))

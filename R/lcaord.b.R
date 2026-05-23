@@ -75,6 +75,7 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly = TRUE))
             content = paste(
               '<div style="border:2px solid #e6f4fe;border-radius:15px;padding:15px;',
               'background-color:#e6f4fe;margin-top:10px;"><ul>',
+              '<li>This analysis supports binary, nominal, and ordinal categorical indicators.</li>',
               '<li>3-step auxiliary results are provided as approximate posterior-probability-based comparisons and should be interpreted with caution for strict methodological applications.</li>',
               '<li>Latent class analysis for ordinal indicators is described in the ',              
               '<a href="https://cjvanlissa.github.io/tidySEM/articles/lca_ordinal.html" target="_blank">tidySEM article</a>.</li>',
