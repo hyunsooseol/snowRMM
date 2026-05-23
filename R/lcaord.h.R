@@ -313,7 +313,7 @@ lcaordResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Table$new(
                 options=options,
                 name="localDep",
-                title="Local Dependence Diagnostics",
+                title="Bivariate residuals",
                 visible="(localDep)",
                 clearWith=list(
                     "vars",
@@ -341,7 +341,7 @@ lcaordResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Image$new(
                 options=options,
                 name="residualHeatmap",
-                title="Local Dependence Heatmap",
+                title="Residual heatmap",
                 renderFun=".plotResidualHeatmap",
                 visible="(residualHeatmap)",
                 clearWith=list(

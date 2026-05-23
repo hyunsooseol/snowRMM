@@ -90,7 +90,7 @@ items:
           type: number
  
     - name: localDep
-      title: Local Dependence Diagnostics
+      title: 'Bivariate residuals'
       type: Table
       visible: (localDep)
       clearWith:
@@ -117,7 +117,7 @@ items:
           format: zto,pvalue
 
     - name: residualHeatmap
-      title: Local Dependence Heatmap
+      title: Residual heatmap
       type: Image
       renderFun: .plotResidualHeatmap
       visible: (residualHeatmap)
