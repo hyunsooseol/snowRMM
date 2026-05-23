@@ -20,7 +20,10 @@ lcaordOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             auxVar = NULL,
             auxFormula = "depression~peer_support",
             reg = FALSE,
-            regvars = NULL, ...) {
+            regvars = NULL,
+            localDep = FALSE,
+            residualHeatmap = FALSE,
+            angle1 = 0, ...) {
 
             super$initialize(
                 package="snowRMM",
@@ -110,6 +113,20 @@ lcaordOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 permitted=list(
                     "numeric",
                     "factor"))
+            private$..localDep <- jmvcore::OptionBool$new(
+                "localDep",
+                localDep,
+                default=FALSE)
+            private$..residualHeatmap <- jmvcore::OptionBool$new(
+                "residualHeatmap",
+                residualHeatmap,
+                default=FALSE)
+            private$..angle1 <- jmvcore::OptionNumber$new(
+                "angle1",
+                angle1,
+                min=0,
+                max=90,
+                default=0)
 
             self$.addOption(private$..vars)
             self$.addOption(private$..nc)
@@ -127,6 +144,9 @@ lcaordOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..auxFormula)
             self$.addOption(private$..reg)
             self$.addOption(private$..regvars)
+            self$.addOption(private$..localDep)
+            self$.addOption(private$..residualHeatmap)
+            self$.addOption(private$..angle1)
         }),
     active = list(
         vars = function() private$..vars$value,
@@ -144,7 +164,10 @@ lcaordOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         auxVar = function() private$..auxVar$value,
         auxFormula = function() private$..auxFormula$value,
         reg = function() private$..reg$value,
-        regvars = function() private$..regvars$value),
+        regvars = function() private$..regvars$value,
+        localDep = function() private$..localDep$value,
+        residualHeatmap = function() private$..residualHeatmap$value,
+        angle1 = function() private$..angle1$value),
     private = list(
         ..vars = NA,
         ..nc = NA,
@@ -161,7 +184,10 @@ lcaordOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..auxVar = NA,
         ..auxFormula = NA,
         ..reg = NA,
-        ..regvars = NA)
+        ..regvars = NA,
+        ..localDep = NA,
+        ..residualHeatmap = NA,
+        ..angle1 = NA)
 )
 
 lcaordResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -174,6 +200,8 @@ lcaordResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         desc = function() private$.items[["desc"]],
         fit = function() private$.items[["fit"]],
         cp = function() private$.items[["cp"]],
+        localDep = function() private$.items[["localDep"]],
+        residualHeatmap = function() private$.items[["residualHeatmap"]],
         mem = function() private$.items[["mem"]],
         plot1 = function() private$.items[["plot1"]],
         plot = function() private$.items[["plot"]],
@@ -282,6 +310,45 @@ lcaordResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         `name`="prop", 
                         `title`="Proportion", 
                         `type`="number"))))
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="localDep",
+                title="Local Dependence Diagnostics",
+                visible="(localDep)",
+                clearWith=list(
+                    "vars",
+                    "nc",
+                    "missing"),
+                columns=list(
+                    list(
+                        `name`="item1", 
+                        `title`="Item 1", 
+                        `type`="text"),
+                    list(
+                        `name`="item2", 
+                        `title`="Item 2", 
+                        `type`="text"),
+                    list(
+                        `name`="bvr", 
+                        `title`="BVR", 
+                        `type`="number", 
+                        `format`="zto"),
+                    list(
+                        `name`="p", 
+                        `title`="p", 
+                        `type`="number", 
+                        `format`="zto,pvalue"))))
+            self$add(jmvcore::Image$new(
+                options=options,
+                name="residualHeatmap",
+                title="Local Dependence Heatmap",
+                renderFun=".plotResidualHeatmap",
+                visible="(residualHeatmap)",
+                clearWith=list(
+                    "vars",
+                    "nc",
+                    "miss",
+                    "angle1")))
             self$add(jmvcore::Output$new(
                 options=options,
                 name="mem",
@@ -477,14 +544,16 @@ lcaordBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param cp .
 #' @param plot .
 #' @param plot1 .
-#' @param angle a number from 0 to 90 defining the angle of the x-axis labels,
-#'   where 0 degrees represents completely horizontal labels.
+#' @param angle .
 #' @param miss .
 #' @param use3step .
 #' @param auxVar .
 #' @param auxFormula .
 #' @param reg .
 #' @param regvars .
+#' @param localDep .
+#' @param residualHeatmap .
+#' @param angle1 .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
@@ -493,6 +562,8 @@ lcaordBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$desc} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$fit} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$cp} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$localDep} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$residualHeatmap} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$mem} \tab \tab \tab \tab \tab an output \cr
 #'   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
@@ -525,7 +596,10 @@ lcaord <- function(
     auxVar,
     auxFormula = "depression~peer_support",
     reg = FALSE,
-    regvars) {
+    regvars,
+    localDep = FALSE,
+    residualHeatmap = FALSE,
+    angle1 = 0) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("lcaord requires jmvcore to be installed (restart may be required)")
@@ -557,7 +631,10 @@ lcaord <- function(
         auxVar = auxVar,
         auxFormula = auxFormula,
         reg = reg,
-        regvars = regvars)
+        regvars = regvars,
+        localDep = localDep,
+        residualHeatmap = residualHeatmap,
+        angle1 = angle1)
 
     analysis <- lcaordClass$new(
         options = options,

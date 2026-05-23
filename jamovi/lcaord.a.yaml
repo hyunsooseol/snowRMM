@@ -67,10 +67,6 @@ options:
       min: 0
       max: 90
       default: 0
-      description:
-          R: >
-            a number from 0 to 90 defining the angle of the x-axis labels, 
-            where 0 degrees represents completely horizontal labels.
 
     - name: miss
       title: Missing Values Method
@@ -118,5 +114,21 @@ options:
         - numeric
         - factor
         
+    - name: localDep
+      title: Bivariate residuals
+      type: Bool
+      default: false
+
+    - name: residualHeatmap
+      title: Residual heatmap
+      type: Bool
+      default: false
+
+    - name: angle1
+      title: Angle of x-axis labels
+      type: Number
+      min: 0
+      max: 90
+      default: 0
 
 ...

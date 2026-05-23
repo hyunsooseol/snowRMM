@@ -1,5 +1,4 @@
 
-# This file is a generated template, your changes will not be overwritten
 
 #' @importFrom utils capture.output
 
@@ -85,6 +84,12 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           )
         )
         
+        if (!is.null(self$results$localDep))
+          self$results$localDep$setNote(
+            "Note",
+            "BVR = bivariate residual. Larger BVR values may indicate local dependence between item pairs. As a rough guide, BVR values above 10 may warrant closer inspection."
+          )
+        
         if (!is.null(self$results$reg))
           self$results$reg$setNote(
             "Note",
@@ -105,6 +110,7 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           fit  = private$.populateFitTable,
           cp   = private$.populateClassSizeTable,
           mem  = private$.populateClassMemberTable,
+          localDep = private$.populateLocalDepTable,
           use3step_means    = private$.populateThreeStepMeansTable,
           use3step_omnibus  = private$.populateThreeStepOmnibusTable,
           use3step_pairwise = private$.populateThreeStepPairwiseTable,
@@ -204,21 +210,37 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           cp  <- data.frame(cp1$sum.posterior)
           
           
+          # private$.results_cache <- list(
+          #   data_all = data_all,   # Full data used for auxiliary analyses and formulas
+          #   data_ind = data_ind,   # Indicator data used for ordinal LCA
+          #   res  = res,
+          #   desc = desc,
+          #   fit  = fit,
+          #   cp   = cp,
+          #   cp1  = cp1,
+          #   three_step_means    = private$.emptyThreeMeansRows(),
+          #   three_step_omnibus  = private$.emptyThreeOmnibusRows(),
+          #   three_step_pairwise = private$.emptyThreePairwiseRows(),
+          #   reg_tests = private$.emptyInferentialRows(),
+          #   missing_aux_cols = missing_cols  # Columns referenced in auxVar/formula but not found in data
+          # )
           private$.results_cache <- list(
-            data_all = data_all,   # Full data used for auxiliary analyses and formulas
-            data_ind = data_ind,   # Indicator data used for ordinal LCA
+            data_all = data_all,
+            data_ind = data_ind,
             res  = res,
             desc = desc,
             fit  = fit,
             cp   = cp,
             cp1  = cp1,
+            local_dep = private$.computeLocalDependence(data_ind, cp1),
             three_step_means    = private$.emptyThreeMeansRows(),
             three_step_omnibus  = private$.emptyThreeOmnibusRows(),
             three_step_pairwise = private$.emptyThreePairwiseRows(),
             reg_tests = private$.emptyInferentialRows(),
-            missing_aux_cols = missing_cols  # Columns referenced in auxVar/formula but not found in data
+            missing_aux_cols = missing_cols
           )
           
+                    
           # 45%: populate desc
           if (isTRUE(self$options$desc)) {
             html <- progressBarH(45, 100, 'Populating descriptives table...')
@@ -243,6 +265,15 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly = TRUE))
             private$.populateClassSizeTable()
           }
           
+          # 70%: populate local dependence diagnostics
+          if (isTRUE(self$options$localDep)) {
+            html <- progressBarH(70, 100, 'Populating local dependence diagnostics...')
+            self$results$progressBarHTML$setContent(html)
+            private$.checkpoint()
+            private$.populateLocalDepTable()
+          }
+          
+          
           # 75%: populate class member
           if (isTRUE(self$options$mem)) {
             html <- progressBarH(75, 100, 'Populating class members table...')
@@ -251,6 +282,14 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly = TRUE))
             private$.populateClassMemberTable()
           }
           
+          # 80%: local dependence heatmap
+          if (isTRUE(self$options$residualHeatmap)) {
+            html <- progressBarH(80, 100, 'Generating residual heatmap...')
+            self$results$progressBarHTML$setContent(html)
+            private$.checkpoint()
+            private$.setResidualHeatmap()
+          }
+
           # 85%: plot response probabilities
           if (isTRUE(self$options$plot)) {
             html <- progressBarH(85, 100, 'Generating response probability plot...')
@@ -351,6 +390,21 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         })
       },
       
+      .populateLocalDepTable = function() {
+        table <- self$results$localDep
+        d     <- private$.results_cache$local_dep
+        
+        if (is.null(table) || is.null(d) || nrow(d) == 0)
+          return()
+        
+        lapply(seq_len(nrow(d)), function(i) {
+          table$addRow(
+            rowKey = i,
+            values = as.list(d[i, , drop = FALSE])
+          )
+        })
+      },
+      
       .populateClassMemberTable = function() {
         table <- self$results$mem
         mem   <- data.frame(private$.results_cache$cp1$individual)
@@ -411,6 +465,18 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         })
       },
       
+      .setResidualHeatmap = function() {
+        if (is.null(private$.results_cache))
+          return()
+        
+        d <- private$.results_cache$local_dep
+        
+        if (is.null(d) || nrow(d) == 0)
+          return()
+        
+        self$results$residualHeatmap$setState(d)
+      },
+      
       .setResponseProbPlot = function() {
         image <- self$results$plot
         image$setState(private$.results_cache$res)
@@ -434,12 +500,225 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         print(p); TRUE
       },
       
+      .plotResidualHeatmap = function(image, ggtheme, theme, ...) {
+        if (is.null(image$state))
+          return(FALSE)
+        
+        d <- image$state
+        
+        if (is.null(d) || nrow(d) == 0)
+          return(FALSE)
+        
+        vars <- unique(c(as.character(d$item1), as.character(d$item2)))
+        
+        plot_df <- data.frame(
+          Item1 = as.character(d$item1),
+          Item2 = as.character(d$item2),
+          BVR   = suppressWarnings(as.numeric(d$bvr)),
+          stringsAsFactors = FALSE
+        )
+        
+        plot_df <- plot_df[!is.na(plot_df$BVR), , drop = FALSE]
+        
+        if (nrow(plot_df) == 0)
+          return(FALSE)
+        
+        plot_df$Item1 <- factor(plot_df$Item1, levels = vars)
+        plot_df$Item2 <- factor(plot_df$Item2, levels = rev(vars))
+        
+        p <- ggplot2::ggplot(
+          plot_df,
+          ggplot2::aes(x = Item1, y = Item2, fill = BVR)
+        ) +
+          ggplot2::geom_tile(color = "white") +
+          ggplot2::geom_text(
+            ggplot2::aes(label = sprintf("%.2f", BVR)),
+            size = 3
+          ) +
+          ggplot2::theme_bw() +
+          ggtheme +
+          ggplot2::scale_fill_gradientn(
+            colours = c("#F7FBFF", "#6BAED6", "#FD8D3C", "#CB181D"),
+            na.value = "white"
+          ) +
+          ggplot2::labs(
+            x = NULL,
+            y = NULL,
+            fill = "BVR"
+          ) +
+          ggplot2::theme(
+            axis.title.x = ggplot2::element_blank(),
+            axis.title.y = ggplot2::element_blank(),
+            panel.grid = ggplot2::element_blank()
+          )
+        
+        if (self$options$angle1 > 0)
+          p <- p + ggplot2::theme(
+            axis.text.x = ggplot2::element_text(angle = self$options$angle1, hjust = 1)
+          )
+        
+        print(p)
+        TRUE
+      },
+      
+      
       .plot1 = function(image, ggtheme, theme, ...) {
         if (is.null(image$state)) return(FALSE)
         p <- ggplot(image$state, aes(x=Value)) +
           geom_bar() + facet_wrap(~time, scales="free") + theme_bw() + ggtheme
         print(p); TRUE
       },
+      
+      .emptyLocalDepRows = function() {
+        data.frame(
+          item1 = character(0),
+          item2 = character(0),
+          bvr = numeric(0),
+          p = numeric(0),
+          stringsAsFactors = FALSE
+        )
+      },
+      
+      .getPosteriorMatrix = function(cp1) {
+        if (is.null(cp1) || is.null(cp1$individual))
+          return(NULL)
+        
+        ind <- data.frame(cp1$individual)
+        
+        pats <- c(
+          "^CPROB[0-9]+$",
+          "^Class[_\\.]?[0-9]+$",
+          "^C[0-9]+$",
+          "^p[0-9]+$",
+          "^posterior[_\\.]?[0-9]+$"
+        )
+        
+        hits <- unique(unlist(lapply(pats, function(p) grep(p, names(ind)))))
+        
+        if (length(hits) > 0) {
+          pmat <- as.matrix(ind[, hits, drop = FALSE])
+          storage.mode(pmat) <- "numeric"
+          return(pmat)
+        }
+        
+        num <- names(ind)[vapply(ind, is.numeric, TRUE)]
+        cand <- setdiff(num, c("id", "ID", "predicted", "Predicted"))
+        
+        if (length(cand) > 1) {
+          pmat <- as.matrix(ind[, cand, drop = FALSE])
+          storage.mode(pmat) <- "numeric"
+          rs <- rowSums(pmat, na.rm = TRUE)
+          if (all(is.finite(rs)) && mean(abs(rs - 1)) < 1e-3)
+            return(pmat)
+        }
+        
+        NULL
+      },
+      
+      .computeLocalDependence = function(data_ind, cp1) {
+        out <- private$.emptyLocalDepRows()
+        
+        if (is.null(data_ind) || ncol(data_ind) < 2)
+          return(out)
+        
+        pmat <- private$.getPosteriorMatrix(cp1)
+        if (is.null(pmat) || nrow(pmat) != nrow(data_ind))
+          return(out)
+        
+        K <- ncol(pmat)
+        if (K < 2)
+          return(out)
+        
+        vars <- names(data_ind)
+        rows <- list()
+        idx <- 1L
+        
+        for (a in 1:(length(vars) - 1)) {
+          for (b in (a + 1):length(vars)) {
+            
+            x <- data_ind[[vars[a]]]
+            y <- data_ind[[vars[b]]]
+            
+            ok <- !is.na(x) & !is.na(y)
+            if (sum(ok) < 5)
+              next
+            
+            x <- droplevels(as.factor(x[ok]))
+            y <- droplevels(as.factor(y[ok]))
+            w <- pmat[ok, , drop = FALSE]
+            
+            lx <- levels(x)
+            ly <- levels(y)
+            
+            if (length(lx) < 2 || length(ly) < 2)
+              next
+            
+            obs <- table(x, y)
+            obs <- as.matrix(obs)
+            
+            exp_total <- matrix(
+              0,
+              nrow = length(lx),
+              ncol = length(ly),
+              dimnames = list(lx, ly)
+            )
+            
+            for (k in seq_len(K)) {
+              wk <- w[, k]
+              nk <- sum(wk, na.rm = TRUE)
+              
+              if (!is.finite(nk) || nk <= 0)
+                next
+              
+              px <- sapply(lx, function(v) sum(wk[x == v], na.rm = TRUE) / nk)
+              py <- sapply(ly, function(v) sum(wk[y == v], na.rm = TRUE) / nk)
+              
+              exp_total <- exp_total + nk * outer(px, py)
+            }
+            
+            common_x <- intersect(rownames(obs), rownames(exp_total))
+            common_y <- intersect(colnames(obs), colnames(exp_total))
+            
+            obs2 <- obs[common_x, common_y, drop = FALSE]
+            exp2 <- exp_total[common_x, common_y, drop = FALSE]
+            
+            bvr <- sum((obs2 - exp2)^2 / pmax(exp2, .Machine$double.eps), na.rm = TRUE)
+            df <- max(1, (nrow(obs2) - 1) * (ncol(obs2) - 1))
+            pval <- stats::pchisq(bvr, df = df, lower.tail = FALSE)
+            
+            # flag <- if (is.finite(bvr) && bvr >= 10) {
+            #   "Possible local dependence"
+            # } else {
+            #   "No concern"
+            # }
+            
+            # rows[[idx]] <- data.frame(
+            #   item1 = vars[a],
+            #   item2 = vars[b],
+            #   bvr = as.numeric(bvr),
+            #   p = as.numeric(pval),
+            #   flag = flag,
+            #   stringsAsFactors = FALSE
+            # )
+            rows[[idx]] <- data.frame(
+              item1 = vars[a],
+              item2 = vars[b],
+              bvr = as.numeric(bvr),
+              p = as.numeric(pval),
+              stringsAsFactors = FALSE
+            )            
+            
+            
+            idx <- idx + 1L
+          }
+        }
+        
+        if (length(rows) == 0)
+          return(out)
+        
+        do.call(rbind, rows)
+      },
+      
       
       .emptyInferentialRows = function() {
         data.frame(

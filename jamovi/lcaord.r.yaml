@@ -89,6 +89,44 @@ items:
           title: Proportion   
           type: number
  
+    - name: localDep
+      title: Local Dependence Diagnostics
+      type: Table
+      visible: (localDep)
+      clearWith:
+        - vars
+        - nc
+        - missing
+      columns:
+        - name: item1
+          title: Item 1
+          type: text
+
+        - name: item2
+          title: Item 2
+          type: text
+
+        - name: bvr
+          title: 'BVR'
+          type: number
+          format: zto
+
+        - name: p
+          title: p
+          type: number
+          format: zto,pvalue
+
+    - name: residualHeatmap
+      title: Local Dependence Heatmap
+      type: Image
+      renderFun: .plotResidualHeatmap
+      visible: (residualHeatmap)
+      clearWith:
+        - vars
+        - nc
+        - miss
+        - angle1
+
     - name: mem
       title: Class 
       type: Output

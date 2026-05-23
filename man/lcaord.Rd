@@ -20,7 +20,10 @@ lcaord(
   auxVar,
   auxFormula = "depression~peer_support",
   reg = FALSE,
-  regvars
+  regvars,
+  localDep = FALSE,
+  residualHeatmap = FALSE,
+  angle1 = 0
 )
 }
 \arguments{
@@ -42,8 +45,7 @@ lcaord(
 
 \item{plot1}{.}
 
-\item{angle}{a number from 0 to 90 defining the angle of the x-axis labels,
-where 0 degrees represents completely horizontal labels.}
+\item{angle}{.}
 
 \item{miss}{.}
 
@@ -56,6 +58,12 @@ where 0 degrees represents completely horizontal labels.}
 \item{reg}{.}
 
 \item{regvars}{.}
+
+\item{localDep}{.}
+
+\item{residualHeatmap}{.}
+
+\item{angle1}{.}
 }
 \value{
 A results object containing:
@@ -66,6 +74,8 @@ A results object containing:
   \code{results$desc} \tab \tab \tab \tab \tab a table \cr
   \code{results$fit} \tab \tab \tab \tab \tab a table \cr
   \code{results$cp} \tab \tab \tab \tab \tab a table \cr
+  \code{results$localDep} \tab \tab \tab \tab \tab a table \cr
+  \code{results$residualHeatmap} \tab \tab \tab \tab \tab an image \cr
   \code{results$mem} \tab \tab \tab \tab \tab an output \cr
   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
   \code{results$plot} \tab \tab \tab \tab \tab an image \cr

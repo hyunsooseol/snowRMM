@@ -64,7 +64,25 @@ children:
                 optionPart: listwise
                 label: Exclude cases listwise
           - type: Label
-            label: Tables
+            label: 'Local Dependence'
+            children:
+              - name: localDep
+                label: Bivariate residuals
+                type: CheckBox
+              - name: residualHeatmap
+                label: Residual heatmap
+                type: CheckBox
+                children:
+                  - type: TextBox
+                    name: angle1
+                    format: number
+                    suggestedValues:
+                      - value: 0
+                      - value: 45
+                      - value: 90
+                    enable: (residualHeatmap)
+          - type: Label
+            label: 'Tables'
             children:
               - type: LayoutBox
                 margin: large
@@ -75,11 +93,6 @@ children:
                     name: fit
                   - type: CheckBox
                     name: cp
-          - type: Label
-            label: Save
-            children:
-              - type: Output
-                name: mem
       - type: LayoutBox
         margin: large
         cell:
@@ -88,7 +101,7 @@ children:
         stretchFactor: 1
         children:
           - type: Label
-            label: Plots
+            label: 'Plots'
             children:
               - type: CheckBox
                 name: plot1
@@ -103,6 +116,12 @@ children:
                       - value: 45
                       - value: 90
                     enable: (plot)
+          - type: Label
+            label: Save
+            children:
+              - type: Output
+                name: mem
+
   - type: CollapseBox
     label: 3-step and Class-wise regression
     collapsed: true
