@@ -48,7 +48,12 @@ items:
         - name: mode
           title: Mode 
           type: number
-  
+        - name: modeProp
+          title: Mode proportion
+          type: number
+          format: zto  
+
+
     - name: fit
       title: 'Model fit'
       type: Table
@@ -157,6 +162,17 @@ items:
         - nc
         - angle
         - miss
+
+    - name: profilePlot
+      title: Class probability profile
+      type: Image
+      renderFun: .plotProfilePlot
+      visible: (profilePlot)
+      clearWith:
+        - vars
+        - nc
+        - miss
+        - angle2
 
     - name: use3step_means
       title: "3-step auxiliary: Class-weighted means"

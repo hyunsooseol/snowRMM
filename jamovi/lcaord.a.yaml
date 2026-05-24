@@ -24,11 +24,6 @@ options:
       min: 2
       default: 2     
 
-    # - name: run
-    #   title: 'Run when ready'
-    #   type: Bool
-    #   default: FALSE
-
     - name: run
       type: Action
       title: Run
@@ -67,7 +62,7 @@ options:
       type: Number
       min: 0
       max: 90
-      default: 0
+      default: 90
 
     - name: miss
       title: Missing Values Method
@@ -130,6 +125,19 @@ options:
       type: Number
       min: 0
       max: 90
-      default: 0
+      default: 90
 
+    - name: angle2
+      title: Angle of x-axis labels
+      type: Integer
+      min: 0
+      max: 90
+      default: 90
+
+    - name: profilePlot
+      title: Class probability profile
+      type: Bool
+      default: false
+
+      
 ...

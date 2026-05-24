@@ -14,7 +14,7 @@ lcaord(
   cp = FALSE,
   plot = FALSE,
   plot1 = FALSE,
-  angle = 0,
+  angle = 90,
   miss = "listwise",
   use3step = FALSE,
   auxVar,
@@ -23,7 +23,9 @@ lcaord(
   regvars,
   localDep = FALSE,
   residualHeatmap = FALSE,
-  angle1 = 0
+  angle1 = 90,
+  angle2 = 90,
+  profilePlot = FALSE
 )
 }
 \arguments{
@@ -64,6 +66,10 @@ lcaord(
 \item{residualHeatmap}{.}
 
 \item{angle1}{.}
+
+\item{angle2}{.}
+
+\item{profilePlot}{.}
 }
 \value{
 A results object containing:
@@ -79,6 +85,7 @@ A results object containing:
   \code{results$mem} \tab \tab \tab \tab \tab an output \cr
   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
+  \code{results$profilePlot} \tab \tab \tab \tab \tab an image \cr
   \code{results$use3step_means} \tab \tab \tab \tab \tab a table \cr
   \code{results$use3step_omnibus} \tab \tab \tab \tab \tab a table \cr
   \code{results$use3step_pairwise} \tab \tab \tab \tab \tab a table \cr

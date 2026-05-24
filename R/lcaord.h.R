@@ -14,7 +14,7 @@ lcaordOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             cp = FALSE,
             plot = FALSE,
             plot1 = FALSE,
-            angle = 0,
+            angle = 90,
             miss = "listwise",
             use3step = FALSE,
             auxVar = NULL,
@@ -23,7 +23,9 @@ lcaordOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             regvars = NULL,
             localDep = FALSE,
             residualHeatmap = FALSE,
-            angle1 = 0, ...) {
+            angle1 = 90,
+            angle2 = 90,
+            profilePlot = FALSE, ...) {
 
             super$initialize(
                 package="snowRMM",
@@ -74,7 +76,7 @@ lcaordOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 angle,
                 min=0,
                 max=90,
-                default=0)
+                default=90)
             private$..miss <- jmvcore::OptionList$new(
                 "miss",
                 miss,
@@ -127,7 +129,17 @@ lcaordOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 angle1,
                 min=0,
                 max=90,
-                default=0)
+                default=90)
+            private$..angle2 <- jmvcore::OptionInteger$new(
+                "angle2",
+                angle2,
+                min=0,
+                max=90,
+                default=90)
+            private$..profilePlot <- jmvcore::OptionBool$new(
+                "profilePlot",
+                profilePlot,
+                default=FALSE)
 
             self$.addOption(private$..vars)
             self$.addOption(private$..nc)
@@ -148,6 +160,8 @@ lcaordOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..localDep)
             self$.addOption(private$..residualHeatmap)
             self$.addOption(private$..angle1)
+            self$.addOption(private$..angle2)
+            self$.addOption(private$..profilePlot)
         }),
     active = list(
         vars = function() private$..vars$value,
@@ -168,7 +182,9 @@ lcaordOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         regvars = function() private$..regvars$value,
         localDep = function() private$..localDep$value,
         residualHeatmap = function() private$..residualHeatmap$value,
-        angle1 = function() private$..angle1$value),
+        angle1 = function() private$..angle1$value,
+        angle2 = function() private$..angle2$value,
+        profilePlot = function() private$..profilePlot$value),
     private = list(
         ..vars = NA,
         ..nc = NA,
@@ -188,7 +204,9 @@ lcaordOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..regvars = NA,
         ..localDep = NA,
         ..residualHeatmap = NA,
-        ..angle1 = NA)
+        ..angle1 = NA,
+        ..angle2 = NA,
+        ..profilePlot = NA)
 )
 
 lcaordResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -206,6 +224,7 @@ lcaordResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         mem = function() private$.items[["mem"]],
         plot1 = function() private$.items[["plot1"]],
         plot = function() private$.items[["plot"]],
+        profilePlot = function() private$.items[["profilePlot"]],
         use3step_means = function() private$.items[["use3step_means"]],
         use3step_omnibus = function() private$.items[["use3step_omnibus"]],
         use3step_pairwise = function() private$.items[["use3step_pairwise"]],
@@ -267,7 +286,12 @@ lcaordResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     list(
                         `name`="mode", 
                         `title`="Mode", 
-                        `type`="number"))))
+                        `type`="number"),
+                    list(
+                        `name`="modeProp", 
+                        `title`="Mode proportion", 
+                        `type`="number", 
+                        `format`="zto"))))
             self$add(jmvcore::Table$new(
                 options=options,
                 name="fit",
@@ -381,6 +405,17 @@ lcaordResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "nc",
                     "angle",
                     "miss")))
+            self$add(jmvcore::Image$new(
+                options=options,
+                name="profilePlot",
+                title="Class probability profile",
+                renderFun=".plotProfilePlot",
+                visible="(profilePlot)",
+                clearWith=list(
+                    "vars",
+                    "nc",
+                    "miss",
+                    "angle2")))
             self$add(jmvcore::Table$new(
                 options=options,
                 name="use3step_means",
@@ -555,6 +590,8 @@ lcaordBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param localDep .
 #' @param residualHeatmap .
 #' @param angle1 .
+#' @param angle2 .
+#' @param profilePlot .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
@@ -568,6 +605,7 @@ lcaordBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$mem} \tab \tab \tab \tab \tab an output \cr
 #'   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
+#'   \code{results$profilePlot} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$use3step_means} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$use3step_omnibus} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$use3step_pairwise} \tab \tab \tab \tab \tab a table \cr
@@ -591,7 +629,7 @@ lcaord <- function(
     cp = FALSE,
     plot = FALSE,
     plot1 = FALSE,
-    angle = 0,
+    angle = 90,
     miss = "listwise",
     use3step = FALSE,
     auxVar,
@@ -600,7 +638,9 @@ lcaord <- function(
     regvars,
     localDep = FALSE,
     residualHeatmap = FALSE,
-    angle1 = 0) {
+    angle1 = 90,
+    angle2 = 90,
+    profilePlot = FALSE) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("lcaord requires jmvcore to be installed (restart may be required)")
@@ -635,7 +675,9 @@ lcaord <- function(
         regvars = regvars,
         localDep = localDep,
         residualHeatmap = residualHeatmap,
-        angle1 = angle1)
+        angle1 = angle1,
+        angle2 = angle2,
+        profilePlot = profilePlot)
 
     analysis <- lcaordClass$new(
         options = options,

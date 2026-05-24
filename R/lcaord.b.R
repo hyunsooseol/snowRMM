@@ -39,21 +39,65 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly = TRUE))
       
       desc = function() {
         if (is.null(private$.desc_cache)) {
-          # Summary of indicator variables only
+          
           data_all <- self$data
+          
           if (self$options$miss == 'listwise')
             data_all <- jmvcore::naOmit(data_all)
+          
           data_all <- as.data.frame(data_all)
           
           ind_names <- self$options$vars
           data_ind  <- data_all[, ind_names, drop = FALSE]
           
-          desc <- tidySEM::descriptives(data_ind)
-          private$.desc_cache <- desc[, c("name","type","n","missing","unique","mode")]
+          rows <- lapply(ind_names, function(v) {
+            
+            x <- data_ind[[v]]
+            
+            if (is.factor(x) || is.ordered(x))
+              x <- droplevels(x)
+            
+            x_nonmiss <- x[!is.na(x)]
+            
+            tab <- table(x_nonmiss, useNA = "no")
+            
+            mode_value <- if (length(tab) > 0) {
+              names(tab)[which.max(tab)]
+            } else {
+              NA_character_
+            }
+            
+            mode_prop <- if (length(tab) > 0 && length(x_nonmiss) > 0) {
+              as.numeric(max(tab)) / length(x_nonmiss)
+            } else {
+              NA_real_
+            }
+            
+            data.frame(
+              name = v,
+              type = if (is.ordered(x)) {
+                "ordered factor"
+              } else if (is.factor(x)) {
+                "factor"
+              } else {
+                class(x)[1]
+              },
+              n = sum(!is.na(x)),
+              missing = sum(is.na(x)) / length(x),
+              unique = length(tab),
+              mode = mode_value,
+              modeProp = mode_prop,
+              stringsAsFactors = FALSE
+            )
+          })
+          
+          private$.desc_cache <- do.call(rbind, rows)
         }
+        
         private$.desc_cache
       }
-    ),
+    
+      ),
     
     private = list(
       .htmlwidget      = NULL,
@@ -299,6 +343,15 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly = TRUE))
             private$.setResponseProbPlot()
           }
           
+          # 90%: profile plot
+          if (isTRUE(self$options$profilePlot)) {
+            html <- progressBarH(90, 100, 'Generating profile plot...')
+            self$results$progressBarHTML$setContent(html)
+            private$.checkpoint()
+            private$.setProfilePlot()
+          }
+          
+          
           # 95%: plot bar
           if (isTRUE(self$options$plot1)) {
             html <- progressBarH(95,100,'Generating bar plot...')
@@ -354,14 +407,17 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         vars  <- self$options$vars
         table <- self$results$desc
         d     <- data.frame(private$.results_cache$desc)
+        
         lapply(seq_along(vars), function(i) {
           row <- list(
-            type   = d[[2]][i],
-            n      = d[[3]][i],
-            missing= d[[4]][i],
-            unique = d[[5]][i],
-            mode   = d[[6]][i]
+            type     = d$type[i],
+            n        = d$n[i],
+            missing  = d$missing[i],
+            unique   = d$unique[i],
+            mode     = d$mode[i],
+            modeProp = d$modeProp[i]
           )
+          
           table$addRow(rowKey = vars[i], values = row)
         })
       },
@@ -483,6 +539,11 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         image$setState(private$.results_cache$res)
       },
       
+      .setProfilePlot = function() {
+        image <- self$results$profilePlot
+        image$setState(private$.results_cache$res)
+      },
+      
       .setBarPlot = function() {
         if (is.null(private$.barplot_cache)) {
           df <- as.data.frame(private$.results_cache$data_ind)
@@ -499,6 +560,120 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         if (self$options$angle>0)
           p <- p + ggplot2::theme(axis.text.x=ggplot2::element_text(angle=self$options$angle, hjust=1))
         print(p); TRUE
+      },
+      
+      .plotProfilePlot = function(image, ggtheme, theme, ...) {
+        if (is.null(image$state))
+          return(FALSE)
+        
+        # Create the original response probability plot object
+        p0 <- try(tidySEM::plot_prob(image$state, bw = FALSE), silent = TRUE)
+        
+        if (inherits(p0, "try-error"))
+          return(FALSE)
+        
+        d <- p0$data
+        
+        # If the ggplot object does not carry raw data, stop safely
+        if (is.null(d) || nrow(d) == 0)
+          return(TRUE)
+        
+        # Standardize column names in a flexible way
+        nms <- names(d)
+        nml <- tolower(nms)
+        
+        find_col <- function(candidates) {
+          hit <- which(nml %in% candidates)
+          if (length(hit) == 0)
+            return(NA_character_)
+          nms[hit[1]]
+        }
+        
+        vcol <- find_col(c("variable", "variables", "item", "name", "var"))
+        ycol <- find_col(c("value", "prob", "probability", "estimate", "est"))
+        ccol <- find_col(c("class", "classes", "group"))
+        gcol <- find_col(c("category", "response", "level", "cat"))
+        
+        # If required columns are not found, print an empty plot instead of spinning forever
+        if (any(is.na(c(vcol, ycol, ccol, gcol)))) {
+          p <- ggplot2::ggplot() +
+            ggplot2::theme_void() +
+            ggplot2::annotate(
+              "text",
+              x = 0,
+              y = 0,
+              label = "Profile plot data could not be extracted from tidySEM::plot_prob().",
+              size = 4
+            )
+          print(p)
+          return(TRUE)
+        }
+        
+        # Prepare data for the profile plot
+        d2 <- data.frame(
+          Variable = as.character(d[[vcol]]),
+          Value    = suppressWarnings(as.numeric(d[[ycol]])),
+          Class    = as.factor(d[[ccol]]),
+          Category = as.factor(d[[gcol]]),
+          stringsAsFactors = FALSE
+        )
+        
+        d2 <- d2[is.finite(d2$Value), , drop = FALSE]
+        
+        if (nrow(d2) == 0) {
+          p <- ggplot2::ggplot() +
+            ggplot2::theme_void() +
+            ggplot2::annotate(
+              "text",
+              x = 0,
+              y = 0,
+              label = "No valid probability values were available for the profile plot.",
+              size = 4
+            )
+          print(p)
+          return(TRUE)
+        }
+        
+        # Preserve the original variable order
+        d2$Variable <- factor(d2$Variable, levels = unique(d2$Variable))
+        
+        # Create facet labels such as Pr(1), Pr(2), ...
+        d2$Facet <- paste0("Pr(", as.character(d2$Category), ")")
+        
+        p <- ggplot2::ggplot(
+          d2,
+          ggplot2::aes(
+            x = Variable,
+            y = Value,
+            colour = Class,
+            group = Class
+          )
+        ) +
+          ggplot2::geom_line(size = 0.8) +
+          ggplot2::geom_point(size = 2) +
+          ggplot2::facet_wrap(~ Facet, nrow = 1) +
+          ggplot2::scale_y_continuous(limits = c(0, 1)) +
+          ggplot2::labs(
+            x = "Variable",
+            y = "Value",
+            colour = "Class"
+          ) +
+          ggplot2::theme_bw() +
+          ggtheme +
+          ggplot2::theme(
+            panel.grid.minor = ggplot2::element_blank()
+          )
+        
+        if (self$options$angle2 > 0)
+          p <- p + ggplot2::theme(
+            axis.text.x = ggplot2::element_text(
+              angle = self$options$angle2,
+              hjust = 1
+            )
+          )
+        
+        print(p)
+        TRUE
       },
       
       .plotResidualHeatmap = function(image, ggtheme, theme, ...) {
