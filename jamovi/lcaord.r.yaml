@@ -142,6 +142,15 @@ items:
         - nc
         - miss
 
+    - name: post
+      title: Posterior probability
+      type: Output
+      measureType: continuous
+      clearWith:
+        - vars
+        - nc
+        - miss
+
     - name: plot1
       title: 'Bar plot'
       type: Image

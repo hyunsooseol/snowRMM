@@ -140,6 +140,8 @@ lcaordOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "profilePlot",
                 profilePlot,
                 default=FALSE)
+            private$..post <- jmvcore::OptionOutput$new(
+                "post")
 
             self$.addOption(private$..vars)
             self$.addOption(private$..nc)
@@ -162,6 +164,7 @@ lcaordOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..angle1)
             self$.addOption(private$..angle2)
             self$.addOption(private$..profilePlot)
+            self$.addOption(private$..post)
         }),
     active = list(
         vars = function() private$..vars$value,
@@ -184,7 +187,8 @@ lcaordOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         residualHeatmap = function() private$..residualHeatmap$value,
         angle1 = function() private$..angle1$value,
         angle2 = function() private$..angle2$value,
-        profilePlot = function() private$..profilePlot$value),
+        profilePlot = function() private$..profilePlot$value,
+        post = function() private$..post$value),
     private = list(
         ..vars = NA,
         ..nc = NA,
@@ -206,7 +210,8 @@ lcaordOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..residualHeatmap = NA,
         ..angle1 = NA,
         ..angle2 = NA,
-        ..profilePlot = NA)
+        ..profilePlot = NA,
+        ..post = NA)
 )
 
 lcaordResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -222,6 +227,7 @@ lcaordResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         localDep = function() private$.items[["localDep"]],
         residualHeatmap = function() private$.items[["residualHeatmap"]],
         mem = function() private$.items[["mem"]],
+        post = function() private$.items[["post"]],
         plot1 = function() private$.items[["plot1"]],
         plot = function() private$.items[["plot"]],
         profilePlot = function() private$.items[["profilePlot"]],
@@ -380,6 +386,15 @@ lcaordResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 title="Class",
                 varTitle="Class",
                 measureType="nominal",
+                clearWith=list(
+                    "vars",
+                    "nc",
+                    "miss")))
+            self$add(jmvcore::Output$new(
+                options=options,
+                name="post",
+                title="Posterior probability",
+                measureType="continuous",
                 clearWith=list(
                     "vars",
                     "nc",
@@ -603,6 +618,7 @@ lcaordBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$localDep} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$residualHeatmap} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$mem} \tab \tab \tab \tab \tab an output \cr
+#'   \code{results$post} \tab \tab \tab \tab \tab an output \cr
 #'   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$profilePlot} \tab \tab \tab \tab \tab an image \cr

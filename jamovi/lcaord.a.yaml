@@ -139,5 +139,8 @@ options:
       type: Bool
       default: false
 
-      
+    - name: post
+      title: Posterior probability
+      type: Output
+
 ...

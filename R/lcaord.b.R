@@ -155,6 +155,7 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           fit  = private$.populateFitTable,
           cp   = private$.populateClassSizeTable,
           mem  = private$.populateClassMemberTable,
+          post = private$.populatePosteriorOutput,
           localDep = private$.populateLocalDepTable,
           use3step_means    = private$.populateThreeStepMeansTable,
           use3step_omnibus  = private$.populateThreeStepOmnibusTable,
@@ -327,6 +328,14 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly = TRUE))
             private$.populateClassMemberTable()
           }
           
+          # 77%: save posterior probabilities
+          if (isTRUE(self$options$post)) {
+            html <- progressBarH(77, 100, 'Saving posterior probabilities...')
+            self$results$progressBarHTML$setContent(html)
+            private$.checkpoint()
+            private$.populatePosteriorOutput()
+          }
+          
           # 80%: local dependence heatmap
           if (isTRUE(self$options$residualHeatmap)) {
             html <- progressBarH(80, 100, 'Generating residual heatmap...')
@@ -479,6 +488,51 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly = TRUE))
             table$setRowNums(seq_len(analyzed_n))
           }
           table$setValues(m)
+        }
+      },
+      
+      .populatePosteriorOutput = function() {
+        
+        if (!isTRUE(self$options$post))
+          return()
+        
+        if (is.null(private$.results_cache) ||
+            is.null(private$.results_cache$cp1))
+          return()
+        
+        post <- private$.getPosteriorMatrix(private$.results_cache$cp1)
+        
+        if (is.null(post) || nrow(post) == 0)
+          return()
+        
+        n_row <- NROW(private$.results_cache$data_all)
+        nc <- ncol(post)
+        
+        if (nrow(post) != n_row)
+          return()
+        
+        if (self$results$post$isNotFilled()) {
+          
+          keys <- seq_len(nc)
+          
+          self$results$post$set(
+            keys = keys,
+            titles = paste0("Pr(Class ", keys, ")"),
+            descriptions = paste0("Posterior probability for Class ", keys),
+            measureTypes = rep("continuous", nc)
+          )
+          
+          if (!is.null(rownames(private$.results_cache$data_all)) &&
+              length(rownames(private$.results_cache$data_all)) == n_row) {
+            self$results$post$setRowNums(rownames(private$.results_cache$data_all))
+          } else {
+            self$results$post$setRowNums(seq_len(n_row))
+          }
+          
+          for (i in seq_len(nc)) {
+            scores <- as.numeric(post[, i])
+            self$results$post$setValues(index = i, scores)
+          }
         }
       },
       

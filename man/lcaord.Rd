@@ -83,6 +83,7 @@ A results object containing:
   \code{results$localDep} \tab \tab \tab \tab \tab a table \cr
   \code{results$residualHeatmap} \tab \tab \tab \tab \tab an image \cr
   \code{results$mem} \tab \tab \tab \tab \tab an output \cr
+  \code{results$post} \tab \tab \tab \tab \tab an output \cr
   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
   \code{results$profilePlot} \tab \tab \tab \tab \tab an image \cr

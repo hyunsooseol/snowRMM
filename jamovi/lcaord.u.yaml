@@ -133,6 +133,8 @@ children:
             children:
               - type: Output
                 name: mem
+              - type: Output
+                name: post
 
   - type: CollapseBox
     label: 3-step and Class-wise regression
