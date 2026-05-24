@@ -56,7 +56,7 @@ analyses:
     ns: snowRMM
     menuGroup: snowRMM
     menuTitle: Basic LCA
-    menuSubgroup: LCA
+    menuSubgroup: Latent Models
     ribbon: analyses
     category: analyses
   - title: Ordinal LCA
@@ -64,7 +64,7 @@ analyses:
     ns: snowRMM
     menuGroup: snowRMM
     menuTitle: Ordinal LCA
-    menuSubgroup: LCA
+    menuSubgroup: Latent Models
     ribbon: analyses
     category: analyses
   - title: Latent Profile Analysis
@@ -72,7 +72,7 @@ analyses:
     ns: snowRMM
     menuGroup: snowRMM
     menuTitle: Latent Profile Analysis
-    menuSubgroup: LCA
+    menuSubgroup: Latent Models
     ribbon: analyses
     category: analyses
   - title: Latent Class Growth Modeling
@@ -80,7 +80,7 @@ analyses:
     ns: snowRMM
     menuGroup: snowRMM
     menuTitle: Latent Class Growth Modeling
-    menuSubgroup: LCA
+    menuSubgroup: Latent Models
     ribbon: analyses
     category: analyses
   - title: CTT Equating

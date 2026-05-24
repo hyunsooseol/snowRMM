@@ -2,7 +2,7 @@
 name:  lca
 title: Basic LCA
 menuGroup: snowRMM
-menuSubgroup: LCA
+menuSubgroup: Latent Models
 version: '1.0.0'
 jas: '1.2'
 

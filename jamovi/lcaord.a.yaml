@@ -2,6 +2,7 @@
 name:  lcaord
 title: Ordinal LCA
 menuGroup: snowRMM
+menuSubgroup: Latent Models
 version: '1.0.0'
 jas: '1.2'
 
