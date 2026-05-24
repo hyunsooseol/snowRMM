@@ -164,7 +164,7 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             super$initialize(
                 options=options,
                 name="",
-                title="Latent Class Analysis",
+                title="Basic LCA",
                 refs="snowRMM")
             self$add(jmvcore::Html$new(
                 options=options,
@@ -469,7 +469,7 @@ lcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 weightsSupport = 'none')
         }))
 
-#' Latent Class Analysis
+#' Basic LCA
 #'
 #' 
 #' @param data The data as a data frame.

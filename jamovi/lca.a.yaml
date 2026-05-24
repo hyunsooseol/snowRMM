@@ -1,6 +1,6 @@
 ---
 name:  lca
-title: Latent Class Analysis
+title: Basic LCA
 menuGroup: snowRMM
 menuSubgroup: LCA
 version: '1.0.0'

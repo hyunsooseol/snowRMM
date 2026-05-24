@@ -1,6 +1,6 @@
 ---
 name:  lcaord
-title: LCA with ordinal indicators
+title: Ordinal LCA
 menuGroup: snowRMM
 version: '1.0.0'
 jas: '1.2'

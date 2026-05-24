@@ -241,7 +241,7 @@ lcaordResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             super$initialize(
                 options=options,
                 name="",
-                title="LCA with ordinal indicators",
+                title="Ordinal LCA",
                 refs="snowRMM")
             self$add(jmvcore::Html$new(
                 options=options,
@@ -583,7 +583,7 @@ lcaordBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 weightsSupport = 'none')
         }))
 
-#' LCA with ordinal indicators
+#' Ordinal LCA
 #'
 #' 
 #' @param data .

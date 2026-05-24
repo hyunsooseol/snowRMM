@@ -36,7 +36,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
             '<div style="border: 2px solid #e6f4fe; border-radius: 15px; padding: 15px; background-color: #e6f4fe; margin-top: 10px;">',
             '<div style="text-align:justify;">',
             '<ul>',
-            '<li>Latent Class Analysis based on <b>poLCA(Linzer & Lewis, 2022)</b> R package.</li>',
+            '<li>Basic LCA based on <b>poLCA(Linzer & Lewis, 2022)</b> R package.</li>',
             '<li>Variables must contain integer values, and must be coded with consecutive values from <b>1</b> to the maximum number.</li>',
             '<li><b> Membership table</b> will be shown in the datasheet.</li>',
             '<li>Feature requests and bug reports can be made on my <a href="https://github.com/hyunsooseol/snowRMM/issues" target="_blank">GitHub</a>.</li>',

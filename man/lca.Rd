@@ -2,7 +2,7 @@
 % Please edit documentation in R/lca.h.R
 \name{lca}
 \alias{lca}
-\title{Latent Class Analysis}
+\title{Basic LCA}
 \usage{
 lca(
   data,
@@ -79,5 +79,5 @@ Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.f
 \code{as.data.frame(results$coef)}
 }
 \description{
-Latent Class Analysis
+Basic LCA
 }

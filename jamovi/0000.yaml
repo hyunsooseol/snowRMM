@@ -51,19 +51,19 @@ analyses:
     menuSubgroup: Rasch
     ribbon: analyses
     category: analyses
-  - title: Latent Class Analysis
+  - title: Basic LCA
     name: lca
     ns: snowRMM
     menuGroup: snowRMM
-    menuTitle: Latent Class Analysis
+    menuTitle: Basic LCA
     menuSubgroup: LCA
     ribbon: analyses
     category: analyses
-  - title: LCA with ordinal indicators
+  - title: Ordinal LCA
     name: lcaord
     ns: snowRMM
     menuGroup: snowRMM
-    menuTitle: LCA with ordinal indicators
+    menuTitle: Ordinal LCA
     menuSubgroup: LCA
     ribbon: analyses
     category: analyses
@@ -144,22 +144,22 @@ datasets:
     path: alzheimer.omv
     description: Alzheimer data
     tags:
-      - LCA
+      - Basic LCA
   - name: cheating
     path: cheating.omv
     description: LCA with covariates
     tags:
-      - LCA
+      - Basic LCA
   - name: ordinal
     path: ordinal.omv
     description: LCA with ordinal data
     tags:
-      - LCA Ordianl Data
+      - Ordinal LCA
   - name: ordinal
     path: lcaord3.omv
     description: LCA with ordinal data
     tags:
-      - Ordinal data with 3-step
+      - Ordinal LCA with 3-step
   - name: iris
     path: iris.omv
     description: Latent profile analysis
