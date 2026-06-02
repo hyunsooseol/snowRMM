@@ -8,9 +8,12 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
       
       res = function() {
         if (is.null(private$.res_cache)) {
-          data <- self$data
-          if (self$options$miss == 'listwise')
-            data <- jmvcore::naOmit(data)
+          
+          data <- private$.getModelData()
+          
+          if (is.null(data))
+            return(NULL)
+          
           private$.res_cache <- tidySEM::mx_growth_mixture(
             model      = self$options$model,
             data       = as.data.frame(data),
@@ -18,19 +21,23 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
             thresholds = self$options$thr
           )
         }
+        
         private$.res_cache
       },
       
       desc = function() {
         if (is.null(private$.desc_cache)) {
-          data <- self$data
           
-          if (self$options$miss == "listwise")
-            data <- jmvcore::naOmit(data)
+          data <- private$.getModelData()
+          
+          if (is.null(data))
+            return(NULL)
           
           private$.desc_cache <- tidySEM::descriptives(data)[,
-                                                             c("name","n","missing","mean","median","sd","min","max")]
+                                                             c("name", "n", "missing", "mean", "median", "sd", "min", "max")
+          ]
         }
+        
         private$.desc_cache
       },
       
@@ -96,6 +103,32 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
   
   try(self$results$instructions$setContent(txt), silent = TRUE)
   invisible(TRUE)
+},
+
+.getModelData = function() {
+  vars <- self$options$vars
+  
+  if (is.null(vars) || length(vars) < 1)
+    return(NULL)
+  
+  dat0 <- as.data.frame(self$data)
+  
+  if (!all(vars %in% names(dat0)))
+    return(NULL)
+  
+  source_rows <- seq_len(nrow(dat0))
+  
+  dat <- dat0[, vars, drop = FALSE]
+  
+  if (self$options$miss == "listwise") {
+    keep <- stats::complete.cases(dat)
+    dat <- dat[keep, , drop = FALSE]
+    source_rows <- source_rows[keep]
+  }
+  
+  attr(dat, "source_rows") <- source_rows
+  
+  dat
 },
       
 .clearThreeStepTables = function() {
@@ -201,9 +234,16 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         if (!is.null(private$.plot1_cache))
           return(private$.plot1_cache)
         
-        df   <- as.data.frame(self$data)
+        # df   <- as.data.frame(self$data)
+        # vars <- self$options$vars
+        df <- private$.getModelData()
+        
+        if (is.null(df))
+          return(NULL)
+        
         vars <- self$options$vars
         
+                
         if (is.null(vars) || length(vars) < 1)
           return(NULL)
         
@@ -231,18 +271,37 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         private$.plot1_cache
       },
       
-      .computeThreeStep = function() {
-        auxName <- self$options$auxVar
-        if (is.null(auxName) || !nzchar(auxName))
-          return(NULL)
+        .computeThreeStep = function() {
+          auxName <- self$options$auxVar
+          
+          if (is.null(auxName) || !nzchar(auxName))
+            return(NULL)
+          
+          dat0 <- as.data.frame(self$data)
+          
+          if (!(auxName %in% names(dat0)))
+            return(list(msg = sprintf("[3-step] '%s' not found in data.", auxName)))
+          
+          modelData <- private$.getModelData()
+          
+          if (is.null(modelData))
+            return(list(msg = "[3-step] model data could not be prepared."))
+          
+          source_rows <- attr(modelData, "source_rows")
+          
+          if (is.null(source_rows))
+            return(list(msg = "[3-step] source row information not found."))
+          
+          ind <- self$classProbabilities$individual
+          
+          if (NROW(ind) != length(source_rows))
+            return(list(msg = "[3-step] data/posterior row mismatch after listwise deletion."))
+          
+          yraw <- dat0[[auxName]][source_rows]        
+      
         
-        dat <- as.data.frame(self$data)
-        if (!(auxName %in% names(dat)))
-          return(list(msg = sprintf("[3-step] '%s' not found in data.", auxName)))
-        
-        ind <- self$classProbabilities$individual
-        
-        .findPosteriorCols <- function(nms) {
+                
+    .findPosteriorCols <- function(nms) {
           pats <- c(
             "^Class[_\\.]?[0-9]+$", "^class[_\\.]?[0-9]+$",
             "^C[0-9]+$", "^c[0-9]+$", "^p[0-9]+$", "^P[0-9]+$",
@@ -268,10 +327,11 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         K <- length(pcols)
         cls_levels <- seq_len(K)
         
-        yraw <- dat[[auxName]]
         n <- NROW(yraw)
+        
         if (n != NROW(ind))
-          return(list(msg = "[3-step] data/posterior row mismatch."))
+          return(list(msg = "[3-step] distal variable and posterior rows do not match."))
+        
         
         notes <- character(0)
         is_cat_like <- function(x) {
@@ -659,14 +719,25 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
       }
     },
       
-      .populateClassMemberTable = function() {
-        table <- self$results$mem
-        mem   <- self$classProbabilities$individual
-        if (table$isNotFilled()) {
-          table$setRowNums(rownames(self$data))
-          table$setValues(as.factor(mem$predicted))
-        }
-      },
+    .populateClassMemberTable = function() {
+      table <- self$results$mem
+      mem   <- self$classProbabilities$individual
+      
+      modelData <- private$.getModelData()
+      
+      if (is.null(modelData))
+        return()
+      
+      source_rows <- attr(modelData, "source_rows")
+      
+      if (is.null(source_rows))
+        source_rows <- seq_len(nrow(modelData))
+      
+      if (table$isNotFilled()) {
+        table$setRowNums(source_rows)
+        table$setValues(as.factor(mem$predicted))
+      }
+    },
       
       .setPlot2 = function() {
         cpdf <- as.data.frame(self$classProbabilities$summary)
@@ -693,29 +764,81 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         self$results$plot$setState(self$res)
       },
       
-      .plot2 = function(image, ggtheme, theme, ...) {
-        if (is.null(image$state)) return(FALSE)
-        plot_data <- image$state
-        p <- ggplot(plot_data, aes(x = Class, y = Count, fill = Class)) +
-          geom_bar(stat = "identity", alpha = 0.8, color = "white", size = 0.5) +
-          geom_text(aes(label = paste0("n = ", Count, "\n(", Percentage, "%)")),
-                    vjust = -0.5, size = 3.5, fontface = "bold", color = "black") +
-          scale_fill_brewer(type = "qual", palette = "Set3") +
-          labs(title = "", x = "Latent Class", y = "Number of Participants") +
-          theme_minimal() +
-          theme(
-            plot.title = element_text(hjust = 0.5, size = 13, face = "bold", margin = margin(b = 20)),
-            axis.text.x = element_text(size = 11),
-            axis.text.y = element_text(size = 10),
-            axis.title = element_text(size = 11, face = "bold"),
-            legend.position = "none",
-            panel.grid.minor.y = element_blank(),
-            panel.grid.major.x = element_blank(),
-            plot.margin = margin(10, 10, 10, 10)
-          ) +
-          scale_y_continuous(expand = expansion(mult = c(0, 0.15)))
-        print(p + ggtheme); TRUE
-      },
+.plot2 = function(image, ggtheme, theme, ...) {
+  if (is.null(image$state)) return(FALSE)
+  
+  plot_data <- image$state
+  
+  plot_data$Class <- factor(plot_data$Class, levels = sort(unique(plot_data$Class)))
+  
+  max_count <- max(plot_data$Count, na.rm = TRUE)
+  y_pad <- max(5, max_count * 0.08)
+  
+  # 큰 막대는 라벨을 막대 안쪽에 배치
+  # 작은 막대는 라벨을 막대 위쪽에 배치
+  plot_data$label_inside <- plot_data$Count > max_count * 0.20
+  
+  plot_data$label_y <- ifelse(
+    plot_data$label_inside,
+    plot_data$Count - y_pad,
+    plot_data$Count + y_pad
+  )
+  
+  plot_data$label_vjust <- ifelse(
+    plot_data$label_inside,
+    1,
+    0
+  )
+  
+  y_top <- max_count * 1.18
+  
+  p <- ggplot(plot_data, aes(x = Class, y = Count, fill = Class)) +
+    geom_bar(
+      stat = "identity",
+      alpha = 0.8,
+      color = "white",
+      size = 0.5
+    ) +
+    geom_text(
+      aes(
+        y = label_y,
+        label = paste0("n = ", Count, "\n(", Percentage, "%)"),
+        vjust = label_vjust
+      ),
+      size = 3.5,
+      fontface = "bold",
+      color = "black"
+    ) +
+    scale_fill_brewer(type = "qual", palette = "Set3") +
+    labs(
+      title = "",
+      x = "Latent Class",
+      y = "Number of Participants"
+    ) +
+    coord_cartesian(
+      ylim = c(0, y_top),
+      clip = "off"
+    ) +
+    theme_minimal() +
+    theme(
+      axis.text.x = element_text(size = 11),
+      axis.text.y = element_text(size = 10),
+      axis.title = element_text(size = 11, face = "bold"),
+      legend.position = "right",
+      panel.grid.minor.y = element_blank(),
+      panel.grid.major.x = element_blank(),
+      plot.margin = margin(25, 25, 25, 25)
+    )
+  
+  print(
+    p + ggtheme +
+      theme(
+        plot.margin = margin(25, 25, 25, 25)
+      )
+  )
+  
+  TRUE
+},
       
       .plot1 = function(image, ggtheme, theme, ...) {
         if (is.null(image$state)) return(FALSE)
