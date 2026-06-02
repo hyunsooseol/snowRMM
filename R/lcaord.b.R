@@ -179,10 +179,11 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         if (is.null(self$options$vars) || length(self$options$vars) < 3)
           return()
         
-        # Show progress bar
+        # Show progress spinner
         self$results$progressBarHTML$setVisible(TRUE)
-        html <- progressBarH(5,  100, 'Initializing analysis...')
-        self$results$progressBarHTML$setContent(html)
+        self$results$progressBarHTML$setContent(
+          progressSpinnerH('Setting up ordinal LCA...')
+        )
         private$.checkpoint()
         
         # --- Separate full data and indicator data (with cached loading of needed variables) ---
@@ -234,42 +235,28 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           
           set.seed(1234)
           private$.barplot_cache <- NULL
-          
-          # 15%: model fitting
-          html <- progressBarH(15, 100, 'Performing LCA model...')
-          self$results$progressBarHTML$setContent(html)
+
+          # 25%: descriptives
+          self$results$progressBarHTML$setContent(
+            progressSpinnerH('Performing Ordinal LCA model...')
+          )
           private$.checkpoint()
+          
+                    
           res  <- self$res
           desc <- self$desc
           
-          # 25%: descriptives
-          html <- progressBarH(25, 100, 'Computing descriptives...')
-          self$results$progressBarHTML$setContent(html)
-          private$.checkpoint()
+        
           fit <- tidySEM::table_fit(res)
-          
-          # 35%: class probabilities
-          html <- progressBarH(35, 100, 'Computing class probabilities...')
-          self$results$progressBarHTML$setContent(html)
-          private$.checkpoint()
+
           cp1 <- tidySEM::class_prob(res)
           cp  <- data.frame(cp1$sum.posterior)
           
+          self$results$progressBarHTML$setContent(
+            progressSpinnerH('Preparing results...')
+          )
+          private$.checkpoint()
           
-          # private$.results_cache <- list(
-          #   data_all = data_all,   # Full data used for auxiliary analyses and formulas
-          #   data_ind = data_ind,   # Indicator data used for ordinal LCA
-          #   res  = res,
-          #   desc = desc,
-          #   fit  = fit,
-          #   cp   = cp,
-          #   cp1  = cp1,
-          #   three_step_means    = private$.emptyThreeMeansRows(),
-          #   three_step_omnibus  = private$.emptyThreeOmnibusRows(),
-          #   three_step_pairwise = private$.emptyThreePairwiseRows(),
-          #   reg_tests = private$.emptyInferentialRows(),
-          #   missing_aux_cols = missing_cols  # Columns referenced in auxVar/formula but not found in data
-          # )
           private$.results_cache <- list(
             data_all = data_all,
             data_ind = data_ind,
@@ -289,92 +276,62 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly = TRUE))
                     
           # 45%: populate desc
           if (isTRUE(self$options$desc)) {
-            html <- progressBarH(45, 100, 'Populating descriptives table...')
-            self$results$progressBarHTML$setContent(html)
-            private$.checkpoint()
+            
             private$.populateDescTable()
           }
           
           # 55%: populate fit
           if (isTRUE(self$options$fit)) {
-            html <- progressBarH(55, 100, 'Populating fit table...')
-            self$results$progressBarHTML$setContent(html)
-            private$.checkpoint()
+
             private$.populateFitTable()
           }
           
           # 65%: populate class size
           if (isTRUE(self$options$cp)) {
-            html <- progressBarH(65, 100, 'Populating class size table...')
-            self$results$progressBarHTML$setContent(html)
-            private$.checkpoint()
             private$.populateClassSizeTable()
           }
           
           # 70%: populate local dependence diagnostics
           if (isTRUE(self$options$localDep)) {
-            html <- progressBarH(70, 100, 'Populating local dependence diagnostics...')
-            self$results$progressBarHTML$setContent(html)
-            private$.checkpoint()
+
             private$.populateLocalDepTable()
           }
           
           
           # 75%: populate class member
           if (isTRUE(self$options$mem)) {
-            html <- progressBarH(75, 100, 'Populating class members table...')
-            self$results$progressBarHTML$setContent(html)
-            private$.checkpoint()
             private$.populateClassMemberTable()
           }
           
           # 77%: save posterior probabilities
           if (isTRUE(self$options$post)) {
-            html <- progressBarH(77, 100, 'Saving posterior probabilities...')
-            self$results$progressBarHTML$setContent(html)
-            private$.checkpoint()
             private$.populatePosteriorOutput()
           }
           
           # 80%: local dependence heatmap
           if (isTRUE(self$options$residualHeatmap)) {
-            html <- progressBarH(80, 100, 'Generating residual heatmap...')
-            self$results$progressBarHTML$setContent(html)
-            private$.checkpoint()
             private$.setResidualHeatmap()
           }
 
           # 85%: plot response probabilities
           if (isTRUE(self$options$plot)) {
-            html <- progressBarH(85, 100, 'Generating response probability plot...')
-            self$results$progressBarHTML$setContent(html)
-            private$.checkpoint()
             private$.setResponseProbPlot()
           }
           
           # 90%: profile plot
           if (isTRUE(self$options$profilePlot)) {
-            html <- progressBarH(90, 100, 'Generating profile plot...')
-            self$results$progressBarHTML$setContent(html)
-            private$.checkpoint()
             private$.setProfilePlot()
           }
           
           
           # 95%: plot bar
           if (isTRUE(self$options$plot1)) {
-            html <- progressBarH(95,100,'Generating bar plot...')
-            self$results$progressBarHTML$setContent(html)
-            private$.checkpoint()
             private$.setBarPlot()
           }
           
           # ===================== 96%: 3-step result tables =====================
           if (isTRUE(self$options$use3step)) {
-            html <- progressBarH(96, 100, 'Running 3-step analysis (BCH/DCAT)...')
-            self$results$progressBarHTML$setContent(html)
-            private$.checkpoint()
-            
+           
             dat <- private$.results_cache$data_all
             
             # (A) Distal BCH/DCAT tables
@@ -404,11 +361,7 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         
         
         # 100%: complete and hide
-        html <- progressBarH(100,100,'Analysis complete!')
-        self$results$progressBarHTML$setContent(html)
-        private$.checkpoint()
         self$results$progressBarHTML$setVisible(FALSE)
-        
         private$.registerCallbacks()
       },
       
@@ -1388,21 +1341,30 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly = TRUE))
   )
 
 # Progress Bar HTML  (R/progressBarH.R)
-progressBarH <- function(progress=0, total=100, message='') {
-  percentage <- round(progress/total*100)
-  width      <- 400 * percentage/100
-  html <- paste0(
-    '<div style="text-align:center;padding:20px;">',
-    '<div style="width:400px;height:20px;border:1px solid #ccc;',
-    'background-color:#f8f9fa;margin:0 auto;border-radius:4px;">',
-    '<div style="width:', width, 'px;height:18px;',
-    'background-color:#999999;border-radius:3px;',
-    'transition:width 0.3s ease;"></div>',
+progressSpinnerH <- function(message = '') {
+  paste0(
+    '<div style="text-align:center;padding:24px;">',
+    '<style>',
+    '@keyframes snowsoftDotPulse {',
+    '0%, 80%, 100% { transform: scale(0.7); opacity: 0.35; }',
+    '40% { transform: scale(1.15); opacity: 1; }',
+    '}',
+    '.snowsoft-dot {',
+    'display:inline-block;width:10px;height:10px;margin:0 4px;',
+    'background-color:#3498db;border-radius:50%;',
+    'animation:snowsoftDotPulse 1.2s infinite ease-in-out;',
+    '}',
+    '.snowsoft-dot:nth-child(2) { animation-delay: 0.15s; }',
+    '.snowsoft-dot:nth-child(3) { animation-delay: 0.30s; }',
+    '</style>',
+    '<div style="margin-bottom:10px;">',
+    '<span class="snowsoft-dot"></span>',
+    '<span class="snowsoft-dot"></span>',
+    '<span class="snowsoft-dot"></span>',
     '</div>',
-    '<div style="margin-top:8px;font-size:12px;color:#666;">',
-    message, ' (', percentage, '%)',
+    '<div style="font-size:12px;color:#666;">',
+    message,
     '</div>',
     '</div>'
   )
-  return(html)
 }
