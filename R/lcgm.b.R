@@ -564,82 +564,56 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         if (is.null(self$options$vars) || length(self$options$vars) < 3)
           return()
         
+        
+        # Progress bar 시작
         self$results$progressBarHTML$setVisible(TRUE)
-        html <- progressBarH(5, 100, 'Starting analysis...')
-        self$results$progressBarHTML$setContent(html)
+        self$results$progressBarHTML$setContent(
+          progressSpinnerH('Performing LCGM analysis...')
+        )
         private$.checkpoint()
         
         set.seed(1234)
         private$.plot1_cache <- NULL
         
         if (isTRUE(self$options$desc)) {
-          html <- progressBarH(15, 100, 'Computing descriptives...')
-          self$results$progressBarHTML$setContent(html)
-          private$.checkpoint()
           private$.populateDescTable()
         }
         
         if (isTRUE(self$options$fit)) {
-          html <- progressBarH(30, 100, 'Calculating fit statistics...')
-          self$results$progressBarHTML$setContent(html)
-          private$.checkpoint()
           private$.populateFitTable()
         }
         
         if (isTRUE(self$options$est)) {
-          html <- progressBarH(45, 100, 'Extracting parameter estimates...')
-          self$results$progressBarHTML$setContent(html)
-          private$.checkpoint()
           private$.populateEST()
         }
         
         if (isTRUE(self$options$cp)) {
-          html <- progressBarH(60, 100, 'Computing class probabilities...')
-          self$results$progressBarHTML$setContent(html)
-          private$.checkpoint()
           private$.populateClassSizeTable()
         }
         
         if (isTRUE(self$options$mem)) {
-          html <- progressBarH(70, 100, 'Listing class members...')
-          self$results$progressBarHTML$setContent(html)
-          private$.checkpoint()
           private$.populateClassMemberTable()
         }
         
         if (isTRUE(self$options$plot2)) {
-          html <- progressBarH(80, 100, 'Creating class size plot...')
-          self$results$progressBarHTML$setContent(html)
-          private$.checkpoint()
           private$.setPlot2()
         }
         
         if (isTRUE(self$options$plot1)) {
-          html <- progressBarH(88, 100, 'Preparing density plot...')
-          self$results$progressBarHTML$setContent(html)
-          private$.checkpoint()
           private$.setPlot1()
         }
         
         if (isTRUE(self$options$plot)) {
-          html <- progressBarH(96, 100, 'Generating growth plot...')
-          self$results$progressBarHTML$setContent(html)
-          private$.checkpoint()
           private$.setPlot()
         }
         
         if (isTRUE(self$options$use3step) && !is.null(self$options$auxVar) && nzchar(self$options$auxVar)) {
-          html <- progressBarH(98, 100, 'Running 3-step auxiliary (BCH/DCAT)...')
-          self$results$progressBarHTML$setContent(html)
-          private$.checkpoint()
-          
+
           res3 <- private$.computeThreeStep()
           private$.populateThreeStepTables(res3)
         }
         
-        html <- progressBarH(100, 100, 'Analysis complete!')
-        self$results$progressBarHTML$setContent(html)
-        private$.checkpoint()
+        # 100%: complete and hide
         self$results$progressBarHTML$setVisible(FALSE)
       },
       
@@ -768,23 +742,35 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
   )
 
 
-progressBarH <- function(progress = 0, total = 100, message = '') {
-  percentage <- round(progress / total * 100)
-  width      <- 400 * percentage / 100
-  
-  html <- paste0(
-    '<div style="text-align: center; padding: 20px;">',
-    '<div style="width: 400px; height: 20px; border: 1px solid #ccc;',
-    ' background-color: #f8f9fa; margin: 0 auto; border-radius: 4px;">',
-    '<div style="width: ', width, 'px; height: 18px;',
-    ' background-color: #999999; border-radius: 3px;',
-    ' transition: width 0.3s ease;"></div>',
+# Progress Bar HTML 함수
+progressSpinnerH <- function(message = '') {
+  paste0(
+    '<div style="text-align:center;padding:24px;">',
+    '<style>',
+    '@keyframes snowsoftDotPulse {',
+    '0%, 80%, 100% { transform: scale(0.7); opacity: 0.35; }',
+    '40% { transform: scale(1.15); opacity: 1; }',
+    '}',
+    '.snowsoft-dot {',
+    'display:inline-block;width:10px;height:10px;margin:0 4px;',
+    'background-color:#3498db;border-radius:50%;',
+    'animation:snowsoftDotPulse 1.2s infinite ease-in-out;',
+    '}',
+    '.snowsoft-dot:nth-child(2) { animation-delay: 0.15s; }',
+    '.snowsoft-dot:nth-child(3) { animation-delay: 0.30s; }',
+    '</style>',
+    '<div style="margin-bottom:10px;">',
+    '<span class="snowsoft-dot"></span>',
+    '<span class="snowsoft-dot"></span>',
+    '<span class="snowsoft-dot"></span>',
     '</div>',
-    '<div style="margin-top: 8px; font-size: 12px; color: #666;">',
-    message, ' (', percentage, '%)',
+    '<div style="font-size:12px;color:#666;">',
+    message,
     '</div>',
     '</div>'
   )
-  
-  return(html)
 }
+
+
+
+

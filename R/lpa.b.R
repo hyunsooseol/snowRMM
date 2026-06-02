@@ -435,7 +435,9 @@ lpaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         
         # Progress bar 시작
         self$results$progressBarHTML$setVisible(TRUE)
-        self$results$progressBarHTML$setContent(progressBarH(10, 100, 'Starting profile estimation...'))
+        self$results$progressBarHTML$setContent(
+        progressSpinnerH('Computing profile estimation...')
+        )
         private$.checkpoint()
         
         set.seed(1234)
@@ -443,11 +445,7 @@ lpaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         res <- NULL
         
         for (i in 1:nc) {
-          self$results$progressBarHTML$setContent(
-            progressBarH(10 + (i / nc) * 40, 100, paste('Computing model for', i, 'classes...'))
-          )
-          private$.checkpoint()
-          
+
           temp_res <- tidyLPA::estimate_profiles(
             datX,
             n_profiles = i,
@@ -478,21 +476,16 @@ lpaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           out <- if (is.null(out)) df else rbind(out, df)
         }
         
-        self$results$progressBarHTML$setContent(progressBarH(60, 100, 'Computing final profile model...'))
-        private$.checkpoint()
         #res <- tidyLPA::estimate_profiles(datX, nc, variances = variances, covariances = covariances)
         
         # Best fit 비교/요약
-        self$results$progressBarHTML$setContent(progressBarH(80, 100, 'Comparing model solutions...'))
-        private$.checkpoint()
         best <- tidyLPA::estimate_profiles(datX, n_profiles = 2:nc, models = c(1, 2, 3, 6))
         sol <- tidyLPA::compare_solutions(best)
         self$results$text$setContent(sol)
         bestfit <- as.data.frame(tidyLPA::get_fit(best))
         
-        # 완료
-        self$results$progressBarHTML$setContent(progressBarH(100, 100, 'Profile estimation complete!'))
-        private$.checkpoint()
+        
+        # 100%: complete and hide
         self$results$progressBarHTML$setVisible(FALSE)
         
         class_data <- tidyLPA::get_data(res)
@@ -652,20 +645,32 @@ lpaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
   )
 
 # Progress Bar HTML 함수
-progressBarH <- function(progress = 0, total = 100, message = '') {
-  percentage <- round(progress / total * 100)
-  width <- 400 * percentage / 100
-  
+progressSpinnerH <- function(message = '') {
   paste0(
-    '<div style="text-align: center; padding: 20px;">',
-    '<div style="width: 400px; height: 20px; border: 1px solid #ccc; ',
-    'background-color: #f8f9fa; margin: 0 auto; border-radius: 4px;">',
-    '<div style="width: ', width, 'px; height: 18px; ',
-    'background-color: #999999; border-radius: 3px; ',
-    'transition: width 0.3s ease;"></div>',
+    '<div style="text-align:center;padding:24px;">',
+    '<style>',
+    '@keyframes snowsoftDotPulse {',
+    '0%, 80%, 100% { transform: scale(0.7); opacity: 0.35; }',
+    '40% { transform: scale(1.15); opacity: 1; }',
+    '}',
+    '.snowsoft-dot {',
+    'display:inline-block;width:10px;height:10px;margin:0 4px;',
+    'background-color:#3498db;border-radius:50%;',
+    'animation:snowsoftDotPulse 1.2s infinite ease-in-out;',
+    '}',
+    '.snowsoft-dot:nth-child(2) { animation-delay: 0.15s; }',
+    '.snowsoft-dot:nth-child(3) { animation-delay: 0.30s; }',
+    '</style>',
+    '<div style="margin-bottom:10px;">',
+    '<span class="snowsoft-dot"></span>',
+    '<span class="snowsoft-dot"></span>',
+    '<span class="snowsoft-dot"></span>',
     '</div>',
-    '<div style="margin-top: 8px; font-size: 12px; color: #666;">',
-    message, ' (', percentage, '%)</div>',
+    '<div style="font-size:12px;color:#666;">',
+    message,
+    '</div>',
     '</div>'
   )
 }
+
+
