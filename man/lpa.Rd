@@ -7,7 +7,7 @@
 lpa(
   data,
   vars,
-  run,
+  run = FALSE,
   nc = 2,
   variances = "equal",
   covariances = "zero",

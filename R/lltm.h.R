@@ -7,7 +7,7 @@ lltmOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     public = list(
         initialize = function(
             vars = NULL,
-            run = NULL,
+            run = FALSE,
             mat = "1,0,1,1,1,0,1,0,1,0,1,1,1,1,1,0,0,0,1,1,0,1,0,1,1,  -0.5, 1,  1, -1,0",
             col = 3,
             items = TRUE,
@@ -644,7 +644,7 @@ lltmBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 lltm <- function(
     data,
     vars,
-    run,
+    run = FALSE,
     mat = "1,0,1,1,1,0,1,0,1,0,1,1,1,1,1,0,0,0,1,1,0,1,0,1,1,  -0.5, 1,  1, -1,0",
     col = 3,
     items = TRUE,

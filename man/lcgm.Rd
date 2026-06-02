@@ -10,7 +10,7 @@ lcgm(
   model = list(),
   nc = 2,
   thr = "FALSE",
-  run,
+  run = FALSE,
   fit = FALSE,
   est = FALSE,
   desc = TRUE,

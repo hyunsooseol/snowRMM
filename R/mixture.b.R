@@ -397,12 +397,13 @@ mixtureClass <- if (requireNamespace('jmvcore'))
           for (j in 1:nclass) {
             row[[paste0("pc", j)]] <- imeasure[i, j]
           }
-          table$addRow(rowKey = i, values = row)
+          table$addRow(rowKey = vars[i], values = row)
         }
         
         # Prepare Data For Item Plot -------
         image <- self$results$iplot
-        imeasure$item <- seq.int(nrow(imeasure))
+        #imeasure$item <- seq.int(nrow(imeasure))
+        imeasure$item <- vars
         n <- paste(1:self$options$nc, sep = '')
         colnames(imeasure) <- c(n, 'item')
         data <- tidyr::gather(data = imeasure, class, measure, -item)
@@ -430,7 +431,7 @@ mixtureClass <- if (requireNamespace('jmvcore'))
           for (j in 1:nclass) {
             row[[paste0("pc", j)]] <- ise[i, j]
           }
-          table$addRow(rowKey = i, values = row)
+          table$addRow(rowKey = vars[i], values = row)
         }
       },
       
@@ -455,7 +456,7 @@ mixtureClass <- if (requireNamespace('jmvcore'))
           for (j in 1:nclass) {
             row[[paste0("pc", j)]] <- imean[i, j]
           }
-          table$addRow(rowKey = i, values = row)
+          table$addRow(rowKey = vars[i], values = row)
         }
       },
       
@@ -480,7 +481,7 @@ mixtureClass <- if (requireNamespace('jmvcore'))
           for (j in 1:nclass) {
             row[[paste0("pc", j)]] <- infit[i, j]
           }
-          table$addRow(rowKey = i, values = row)
+          table$addRow(rowKey = vars[i], values = row)
         }
       },
       
@@ -505,7 +506,7 @@ mixtureClass <- if (requireNamespace('jmvcore'))
           for (j in 1:nclass) {
             row[[paste0("pc", j)]] <- outfit[i, j]
           }
-          table$addRow(rowKey = i, values = row)
+          table$addRow(rowKey = vars[i], values = row)
         }
       },
       
@@ -530,7 +531,7 @@ mixtureClass <- if (requireNamespace('jmvcore'))
           for (j in 1:nclass) {
             row[[paste0("pc", j)]] <- pbis[i, j]
           }
-          table$addRow(rowKey = i, values = row)
+          table$addRow(rowKey = vars[i], values = row)
         }
       },
       

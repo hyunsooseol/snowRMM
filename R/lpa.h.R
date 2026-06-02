@@ -7,7 +7,7 @@ lpaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     public = list(
         initialize = function(
             vars = NULL,
-            run = NULL,
+            run = FALSE,
             nc = 2,
             variances = "equal",
             covariances = "zero",
@@ -638,7 +638,7 @@ lpaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 lpa <- function(
     data,
     vars,
-    run,
+    run = FALSE,
     nc = 2,
     variances = "equal",
     covariances = "zero",

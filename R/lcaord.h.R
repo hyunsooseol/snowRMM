@@ -8,7 +8,7 @@ lcaordOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         initialize = function(
             vars = NULL,
             nc = 2,
-            run = NULL,
+            run = FALSE,
             desc = TRUE,
             fit = FALSE,
             cp = FALSE,
@@ -639,7 +639,7 @@ lcaord <- function(
     data,
     vars,
     nc = 2,
-    run,
+    run = FALSE,
     desc = TRUE,
     fit = FALSE,
     cp = FALSE,
