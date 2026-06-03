@@ -447,6 +447,7 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     inherit = jmvcore::Group,
     active = list(
         instructions = function() private$.items[["instructions"]],
+        progressBarHTML = function() private$.items[["progressBarHTML"]],
         items = function() private$.items[["items"]],
         mf = function() private$.items[["mf"]],
         thr = function() private$.items[["thr"]],
@@ -488,6 +489,11 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 name="instructions",
                 title="Instructions",
                 visible=TRUE))
+            self$add(jmvcore::Html$new(
+                options=options,
+                name="progressBarHTML",
+                title=" ",
+                visible=FALSE))
             self$add(jmvcore::Table$new(
                 options=options,
                 name="items",
@@ -1162,6 +1168,7 @@ raschBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
+#'   \code{results$progressBarHTML} \tab \tab \tab \tab \tab a html \cr
 #'   \code{results$items} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$mf$model} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$mf$rel} \tab \tab \tab \tab \tab a table \cr

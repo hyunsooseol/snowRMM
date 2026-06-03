@@ -625,10 +625,10 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           return()
         
         
-        # Progress bar 시작
+        # Progress bar -----------
         self$results$progressBarHTML$setVisible(TRUE)
         self$results$progressBarHTML$setContent(
-          progressSpinnerH('Performing LCGM analysis...')
+          appleSpinnerH('Performing LCGM analysis...')
         )
         private$.checkpoint()
         
@@ -865,35 +865,60 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
   )
 
 
-# Progress Bar HTML 함수
-progressSpinnerH <- function(message = '') {
+appleSpinnerH <- function(message = '') {
   paste0(
     '<div style="text-align:center;padding:24px;">',
+    
     '<style>',
-    '@keyframes snowsoftDotPulse {',
-    '0%, 80%, 100% { transform: scale(0.7); opacity: 0.35; }',
-    '40% { transform: scale(1.15); opacity: 1; }',
+    '@keyframes snowsoftAppleDotPulse {',
+    '0%, 80%, 100% { transform: scale(0.72); opacity: 0.55; }',
+    '40% { transform: scale(1.20); opacity: 1; }',
     '}',
-    '.snowsoft-dot {',
-    'display:inline-block;width:10px;height:10px;margin:0 4px;',
-    'background-color:#3498db;border-radius:50%;',
-    'animation:snowsoftDotPulse 1.2s infinite ease-in-out;',
-    '}',
-    '.snowsoft-dot:nth-child(2) { animation-delay: 0.15s; }',
-    '.snowsoft-dot:nth-child(3) { animation-delay: 0.30s; }',
     '</style>',
+    
     '<div style="margin-bottom:10px;">',
-    '<span class="snowsoft-dot"></span>',
-    '<span class="snowsoft-dot"></span>',
-    '<span class="snowsoft-dot"></span>',
+    
+    '<span style="',
+    'display:inline-block;',
+    'width:12px;',
+    'height:12px;',
+    'margin:0 5px;',
+    'border-radius:50%;',
+    'background:#007AFF;',
+    'animation:snowsoftAppleDotPulse 1.2s infinite ease-in-out;',
+    'vertical-align:middle;',
+    '"></span>',
+    
+    '<span style="',
+    'display:inline-block;',
+    'width:12px;',
+    'height:12px;',
+    'margin:0 5px;',
+    'border-radius:50%;',
+    'background:#34C759;',
+    'animation:snowsoftAppleDotPulse 1.2s infinite ease-in-out;',
+    'animation-delay:0.15s;',
+    'vertical-align:middle;',
+    '"></span>',
+    
+    '<span style="',
+    'display:inline-block;',
+    'width:12px;',
+    'height:12px;',
+    'margin:0 5px;',
+    'border-radius:50%;',
+    'background:#FF9500;',
+    'animation:snowsoftAppleDotPulse 1.2s infinite ease-in-out;',
+    'animation-delay:0.30s;',
+    'vertical-align:middle;',
+    '"></span>',
+    
     '</div>',
+    
     '<div style="font-size:12px;color:#666;">',
     message,
     '</div>',
+    
     '</div>'
   )
 }
-
-
-
-

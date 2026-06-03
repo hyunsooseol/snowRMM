@@ -86,6 +86,10 @@ raschClass <- if (requireNamespace('jmvcore'))
         }
         erm <- private$.ermCache
         
+        
+        # 100%: complete and hide
+        self$results$progressBarHTML$setVisible(FALSE)
+        
         # item statistics---------
         imean <- res$item.par$itemDescriptives
         imeasure <- res$item.par$delta.i
@@ -1024,6 +1028,14 @@ raschClass <- if (requireNamespace('jmvcore'))
       .computeRES = function(data = NULL) {
         if (is.null(data))
           data <- private$.cleanData()
+        
+        # Progress bar 시작
+        self$results$progressBarHTML$setVisible(TRUE)
+        self$results$progressBarHTML$setContent(
+          appleSpinnerH('Performing Rasch analysis...')
+        )
+        private$.checkpoint()
+        
         set.seed(1234)
         
         res <- mixRasch::mixRasch(
@@ -1060,3 +1072,63 @@ raschClass <- if (requireNamespace('jmvcore'))
       }
     )
   )
+
+
+# Progress Bar HTML 함수
+appleSpinnerH <- function(message = '') {
+  paste0(
+    '<div style="text-align:center;padding:24px;">',
+    
+    '<style>',
+    '@keyframes snowsoftAppleDotPulse {',
+    '0%, 80%, 100% { transform: scale(0.72); opacity: 0.55; }',
+    '40% { transform: scale(1.20); opacity: 1; }',
+    '}',
+    '</style>',
+    
+    '<div style="margin-bottom:10px;">',
+    
+    '<span style="',
+    'display:inline-block;',
+    'width:12px;',
+    'height:12px;',
+    'margin:0 5px;',
+    'border-radius:50%;',
+    'background:#007AFF;',
+    'animation:snowsoftAppleDotPulse 1.2s infinite ease-in-out;',
+    'vertical-align:middle;',
+    '"></span>',
+    
+    '<span style="',
+    'display:inline-block;',
+    'width:12px;',
+    'height:12px;',
+    'margin:0 5px;',
+    'border-radius:50%;',
+    'background:#34C759;',
+    'animation:snowsoftAppleDotPulse 1.2s infinite ease-in-out;',
+    'animation-delay:0.15s;',
+    'vertical-align:middle;',
+    '"></span>',
+    
+    '<span style="',
+    'display:inline-block;',
+    'width:12px;',
+    'height:12px;',
+    'margin:0 5px;',
+    'border-radius:50%;',
+    'background:#FF9500;',
+    'animation:snowsoftAppleDotPulse 1.2s infinite ease-in-out;',
+    'animation-delay:0.30s;',
+    'vertical-align:middle;',
+    '"></span>',
+    
+    '</div>',
+    
+    '<div style="font-size:12px;color:#666;">',
+    message,
+    '</div>',
+    
+    '</div>'
+  )
+}
