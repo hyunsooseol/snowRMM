@@ -466,7 +466,7 @@ lpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Table$new(
                 options=options,
                 name="lpa3_means",
-                title="3-step auxiliary: Class-by-category distribution",
+                title="3-step auxiliary: Category proportions by class",
                 visible="(use3step)",
                 refs="tidyLPA",
                 clearWith=list(
@@ -486,7 +486,7 @@ lpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         `type`="text"),
                     list(
                         `name`="value", 
-                        `title`="Value", 
+                        `title`="Proportion", 
                         `type`="number"))))
             self$add(jmvcore::Table$new(
                 options=options,
@@ -516,7 +516,8 @@ lpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     list(
                         `name`="p", 
                         `title`="p", 
-                        `type`="number"),
+                        `type`="number", 
+                        `format`="zto,pvalue"),
                     list(
                         `name`="V", 
                         `title`="V", 
@@ -549,15 +550,18 @@ lpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     list(
                         `name`="p", 
                         `title`="p", 
-                        `type`="number"),
+                        `type`="number", 
+                        `format`="zto,pvalue"),
                     list(
                         `name`="p_bh", 
                         `title`="p (BH)", 
-                        `type`="number"),
+                        `type`="number", 
+                        `format`="zto,pvalue"),
                     list(
                         `name`="p_bonf", 
                         `title`="p (Bonf.)", 
-                        `type`="number"),
+                        `type`="number", 
+                        `format`="zto,pvalue"),
                     list(
                         `name`="V", 
                         `title`="V", 

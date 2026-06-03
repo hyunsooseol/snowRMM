@@ -122,22 +122,39 @@ lpaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           #pc_data <- tidyLPA::get_data(all$res)
           pc_data <- all$class_data
           
+          # n_row <- nrow(self$data)
+          # not_na_idx <- which(stats::complete.cases(self$data[, self$options$vars, drop=FALSE]))
+          # pc_vec <- rep(NA, n_row)
+          # pc_vec[not_na_idx] <- as.factor(pc_data$Class)
+          # self$results$pc$setRowNums(rownames(self$data))
+          # self$results$pc$setValues(pc_vec)
           n_row <- nrow(self$data)
-          not_na_idx <- which(stats::complete.cases(self$data[, self$options$vars, drop=FALSE]))
+          analysis_rows <- all$analysis_rows
+          
           pc_vec <- rep(NA, n_row)
-          pc_vec[not_na_idx] <- as.factor(pc_data$Class)
+          pc_vec[analysis_rows] <- as.factor(pc_data$Class)
+          
           self$results$pc$setRowNums(rownames(self$data))
           self$results$pc$setValues(pc_vec)
-        }
+          
+          }
         
         if (isTRUE(self$options$plot)) {
           pc_data <- tidyLPA::get_data(all$res)
+          # n_row <- nrow(self$data)
+          # not_na_idx <- which(stats::complete.cases(self$data[, self$options$vars, drop=FALSE]))
+          # pc_vec <- rep(NA, n_row)
+          # pc_vec[not_na_idx] <- as.factor(pc_data$Class)
+          # self$results$plot$setState(pc_vec)
           n_row <- nrow(self$data)
-          not_na_idx <- which(stats::complete.cases(self$data[, self$options$vars, drop=FALSE]))
+          analysis_rows <- all$analysis_rows
+          
           pc_vec <- rep(NA, n_row)
-          pc_vec[not_na_idx] <- as.factor(pc_data$Class)
-          self$results$plot$setState(pc_vec)
-        }
+          pc_vec[analysis_rows] <- as.factor(pc_data$Class)
+          
+          self$results$plot$setState(pc_vec)        
+          
+          }
         
         # Posterior probabilities---
         if (isTRUE(self$options$post)) {
@@ -149,11 +166,17 @@ lpaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           if (length(post_cols) == 0) post_cols <- seq_len(min(K, ncol(post_data)))
           post_data <- post_data[, post_cols, drop = FALSE]
           
+          # n_row <- nrow(self$data)
+          # not_na_idx <- which(stats::complete.cases(self$data[, self$options$vars, drop=FALSE]))
+          # post_mat <- matrix(NA, nrow = n_row, ncol = ncol(post_data))
+          # post_mat[not_na_idx, ] <- as.matrix(post_data)
           n_row <- nrow(self$data)
-          not_na_idx <- which(stats::complete.cases(self$data[, self$options$vars, drop=FALSE]))
-          post_mat <- matrix(NA, nrow = n_row, ncol = ncol(post_data))
-          post_mat[not_na_idx, ] <- as.matrix(post_data)
+          analysis_rows <- all$analysis_rows
           
+          post_mat <- matrix(NA, nrow = n_row, ncol = ncol(post_data))
+          post_mat[analysis_rows, ] <- as.matrix(post_data)
+          
+                    
           if (self$results$post$isNotFilled()) {
             keys <- seq_len(ncol(post_data))
             self$results$post$set(
@@ -200,10 +223,21 @@ lpaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
               if (length(post_cols) == 0) post_cols <- seq_len(min(K, ncol(post_df)))
               P_core <- as.matrix(post_df[, post_cols, drop = FALSE])
               
-              not_na_idx <- which(stats::complete.cases(self$data[, self$options$vars, drop=FALSE]))
+              # not_na_idx <- which(stats::complete.cases(self$data[, self$options$vars, drop=FALSE]))
+              # P <- matrix(NA_real_, nrow(self$data), ncol(P_core))
+              # P[not_na_idx, ] <- P_core
+              # colnames(P) <- paste0("Class", seq_len(ncol(P)))
+              analysis_rows <- all$analysis_rows
+              
+              if (length(analysis_rows) != nrow(P_core)) {
+                jmvcore::reject("3-step analysis failed: posterior probabilities and analysis rows do not match.")
+              }
+              
               P <- matrix(NA_real_, nrow(self$data), ncol(P_core))
-              P[not_na_idx, ] <- P_core
+              P[analysis_rows, ] <- P_core
               colnames(P) <- paste0("Class", seq_len(ncol(P)))
+              
+              
               
               aux <- self$data[[aux_name]]
               if (is.character(aux))
@@ -315,6 +349,9 @@ lpaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
                 omnibus_table <- self$results$lpa3_omnibus
                 pairwise_table <- self$results$lpa3_pairwise
                 
+                if (!is.null(means_table))
+                  means_table$setTitle("3-step auxiliary: Class-by-category proportions")
+                
                 Lv <- levels(aux)
                 counts <- matrix(
                   0,
@@ -341,7 +378,8 @@ lpaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
                         values = list(
                           class = paste0("Class ", k),
                           category = colnames(counts)[j],
-                          value = as.numeric(counts[k, j])
+                          #value = as.numeric(counts[k, j])
+                          value = as.numeric(counts[k, j] / max(rowsum[k], .Machine$double.eps))
                         )
                       )
                       rk <- rk + 1
@@ -352,7 +390,8 @@ lpaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
                 colsum <- colSums(counts)
                 grand <- sum(rowsum)
                 E <- outer(rowsum, colsum) / grand
-                chi <- sum((counts - E)^2 / E)
+                #chi <- sum((counts - E)^2 / E)
+                chi <- sum((counts - E)^2 / pmax(E, .Machine$double.eps), na.rm = TRUE)
                 df <- (ncol(P) - 1) * (length(Lv) - 1)
                 pchi <- stats::pchisq(chi, df, lower.tail = FALSE)
                 V <- sqrt(chi / (grand * min(ncol(P) - 1, length(Lv) - 1)))
@@ -381,7 +420,8 @@ lpaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
                   cs <- colSums(sub)
                   g <- sum(rs)
                   Eab <- outer(rs, cs) / g
-                  chiab <- sum((sub - Eab)^2 / Eab)
+                  #chiab <- sum((sub - Eab)^2 / Eab)
+                  chiab <- sum((sub - Eab)^2 / pmax(Eab, .Machine$double.eps), na.rm = TRUE)
                   dfab <- length(Lv) - 1
                   pab <- stats::pchisq(chiab, dfab, lower.tail = FALSE)
                   Vab <- sqrt(chiab / (g * 1))
@@ -417,18 +457,31 @@ lpaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
       },
       
       .computeRES = function() {
-        # --- 지표만 추출, numeric만 허용 ---
+        
         vars <- self$options$vars
         if (is.null(vars) || length(vars) < 2)
           jmvcore::reject("Select at least two indicator variables.")
         
-        datX <- self$data[, vars, drop = FALSE]
-        non_num <- names(datX)[!vapply(datX, is.numeric, logical(1))]
+        # datX <- self$data[, vars, drop = FALSE]
+        # non_num <- names(datX)[!vapply(datX, is.numeric, logical(1))]
+        # if (length(non_num) > 0)
+        #   jmvcore::reject(paste0("Indicators must be numeric only. Non-numeric: ",
+        #                          paste(non_num, collapse = ", ")))
+        # datX <- jmvcore::naOmit(datX)
+        datX0 <- self$data[, vars, drop = FALSE]
+        
+        non_num <- names(datX0)[!vapply(datX0, is.numeric, logical(1))]
         if (length(non_num) > 0)
           jmvcore::reject(paste0("Indicators must be numeric only. Non-numeric: ",
                                  paste(non_num, collapse = ", ")))
-        datX <- jmvcore::naOmit(datX)
         
+        analysis_rows <- which(stats::complete.cases(datX0))
+        datX <- datX0[analysis_rows, , drop = FALSE]
+        
+        if (nrow(datX) < 2)
+          jmvcore::reject("Too few complete cases for the selected indicator variables.")
+        
+                
         nc <- if (!is.null(self$options$nc)) self$options$nc else if (!is.null(self$options$nclass)) self$options$nclass else 2
         variances <- self$options$variances
         covariances <- self$options$covariances
@@ -496,25 +549,89 @@ lpaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           bestfit = bestfit,
           elbow_data = out,
           class_data = class_data,
-          post_data = post_data
-        )
+          post_data = post_data,
+          analysis_rows = analysis_rows
+        )        
+
       },
       
       # ----- Plotters -----
       .plot = function(image, ggtheme, theme, ...) {
         if (is.null(image$state))
           return(FALSE)
+        
         Class <- image$state
+        Class <- Class[!is.na(Class)]
+        
+        if (length(Class) == 0)
+          return(FALSE)
+        
         freq_table <- as.data.frame(table(Class))
+        names(freq_table) <- c("Class", "Freq")
+        
         freq_table$Percentage <- (freq_table$Freq / sum(freq_table$Freq)) * 100
         freq_table$Label <- sprintf("%d (%.1f%%)", freq_table$Freq, freq_table$Percentage)
+        
+        max_freq <- max(freq_table$Freq, na.rm = TRUE)
+        y_pad <- max(3, max_freq * 0.08)
+        
+        # 큰 막대는 라벨을 막대 안쪽에 배치
+        # 작은 막대는 라벨을 막대 위쪽에 배치
+        freq_table$label_inside <- freq_table$Freq > max_freq * 0.20
+        
+        freq_table$label_y <- ifelse(
+          freq_table$label_inside,
+          freq_table$Freq - y_pad,
+          freq_table$Freq + y_pad
+        )
+        
+        freq_table$label_vjust <- ifelse(
+          freq_table$label_inside,
+          1,
+          0
+        )
+        
+        y_top <- max(
+          max_freq * 1.18,
+          max(freq_table$label_y, na.rm = TRUE) + y_pad
+        )
+        
         plot <- ggplot(freq_table, aes(x = Class, y = Freq)) +
-          geom_bar(stat = "identity", fill = "deepskyblue") +
-          geom_text(aes(label = Label, vjust = -0.5)) +
-          labs(title = "", x = "Class", y = "Frequency") +
-          theme_minimal()
-        plot <- plot + ggtheme
-        print(plot)
+          geom_bar(
+            stat = "identity",
+            fill = "deepskyblue"
+          ) +
+          geom_text(
+            aes(
+              y = label_y,
+              label = Label,
+              vjust = label_vjust
+            ),
+            size = 3.5
+          ) +
+          labs(
+            title = "",
+            x = "Class",
+            y = "Frequency"
+          ) +
+          coord_cartesian(
+            ylim = c(0, y_top),
+            clip = "off"
+          ) +
+          theme_minimal() +
+          theme(
+            panel.grid.minor.y = element_blank(),
+            panel.grid.major.x = element_blank(),
+            plot.margin = margin(25, 25, 25, 25)
+          )
+        
+        print(
+          plot + ggtheme +
+            theme(
+              plot.margin = margin(25, 25, 25, 25)
+            )
+        )
+        
         TRUE
       },
       

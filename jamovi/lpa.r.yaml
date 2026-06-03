@@ -229,7 +229,7 @@ items:
         - angle
 
     - name: lpa3_means
-      title: '3-step auxiliary: Class-by-category distribution'
+      title: '3-step auxiliary: Category proportions by class'
       type: Table
       visible: (use3step)
       refs: tidyLPA
@@ -247,7 +247,7 @@ items:
           title: Category
           type: text
         - name: value
-          title: Value
+          title: Proportion
           type: number
   
     - name: lpa3_omnibus
@@ -274,6 +274,7 @@ items:
         - name: p
           title: p
           type: number
+          format: zto,pvalue
         - name: V
           title: V
           type: number
@@ -302,12 +303,15 @@ items:
         - name: p
           title: p
           type: number
+          format: zto,pvalue
         - name: p_bh
           title: p (BH)
           type: number
+          format: zto,pvalue
         - name: p_bonf
           title: p (Bonf.)
           type: number
+          format: zto,pvalue
         - name: V
           title: V
           type: number
