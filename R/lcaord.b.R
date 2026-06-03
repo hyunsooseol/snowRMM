@@ -10,22 +10,44 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly = TRUE))
     active = list(
       res = function() {
         if (is.null(private$.res_cache)) {
-          # --- Separate full data for auxiliary analyses and indicator data for the LCA model ---
-          data_all <- self$data
-          if (self$options$miss == 'listwise')
-            data_all <- jmvcore::naOmit(data_all)
-          data_all <- as.data.frame(data_all)
           
           ind_names <- self$options$vars
+          
           if (is.null(ind_names) || length(ind_names) < 3)
             stop("Select at least 3 ordinal indicators in 'Variables'.")
           
-          data_ind <- data_all[, ind_names, drop = FALSE]
+          data0 <- as.data.frame(self$data)
+          
+          if (!all(ind_names %in% names(data0))) {
+            missing_ind <- setdiff(ind_names, names(data0))
+            stop(sprintf(
+              "Indicators not found in data: %s",
+              paste(missing_ind, collapse = ", ")
+            ))
+          }
+          
+          # LCA model uses only indicator variables
+          data_ind <- data0[, ind_names, drop = FALSE]
+          
+          # Missing-value handling for the LCA model
+          # FIML: keep rows as they are
+          # Listwise: remove rows with missing values in indicator variables only
+          if (self$options$miss == "listwise") {
+            keep <- stats::complete.cases(data_ind)
+            data_ind <- data_ind[keep, , drop = FALSE]
+          }
+          
+          if (nrow(data_ind) < 2)
+            stop("Too few complete cases for the selected ordinal indicators.")
           
           # mx_lca requirement: all indicators must be binary or ordered factors
           data_ind[] <- lapply(data_ind, function(x) {
-            if (is.ordered(x)) return(x)
-            if (is.factor(x))  return(ordered(x))
+            if (is.ordered(x))
+              return(x)
+            
+            if (is.factor(x))
+              return(ordered(x))
+            
             stop("All indicators must be ordinal (binary or ordered factors).")
           })
           
@@ -34,21 +56,34 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly = TRUE))
             classes = self$options$nc
           )
         }
+        
         private$.res_cache
       },
       
       desc = function() {
         if (is.null(private$.desc_cache)) {
           
-          data_all <- self$data
-          
-          if (self$options$miss == 'listwise')
-            data_all <- jmvcore::naOmit(data_all)
-          
-          data_all <- as.data.frame(data_all)
-          
           ind_names <- self$options$vars
-          data_ind  <- data_all[, ind_names, drop = FALSE]
+          
+          if (is.null(ind_names) || length(ind_names) < 3)
+            return(NULL)
+          
+          data0 <- as.data.frame(self$data)
+          
+          if (!all(ind_names %in% names(data0))) {
+            missing_ind <- setdiff(ind_names, names(data0))
+            stop(sprintf(
+              "Indicators not found in data: %s",
+              paste(missing_ind, collapse = ", ")
+            ))
+          }
+          
+          data_ind <- data0[, ind_names, drop = FALSE]
+          
+          if (self$options$miss == "listwise") {
+            keep <- stats::complete.cases(data_ind)
+            data_ind <- data_ind[keep, , drop = FALSE]
+          }
           
           rows <- lapply(ind_names, function(v) {
             
@@ -216,19 +251,31 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         if (length(miss_ind) > 0)
           stop(sprintf("Indicators not found in data: %s", paste(miss_ind, collapse = ", ")))
         
-        # Subset only existing columns so jamovi loads those columns
-        data_all <- self$data[needed_present]
+        # # Subset only existing columns so jamovi loads those columns
+        # data_all <- self$data[needed_present]
+        # 
+        # # Missing-value handling / data.frame conversion
+        # if (self$options$miss == 'listwise')
+        #   data_all <- jmvcore::naOmit(data_all)
+        # data_all <- as.data.frame(data_all)
+
+        data0 <- as.data.frame(self$data[needed_present])
         
-        # Missing-value handling / data.frame conversion
-        if (self$options$miss == 'listwise')
-          data_all <- jmvcore::naOmit(data_all)
-        data_all <- as.data.frame(data_all)
+        data_ind0 <- data0[, ind_names, drop = FALSE]
         
-        # LCA indicator data (force ordinal when possible)
-        data_ind  <- data_all[, ind_names, drop = FALSE]
+        if (self$options$miss == "listwise") {
+          analysis_rows <- which(stats::complete.cases(data_ind0))
+        } else {
+          analysis_rows <- seq_len(nrow(data_ind0))
+        }
+        
+        data_all <- data0[analysis_rows, , drop = FALSE]
+        data_ind <- data_ind0[analysis_rows, , drop = FALSE]
+        
         data_ind[] <- lapply(data_ind, function(x) {
           if (is.ordered(x)) x else if (is.factor(x)) ordered(x) else x
         })
+        
         
         # Compute results once
         if (is.null(private$.results_cache)) {
@@ -260,6 +307,7 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           private$.results_cache <- list(
             data_all = data_all,
             data_ind = data_ind,
+            analysis_rows = analysis_rows,
             res  = res,
             desc = desc,
             fit  = fit,
@@ -272,7 +320,6 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly = TRUE))
             reg_tests = private$.emptyInferentialRows(),
             missing_aux_cols = missing_cols
           )
-          
                     
           # 45%: populate desc
           if (isTRUE(self$options$desc)) {
