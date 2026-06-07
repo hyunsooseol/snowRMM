@@ -247,7 +247,7 @@ items:
           title: Category
           type: text
         - name: value
-          title: Proportion
+          title: 'Value'
           type: number
   
     - name: lpa3_omnibus

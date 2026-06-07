@@ -248,67 +248,121 @@ lpaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
               # -------------------
               if (is.numeric(aux)) {
                 means_table <- self$results$lpa3_means
-                means_table$setTitle(if (is.numeric(aux)) "3-step auxiliary: Class-weighted means" else "3-step auxiliary: Class-by-category distribution")
                 omnibus_table <- self$results$lpa3_omnibus
                 pairwise_table <- self$results$lpa3_pairwise
                 
-                mu <- se <- Neff <- rep(NA_real_, ncol(P))
-                SSW <- 0
-                w_all_sum <- 0
-                y_w_sum <- 0
-                
-                for (k in seq_len(ncol(P))) {
-                  w <- P[,k]
-                  v <- aux
-                  ok <- (!is.na(w)) & (!is.na(v))
-                  if (sum(ok) > 0) {
-                    mu[k] <- stats::weighted.mean(v[ok], w[ok])
-                    Neff[k] <- (sum(w[ok])^2) / sum(w[ok]^2)
-                    s2 <- sum(w[ok] * (v[ok] - mu[k])^2) / sum(w[ok])
-                    se[k] <- sqrt(s2 / Neff[k])
-                    w_all_sum <- w_all_sum + sum(w[ok])
-                    y_w_sum <- y_w_sum + sum(w[ok] * v[ok])
-                    SSW <- SSW + sum(w[ok] * (v[ok] - mu[k])^2)
-                  }
-                }
-                
                 if (!is.null(means_table)) {
-                  for (k in seq_along(mu)) {
-                    means_table$addRow(
-                      rowKey = k,
-                      values = list(
-                        class = paste0("Class ", k),
-                        category = "Mean",
-                        value = as.numeric(mu[k])
-                      )
-                    )
-                  }
+                  means_table$setTitle("3-step auxiliary: Class-weighted distal summaries")
                 }
-                
-                mu_all <- y_w_sum / w_all_sum
-                SSB <- sum(Neff * (mu - mu_all)^2, na.rm = TRUE)
-                df1 <- ncol(P) - 1
-                df2 <- sum(Neff, na.rm = TRUE) - ncol(P)
-                Fval <- (SSB / df1) / (SSW / df2)
-                pF <- stats::pf(Fval, df1, df2, lower.tail = FALSE)
                 
                 if (!is.null(omnibus_table)) {
-                  omnibus_table$addRow(
-                    rowKey = 1,
-                    values = list(
-                      method = "BCH omnibus",
-                      statistic = as.numeric(Fval),
-                      df = as.numeric(df1),
-                      p = as.numeric(pF),
-                      V = NA_real_
-                    )
+                  omnibus_table$setTitle(
+                    "3-step auxiliary: Overall test (V applies to categorical distal outcomes only)"
                   )
                 }
+                
+                if (!is.null(pairwise_table)) {
+                  pairwise_table$setTitle(
+                    "3-step auxiliary: Pairwise comparisons (V applies to categorical distal outcomes only)"
+                  )
+                }
+                
+                # Class-weighted summaries for numeric distal outcome
+                # Note: This is an approximate 3-step distal comparison
+                # based on posterior-probability weights.
+                
+                mu <- sd <- se <- Neff <- rep(NA_real_, ncol(P))
+                
+                for (k in seq_len(ncol(P))) {
+                  w <- P[, k]
+                  v <- aux
+                  ok <- (!is.na(w)) & (!is.na(v))
+                  
+                  if (sum(ok) > 0 && sum(w[ok], na.rm = TRUE) > 0) {
+                    
+                    mu[k] <- stats::weighted.mean(v[ok], w[ok])
+                    
+                    Neff[k] <- (sum(w[ok], na.rm = TRUE)^2) /
+                      sum(w[ok]^2, na.rm = TRUE)
+                    
+                    s2 <- sum(w[ok] * (v[ok] - mu[k])^2, na.rm = TRUE) /
+                      sum(w[ok], na.rm = TRUE)
+                    
+                    sd[k] <- sqrt(s2)
+                    se[k] <- sd[k] / sqrt(Neff[k])
+                  }
+                }
+                
+                # Output class-weighted mean, SD, SE, and effective N
+                if (!is.null(means_table)) {
+                  means_table$setTitle("3-step auxiliary: Class-weighted distal summaries")
+                  
+                  rk <- 1
+                  for (k in seq_along(mu)) {
+                    
+                    vals <- list(
+                      Mean = mu[k],
+                      SD = sd[k],
+                      SE = se[k],
+                      `Effective N` = Neff[k]
+                    )
+                    
+                    for (nm in names(vals)) {
+                      means_table$addRow(
+                        rowKey = rk,
+                        values = list(
+                          class = paste0("Class ", k),
+                          category = nm,
+                          value = as.numeric(vals[[nm]])
+                        )
+                      )
+                      rk <- rk + 1
+                    }
+                  }
+                }
+                
+                # Wald-type omnibus test for equality of class-specific means
+                valid <- is.finite(mu) & is.finite(se) & se > 0
+                
+                if (sum(valid) >= 2) {
+                  
+                  mu_v <- mu[valid]
+                  se_v <- se[valid]
+                  K_v <- length(mu_v)
+                  
+                  C <- cbind(diag(K_v - 1), -1)
+                  diff <- C %*% mu_v
+                  Vmat <- C %*% diag(se_v^2, nrow = K_v) %*% t(C)
+                  
+                  chiW <- try(
+                    as.numeric(t(diff) %*% solve(Vmat, diff)),
+                    silent = TRUE
+                  )
+                  
+                  if (!inherits(chiW, "try-error") && is.finite(chiW)) {
+                    
+                    dfW <- K_v - 1
+                    pW <- stats::pchisq(chiW, dfW, lower.tail = FALSE)
+                    
+                    if (!is.null(omnibus_table)) {
+                      omnibus_table$addRow(
+                        rowKey = 1,
+                        values = list(
+                          method = "PP-weighted Wald omnibus (approx.)",
+                          statistic = as.numeric(chiW),
+                          df = as.numeric(dfW),
+                          p = as.numeric(pW)
+                         )
+                      )
+                    }
+                  }
+                }
+                
                 
                 labs <- c()
                 X2vec <- c()
                 pvec <- c()
-                Vvec <- c()
+                #Vvec <- c()
                 
                 for (a in 1:(ncol(P)-1)) for (b in (a+1):ncol(P)) {
                   if (is.finite(mu[a]) && is.finite(mu[b])) {
@@ -317,7 +371,7 @@ lpaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
                     labs <- c(labs, sprintf("%d vs %d", a, b))
                     X2vec <- c(X2vec, z^2)
                     pvec <- c(pvec, pz)
-                    Vvec <- c(Vvec, NA_real_)
+                    #Vvec <- c(Vvec, NA_real_)
                   }
                 }
                 
@@ -333,8 +387,8 @@ lpaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
                         df = 1,
                         p = as.numeric(pvec[i]),
                         p_bh = as.numeric(p_bh[i]),
-                        p_bonf = as.numeric(p_bonf[i]),
-                        V = Vvec[i]
+                        p_bonf = as.numeric(p_bonf[i])
+                        #V = Vvec[i]
                       )
                     )
                   }
