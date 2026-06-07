@@ -23,6 +23,7 @@ children:
             name: auxVar
             maxItemCount: 1
             isTarget: true
+            ghostText: For 3-step
   - type: LayoutBox
     margin: none
     style: inline

@@ -19,12 +19,14 @@ children:
             name: auxVar
             maxItemCount: 1
             isTarget: true
+            ghostText: For 3-step
       - type: TargetLayoutBox
         children:
           - type: VariablesListBox
             name: regvars
             isTarget: true
             maxItemCount: 1
+            ghostText: For class-wise regression
   - type: LayoutBox
     margin: none
     style: inline

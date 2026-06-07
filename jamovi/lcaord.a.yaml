@@ -80,7 +80,7 @@ options:
       default: false
 
     - name: auxVar
-      title: "Distal variable (for 3-step)"
+      title: "Distal variable"
       type: Variable
       suggested:
         - continuous
@@ -101,7 +101,7 @@ options:
       default: false
 
     - name: regvars
-      title: "Covariate (for class-wise regression)"
+      title: "Covariate"
       type: Variable
       suggested:
         - continuous

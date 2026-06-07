@@ -18,7 +18,7 @@ options:
       type: Variables
 
     - name: covs
-      title: Covariates(Optional)
+      title: Covariates
       type: Variables
       suggested:
          - nominal

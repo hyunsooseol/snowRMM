@@ -126,7 +126,7 @@ options:
       default: false
 
     - name: auxVar
-      title: "Distal variable (for 3-step)"
+      title: "Distal variable"
       type: Variable
       suggested:
         - continuous
