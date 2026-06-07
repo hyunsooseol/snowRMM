@@ -954,7 +954,8 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly = TRUE))
       .emptyThreeMeansRows = function() {
         data.frame(
           class = character(0),
-          mean = numeric(0),
+          statistic = character(0),
+          value = numeric(0),
           stringsAsFactors = FALSE
         )
       },
@@ -1073,10 +1074,21 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           
           se <- sqrt(v / pmax(eff, 1))
           
-          means_rows <- data.frame(
-            class = paste0("Class ", seq_len(K)),
-            mean = as.numeric(m),
-            stringsAsFactors = FALSE
+          means_rows <- do.call(
+            rbind,
+            lapply(seq_len(K), function(k) {
+              data.frame(
+                class = paste0("Class ", k),
+                statistic = c("Mean", "SD", "SE", "Effective N"),
+                value = c(
+                  as.numeric(m[k]),
+                  as.numeric(sqrt(v[k])),
+                  as.numeric(se[k]),
+                  as.numeric(eff[k])
+                ),
+                stringsAsFactors = FALSE
+              )
+            })
           )
           
           weights <- rowSums(ind[, pcols, drop = FALSE], na.rm = TRUE)
@@ -1102,7 +1114,7 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly = TRUE))
               omnibus_rows <- rbind(
                 omnibus_rows,
                 data.frame(
-                  method = "BCH omnibus",
+                  method = "PP-weighted F omnibus (approx.)",
                   variable = auxName,
                   statistic = as.numeric(Fst),
                   df1 = as.numeric(df1),

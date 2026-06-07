@@ -184,7 +184,7 @@ items:
         - angle2
 
     - name: use3step_means
-      title: "3-step auxiliary: Class-weighted means"
+      title: "3-step auxiliary: Class-weighted distal summaries"
       type: Table
       visible: (use3step)
       clearWith:
@@ -197,8 +197,11 @@ items:
         - name: class
           title: Class
           type: text
-        - name: mean
-          title: Mean
+        - name: statistic
+          title: Statistic
+          type: text
+        - name: value
+          title: Value
           type: number
 
     - name: use3step_omnibus

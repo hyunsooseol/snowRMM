@@ -434,7 +434,7 @@ lcaordResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Table$new(
                 options=options,
                 name="use3step_means",
-                title="3-step auxiliary: Class-weighted means",
+                title="3-step auxiliary: Class-weighted distal summaries",
                 visible="(use3step)",
                 clearWith=list(
                     "vars",
@@ -448,8 +448,12 @@ lcaordResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         `title`="Class", 
                         `type`="text"),
                     list(
-                        `name`="mean", 
-                        `title`="Mean", 
+                        `name`="statistic", 
+                        `title`="Statistic", 
+                        `type`="text"),
+                    list(
+                        `name`="value", 
+                        `title`="Value", 
                         `type`="number"))))
             self$add(jmvcore::Table$new(
                 options=options,
