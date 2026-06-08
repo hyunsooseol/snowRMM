@@ -479,7 +479,7 @@ lcgmResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         `type`="text"),
                     list(
                         `name`="category", 
-                        `title`="Category", 
+                        `title`="Category / Statistic", 
                         `type`="text"),
                     list(
                         `name`="estimate", 
@@ -488,7 +488,7 @@ lcgmResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         `format`="zto"),
                     list(
                         `name`="statLabel", 
-                        `title`="Statistic", 
+                        `title`="Type", 
                         `type`="text"))))
             self$add(jmvcore::Table$new(
                 options=options,

@@ -277,7 +277,7 @@ items:
           type: text
   
         - name: category
-          title: Category
+          title: Category / Statistic
           type: text
   
         - name: estimate
@@ -286,7 +286,7 @@ items:
           format: zto
   
         - name: statLabel
-          title: Statistic
+          title: Type
           type: text
   
     - name: threeStepPairwise

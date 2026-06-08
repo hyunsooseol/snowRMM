@@ -410,10 +410,10 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           summary_df <- data.frame(
             distal      = auxName,
             dtype       = "numeric",
-            method      = "BCH",
+            method      = "PP-weighted F omnibus (approx.)",
             k           = K,
             j           = NA_integer_,
-            test        = "Wald/ANOVA approx",
+            test        = "Wald/ANOVA approx.",
             df1         = as.integer(dfb),
             df2         = as.numeric(dfw),
             statistic   = as.numeric(Fst),
@@ -423,14 +423,28 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
             stringsAsFactors = FALSE
           )
           
-          class_df <- data.frame(
-            class     = paste0("Class ", seq_len(K)),
-            category  = "",
-            estimate  = as.numeric(wmean),
-            statLabel = "Weighted mean",
-            stringsAsFactors = FALSE
+          class_df <- do.call(
+            rbind,
+            lapply(seq_len(K), function(k) {
+              data.frame(
+                class = paste0("Class ", k),
+                category = c(
+                  "Mean",
+                  "SD",
+                  "SE",
+                  "Effective N"
+                ),
+                estimate = c(
+                  as.numeric(wmean[k]),
+                  as.numeric(sqrt(wvar[k])),
+                  as.numeric(wse[k]),
+                  as.numeric(eff_nk[k])
+                ),
+                statLabel = "Numeric summary",
+                stringsAsFactors = FALSE
+              )
+            })
           )
-          
           pair_df <- NULL
           if (K >= 2) {
             pair_lab <- c()
