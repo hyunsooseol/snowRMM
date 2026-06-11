@@ -1,5 +1,4 @@
 # This file is a generated template, your changes will not be overwritten
-#' @import ggplot2
 
 raschClass <- if (requireNamespace('jmvcore'))
   R6::R6Class(
@@ -18,6 +17,8 @@ raschClass <- if (requireNamespace('jmvcore'))
         private$.resCache <- NULL
         private$.ermCache <- NULL
         private$.cleanDataCache <- NULL
+        
+        self$results$progressBarHTML$setVisible(FALSE)
         
         if (is.null(self$data) | is.null(self$options$vars)) {
           self$results$instructions$setVisible(visible = TRUE)
@@ -50,8 +51,10 @@ raschClass <- if (requireNamespace('jmvcore'))
       
       .run = function() {
         
-        if (!isTRUE(self$options$run))
+        if (!isTRUE(self$options$run)) {
+          self$results$progressBarHTML$setVisible(FALSE)
           return()
+        }
         
         private$.cleanDataCache <- NULL
         
@@ -594,16 +597,22 @@ raschClass <- if (requireNamespace('jmvcore'))
       # plot---
       
       .gofplot = function(image, ...) {
+        if (is.null(image$state))
+          return(FALSE)
+        
         lr <- image$state
         tlab <- self$options$tlab
-        # additional 95 percent control line with user specified style
-        gofplot <- eRm::plotGOF(lr,
-                                tlab = tlab,
-                                ctrline = list(
-                                  gamma = 0.95,
-                                  col = "red",
-                                  lty = "dashed"
-                                ))
+        
+        gofplot <- eRm::plotGOF(
+          lr,
+          tlab = tlab,
+          ctrline = list(
+            gamma = 0.95,
+            col = "red",
+            lty = "dashed"
+          )
+        )
+        
         print(gofplot)
         TRUE
       },
@@ -649,10 +658,9 @@ raschClass <- if (requireNamespace('jmvcore'))
       
       .plot = function(image, ...) {
         res <- private$.resCache
-        if (is.null(res)) {
-          private$.resCache <- private$.computeRES()
-          res <- private$.resCache
-        }
+        
+        if (is.null(res))
+          return(FALSE)
         
         pmeasure <- res$person.par$theta
         imeasure <- res$item.par$delta.i
@@ -664,6 +672,7 @@ raschClass <- if (requireNamespace('jmvcore'))
           item.names = itemNames,
           color = "deepskyblue"
         )
+        
         print(plot)
         TRUE
       },
@@ -671,13 +680,11 @@ raschClass <- if (requireNamespace('jmvcore'))
       # fit plot---
       
       .inPlot = function(image, ggtheme, theme, ...) {
-        res <- private$.resCache
-        if (is.null(res)) {
-          private$.resCache <- private$.computeRES()
-          res <- private$.resCache
-        }
         
-        infit <- res$item.par$in.out[, 1]
+        res <- private$.resCache
+        
+        if (is.null(res))
+          return(FALSE)
         
         item <- self$options$vars
         nitems <- length(item)
@@ -685,13 +692,13 @@ raschClass <- if (requireNamespace('jmvcore'))
         infit_values <- numeric(nitems)
         
         for (i in 1:nitems) {
-          infit_values[i] <- res$item.par$in.out[i, 1]  # 인덱싱 수정
+          infit_values[i] <- res$item.par$in.out[i, 1]
         }
+        
         infit1 <- data.frame(item = item, infit = infit_values)
         
-        plot <- ggplot(infit1, aes(x = item, y = infit)) +
-          # Refined circular point style
-          geom_point(
+        plot <- ggplot2::ggplot(infit1, ggplot2::aes(x = item, y = infit)) +
+          ggplot2::geom_point(
             shape = 21,
             color = '#2c3e50',
             fill = '#3498db',
@@ -699,81 +706,75 @@ raschClass <- if (requireNamespace('jmvcore'))
             stroke = 1.1,
             alpha = 0.85
           ) +
-          # Clean boundary lines
-          geom_hline(
+          ggplot2::geom_hline(
             yintercept = 1.5,
             linetype = "solid",
             color = '#e74c3c',
             linewidth = 1,
             alpha = 0.7
           ) +
-          geom_hline(
+          ggplot2::geom_hline(
             yintercept = 0.5,
             linetype = "solid",
             color = '#e74c3c',
             linewidth = 1,
             alpha = 0.7
           ) +
-          ggtitle("") +
-          theme_minimal() +
-          theme(
-            # Background settings
-            panel.background = element_rect(fill = "#fafafa", color = NA),
-            plot.background = element_rect(fill = "white", color = NA),
-            
-            # Grid line settings
-            panel.grid.major.y = element_line(color = "#e8e8e8", linewidth = 0.4),
-            panel.grid.minor = element_blank(),
-            panel.grid.major.x = element_blank(),
-            
-            # Title and axis label styling
-            plot.title = element_text(
+          ggplot2::ggtitle("") +
+          ggplot2::theme_minimal() +
+          ggplot2::theme(
+            panel.background = ggplot2::element_rect(fill = "#fafafa", color = NA),
+            plot.background = ggplot2::element_rect(fill = "white", color = NA),
+            panel.grid.major.y = ggplot2::element_line(color = "#e8e8e8", linewidth = 0.4),
+            panel.grid.minor = ggplot2::element_blank(),
+            panel.grid.major.x = ggplot2::element_blank(),
+            plot.title = ggplot2::element_text(
               hjust = 0.5,
               size = 15,
               face = "bold",
               color = "#2c3e50",
-              margin = margin(b = 15)
+              margin = ggplot2::margin(b = 15)
             ),
-            axis.title = element_text(size = 11, color = "#34495e"),
-            axis.text = element_text(size = 9.5, color = "#7f8c8d"),
-            axis.text.x = element_text(margin = margin(t = 6)),
-            axis.text.y = element_text(margin = margin(r = 6)),
-            
-            # Border settings
-            panel.border = element_rect(color = "#bdc3c7", fill = NA, linewidth = 0.4),
-            
-            # Margin adjustments
-            plot.margin = margin(15, 15, 15, 15)
+            axis.title = ggplot2::element_text(size = 11, color = "#34495e"),
+            axis.text = ggplot2::element_text(size = 9.5, color = "#7f8c8d"),
+            axis.text.x = ggplot2::element_text(margin = ggplot2::margin(t = 6)),
+            axis.text.y = ggplot2::element_text(margin = ggplot2::margin(r = 6)),
+            panel.border = ggplot2::element_rect(color = "#bdc3c7", fill = NA, linewidth = 0.4),
+            plot.margin = ggplot2::margin(15, 15, 15, 15)
           )
         
         plot <- plot + ggtheme
         
         if (self$options$angle > 0) {
-          plot <- plot + ggplot2::theme(axis.text.x = ggplot2::element_text(angle = self$options$angle, hjust = 1))
+          plot <- plot + ggplot2::theme(
+            axis.text.x = ggplot2::element_text(angle = self$options$angle, hjust = 1)
+          )
         }
+        
         print(plot)
         TRUE
       },
       
       .outPlot = function(image, ggtheme, theme, ...) {
-        res <- private$.resCache
-        if (is.null(res)) {
-          private$.resCache <- private$.computeRES()
-          res <- private$.resCache
-        }
         
-        outfit <- res$item.par$in.out[, 3]
+        res <- private$.resCache
+        
+        if (is.null(res))
+          return(FALSE)
+        
         item <- self$options$vars
         nitems <- length(item)
-        outfit <- NA
-        for (i in 1:nitems) {
-          outfit[i] <- res$item.par$in.out[, 3][i]
-        }
-        outfit1 <- data.frame(item, outfit)
         
-        plot <- ggplot(outfit1, aes(x = item, y = outfit)) +
-          # Refined circular point style
-          geom_point(
+        outfit_values <- numeric(nitems)
+        
+        for (i in 1:nitems) {
+          outfit_values[i] <- res$item.par$in.out[i, 3]
+        }
+        
+        outfit1 <- data.frame(item = item, outfit = outfit_values)
+        
+        plot <- ggplot2::ggplot(outfit1, ggplot2::aes(x = item, y = outfit)) +
+          ggplot2::geom_point(
             shape = 21,
             color = '#2c3e50',
             fill = '#3498db',
@@ -781,58 +782,51 @@ raschClass <- if (requireNamespace('jmvcore'))
             stroke = 1.1,
             alpha = 0.85
           ) +
-          # Clean boundary lines
-          geom_hline(
+          ggplot2::geom_hline(
             yintercept = 1.5,
             linetype = "solid",
             color = '#e74c3c',
             linewidth = 1,
             alpha = 0.7
           ) +
-          geom_hline(
+          ggplot2::geom_hline(
             yintercept = 0.5,
             linetype = "solid",
             color = '#e74c3c',
             linewidth = 1,
             alpha = 0.7
           ) +
-          ggtitle("") +
-          theme_minimal() +
-          theme(
-            # Background settings
-            panel.background = element_rect(fill = "#fafafa", color = NA),
-            plot.background = element_rect(fill = "white", color = NA),
-            
-            # Grid line settings
-            panel.grid.major.y = element_line(color = "#e8e8e8", linewidth = 0.4),
-            panel.grid.minor = element_blank(),
-            panel.grid.major.x = element_blank(),
-            
-            # Title and axis label styling
-            plot.title = element_text(
+          ggplot2::ggtitle("") +
+          ggplot2::theme_minimal() +
+          ggplot2::theme(
+            panel.background = ggplot2::element_rect(fill = "#fafafa", color = NA),
+            plot.background = ggplot2::element_rect(fill = "white", color = NA),
+            panel.grid.major.y = ggplot2::element_line(color = "#e8e8e8", linewidth = 0.4),
+            panel.grid.minor = ggplot2::element_blank(),
+            panel.grid.major.x = ggplot2::element_blank(),
+            plot.title = ggplot2::element_text(
               hjust = 0.5,
               size = 15,
               face = "bold",
               color = "#2c3e50",
-              margin = margin(b = 15)
+              margin = ggplot2::margin(b = 15)
             ),
-            axis.title = element_text(size = 11, color = "#34495e"),
-            axis.text = element_text(size = 9.5, color = "#7f8c8d"),
-            axis.text.x = element_text(margin = margin(t = 6)),
-            axis.text.y = element_text(margin = margin(r = 6)),
-            
-            # Border settings
-            panel.border = element_rect(color = "#bdc3c7", fill = NA, linewidth = 0.4),
-            
-            # Margin adjustments
-            plot.margin = margin(15, 15, 15, 15)
+            axis.title = ggplot2::element_text(size = 11, color = "#34495e"),
+            axis.text = ggplot2::element_text(size = 9.5, color = "#7f8c8d"),
+            axis.text.x = ggplot2::element_text(margin = ggplot2::margin(t = 6)),
+            axis.text.y = ggplot2::element_text(margin = ggplot2::margin(r = 6)),
+            panel.border = ggplot2::element_rect(color = "#bdc3c7", fill = NA, linewidth = 0.4),
+            plot.margin = ggplot2::margin(15, 15, 15, 15)
           )
         
         plot <- plot + ggtheme
         
         if (self$options$angle > 0) {
-          plot <- plot + ggplot2::theme(axis.text.x = ggplot2::element_text(angle = self$options$angle, hjust = 1))
+          plot <- plot + ggplot2::theme(
+            axis.text.x = ggplot2::element_text(angle = self$options$angle, hjust = 1)
+          )
         }
+        
         print(plot)
         TRUE
       },
@@ -840,26 +834,35 @@ raschClass <- if (requireNamespace('jmvcore'))
       # PREPARE PERSON-ITEM PLOT FOR PCM-------------
       
       .piPlot = function(image, ...) {
+        
         erm <- private$.ermCache
-        if (is.null(erm)) {
-          private$.ermCache <- private$.computeERM()
-          erm <- private$.ermCache
-        }
-        if (is.null(erm$rasch))
+        
+        if (is.null(erm))
           return(FALSE)
         
-        autopcm <- erm$pcm.res
-        plot <- eRm::plotPImap(autopcm, sorted = TRUE, warn.ord.colour = "red")
+        if (is.null(erm$pcm.res))
+          return(FALSE)
+        
+        plot <- eRm::plotPImap(
+          erm$pcm.res,
+          sorted = TRUE,
+          warn.ord.colour = "red"
+        )
+        
         print(plot)
         TRUE
       },
       
       .plot1 = function(image, ...) {
+        
+        if (self$options$step != 1)
+          return(FALSE)
+        
         erm <- private$.ermCache
-        if (is.null(erm)) {
-          private$.ermCache <- private$.computeERM()
-          erm <- private$.ermCache
-        }
+        
+        if (is.null(erm))
+          return(FALSE)
+        
         if (is.null(erm$rasch))
           return(FALSE)
         
@@ -877,35 +880,54 @@ raschClass <- if (requireNamespace('jmvcore'))
           ),
           empCI = list()
         )
+        
         print(plot1)
         TRUE
       },
       
       .plot2 = function(image, ...) {
-        num <- self$options$num
+        
         if (self$options$step <= 1)
-          return()
+          return(FALSE)
+        
+        if (is.null(image$state))
+          return(FALSE)
+        
+        num <- self$options$num
         rsm.res <- image$state
-        plot2 <- eRm::plotICC(rsm.res, legpos = "top", item.subset = num)
+        
+        plot2 <- eRm::plotICC(
+          rsm.res,
+          legpos = "top",
+          item.subset = num
+        )
+        
         print(plot2)
         TRUE
       },
       
       .plot3 = function(image, ...) {
-        num <- self$options$num
-        if (self$options$step <= 1)
-          return()
         
-        erm <- private$.ermCache
-        if (is.null(erm)) {
-          private$.ermCache <- private$.computeERM()
-          erm <- private$.ermCache
-        }
-        if (is.null(erm$rasch))
+        if (self$options$step <= 1)
           return(FALSE)
         
+        erm <- private$.ermCache
+        
+        if (is.null(erm))
+          return(FALSE)
+        
+        if (is.null(erm$pcm.res))
+          return(FALSE)
+        
+        num <- self$options$num
         pcm.res <- erm$pcm.res
-        plot3 <- eRm::plotICC(pcm.res, legpos = "top", item.subset = num)
+        
+        plot3 <- eRm::plotICC(
+          pcm.res,
+          legpos = "top",
+          item.subset = num
+        )
+        
         print(plot3)
         TRUE
       },
@@ -916,23 +938,23 @@ raschClass <- if (requireNamespace('jmvcore'))
         
         pf <- image$state
         
-        plot4 <- ggplot2::ggplot(pf, aes(x = Measure, y = Value, shape = Fit, color = Fit)) +
-          # Modern point styling with refined shapes
-          geom_point(
+        plot4 <- ggplot2::ggplot(
+          pf,
+          ggplot2::aes(x = Measure, y = Value, shape = Fit, color = Fit)
+        ) +
+          ggplot2::geom_point(
             size = 2.8,
             stroke = 1.2,
             alpha = 0.8
           ) +
-          # Elegant shape and color mapping
           ggplot2::scale_shape_manual(
-            values = c(16, 17),  # Circle and triangle instead of + and X
+            values = c(16, 17),
             name = "Fit"
           ) +
           ggplot2::scale_color_manual(
-            values = c('#2980b9', '#e74c3c'),  # Blue and red
+            values = c('#2980b9', '#e74c3c'),
             name = "Fit"
           ) +
-          # Clean boundary lines
           ggplot2::geom_hline(
             yintercept = 1.5,
             linetype = "solid",
@@ -948,58 +970,51 @@ raschClass <- if (requireNamespace('jmvcore'))
             alpha = 0.8
           ) +
           ggplot2::coord_cartesian(xlim = c(-4, 4), ylim = c(0, 4)) +
-          ggtitle("") +
-          labs(
+          ggplot2::ggtitle("") +
+          ggplot2::labs(
             x = "Measure",
             y = "Value"
           ) +
-          theme_minimal() +
-          theme(
-            # Background settings
-            panel.background = element_rect(fill = "#fafafa", color = NA),
-            plot.background = element_rect(fill = "white", color = NA),
-            
-            # Grid line settings
-            panel.grid.major = element_line(color = "#f0f0f0", linewidth = 0.3),
-            panel.grid.minor = element_blank(),
-            
-            # Title and axis label styling
-            plot.title = element_text(
+          ggplot2::theme_minimal() +
+          ggplot2::theme(
+            panel.background = ggplot2::element_rect(fill = "#fafafa", color = NA),
+            plot.background = ggplot2::element_rect(fill = "white", color = NA),
+            panel.grid.major = ggplot2::element_line(color = "#f0f0f0", linewidth = 0.3),
+            panel.grid.minor = ggplot2::element_blank(),
+            plot.title = ggplot2::element_text(
               hjust = 0.5,
               size = 15,
               face = "bold",
               color = "#2c3e50",
-              margin = margin(b = 15)
+              margin = ggplot2::margin(b = 15)
             ),
-            axis.title = element_text(size = 11, color = "#34495e"),
-            axis.text = element_text(size = 9.5, color = "#7f8c8d"),
-            
-            # Legend styling
+            axis.title = ggplot2::element_text(size = 11, color = "#34495e"),
+            axis.text = ggplot2::element_text(size = 9.5, color = "#7f8c8d"),
             legend.position = "right",
-            legend.title = element_text(size = 11, color = "#34495e", face = "bold"),
-            legend.text = element_text(size = 10, color = "#7f8c8d"),
-            legend.background = element_rect(fill = "white", color = "#ecf0f1", linewidth = 0.3),
-            legend.key = element_rect(fill = "transparent"),
-            legend.margin = margin(10, 10, 10, 10),
-            
-            # Border settings
-            panel.border = element_rect(color = "#bdc3c7", fill = NA, linewidth = 0.4),
-            
-            # Margin adjustments
-            plot.margin = margin(15, 15, 15, 15)
+            legend.title = ggplot2::element_text(size = 11, color = "#34495e", face = "bold"),
+            legend.text = ggplot2::element_text(size = 10, color = "#7f8c8d"),
+            legend.background = ggplot2::element_rect(fill = "white", color = "#ecf0f1", linewidth = 0.3),
+            legend.key = ggplot2::element_rect(fill = "transparent"),
+            legend.margin = ggplot2::margin(10, 10, 10, 10),
+            panel.border = ggplot2::element_rect(color = "#bdc3c7", fill = NA, linewidth = 0.4),
+            plot.margin = ggplot2::margin(15, 15, 15, 15)
           )
         
         plot4 <- plot4 + ggtheme
+        
         print(plot4)
         TRUE
       },
       
       .plot5 = function(image5, ...) {
+        
         if (is.null(image5$state))
           return(FALSE)
+        
         Residuals <- image5$state
-        plot5 <- plot(Residuals)
-        print(plot5)
+        
+        plot(Residuals)
+        
         TRUE
       },
       

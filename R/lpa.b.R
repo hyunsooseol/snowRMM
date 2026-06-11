@@ -610,6 +610,7 @@ lpaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
       },
       
       # ----- Plotters -----
+      # ----- Plotters -----
       .plot = function(image, ggtheme, theme, ...) {
         if (is.null(image$state))
           return(FALSE)
@@ -629,8 +630,6 @@ lpaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         max_freq <- max(freq_table$Freq, na.rm = TRUE)
         y_pad <- max(3, max_freq * 0.08)
         
-        # 큰 막대는 라벨을 막대 안쪽에 배치
-        # 작은 막대는 라벨을 막대 위쪽에 배치
         freq_table$label_inside <- freq_table$Freq > max_freq * 0.20
         
         freq_table$label_y <- ifelse(
@@ -650,50 +649,53 @@ lpaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           max(freq_table$label_y, na.rm = TRUE) + y_pad
         )
         
-        plot <- ggplot(freq_table, aes(x = Class, y = Freq)) +
-          geom_bar(
+        plot <- ggplot2::ggplot(freq_table, ggplot2::aes(x = Class, y = Freq)) +
+          ggplot2::geom_bar(
             stat = "identity",
             fill = "deepskyblue"
           ) +
-          geom_text(
-            aes(
+          ggplot2::geom_text(
+            ggplot2::aes(
               y = label_y,
               label = Label,
               vjust = label_vjust
             ),
             size = 3.5
           ) +
-          labs(
+          ggplot2::labs(
             title = "",
             x = "Class",
             y = "Frequency"
           ) +
-          coord_cartesian(
+          ggplot2::coord_cartesian(
             ylim = c(0, y_top),
             clip = "off"
           ) +
-          theme_minimal() +
-          theme(
-            panel.grid.minor.y = element_blank(),
-            panel.grid.major.x = element_blank(),
-            plot.margin = margin(25, 25, 25, 25)
+          ggplot2::theme_minimal() +
+          ggplot2::theme(
+            panel.grid.minor.y = ggplot2::element_blank(),
+            panel.grid.major.x = ggplot2::element_blank(),
+            plot.margin = ggplot2::margin(25, 25, 25, 25)
           )
         
-        print(
-          plot + ggtheme +
-            theme(
-              plot.margin = margin(25, 25, 25, 25)
-            )
-        )
+        plot <- plot + ggtheme +
+          ggplot2::theme(
+            plot.margin = ggplot2::margin(25, 25, 25, 25)
+          )
         
+        print(plot)
         TRUE
       },
       
       .plot3 = function(image, ggtheme, theme, ...) {
         if (is.null(image$state))
           return(FALSE)
+        
         res1 <- image$state
+        
         plot3 <- tidyLPA::plot_density(res1)
+        plot3 <- plot3 + ggtheme
+        
         print(plot3)
         TRUE
       },
@@ -701,12 +703,29 @@ lpaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
       .plot2 = function(image, ggtheme, theme, ...) {
         if (is.null(image$state))
           return(FALSE)
+        
         elbow <- image$state
-        plot2 <- ggplot2::ggplot(elbow, ggplot2::aes(x = Class, y = Value, color = Fit)) +
-          ggplot2::geom_line(size = 1.1) +
+        
+        if (is.null(elbow) || nrow(elbow) == 0)
+          return(FALSE)
+        
+        plot2 <- ggplot2::ggplot(
+          elbow,
+          ggplot2::aes(x = Class, y = Value, color = Fit)
+        ) +
+          ggplot2::geom_line(linewidth = 1.1) +
           ggplot2::geom_point(size = 3) +
-          ggplot2::scale_x_continuous(breaks = seq(1, length(elbow$Class), by = 1))
+          ggplot2::scale_x_continuous(
+            breaks = sort(unique(elbow$Class))
+          ) +
+          ggplot2::labs(
+            x = "Class",
+            y = "Fit index",
+            color = "Fit"
+          )
+        
         plot2 <- plot2 + ggtheme
+        
         print(plot2)
         TRUE
       },
@@ -714,15 +733,28 @@ lpaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
       .plot1 = function(image1, ggtheme, theme, ...) {
         if (is.null(image1$state))
           return(FALSE)
+        
         res <- image1$state
-        line <- self$options$line
-        plot1 <- tidyLPA::plot_profiles(res, add_line = FALSE, rawdata = FALSE)
-        if (line == 'TRUE') {
-          plot1 <- tidyLPA::plot_profiles(res, add_line = TRUE, rawdata = FALSE)
-        }
+        
+        add_line <- isTRUE(self$options$line)
+        
+        plot1 <- tidyLPA::plot_profiles(
+          res,
+          add_line = add_line,
+          rawdata = FALSE
+        )
+        
+        plot1 <- plot1 + ggtheme
+        
         if (self$options$angle > 0) {
-          plot1 <- plot1 + ggplot2::theme(axis.text.x = ggplot2::element_text(angle = self$options$angle, hjust = 1))
+          plot1 <- plot1 + ggplot2::theme(
+            axis.text.x = ggplot2::element_text(
+              angle = self$options$angle,
+              hjust = 1
+            )
+          )
         }
+        
         print(plot1)
         TRUE
       },
@@ -730,7 +762,9 @@ lpaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
       .plot4 = function(image4, ggtheme, theme, ...) {
         if (is.null(image4$state))
           return(FALSE)
+        
         res <- image4$state
+        
         plot4 <- tidyLPA::plot_profiles(
           res,
           ci = NULL,
@@ -738,13 +772,26 @@ lpaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           add_line = TRUE,
           rawdata = FALSE
         ) +
-          aes(linetype = 'solid', linewidth = 1.3, size=3) +
-          scale_linewidth_identity() +
-          scale_linetype_identity() +
-          scale_size_identity()
+          ggplot2::aes(
+            linetype = 'solid',
+            linewidth = 1.3,
+            size = 3
+          ) +
+          ggplot2::scale_linewidth_identity() +
+          ggplot2::scale_linetype_identity() +
+          ggplot2::scale_size_identity()
+        
+        plot4 <- plot4 + ggtheme
+        
         if (self$options$angle > 0) {
-          plot4 <- plot4 + ggplot2::theme(axis.text.x = ggplot2::element_text(angle = self$options$angle, hjust = 1))
+          plot4 <- plot4 + ggplot2::theme(
+            axis.text.x = ggplot2::element_text(
+              angle = self$options$angle,
+              hjust = 1
+            )
+          )
         }
+        
         print(plot4)
         TRUE
       },
@@ -764,8 +811,10 @@ lpaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           return(FALSE)
         
         model_name <- NULL
+        
         for (nm in model_candidates) {
           est <- res[[nm]][["estimates"]]
+          
           if (!is.null(est) && "Category" %in% names(est)) {
             if (any(est$Category == "Means", na.rm = TRUE)) {
               model_name <- nm
@@ -778,17 +827,28 @@ lpaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           return(FALSE)
         
         estimates <- res[[model_name]][["estimates"]]
+        
         if (is.null(estimates))
           return(FALSE)
         
-        means_df <- estimates[estimates$Category == "Means", c("Class", "Parameter", "Estimate")]
+        means_df <- estimates[
+          estimates$Category == "Means",
+          c("Class", "Parameter", "Estimate")
+        ]
+        
         if (nrow(means_df) == 0)
           return(FALSE)
         
-        means_df$Estimate <- suppressWarnings(as.numeric(as.character(means_df$Estimate)))
+        means_df$Estimate <- suppressWarnings(
+          as.numeric(as.character(means_df$Estimate))
+        )
+        
         means_df <- means_df[!is.na(means_df$Estimate), , drop = FALSE]
+        
         if (nrow(means_df) == 0)
           return(FALSE)
+        
+        means_df$Class <- factor(means_df$Class)
         
         means_df$Centered <- stats::ave(
           means_df$Estimate,
@@ -796,16 +856,36 @@ lpaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           FUN = function(x) x - mean(x, na.rm = TRUE)
         )
         
-        plot5 <- ggplot(means_df, aes(x = Parameter, y = Centered, group = Class, color = factor(Class))) +
-          geom_line(size = 1.2) +
-          geom_point(size = 3) +
-          geom_hline(yintercept = 0, linetype = "dashed") +
-          labs(y = "Deviation from Variable Mean", x = "Variables", color = "Class") +
-          theme_minimal()
+        plot5 <- ggplot2::ggplot(
+          means_df,
+          ggplot2::aes(
+            x = Parameter,
+            y = Centered,
+            group = Class,
+            color = Class
+          )
+        ) +
+          ggplot2::geom_line(linewidth = 1.2) +
+          ggplot2::geom_point(size = 3) +
+          ggplot2::geom_hline(
+            yintercept = 0,
+            linetype = "dashed"
+          ) +
+          ggplot2::labs(
+            y = "Deviation from Variable Mean",
+            x = "Variables",
+            color = "Class"
+          ) +
+          ggplot2::theme_minimal()
+        
+        plot5 <- plot5 + ggtheme
         
         if (self$options$angle > 0) {
           plot5 <- plot5 + ggplot2::theme(
-            axis.text.x = ggplot2::element_text(angle = self$options$angle, hjust = 1)
+            axis.text.x = ggplot2::element_text(
+              angle = self$options$angle,
+              hjust = 1
+            )
           )
         }
         

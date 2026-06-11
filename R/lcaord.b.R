@@ -783,10 +783,20 @@ lcaordClass <- if (requireNamespace('jmvcore', quietly = TRUE))
       
       
       .plot1 = function(image, ggtheme, theme, ...) {
-        if (is.null(image$state)) return(FALSE)
-        p <- ggplot(image$state, aes(x=Value)) +
-          geom_bar() + facet_wrap(~time, scales="free") + theme_bw() + ggtheme
-        print(p); TRUE
+        if (is.null(image$state))
+          return(FALSE)
+        
+        p <- ggplot2::ggplot(
+          image$state,
+          ggplot2::aes(x = Value)
+        ) +
+          ggplot2::geom_bar() +
+          ggplot2::facet_wrap(~ time, scales = "free") +
+          ggplot2::theme_bw() +
+          ggtheme
+        
+        print(p)
+        TRUE
       },
       
       .emptyLocalDepRows = function() {
