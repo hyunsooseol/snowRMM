@@ -83,6 +83,8 @@ items:
     - name: inplot
       title: 'Confidence interval for infit'
       type: Image
+      width: 600
+      height: 450
       visible: (inplot)
       renderFun: .inPlot
       clearWith:
@@ -95,6 +97,8 @@ items:
     - name: outplot
       title: 'Confidence interval for outfit'
       type: Image
+      width: 600
+      height: 450
       visible: (outplot)
       renderFun: .outPlot
       clearWith:

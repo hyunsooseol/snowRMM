@@ -552,26 +552,36 @@ mixtureClass <- if (requireNamespace('jmvcore'))
       .itemPlot = function(image, ggtheme, theme, ...) {
         if (is.null(image$state))
           return(FALSE)
-        itemplot <- self$options$iplot
+        
         plotData <- image$state
-        plot <- ggplot2::ggplot(plotData, aes(
-          x = as.factor(item),
-          y = measure,
-          group = class
-        )) +
-          geom_line(aes(color = class), size = 1.1) +
-          geom_point(aes(color = class), size = 3) +
-          labs(
+        
+        plot <- ggplot2::ggplot(
+          plotData,
+          ggplot2::aes(
+            x = as.factor(item),
+            y = measure,
+            group = class
+          )
+        ) +
+          ggplot2::geom_line(ggplot2::aes(color = class), size = 1.1) +
+          ggplot2::geom_point(ggplot2::aes(color = class), size = 3) +
+          ggplot2::labs(
             title = "Item parameters by class",
             x = "Item number",
             y = "Measure",
-            color = 'Class'
+            color = "Class"
           ) +
           ggtheme
         
         if (self$options$angle > 0) {
-          plot <- plot + ggplot2::theme(axis.text.x = ggplot2::element_text(angle = self$options$angle, hjust = 1))
+          plot <- plot + ggplot2::theme(
+            axis.text.x = ggplot2::element_text(
+              angle = self$options$angle,
+              hjust = 1
+            )
+          )
         }
+        
         print(plot)
         TRUE
       },
@@ -579,11 +589,17 @@ mixtureClass <- if (requireNamespace('jmvcore'))
       .plot3 = function(image, ggtheme, theme, ...) {
         if (is.null(image$state))
           return(FALSE)
+        
         dat <- image$state
-        plot3 <- ggplot(dat, aes(x = Measure, color = Class)) +
-          geom_density() +
-          coord_cartesian(xlim = c(-5, 5))
-        plot3 <- plot3 + ggtheme
+        
+        plot3 <- ggplot2::ggplot(
+          dat,
+          ggplot2::aes(x = Measure, color = Class)
+        ) +
+          ggplot2::geom_density() +
+          ggplot2::coord_cartesian(xlim = c(-5, 5)) +
+          ggtheme
+        
         print(plot3)
         TRUE
       },

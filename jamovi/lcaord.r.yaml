@@ -124,6 +124,8 @@ items:
     - name: residualHeatmap
       title: Residual heatmap
       type: Image
+      width: 600
+      height: 450      
       renderFun: .plotResidualHeatmap
       visible: (residualHeatmap)
       clearWith:
@@ -154,6 +156,8 @@ items:
     - name: plot1
       title: 'Bar plot'
       type: Image
+      width: 600
+      height: 450      
       visible: (plot1)
       renderFun: .plot1
       clearWith:
@@ -164,6 +168,8 @@ items:
     - name: plot
       title: 'Response probilities'
       type: Image
+      width: 600
+      height: 450      
       visible: (plot)
       renderFun: .plot
       clearWith:
@@ -175,6 +181,8 @@ items:
     - name: profilePlot
       title: Class probability profile
       type: Image
+      width: 600
+      height: 450      
       renderFun: .plotProfilePlot
       visible: (profilePlot)
       clearWith:

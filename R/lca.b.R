@@ -498,20 +498,41 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
       .plot1 = function(image1, ggtheme, theme, ...) {
         if (is.null(image1$state))
           return(FALSE)
+        
         lcModelProbs <- image1$state
         
-        plot1 <- ggplot2::ggplot(lcModelProbs, aes(x = Class, y = value, fill = Level)) +
-          geom_bar(stat = "identity", position = "stack") +
-          facet_wrap(~ L1) +
-          scale_x_discrete("Class", expand = c(0, 0)) +
-          scale_y_continuous("Proportion", expand = c(0, 0)) +
-          theme_bw()
+        plot1 <- ggplot2::ggplot(
+          lcModelProbs,
+          ggplot2::aes(x = Class, y = value, fill = Level)
+        ) +
+          ggplot2::geom_bar(
+            stat = "identity",
+            position = "stack"
+          ) +
+          ggplot2::facet_wrap(~ L1) +
+          ggplot2::scale_x_discrete(
+            "Class",
+            expand = c(0, 0)
+          ) +
+          ggplot2::scale_y_continuous(
+            "Proportion",
+            expand = c(0, 0)
+          ) +
+          ggplot2::theme_bw()
         
-        plot1 <- plot1 + ggtheme
+        if (!is.null(ggtheme))
+          plot1 <- plot1 + ggtheme
         
         if (self$options$angle > 0) {
-          plot1 <- plot1 + ggplot2::theme(axis.text.x = ggplot2::element_text(angle = self$options$angle, hjust = 1))
+          plot1 <- plot1 +
+            ggplot2::theme(
+              axis.text.x = ggplot2::element_text(
+                angle = self$options$angle,
+                hjust = 1
+              )
+            )
         }
+        
         print(plot1)
         TRUE
       },
@@ -519,18 +540,40 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
       .plot2 = function(image2, ggtheme, theme, ...) {
         if (is.null(image2$state))
           return(FALSE)
+        
         profile <- image2$state
         
-        plot2 <- ggplot2::ggplot(profile, aes(x = Variable, y = value, group = Class)) +
-          facet_wrap(~ Level) +
-          geom_line(aes(color = Class), size = 1.1) +
-          geom_point(aes(color = Class), size = 3)
+        plot2 <- ggplot2::ggplot(
+          profile,
+          ggplot2::aes(
+            x = Variable,
+            y = value,
+            group = Class
+          )
+        ) +
+          ggplot2::facet_wrap(~ Level) +
+          ggplot2::geom_line(
+            ggplot2::aes(color = Class),
+            size = 1.1
+          ) +
+          ggplot2::geom_point(
+            ggplot2::aes(color = Class),
+            size = 3
+          )
         
-        plot2 <- plot2 + ggtheme
+        if (!is.null(ggtheme))
+          plot2 <- plot2 + ggtheme
         
         if (self$options$angle > 0) {
-          plot2 <- plot2 + ggplot2::theme(axis.text.x = ggplot2::element_text(angle = self$options$angle, hjust = 1))
+          plot2 <- plot2 +
+            ggplot2::theme(
+              axis.text.x = ggplot2::element_text(
+                angle = self$options$angle,
+                hjust = 1
+              )
+            )
         }
+        
         print(plot2)
         TRUE
       },

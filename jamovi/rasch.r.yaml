@@ -153,6 +153,8 @@ items:
     - name: plot
       title: 'Wright Map'
       type: Image
+      width: 600
+      height: 450      
       visible: (wrightmap)
       renderFun: .plot
       requiresData: TRUE
@@ -165,6 +167,8 @@ items:
     - name: piplot
       title: 'Person-Item Map for Partial Credit Model '
       type: Image
+      width: 600
+      height: 450      
       visible: (piplot)
       renderFun: .piPlot
       requiresData: TRUE
@@ -177,6 +181,8 @@ items:
     - name: gofplot
       title: 'Goodness-of-Fit for LR test'
       type: Image
+      width: 600
+      height: 450      
       visible: (gofplot)
       renderFun: .gofplot
       requiresData: TRUE
@@ -191,6 +197,8 @@ items:
     - name: plot1
       title: 'ICC for Dichotomous Item'
       type: Image
+      width: 600
+      height: 450      
       visible: (plot1)
       renderFun: .plot1
       requiresData: TRUE
@@ -204,6 +212,8 @@ items:
     - name: plot2
       title: 'Category for Rating Scale Model'
       type: Image
+      width: 600
+      height: 450      
       visible: (plot2)
       renderFun: .plot2
       requiresData: TRUE
@@ -217,6 +227,8 @@ items:
     - name: plot3
       title: 'Category for Partial Credit Model'
       type: Image
+      width: 600
+      height: 450      
       visible: (plot3)
       renderFun: .plot3
       requiresData: TRUE
@@ -230,6 +242,8 @@ items:
     - name: inplot
       title: 'Item Infit plot'
       type: Image
+      width: 600
+      height: 450      
       visible: (inplot)
       renderFun: .inPlot
       requiresData: true
@@ -243,6 +257,8 @@ items:
     - name: outplot
       title: 'Item Outfit plot'
       type: Image
+      width: 600
+      height: 450      
       visible: (outplot)
       renderFun: .outPlot
       requiresData: true
@@ -416,6 +432,8 @@ items:
     - name:  plot4
       title: 'Person Fit Plot'
       type:  Image
+      width: 600
+      height: 450      
       requiresData: true
       visible: (plot4)
       renderFun: .plot4
@@ -428,6 +446,8 @@ items:
     - name:  plot8
       title: 'Plot of standardized residuals'
       type:  Image
+      width: 600
+      height: 450      
       visible: (plot8)
       renderFun: .plot8
       refs: snowRMM
@@ -441,6 +461,8 @@ items:
     - name:  plot5
       title: 'Residual factor analysis'
       type:  Image
+      width: 600
+      height: 450      
       requiresData: true
       visible: (plot5)
       renderFun: .plot5

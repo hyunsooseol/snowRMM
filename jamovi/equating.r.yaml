@@ -65,6 +65,8 @@ items:
     - name:  plot
       title: Cumulative distribution plot
       type:  Image
+      width: 600
+      height: 450
       requiresData: true
       refs: snowRMM
       visible: (plot)
@@ -149,6 +151,8 @@ items:
     - name:  plot1
       title: Presmoothing and postsmoothing of empirical distribution
       type:  Image
+      width: 600
+      height: 450      
       requiresData: true
       visible: (plot1)
       renderFun: .plot1

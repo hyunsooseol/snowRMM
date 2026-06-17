@@ -212,6 +212,8 @@ items:
     - name: plot3
       title: 'Elbow Plot'
       type: Image
+      width: 600
+      height: 450      
       visible: (plot3)
       refs: snowRMM
       renderFun: .plot3
@@ -223,6 +225,8 @@ items:
     - name: plot
       title: 'LCA Plot'
       type: Image
+      width: 600
+      height: 450      
       visible: (plot)
       renderFun: .plot
       refs: poLCA
@@ -234,6 +238,8 @@ items:
     - name: plot1
       title: 'Item by class'
       type: Image
+      width: 600
+      height: 450      
       visible: (plot1)
       renderFun: .plot1
       refs: snowRMM
@@ -246,6 +252,8 @@ items:
     - name: plot2
       title: 'Profile Plot'
       type: Image
+      width: 600
+      height: 450      
       visible: (plot2)
       renderFun: .plot2
       refs: snowRMM

@@ -1,6 +1,6 @@
 ---
 name:  lltm
-title: Linear Logisitic Test Model
+title: Linear Logistic Test Model
 menuGroup: snowRMM
 version: '1.0.0'
 jas: '1.2'

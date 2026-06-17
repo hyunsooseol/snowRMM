@@ -179,7 +179,7 @@ lltmResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             super$initialize(
                 options=options,
                 name="",
-                title="Linear Logisitic Test Model",
+                title="Linear Logistic Test Model",
                 refs="snowRMM")
             self$add(jmvcore::Html$new(
                 options=options,
@@ -520,6 +520,8 @@ lltmResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 options=options,
                 name="plot",
                 title="Comparison of item easiness parameters ",
+                width=600,
+                height=450,
                 visible="(plot)",
                 renderFun=".plot",
                 clearWith=list(
@@ -530,6 +532,8 @@ lltmResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 options=options,
                 name="plot1",
                 title="W matrix Heatmap ",
+                width=600,
+                height=450,
                 visible="(plot1)",
                 renderFun=".plot1",
                 clearWith=list(
@@ -540,6 +544,8 @@ lltmResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 options=options,
                 name="plot2",
                 title="Item Fit Residual Plot",
+                width=600,
+                height=450,
                 visible="(plot2)",
                 renderFun=".plot2",
                 clearWith=list(
@@ -594,7 +600,7 @@ lltmBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 weightsSupport = 'auto')
         }))
 
-#' Linear Logisitic Test Model
+#' Linear Logistic Test Model
 #'
 #' 
 #' @param data The data as a data frame.

@@ -779,17 +779,19 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
       },
       
 .plot2 = function(image, ggtheme, theme, ...) {
-  if (is.null(image$state)) return(FALSE)
+  if (is.null(image$state))
+    return(FALSE)
   
   plot_data <- image$state
   
-  plot_data$Class <- factor(plot_data$Class, levels = sort(unique(plot_data$Class)))
+  plot_data$Class <- factor(
+    plot_data$Class,
+    levels = sort(unique(plot_data$Class))
+  )
   
   max_count <- max(plot_data$Count, na.rm = TRUE)
   y_pad <- max(5, max_count * 0.08)
   
-  # 큰 막대는 라벨을 막대 안쪽에 배치
-  # 작은 막대는 라벨을 막대 위쪽에 배치
   plot_data$label_inside <- plot_data$Count > max_count * 0.20
   
   plot_data$label_y <- ifelse(
@@ -806,15 +808,18 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
   
   y_top <- max_count * 1.18
   
-  p <- ggplot(plot_data, aes(x = Class, y = Count, fill = Class)) +
-    geom_bar(
+  p <- ggplot2::ggplot(
+    plot_data,
+    ggplot2::aes(x = Class, y = Count, fill = Class)
+  ) +
+    ggplot2::geom_bar(
       stat = "identity",
       alpha = 0.8,
       color = "white",
       size = 0.5
     ) +
-    geom_text(
-      aes(
+    ggplot2::geom_text(
+      ggplot2::aes(
         y = label_y,
         label = paste0("n = ", Count, "\n(", Percentage, "%)"),
         vjust = label_vjust
@@ -823,48 +828,66 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
       fontface = "bold",
       color = "black"
     ) +
-    scale_fill_brewer(type = "qual", palette = "Set3") +
-    labs(
+    ggplot2::scale_fill_brewer(
+      type = "qual",
+      palette = "Set3"
+    ) +
+    ggplot2::labs(
       title = "",
       x = "Latent Class",
       y = "Number of Participants"
     ) +
-    coord_cartesian(
+    ggplot2::coord_cartesian(
       ylim = c(0, y_top),
       clip = "off"
     ) +
-    theme_minimal() +
-    theme(
-      axis.text.x = element_text(size = 11),
-      axis.text.y = element_text(size = 10),
-      axis.title = element_text(size = 11, face = "bold"),
+    ggplot2::theme_minimal() +
+    ggplot2::theme(
+      axis.text.x = ggplot2::element_text(size = 11),
+      axis.text.y = ggplot2::element_text(size = 10),
+      axis.title = ggplot2::element_text(size = 11, face = "bold"),
       legend.position = "right",
-      panel.grid.minor.y = element_blank(),
-      panel.grid.major.x = element_blank(),
-      plot.margin = margin(25, 25, 25, 25)
+      panel.grid.minor.y = ggplot2::element_blank(),
+      panel.grid.major.x = ggplot2::element_blank(),
+      plot.margin = ggplot2::margin(25, 25, 25, 25)
     )
   
-  print(
-    p + ggtheme +
-      theme(
-        plot.margin = margin(25, 25, 25, 25)
-      )
-  )
+  if (!is.null(ggtheme))
+    p <- p + ggtheme
   
+  p <- p +
+    ggplot2::theme(
+      plot.margin = ggplot2::margin(25, 25, 25, 25)
+    )
+  
+  print(p)
   TRUE
 },
       
-      .plot1 = function(image, ggtheme, theme, ...) {
-        if (is.null(image$state)) return(FALSE)
-        long <- image$state
-        long <- long[is.finite(long$value), , drop = FALSE]
-        p <- ggplot(long, aes(x = value)) +
-          geom_density() +
-          facet_wrap(~ time, ncol = 2) +
-          theme_bw()
-        print(p + ggtheme)
-        TRUE
-      },
+.plot1 = function(image, ggtheme, theme, ...) {
+  if (is.null(image$state))
+    return(FALSE)
+  
+  long <- image$state
+  long <- long[is.finite(long$value), , drop = FALSE]
+  
+  if (nrow(long) == 0)
+    return(FALSE)
+  
+  p <- ggplot2::ggplot(
+    long,
+    ggplot2::aes(x = value)
+  ) +
+    ggplot2::geom_density() +
+    ggplot2::facet_wrap(~ time, ncol = 2) +
+    ggplot2::theme_bw()
+  
+  if (!is.null(ggtheme))
+    p <- p + ggtheme
+  
+  print(p)
+  TRUE
+},
       
       .plot = function(image, ggtheme, theme, ...) {
         if (is.null(image$state)) return(FALSE)

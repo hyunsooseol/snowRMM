@@ -159,6 +159,8 @@ items:
     - name: plot2
       title: 'Class size plot'
       type: Image
+      width: 600
+      height: 450      
       visible: (plot2)
       renderFun: .plot2
       clearWith:
@@ -171,6 +173,8 @@ items:
     - name: plot1
       title: 'Density plot'
       type: Image
+      width: 600
+      height: 450      
       visible: (plot1)
       renderFun: .plot1
       clearWith:
@@ -184,6 +188,8 @@ items:
     - name: plot
       title: 'Trajectory plot'
       type: Image
+      width: 600
+      height: 450      
       visible: (plot)
       renderFun: .plot
       clearWith:

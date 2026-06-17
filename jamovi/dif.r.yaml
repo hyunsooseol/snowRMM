@@ -75,6 +75,8 @@ items:
     - name: plot1
       title: 'Z plot'
       type:  Image
+      width: 600
+      height: 450
       visible: (plot1)
       renderFun: .plot1
       refs: eRm
@@ -86,6 +88,8 @@ items:
     - name: plot2
       title:  'Comparison of item difficulty'
       type:  Image
+      width: 600
+      height: 450      
       visible: (plot2)
       renderFun: .plot2
       refs: snowRMM
@@ -98,6 +102,8 @@ items:
     - name: plot3
       title: 'Scatterplot of item difference'
       type:  Image
+      width: 600
+      height: 450      
       visible: (plot3)
       renderFun: .plot3
       refs: snowRMM
@@ -109,6 +115,8 @@ items:
     - name: plot4
       title: 'Bar plot of item difference'
       type:  Image
+      width: 600
+      height: 450      
       visible: (plot4)
       renderFun: .plot4
       refs: snowRMM
@@ -169,6 +177,8 @@ items:
     - name: plot5
       title: 'Z plot'
       type:  Image
+      width: 600
+      height: 450      
       visible: (plot5)
       renderFun: .plot5
       refs: eRm
@@ -180,6 +190,8 @@ items:
     - name: plot6
       title:  'Comparison of item difficulty'
       type:  Image
+      width: 600
+      height: 450      
       visible: (plot6)
       renderFun: .plot6
       refs: snowRMM
@@ -192,6 +204,8 @@ items:
     - name: plot7
       title: 'Scatterplot of item difference'
       type:  Image
+      width: 600
+      height: 450      
       visible: (plot7)
       renderFun: .plot7
       refs: snowRMM
@@ -203,6 +217,8 @@ items:
     - name: plot8
       title: 'Bar plot of item difference'
       type:  Image
+      width: 600
+      height: 450      
       visible: (plot8)
       renderFun: .plot8
       refs: snowRMM

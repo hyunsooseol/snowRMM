@@ -2,7 +2,7 @@
 % Please edit documentation in R/lltm.h.R
 \name{lltm}
 \alias{lltm}
-\title{Linear Logisitic Test Model}
+\title{Linear Logistic Test Model}
 \usage{
 lltm(
   data,
@@ -89,5 +89,5 @@ Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.f
 \code{as.data.frame(results$con)}
 }
 \description{
-Linear Logisitic Test Model
+Linear Logistic Test Model
 }

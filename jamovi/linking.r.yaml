@@ -27,6 +27,8 @@ items:
     - name:  plot
       title: Equating Plot
       type:  Image
+      width: 600
+      height: 450      
       visible: (plot)
       renderFun: .plot
       refs: equate

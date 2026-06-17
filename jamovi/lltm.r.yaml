@@ -1,6 +1,6 @@
 ---
 name:  lltm
-title: Linear Logisitic Test Model
+title: Linear Logistic Test Model
 jrs:   '1.1'
 refs: snowRMM
 items:
@@ -308,6 +308,8 @@ items:
     - name:  plot
       title: "Comparison of item easiness parameters "
       type:  Image
+      width: 600
+      height: 450      
       visible: (plot)
       renderFun: .plot 
       clearWith:
@@ -318,6 +320,8 @@ items:
     - name:  plot1
       title: "W matrix Heatmap "
       type:  Image
+      width: 600
+      height: 450      
       visible: (plot1)
       renderFun: .plot1 
       clearWith:
@@ -328,6 +332,8 @@ items:
     - name:  plot2
       title: "Item Fit Residual Plot"
       type:  Image
+      width: 600
+      height: 450      
       visible: (plot2)
       renderFun: .plot2 
       clearWith:

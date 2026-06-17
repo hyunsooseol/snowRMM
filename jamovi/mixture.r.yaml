@@ -210,6 +210,8 @@ items:
     - name: iplot
       title: 'Item Plot'
       type: Image
+      width: 600
+      height: 450      
       visible: (iplot)
       refs: snowRMM
       renderFun: .itemPlot
@@ -223,6 +225,8 @@ items:
     - name: plot3
       title: 'Person distributions across class'
       type: Image
+      width: 600
+      height: 450      
       visible: (plot3)
       refs: snowRMM
       renderFun: .plot3

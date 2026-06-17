@@ -162,7 +162,7 @@ lpaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           post_data <- all$post_data
           
           post_cols <- grep("^CPROB", names(post_data))
-          K <- if (!is.null(self$options$nc)) self$options$nc else if (!is.null(self$options$nclass)) self$options$nclass else 2
+          K <- if (!is.null(self$options$nc)) self$options$nc else 2
           if (length(post_cols) == 0) post_cols <- seq_len(min(K, ncol(post_data)))
           post_data <- post_data[, post_cols, drop = FALSE]
           
@@ -543,7 +543,7 @@ lpaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         # Progress bar 시작
         self$results$progressBarHTML$setVisible(TRUE)
         self$results$progressBarHTML$setContent(
-        appleSpinnerH('Computing profile estimation...')
+        appleSpinnerH('Computing LPA...')
         )
         private$.checkpoint()
         

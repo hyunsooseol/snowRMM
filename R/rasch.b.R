@@ -56,6 +56,10 @@ raschClass <- if (requireNamespace('jmvcore'))
           return()
         }
         
+        on.exit({
+          self$results$progressBarHTML$setVisible(FALSE)
+        }, add = TRUE)
+        
         private$.cleanDataCache <- NULL
         
         if (is.null(self$options$vars) || length(self$options$vars) < 2)
@@ -90,8 +94,8 @@ raschClass <- if (requireNamespace('jmvcore'))
         erm <- private$.ermCache
         
         
-        # 100%: complete and hide
-        self$results$progressBarHTML$setVisible(FALSE)
+        # # 100%: complete and hide
+        # self$results$progressBarHTML$setVisible(FALSE)
         
         # item statistics---------
         imean <- res$item.par$itemDescriptives

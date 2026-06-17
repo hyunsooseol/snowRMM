@@ -1,17 +1,17 @@
 ---
 title: Rasch Mixture, LCA, and Test Equating Analysis
 name: snowRMM
-version: 6.1.1
+version: 6.1.2
 jms: '1.0'
 authors:
   - Hyunsoo Seol
 maintainer: Hyunsoo Seol <snow@cau.ac.kr>
-date: '2026-06-11'
+date: '2026-06-17'
 type: R
 description: >-
   This module allows users to conduct Latent class analysis, Latent Profile
   Analysis,  Latent class growth modeling, Latent class for ordinal indicators,
-  Linear Logisitic Test Model, Linear and Equipercentile Equating, Rasch model
+  Linear Logistic Test Model, Linear and Equipercentile Equating, Rasch model
   and Rasch mixture model including model information,fit statistics, and
   bootstrap item fit.
 
@@ -99,11 +99,11 @@ analyses:
     menuSubgroup: Test Equating
     ribbon: analyses
     category: analyses
-  - title: Linear Logisitic Test Model
+  - title: Linear Logistic Test Model
     name: lltm
     ns: snowRMM
     menuGroup: snowRMM
-    menuTitle: Linear Logisitic Test Model
+    menuTitle: Linear Logistic Test Model
     menuSubgroup: Mixture
     ribbon: analyses
     category: analyses
@@ -155,7 +155,7 @@ datasets:
     description: LCA with ordinal data
     tags:
       - Ordinal LCA
-  - name: ordinal
+  - name: ordinal3step
     path: lcaord3.omv
     description: LCA with ordinal data
     tags:

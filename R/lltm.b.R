@@ -182,7 +182,7 @@ lltmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
               '<details style="margin-top:16px;">',
               '<summary style="font-weight:600;color:#004a99;cursor:pointer;">📘 How to specify the W-matrix (click to expand)</summary>',
               '<div style="margin-top:10px;padding:10px 14px;border-left:3px solid #bcd4ff;background:#f9fbff;">',
-              '<p style="margin:4px 0 6px 0;">Enter <b>Vectors</b> and <b>Number of columns</b> in <b>column-wise order</b> — all items for Factor&nbsp;1, then Factor&nbsp;2, then Factor&nbsp;3 …</p>',
+              '<p style="margin:4px 0 6px 0;">Enter <b>Vectors</b> and <b>Number of columns</b> in <b>column-wise order</b> — all items for Factor 1, then Factor 2, then Factor 3 …</p>',
               
               '<div style="margin:8px 0 10px 0;">',
               '<table style="border-collapse:collapse;margin:auto;">',
@@ -538,132 +538,228 @@ lltmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         }
       },
       
-      .plot = function(image, ggtheme, theme, ...) {
-        if (is.null(image$state)) return(FALSE)
-        lltm <- image$state[[1]]
-        rm <- image$state[[2]]
-        
-        p <- ggplot(data = NULL, aes(x = rm, y = lltm)) +
-          geom_abline(slope = 1, intercept = 0) +
-          geom_smooth(method = "lm") +
-          geom_point() +
-          scale_x_continuous(limits = c(-4, 4)) +
-          scale_y_continuous(limits = c(-4, 4)) +
-          labs(
-            x = "Item Easiness Parameter-RM",
-            y = "Item Easiness Parameter-LLTM"
-          ) +
-          theme_bw()
-        
-        p <- p + ggtheme
-        print(p)
-        TRUE
-      },
+.plot = function(image, ggtheme, theme, ...) {
+  if (is.null(image$state))
+    return(FALSE)
+  
+  lltm <- image$state[[1]]
+  rm <- image$state[[2]]
+  
+  p <- ggplot2::ggplot(
+    data = NULL,
+    ggplot2::aes(x = rm, y = lltm)
+  ) +
+    ggplot2::geom_abline(
+      slope = 1,
+      intercept = 0
+    ) +
+    ggplot2::geom_smooth(
+      method = "lm",
+      se = TRUE
+    ) +
+    ggplot2::geom_point() +
+    ggplot2::scale_x_continuous(
+      limits = c(-4, 4)
+    ) +
+    ggplot2::scale_y_continuous(
+      limits = c(-4, 4)
+    ) +
+    ggplot2::labs(
+      x = "Item Easiness Parameter-RM",
+      y = "Item Easiness Parameter-LLTM"
+    ) +
+    ggplot2::theme_bw()
+  
+  if (!is.null(ggtheme))
+    p <- p + ggtheme
+  
+  print(p)
+  TRUE
+},
       
-      .plot1 = function(image, ggtheme, theme, ...) {
-        st <- image$state
-        if (is.null(st) || is.null(st$W)) return(FALSE)
-        W <- st$W
-        
-        if (is.null(rownames(W))) {
-          rn <- self$options$vars
-          rownames(W) <- if (!is.null(rn) && length(rn) == nrow(W)) {
-            rn
-          } else {
-            paste0("I", seq_len(nrow(W)))
-          }
-        }
-        if (is.null(colnames(W))) {
-          colnames(W) <- paste0("F", seq_len(ncol(W)))
-        }
-        
-        rnk <- tryCatch(qr(W)$rank, error = function(e) NA_integer_)
-        svals <- tryCatch(round(svd(W)$d, 3), error = function(e) NULL)
-        subtxt <- paste0(
-          "rank(W) = ", rnk,
-          if (!is.null(svals)) paste0(" | singular values: ", paste(svals, collapse = ", "))
-        )
-        
-        df <- as.data.frame(as.table(W))
-        names(df) <- c("Item", "Factor", "Value")
-        
-        nz_counts <- stats::aggregate(
-          as.integer(df$Value != 0),
-          by = list(Item = df$Item),
-          FUN = sum
-        )
-        names(nz_counts) <- c("Item", "NonZero")
-        df$Item <- factor(
-          df$Item,
-          levels = rev(nz_counts$Item[order(nz_counts$NonZero)])
-        )
-        
-        show_text <- (nrow(W) * ncol(W) <= 120)
-        lab_txt <- if (show_text) sprintf("%.2g", df$Value) else ""
-        if (show_text) lab_txt[df$Value == 0] <- ""
-        
-        p1 <- ggplot2::ggplot(df, ggplot2::aes(x = Factor, y = Item, fill = Value)) +
-          ggplot2::geom_tile(color = NA) +
-          ggplot2::coord_fixed() +
-          ggplot2::labs(
-            title = "Design Matrix (W)",
-            subtitle = subtxt,
-            x = "Factor",
-            y = "Item"
-          ) +
-          ggplot2::theme_classic(base_size = 11) +
-          ggplot2::theme(
-            axis.text.x = ggplot2::element_text(angle = 90, vjust = .5, hjust = 1),
-            plot.title = ggplot2::element_text(face = "bold"),
-            plot.subtitle = ggplot2::element_text(size = 9, color = "gray40")
-          )
-        
-        if (show_text)
-          p1 <- p1 + ggplot2::geom_text(ggplot2::aes(label = lab_txt), size = 3)
-        
-        if (!is.null(ggtheme)) p1 <- p1 + ggtheme
-        
-        p1 <- p1 + ggplot2::scale_fill_gradient2(
-          low = "#2166ac",
-          mid = "white",
-          high = "#b2182b",
-          midpoint = 0,
-          name = "W",
-          limits = c(-1, 1),
-          breaks = c(-1, 0, 1),
-          guide = ggplot2::guide_colorbar(barwidth = 0.4, barheight = 6)
-        )
-        
-        has_gridExtra <- requireNamespace("gridExtra", quietly = TRUE)
-        nz_by_factor <- stats::aggregate(
-          as.integer(df$Value != 0),
-          by = list(Factor = df$Factor),
-          FUN = sum
-        )
-        names(nz_by_factor) <- c("Factor", "NonZero")
-        nz_by_factor$Factor <- factor(nz_by_factor$Factor, levels = colnames(W))
-        
-        p2 <- ggplot2::ggplot(nz_by_factor, ggplot2::aes(x = Factor, y = NonZero)) +
-          ggplot2::geom_col(width = 0.7, fill = "#737373") +
-          ggplot2::geom_text(ggplot2::aes(label = NonZero), vjust = -0.4, size = 3.5) +
-          ggplot2::labs(title = "Non-zero count by Factor", x = NULL, y = "Count") +
-          ggplot2::theme_classic(base_size = 11) +
-          ggplot2::theme(
-            axis.text.x = ggplot2::element_text(angle = 90, vjust = .5, hjust = 1),
-            plot.title = ggplot2::element_text(size = 11, face = "bold")
-          )
-        
-        if (!is.null(ggtheme)) p2 <- p2 + ggtheme
-        
-        if (has_gridExtra) {
-          g <- gridExtra::arrangeGrob(p1, p2, ncol = 2, widths = c(3, 2))
-          grid::grid.newpage()
-          grid::grid.draw(g)
-        } else {
-          print(p1)
-        }
-        TRUE
-      },
+.plot1 = function(image, ggtheme, theme, ...) {
+  st <- image$state
+  
+  if (is.null(st) || is.null(st$W))
+    return(FALSE)
+  
+  W <- st$W
+  
+  if (is.null(rownames(W))) {
+    rn <- self$options$vars
+    rownames(W) <- if (!is.null(rn) && length(rn) == nrow(W)) {
+      rn
+    } else {
+      paste0("I", seq_len(nrow(W)))
+    }
+  }
+  
+  if (is.null(colnames(W))) {
+    colnames(W) <- paste0("F", seq_len(ncol(W)))
+  }
+  
+  rnk <- tryCatch(qr(W)$rank, error = function(e) NA_integer_)
+  svals <- tryCatch(round(svd(W)$d, 3), error = function(e) NULL)
+  
+  svals_txt <- if (!is.null(svals)) {
+    paste(utils::head(svals, 3), collapse = ", ")
+  } else {
+    NULL
+  }
+  
+  subtxt <- paste0(
+    "rank(W) = ", rnk,
+    if (!is.null(svals_txt)) paste0("\nsingular values: ", svals_txt)
+  )
+  
+  df <- as.data.frame(as.table(W))
+  names(df) <- c("Item", "Factor", "Value")
+  
+  nz_counts <- stats::aggregate(
+    as.integer(df$Value != 0),
+    by = list(Item = df$Item),
+    FUN = sum
+  )
+  names(nz_counts) <- c("Item", "NonZero")
+  
+  df$Item <- factor(
+    df$Item,
+    levels = rev(nz_counts$Item[order(nz_counts$NonZero)])
+  )
+  
+  show_text <- (nrow(W) * ncol(W) <= 120)
+  lab_txt <- if (show_text) sprintf("%.2g", df$Value) else ""
+  
+  if (show_text)
+    lab_txt[df$Value == 0] <- ""
+  
+  p1 <- ggplot2::ggplot(
+    df,
+    ggplot2::aes(x = Factor, y = Item, fill = Value)
+  ) +
+    ggplot2::geom_tile(color = NA) +
+    ggplot2::coord_fixed() +
+    ggplot2::labs(
+      title = "Design Matrix (W)",
+      subtitle = subtxt,
+      x = "Factor",
+      y = "Item"
+    ) +
+    ggplot2::theme_classic(base_size = 11) +
+    ggplot2::theme(
+      axis.text.x = ggplot2::element_text(
+        angle = 90,
+        vjust = .5,
+        hjust = 1
+      ),
+      plot.title = ggplot2::element_text(
+        face = "bold"
+      ),
+      plot.subtitle = ggplot2::element_text(
+        size = 8.5,
+        color = "gray40",
+        lineheight = 0.95
+      ),
+      plot.margin = ggplot2::margin(8, 10, 8, 8)
+    )
+  
+  if (show_text) {
+    p1 <- p1 +
+      ggplot2::geom_text(
+        ggplot2::aes(label = lab_txt),
+        size = 2.6
+      )
+  }
+  
+  # ggtheme를 먼저 적용
+  if (!is.null(ggtheme))
+    p1 <- p1 + ggtheme
+  
+  # fill scale은 반드시 마지막에 적용
+  p1 <- p1 +
+    ggplot2::scale_fill_gradient2(
+      low = "#2166ac",
+      mid = "white",
+      high = "#b2182b",
+      midpoint = 0,
+      name = "W",
+      limits = c(-1, 1),
+      breaks = c(-1, 0, 1),
+      guide = ggplot2::guide_colorbar(
+        barwidth = 0.4,
+        barheight = 6
+      )
+    )
+  
+  nz_by_factor <- stats::aggregate(
+    as.integer(df$Value != 0),
+    by = list(Factor = df$Factor),
+    FUN = sum
+  )
+  names(nz_by_factor) <- c("Factor", "NonZero")
+  
+  nz_by_factor$Factor <- factor(
+    nz_by_factor$Factor,
+    levels = colnames(W)
+  )
+  
+  y_max <- max(nz_by_factor$NonZero, na.rm = TRUE)
+  
+  p2 <- ggplot2::ggplot(
+    nz_by_factor,
+    ggplot2::aes(x = Factor, y = NonZero)
+  ) +
+    ggplot2::geom_col(
+      width = 0.7,
+      fill = "#737373"
+    ) +
+    ggplot2::geom_text(
+      ggplot2::aes(label = NonZero),
+      vjust = -0.45,
+      size = 3.1
+    ) +
+    ggplot2::expand_limits(
+      y = y_max * 1.18
+    ) +
+    ggplot2::labs(
+      title = "Non-zero count\nby Factor",
+      x = NULL,
+      y = "Count"
+    ) +
+    ggplot2::theme_classic(base_size = 11) +
+    ggplot2::theme(
+      axis.text.x = ggplot2::element_text(
+        angle = 90,
+        vjust = .5,
+        hjust = 1
+      ),
+      plot.title = ggplot2::element_text(
+        size = 10.5,
+        face = "bold",
+        lineheight = 0.95
+      ),
+      plot.margin = ggplot2::margin(8, 8, 8, 10)
+    )
+  
+  if (!is.null(ggtheme))
+    p2 <- p2 + ggtheme
+  
+  if (requireNamespace("gridExtra", quietly = TRUE)) {
+    g <- gridExtra::arrangeGrob(
+      p1,
+      p2,
+      ncol = 2,
+      widths = c(3.2, 1.8)
+    )
+    
+    grid::grid.newpage()
+    grid::grid.draw(g)
+  } else {
+    print(p1)
+  }
+  
+  TRUE
+},
       
       .plot2 = function(image, ggtheme, theme, ...) {
         st <- image$state
