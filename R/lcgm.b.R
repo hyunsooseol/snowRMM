@@ -632,12 +632,15 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
       
       .run = function() {
         
-        if (!isTRUE(self$options$run))
+        if (!isTRUE(self$options$run)) {
+          self$results$progressBarHTML$setVisible(FALSE)
           return()
+        }
         
-        if (is.null(self$options$vars) || length(self$options$vars) < 3)
+        if (is.null(self$options$vars) || length(self$options$vars) < 3) {
+          self$results$progressBarHTML$setVisible(FALSE)
           return()
-        
+        }
         
         # Progress bar -----------
         self$results$progressBarHTML$setVisible(TRUE)
@@ -645,6 +648,10 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           appleSpinnerH('Performing LCGM analysis...')
         )
         private$.checkpoint()
+        
+        on.exit({
+          self$results$progressBarHTML$setVisible(FALSE)
+        }, add = TRUE)
         
         set.seed(1234)
         private$.plot1_cache <- NULL
@@ -687,8 +694,8 @@ lcgmClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           private$.populateThreeStepTables(res3)
         }
         
-        # 100%: complete and hide
-        self$results$progressBarHTML$setVisible(FALSE)
+        # # 100%: complete and hide
+        # self$results$progressBarHTML$setVisible(FALSE)
       },
       
       .populateDescTable = function() {
