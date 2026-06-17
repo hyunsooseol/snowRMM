@@ -460,21 +460,40 @@ bfitClass <- if (requireNamespace('jmvcore'))
         if (!all(needed %in% names(infit1)))
           return(FALSE)
         
-        plot <- ggplot(infit1, aes(x = item, y = infit, color = item)) +
-          geom_point(size = 3) +
-          geom_errorbar(aes(ymin = infitlow, ymax = infithigh), width = 0.3) +
-          geom_hline(yintercept = 1,
-                     linetype = "dashed",
-                     color = "red") +
-          labs(title = "", x = "Item", y = "Infit") +
-          scale_color_brewer(palette = "Set1") +
-          theme_minimal(base_size = 15) +
-          guides(color = "none")
+        plot <- ggplot2::ggplot(
+          infit1,
+          ggplot2::aes(x = item, y = infit, color = item)
+        ) +
+          ggplot2::geom_point(size = 3) +
+          ggplot2::geom_errorbar(
+            ggplot2::aes(ymin = infitlow, ymax = infithigh),
+            width = 0.3
+          ) +
+          ggplot2::geom_hline(
+            yintercept = 1,
+            linetype = "dashed",
+            color = "red"
+          ) +
+          ggplot2::labs(
+            title = "",
+            x = "Item",
+            y = "Infit"
+          ) +
+          ggplot2::scale_color_brewer(palette = "Set1") +
+          ggplot2::theme_minimal(base_size = 15) +
+          ggplot2::guides(color = "none")
         
-        plot <- plot + ggtheme
+        if (!is.null(ggtheme))
+          plot <- plot + ggtheme
         
         if (self$options$angle > 0) {
-          plot <- plot + ggplot2::theme(axis.text.x = ggplot2::element_text(angle = self$options$angle, hjust = 1))
+          plot <- plot +
+            ggplot2::theme(
+              axis.text.x = ggplot2::element_text(
+                angle = self$options$angle,
+                hjust = 1
+              )
+            )
         }
         
         print(plot)
@@ -517,21 +536,40 @@ bfitClass <- if (requireNamespace('jmvcore'))
         if (!all(needed %in% names(outfit1)))
           return(FALSE)
         
-        plot <- ggplot(outfit1, aes(x = item, y = outfit, color = item)) +
-          geom_point(size = 3) +
-          geom_errorbar(aes(ymin = outfitlow, ymax = outfithigh), width = 0.3) +
-          geom_hline(yintercept = 1,
-                     linetype = "dashed",
-                     color = "red") +
-          labs(title = "", x = "Item", y = "Outfit") +
-          scale_color_brewer(palette = "Set1") +
-          theme_minimal(base_size = 15) +
-          guides(color = "none")
+        plot <- ggplot2::ggplot(
+          outfit1,
+          ggplot2::aes(x = item, y = outfit, color = item)
+        ) +
+          ggplot2::geom_point(size = 3) +
+          ggplot2::geom_errorbar(
+            ggplot2::aes(ymin = outfitlow, ymax = outfithigh),
+            width = 0.3
+          ) +
+          ggplot2::geom_hline(
+            yintercept = 1,
+            linetype = "dashed",
+            color = "red"
+          ) +
+          ggplot2::labs(
+            title = "",
+            x = "Item",
+            y = "Outfit"
+          ) +
+          ggplot2::scale_color_brewer(palette = "Set1") +
+          ggplot2::theme_minimal(base_size = 15) +
+          ggplot2::guides(color = "none")
         
-        plot <- plot + ggtheme
+        if (!is.null(ggtheme))
+          plot <- plot + ggtheme
         
         if (self$options$angle > 0) {
-          plot <- plot + ggplot2::theme(axis.text.x = ggplot2::element_text(angle = self$options$angle, hjust = 1))
+          plot <- plot +
+            ggplot2::theme(
+              axis.text.x = ggplot2::element_text(
+                angle = self$options$angle,
+                hjust = 1
+              )
+            )
         }
         
         print(plot)
