@@ -155,3 +155,7 @@ options:
       type: Bool
       default: FALSE
 
+    - name: fitSummary
+      title: Fit summary
+      type: Bool
+      default: TRUE

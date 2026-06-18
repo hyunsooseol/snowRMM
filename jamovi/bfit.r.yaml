@@ -11,14 +11,17 @@ items:
       clearWith:
         - mode
 
+    - name: text1
+      title: ''
+      type: Html
+      visible: (mode:simple)
+      clearWith:
+        - mode
+
     - name: progressBarHTML
       title: ' '
       type: Html
       visible: false
-
-    - name:  text
-      title: ''
-      type:  Preformatted
 
     - name: item
       title: ''
@@ -33,7 +36,6 @@ items:
             - vars
             - step
             - bn
-            - angle
             - mode
           columns:
             - name: name
@@ -61,7 +63,6 @@ items:
             - vars
             - step
             - bn
-            - angle
             - mode
           columns:
             - name: name
@@ -79,6 +80,29 @@ items:
               title: 'Upper'
               type: number
               superTitle: '95% CI'
+
+        - name: fitSummary
+          title: Item fit summary
+          type: Table
+          visible: (fitSummary && mode:simple)
+          rows: 4
+          clearWith:
+            - vars
+            - step
+            - bn
+            - mode
+          columns:
+            - name: criterion
+              title: Criterion
+              type: text
+
+            - name: count
+              title: Count
+              type: integer
+
+            - name: items
+              title: Items
+              type: text
 
     - name: inplot
       title: 'Confidence interval for infit'

@@ -25,7 +25,8 @@ bfit(
   infit = FALSE,
   nco = FALSE,
   noutfit = FALSE,
-  ninfit = FALSE
+  ninfit = FALSE,
+  fitSummary = TRUE
 )
 }
 \arguments{
@@ -70,15 +71,18 @@ bfit(
 \item{noutfit}{.}
 
 \item{ninfit}{.}
+
+\item{fitSummary}{.}
 }
 \value{
 A results object containing:
 \tabular{llllll}{
   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
+  \code{results$text1} \tab \tab \tab \tab \tab a html \cr
   \code{results$progressBarHTML} \tab \tab \tab \tab \tab a html \cr
-  \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
   \code{results$item$binfit} \tab \tab \tab \tab \tab a table \cr
   \code{results$item$boutfit} \tab \tab \tab \tab \tab a table \cr
+  \code{results$item$fitSummary} \tab \tab \tab \tab \tab a table \cr
   \code{results$inplot} \tab \tab \tab \tab \tab an image \cr
   \code{results$outplot} \tab \tab \tab \tab \tab an image \cr
   \code{results$instructions1} \tab \tab \tab \tab \tab a html \cr

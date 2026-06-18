@@ -1,4 +1,4 @@
-# This file is a generated template, your changes will not be overwritten
+
 
 bfitClass <- if (requireNamespace('jmvcore'))
   R6::R6Class(
@@ -7,14 +7,7 @@ bfitClass <- if (requireNamespace('jmvcore'))
     private = list(
       .htmlwidget = NULL,
       
-      ###### .init function--------
-      
       .init = function() {
-        
-        # Progress bar--- 
-        self$results$progressBarHTML$setVisible(TRUE)
-        html <- progressBarH(0, 100, 'Initializing analysis...')
-        self$results$progressBarHTML$setContent(html)
         
         if (self$options$mode == 'simple') {
           private$.htmlwidget <- HTMLWidget$new()
@@ -22,10 +15,6 @@ bfitClass <- if (requireNamespace('jmvcore'))
           if (is.null(self$data) | is.null(self$options$vars)) {
             self$results$instructions$setVisible(visible = TRUE)
           }
-          
-          # Progress bar 5%
-          html <- progressBarH(5, 100, 'Setting up UI...')
-          self$results$progressBarHTML$setContent(html)
           
           self$results$instructions$setContent(
             private$.htmlwidget$generate_accordion(
@@ -43,6 +32,27 @@ bfitClass <- if (requireNamespace('jmvcore'))
             )
           )
           
+          self$results$text1$setContent(
+            paste0(
+              '<div style="margin: 18px 0 22px 0; padding: 14px 16px; ',
+              'border-left: 4px solid #2f65a7; background-color: #f7fbff; ',
+              'font-family: Arial, sans-serif; color: #333;">',
+              
+              '<div style="font-size: 15px; font-weight: 700; color: #2f65a7; margin-bottom: 10px;">',
+              'Common guideline for item fit',
+              '</div>',
+              
+              '<div style="font-size: 13px; line-height: 1.7;">',
+              '<b>Acceptable:</b> 0.5 &le; Infit and Outfit &le; 1.5<br>',
+              '<b>Possible overfit:</b> Infit or Outfit &lt; 0.5<br>',
+              '<b>Possible misfit:</b> Infit or Outfit &gt; 1.5<br><br>',
+              'If Infit and Outfit show different signals, values above 1.5 are usually treated as more important for detecting misfit.<br>',
+              'These guidelines are screening aids and should not be used as strict decision rules.',
+              '</div>',
+              
+              '</div>'
+            )
+          )
         }
         
         if (self$options$mode == "complex") {
@@ -87,24 +97,19 @@ bfitClass <- if (requireNamespace('jmvcore'))
             "Note",
             "Diagnosis: * p < .05, ** p < .01."
           )
-          
         }
         
-        # Progress bar 10%
-        html <- progressBarH(10, 100, 'Ready to start analysis...')
-        self$results$progressBarHTML$setContent(html)
+        self$results$progressBarHTML$setVisible(FALSE)
       },
       
       .run = function() {
         
-        # mode별 run 체크
         if (self$options$mode == 'simple' && !isTRUE(self$options$run))
           return()
         
         if (self$options$mode == 'complex' && !isTRUE(self$options$run1))
           return()
         
-        # mode별 필수 변수 체크
         if (self$options$mode == 'simple') {
           if (is.null(self$options$vars) || length(self$options$vars) < 2)
             return()
@@ -115,23 +120,18 @@ bfitClass <- if (requireNamespace('jmvcore'))
             return()
         }
         
+        self$results$progressBarHTML$setVisible(TRUE)
+        self$results$progressBarHTML$setContent(
+          appleSpinnerH('Performing bootstrap item fit analysis...')
+        )
         
-        # Progress bar 15%
-        html <- progressBarH(15, 100, 'Starting analysis...')
-        self$results$progressBarHTML$setContent(html)
+        on.exit({
+          self$results$progressBarHTML$setVisible(FALSE)
+        }, add = TRUE)
+        
         private$.checkpoint()
         
         if (self$options$mode == 'complex') {
-          
-          
-          if (is.null(self$options$vars1) ||
-              length(self$options$vars1) < 2)
-            return()
-          
-          # Progress bar 20%
-          html <- progressBarH(20, 100, 'Preparing complex mode data...')
-          self$results$progressBarHTML$setContent(html)
-          private$.checkpoint()
           
           data <- self$data
           data <- na.omit(data)
@@ -141,32 +141,18 @@ bfitClass <- if (requireNamespace('jmvcore'))
           adj <- self$options$adj
           nco <- self$options$nco
           
-          # Progress bar 30%
-          html <- progressBarH(30, 100, 'Building model...')
-          self$results$progressBarHTML$setContent(html)
-          private$.checkpoint()
-          
           if (type == 'bi') {
             obj <- eRm::RM(data)
           } else if (type == 'ra') {
             obj <- eRm::PCM(data)
           }
           
-          # Progress bar 50%
-          html <- progressBarH(50, 100, 'Running bootstrap fit...')
-          self$results$progressBarHTML$setContent(html)
           private$.checkpoint()
           
           if (nco == TRUE) {
             set.seed(1234)
             fit <- iarm::boot_fit(obj, B = bn1, p.adj = 'none')
             
-            # Progress bar 70%
-            html <- progressBarH(70, 100, 'Processing outfit statistics...')
-            self$results$progressBarHTML$setContent(html)
-            private$.checkpoint()
-            
-            #Outfit-----------------
             table <- self$results$noutfit
             
             outfit <- fit[[1]][, 1]
@@ -183,12 +169,6 @@ bfitClass <- if (requireNamespace('jmvcore'))
               table$setRow(rowKey = vars1[i], values = row)
             }
             
-            # Progress bar 80%
-            html <- progressBarH(80, 100, 'Processing infit statistics...')
-            self$results$progressBarHTML$setContent(html)
-            private$.checkpoint()
-            
-            # Infit-------------
             table <- self$results$ninfit
             
             infit <- fit[[1]][, 3]
@@ -209,12 +189,6 @@ bfitClass <- if (requireNamespace('jmvcore'))
             set.seed(1234)
             fit <- iarm::boot_fit(obj, B = bn1, p.adj = adj)
             
-            # Progress bar 70%
-            html <- progressBarH(70, 100, 'Processing outfit with corrections...')
-            self$results$progressBarHTML$setContent(html)
-            private$.checkpoint()
-            
-            # Outfit------------
             table <- self$results$outfit
             
             outfit <- fit[[1]][, 1]
@@ -235,12 +209,6 @@ bfitClass <- if (requireNamespace('jmvcore'))
               table$setRow(rowKey = vars1[i], values = row)
             }
             
-            # Progress bar 80%
-            html <- progressBarH(80, 100, 'Processing infit with corrections...')
-            self$results$progressBarHTML$setContent(html)
-            private$.checkpoint()
-            
-            # Infit table-------------
             table <- self$results$infit
             
             infit <- fit[[1]][, 4]
@@ -262,58 +230,22 @@ bfitClass <- if (requireNamespace('jmvcore'))
             }
           }
           
-          self$results$progressBarHTML$setVisible(FALSE)
           return()
-          
         }
-        
-        # Progress bar 25%
-        html <- progressBarH(25, 100, 'Cleaning data...')
-        self$results$progressBarHTML$setContent(html)
-        private$.checkpoint()
         
         ### Simple mode analysis ###
-        data <- self$data
-        vars <- self$options$vars
+        data <- private$.cleanData()
         
-        # Ready--------
-        ready <- TRUE
+        private$.checkpoint()
         
-        if (is.null(self$options$vars) ||
-            length(self$options$vars) < 2)
-          ready <- FALSE
+        results <- private$.compute(data)
         
-        if (ready) {
-          data <- private$.cleanData()
-          
-          # Progress bar 40%
-          html <- progressBarH(40, 100, 'Computing bootstrap statistics...')
-          self$results$progressBarHTML$setContent(html)
-          private$.checkpoint()
-          
-          results <- private$.compute(data)
-          
-          # Progress bar 70%
-          html <- progressBarH(70, 100, 'Populating result tables...')
-          self$results$progressBarHTML$setContent(html)
-          private$.checkpoint()
-          
-          # populate Boot Fit table-------------
-          private$.populateInTable(results)
-          private$.populateOutTable(results)
-          
-          # Progress bar 85%
-          html <- progressBarH(85, 100, 'Preparing plots...')
-          self$results$progressBarHTML$setContent(html)
-          private$.checkpoint()
-          
-          # plot------
-          private$.prepareInPlot(results)
-          private$.prepareOutPlot(results)
-        }
+        private$.populateInTable(results)
+        private$.populateOutTable(results)
+        private$.populateFitSummary(results)
         
-        # Progress bar 완료 후 숨기기
-        self$results$progressBarHTML$setVisible(FALSE)
+        private$.prepareInPlot(results)
+        private$.prepareOutPlot(results)
       },
       
       .compute = function(data) {
@@ -323,7 +255,6 @@ bfitClass <- if (requireNamespace('jmvcore'))
         
         set.seed(1234)
         
-        # infit + outfit을 한 번의 bootstrap에서 같이 계산
         boot_stat <- function(data, indices) {
           d <- data[indices, , drop = FALSE]
           
@@ -337,13 +268,11 @@ bfitClass <- if (requireNamespace('jmvcore'))
           io <- res1$item.par$in.out
           
           c(
-            io[, 1],  # infit
-            io[, 3]   # outfit
+            io[, 1],
+            io[, 3]
           )
         }
         
-        html <- progressBarH(45, 100, 'Running bootstrap...')
-        self$results$progressBarHTML$setContent(html)
         private$.checkpoint()
         
         boot.res <- boot::boot(
@@ -351,10 +280,6 @@ bfitClass <- if (requireNamespace('jmvcore'))
           statistic = boot_stat,
           R = bn
         )
-        
-        html <- progressBarH(65, 100, 'Computing confidence intervals...')
-        self$results$progressBarHTML$setContent(html)
-        private$.checkpoint()
         
         nItems <- length(vars)
         
@@ -385,13 +310,10 @@ bfitClass <- if (requireNamespace('jmvcore'))
         return(results)
       },
       
-      
       .populateInTable = function(results) {
         table <- self$results$item$binfit
         vars <- self$options$vars
-        bn <- self$options$bn
         
-        # results------
         infit <- results$infit
         infitlow <- results$infitlow
         infithigh <- results$infithigh
@@ -410,6 +332,7 @@ bfitClass <- if (requireNamespace('jmvcore'))
       .populateOutTable = function(results) {
         table <- self$results$item$boutfit
         vars <- self$options$vars
+        
         outfit <- results$outfit
         outfitlow <- results$outfitlow
         outfithigh <- results$outfithigh
@@ -425,8 +348,77 @@ bfitClass <- if (requireNamespace('jmvcore'))
         }
       },
       
+      .populateFitSummary = function(results) {
+        
+        if (!isTRUE(self$options$fitSummary))
+          return()
+        
+        table <- self$results$item$fitSummary
+        vars <- self$options$vars
+        
+        infit <- results$infit
+        outfit <- results$outfit
+        
+        hasHigh <- (!is.na(infit) & infit > 1.5) |
+          (!is.na(outfit) & outfit > 1.5)
+        
+        hasLow <- (!is.na(infit) & infit < 0.5) |
+          (!is.na(outfit) & outfit < 0.5)
+        
+        acceptable <- !is.na(infit) & !is.na(outfit) &
+          infit >= 0.5 & infit <= 1.5 &
+          outfit >= 0.5 & outfit <= 1.5
+        
+        possibleMisfit <- hasHigh
+        possibleOverfit <- hasLow & !hasHigh
+        
+        review <- possibleOverfit | possibleMisfit
+        
+        itemList <- function(x) {
+          if (sum(x, na.rm = TRUE) == 0)
+            return("None")
+          
+          paste(vars[which(x)], collapse = ", ")
+        }
+        
+        table$setRow(
+          rowNo = 1,
+          values = list(
+            criterion = "Acceptable",
+            count = sum(acceptable, na.rm = TRUE),
+            items = itemList(acceptable)
+          )
+        )
+        
+        table$setRow(
+          rowNo = 2,
+          values = list(
+            criterion = "Possible overfit",
+            count = sum(possibleOverfit, na.rm = TRUE),
+            items = itemList(possibleOverfit)
+          )
+        )
+        
+        table$setRow(
+          rowNo = 3,
+          values = list(
+            criterion = "Possible misfit",
+            count = sum(possibleMisfit, na.rm = TRUE),
+            items = itemList(possibleMisfit)
+          )
+        )
+        
+        table$setRow(
+          rowNo = 4,
+          values = list(
+            criterion = "Items requiring review",
+            count = sum(review, na.rm = TRUE),
+            items = itemList(review)
+          )
+        )
+      },
+      
       .prepareInPlot = function(results) {
-        inplot <- self$results$inplot
         item <- self$options$vars
         
         infit <- results$infit
@@ -440,7 +432,6 @@ bfitClass <- if (requireNamespace('jmvcore'))
       },
       
       .inPlot = function(image, ggtheme, theme, ...) {
-        inplot <- self$options$inplot
         
         if (self$options$mode != 'simple')
           return(FALSE)
@@ -459,6 +450,8 @@ bfitClass <- if (requireNamespace('jmvcore'))
         needed <- c("item", "infit", "infitlow", "infithigh")
         if (!all(needed %in% names(infit1)))
           return(FALSE)
+        
+        infit1$item <- factor(infit1$item, levels = self$options$vars)
         
         plot <- ggplot2::ggplot(
           infit1,
@@ -501,8 +494,6 @@ bfitClass <- if (requireNamespace('jmvcore'))
       },
       
       .prepareOutPlot = function(results) {
-        outplot <- self$results$outplot
-        
         item <- self$options$vars
         
         outfit <- results$outfit
@@ -516,7 +507,6 @@ bfitClass <- if (requireNamespace('jmvcore'))
       },
       
       .outPlot = function(image, ggtheme, theme, ...) {
-        outplot <- self$options$outplot
         
         if (self$options$mode != 'simple')
           return(FALSE)
@@ -535,6 +525,8 @@ bfitClass <- if (requireNamespace('jmvcore'))
         needed <- c("item", "outfit", "outfitlow", "outfithigh")
         if (!all(needed %in% names(outfit1)))
           return(FALSE)
+        
+        outfit1$item <- factor(outfit1$item, levels = self$options$vars)
         
         plot <- ggplot2::ggplot(
           outfit1,
@@ -576,16 +568,13 @@ bfitClass <- if (requireNamespace('jmvcore'))
         TRUE
       },
       
-      #### Helper functions =================================
-      
       .cleanData = function() {
         items <- self$options$vars
         
         data <- list()
         
         for (item in items)
-          data[[item]] <-
-          jmvcore::toNumeric(self$data[[item]])
+          data[[item]] <- jmvcore::toNumeric(self$data[[item]])
         
         attr(data, 'row.names') <- seq_len(length(data[[1]]))
         attr(data, 'class') <- 'data.frame'
@@ -596,23 +585,60 @@ bfitClass <- if (requireNamespace('jmvcore'))
     )
   )
 
-# Added Progress Bar HTML---
-progressBarH <- function(progress = 0, total = 100, message = '') {
-  percentage <- round(progress / total * 100)
-  width <- 400 * percentage / 100
-  
-  html <- paste0(
-    '<div style="text-align: center; padding: 20px;">',
-    '<div style="width: 400px; height: 20px; border: 1px solid #ccc; ',
-    'background-color: #f8f9fa; margin: 0 auto; border-radius: 4px;">',
-    '<div style="width: ', width, 'px; height: 18px; ',
-    'background-color: #999999; border-radius: 3px; ',
-    'transition: width 0.3s ease;"></div>',
+appleSpinnerH <- function(message = '') {
+  paste0(
+    '<div style="text-align:center;padding:24px;">',
+    
+    '<style>',
+    '@keyframes snowsoftAppleDotPulse {',
+    '0%, 80%, 100% { transform: scale(0.72); opacity: 0.55; }',
+    '40% { transform: scale(1.20); opacity: 1; }',
+    '}',
+    '</style>',
+    
+    '<div style="margin-bottom:10px;">',
+    
+    '<span style="',
+    'display:inline-block;',
+    'width:12px;',
+    'height:12px;',
+    'margin:0 5px;',
+    'border-radius:50%;',
+    'background:#007AFF;',
+    'animation:snowsoftAppleDotPulse 1.2s infinite ease-in-out;',
+    'vertical-align:middle;',
+    '"></span>',
+    
+    '<span style="',
+    'display:inline-block;',
+    'width:12px;',
+    'height:12px;',
+    'margin:0 5px;',
+    'border-radius:50%;',
+    'background:#34C759;',
+    'animation:snowsoftAppleDotPulse 1.2s infinite ease-in-out;',
+    'animation-delay:0.15s;',
+    'vertical-align:middle;',
+    '"></span>',
+    
+    '<span style="',
+    'display:inline-block;',
+    'width:12px;',
+    'height:12px;',
+    'margin:0 5px;',
+    'border-radius:50%;',
+    'background:#FF9500;',
+    'animation:snowsoftAppleDotPulse 1.2s infinite ease-in-out;',
+    'animation-delay:0.30s;',
+    'vertical-align:middle;',
+    '"></span>',
+    
     '</div>',
-    '<div style="margin-top: 8px; font-size: 12px; color: #666;">',
-    message, ' (', percentage, '%)</div>',
+    
+    '<div style="font-size:12px;color:#666;">',
+    message,
+    '</div>',
+    
     '</div>'
   )
-  
-  return(html)
 }

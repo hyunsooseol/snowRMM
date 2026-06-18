@@ -25,7 +25,8 @@ bfitOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             infit = FALSE,
             nco = FALSE,
             noutfit = FALSE,
-            ninfit = FALSE, ...) {
+            ninfit = FALSE,
+            fitSummary = TRUE, ...) {
 
             super$initialize(
                 package="snowRMM",
@@ -136,6 +137,10 @@ bfitOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "ninfit",
                 ninfit,
                 default=FALSE)
+            private$..fitSummary <- jmvcore::OptionBool$new(
+                "fitSummary",
+                fitSummary,
+                default=TRUE)
 
             self$.addOption(private$..mode)
             self$.addOption(private$..vars)
@@ -157,6 +162,7 @@ bfitOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..nco)
             self$.addOption(private$..noutfit)
             self$.addOption(private$..ninfit)
+            self$.addOption(private$..fitSummary)
         }),
     active = list(
         mode = function() private$..mode$value,
@@ -178,7 +184,8 @@ bfitOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         infit = function() private$..infit$value,
         nco = function() private$..nco$value,
         noutfit = function() private$..noutfit$value,
-        ninfit = function() private$..ninfit$value),
+        ninfit = function() private$..ninfit$value,
+        fitSummary = function() private$..fitSummary$value),
     private = list(
         ..mode = NA,
         ..vars = NA,
@@ -199,7 +206,8 @@ bfitOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..infit = NA,
         ..nco = NA,
         ..noutfit = NA,
-        ..ninfit = NA)
+        ..ninfit = NA,
+        ..fitSummary = NA)
 )
 
 bfitResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -207,8 +215,8 @@ bfitResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     inherit = jmvcore::Group,
     active = list(
         instructions = function() private$.items[["instructions"]],
+        text1 = function() private$.items[["text1"]],
         progressBarHTML = function() private$.items[["progressBarHTML"]],
-        text = function() private$.items[["text"]],
         item = function() private$.items[["item"]],
         inplot = function() private$.items[["inplot"]],
         outplot = function() private$.items[["outplot"]],
@@ -234,18 +242,22 @@ bfitResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "mode")))
             self$add(jmvcore::Html$new(
                 options=options,
+                name="text1",
+                title="",
+                visible="(mode:simple)",
+                clearWith=list(
+                    "mode")))
+            self$add(jmvcore::Html$new(
+                options=options,
                 name="progressBarHTML",
                 title=" ",
                 visible=FALSE))
-            self$add(jmvcore::Preformatted$new(
-                options=options,
-                name="text",
-                title=""))
             self$add(R6::R6Class(
                 inherit = jmvcore::Group,
                 active = list(
                     binfit = function() private$.items[["binfit"]],
-                    boutfit = function() private$.items[["boutfit"]]),
+                    boutfit = function() private$.items[["boutfit"]],
+                    fitSummary = function() private$.items[["fitSummary"]]),
                 private = list(),
                 public=list(
                     initialize=function(options) {
@@ -263,7 +275,6 @@ bfitResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "vars",
                                 "step",
                                 "bn",
-                                "angle",
                                 "mode"),
                             columns=list(
                                 list(
@@ -295,7 +306,6 @@ bfitResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "vars",
                                 "step",
                                 "bn",
-                                "angle",
                                 "mode"),
                             columns=list(
                                 list(
@@ -316,7 +326,31 @@ bfitResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                     `name`="outfithigh", 
                                     `title`="Upper", 
                                     `type`="number", 
-                                    `superTitle`="95% CI"))))}))$new(options=options))
+                                    `superTitle`="95% CI"))))
+                        self$add(jmvcore::Table$new(
+                            options=options,
+                            name="fitSummary",
+                            title="Item fit summary",
+                            visible="(fitSummary && mode:simple)",
+                            rows=4,
+                            clearWith=list(
+                                "vars",
+                                "step",
+                                "bn",
+                                "mode"),
+                            columns=list(
+                                list(
+                                    `name`="criterion", 
+                                    `title`="Criterion", 
+                                    `type`="text"),
+                                list(
+                                    `name`="count", 
+                                    `title`="Count", 
+                                    `type`="integer"),
+                                list(
+                                    `name`="items", 
+                                    `title`="Items", 
+                                    `type`="text"))))}))$new(options=options))
             self$add(jmvcore::Image$new(
                 options=options,
                 name="inplot",
@@ -524,13 +558,15 @@ bfitBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param nco .
 #' @param noutfit .
 #' @param ninfit .
+#' @param fitSummary .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
+#'   \code{results$text1} \tab \tab \tab \tab \tab a html \cr
 #'   \code{results$progressBarHTML} \tab \tab \tab \tab \tab a html \cr
-#'   \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$item$binfit} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$item$boutfit} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$item$fitSummary} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$inplot} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$outplot} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$instructions1} \tab \tab \tab \tab \tab a html \cr
@@ -568,7 +604,8 @@ bfit <- function(
     infit = FALSE,
     nco = FALSE,
     noutfit = FALSE,
-    ninfit = FALSE) {
+    ninfit = FALSE,
+    fitSummary = TRUE) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("bfit requires jmvcore to be installed (restart may be required)")
@@ -602,7 +639,8 @@ bfit <- function(
         infit = infit,
         nco = nco,
         noutfit = noutfit,
-        ninfit = ninfit)
+        ninfit = ninfit,
+        fitSummary = fitSummary)
 
     analysis <- bfitClass$new(
         options = options,

@@ -80,6 +80,8 @@ children:
                             name: binfit
                           - type: CheckBox
                             name: boutfit
+                          - name: fitSummary
+                            type: CheckBox
                   - type: LayoutBox
                     stretchFactor: 1
                     margin: large
