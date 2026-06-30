@@ -22,7 +22,9 @@ mixtureOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             angle = 0,
             iplot = FALSE,
             plot3 = FALSE,
-            plot2 = TRUE, ...) {
+            plot2 = TRUE,
+            catStats = FALSE,
+            thresholdOrder = FALSE, ...) {
 
             super$initialize(
                 package="snowRMM",
@@ -119,6 +121,14 @@ mixtureOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "pinfit")
             private$..poutfit <- jmvcore::OptionOutput$new(
                 "poutfit")
+            private$..catStats <- jmvcore::OptionBool$new(
+                "catStats",
+                catStats,
+                default=FALSE)
+            private$..thresholdOrder <- jmvcore::OptionBool$new(
+                "thresholdOrder",
+                thresholdOrder,
+                default=FALSE)
 
             self$.addOption(private$..vars)
             self$.addOption(private$..nc)
@@ -142,6 +152,8 @@ mixtureOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..pse)
             self$.addOption(private$..pinfit)
             self$.addOption(private$..poutfit)
+            self$.addOption(private$..catStats)
+            self$.addOption(private$..thresholdOrder)
         }),
     active = list(
         vars = function() private$..vars$value,
@@ -165,7 +177,9 @@ mixtureOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         pmeasure = function() private$..pmeasure$value,
         pse = function() private$..pse$value,
         pinfit = function() private$..pinfit$value,
-        poutfit = function() private$..poutfit$value),
+        poutfit = function() private$..poutfit$value,
+        catStats = function() private$..catStats$value,
+        thresholdOrder = function() private$..thresholdOrder$value),
     private = list(
         ..vars = NA,
         ..nc = NA,
@@ -188,7 +202,9 @@ mixtureOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..pmeasure = NA,
         ..pse = NA,
         ..pinfit = NA,
-        ..poutfit = NA)
+        ..poutfit = NA,
+        ..catStats = NA,
+        ..thresholdOrder = NA)
 )
 
 mixtureResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -198,6 +214,8 @@ mixtureResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         instructions = function() private$.items[["instructions"]],
         text = function() private$.items[["text"]],
         item = function() private$.items[["item"]],
+        categoryStats = function() private$.items[["categoryStats"]],
+        thresholdOrder = function() private$.items[["thresholdOrder"]],
         person = function() private$.items[["person"]],
         iplot = function() private$.items[["iplot"]],
         plot3 = function() private$.items[["plot3"]],
@@ -414,6 +432,79 @@ mixtureResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                     `title`="1", 
                                     `type`="number", 
                                     `superTitle`="Class"))))}))$new(options=options))
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="categoryStats",
+                title="Category Statistics",
+                visible="(catStats)",
+                clearWith=list(
+                    "vars",
+                    "nc",
+                    "step",
+                    "type"),
+                columns=list(
+                    list(
+                        `name`="item", 
+                        `title`="Item", 
+                        `type`="text", 
+                        `combineBelow`=TRUE),
+                    list(
+                        `name`="class", 
+                        `title`="Class", 
+                        `type`="integer", 
+                        `combineBelow`=TRUE),
+                    list(
+                        `name`="category", 
+                        `title`="Category", 
+                        `type`="integer"),
+                    list(
+                        `name`="frequency", 
+                        `title`="Frequency", 
+                        `type`="integer"),
+                    list(
+                        `name`="percent", 
+                        `title`="Percent", 
+                        `type`="number", 
+                        `format`="zto"),
+                    list(
+                        `name`="meanMeasure", 
+                        `title`="Mean Measure", 
+                        `type`="number", 
+                        `format`="zto"))))
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="thresholdOrder",
+                title="PCM Threshold Ordering",
+                visible="(thresholdOrder)",
+                clearWith=list(
+                    "vars",
+                    "nc",
+                    "step",
+                    "type"),
+                columns=list(
+                    list(
+                        `name`="item", 
+                        `title`="Item", 
+                        `type`="text", 
+                        `combineBelow`=TRUE),
+                    list(
+                        `name`="class", 
+                        `title`="Class", 
+                        `type`="integer", 
+                        `combineBelow`=TRUE),
+                    list(
+                        `name`="ordered", 
+                        `title`="Ordered", 
+                        `type`="text"),
+                    list(
+                        `name`="step", 
+                        `title`="Step", 
+                        `type`="integer"),
+                    list(
+                        `name`="threshold", 
+                        `title`="Threshold", 
+                        `type`="number", 
+                        `format`="zto"))))
             self$add(R6::R6Class(
                 inherit = jmvcore::Group,
                 active = list(
@@ -583,6 +674,8 @@ mixtureBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param iplot .
 #' @param plot3 .
 #' @param plot2 .
+#' @param catStats .
+#' @param thresholdOrder .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
@@ -594,6 +687,8 @@ mixtureBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$item$infit} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$item$outfit} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$item$pbis} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$categoryStats} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$thresholdOrder} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$person$average} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$iplot} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$plot3} \tab \tab \tab \tab \tab an image \cr
@@ -604,6 +699,12 @@ mixtureBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$pinfit} \tab \tab \tab \tab \tab an output \cr
 #'   \code{results$poutfit} \tab \tab \tab \tab \tab an output \cr
 #' }
+#'
+#' Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
+#'
+#' \code{results$categoryStats$asDF}
+#'
+#' \code{as.data.frame(results$categoryStats)}
 #'
 #' @export
 mixture <- function(
@@ -624,7 +725,9 @@ mixture <- function(
     angle = 0,
     iplot = FALSE,
     plot3 = FALSE,
-    plot2 = TRUE) {
+    plot2 = TRUE,
+    catStats = FALSE,
+    thresholdOrder = FALSE) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("mixture requires jmvcore to be installed (restart may be required)")
@@ -653,7 +756,9 @@ mixture <- function(
         angle = angle,
         iplot = iplot,
         plot3 = plot3,
-        plot2 = plot2)
+        plot2 = plot2,
+        catStats = catStats,
+        thresholdOrder = thresholdOrder)
 
     analysis <- mixtureClass$new(
         options = options,

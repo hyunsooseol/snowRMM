@@ -22,7 +22,9 @@ mixture(
   angle = 0,
   iplot = FALSE,
   plot3 = FALSE,
-  plot2 = TRUE
+  plot2 = TRUE,
+  catStats = FALSE,
+  thresholdOrder = FALSE
 )
 }
 \arguments{
@@ -62,6 +64,10 @@ where 0 degrees represents completely horizontal labels.}
 \item{plot3}{.}
 
 \item{plot2}{.}
+
+\item{catStats}{.}
+
+\item{thresholdOrder}{.}
 }
 \value{
 A results object containing:
@@ -75,6 +81,8 @@ A results object containing:
   \code{results$item$infit} \tab \tab \tab \tab \tab a table \cr
   \code{results$item$outfit} \tab \tab \tab \tab \tab a table \cr
   \code{results$item$pbis} \tab \tab \tab \tab \tab a table \cr
+  \code{results$categoryStats} \tab \tab \tab \tab \tab a table \cr
+  \code{results$thresholdOrder} \tab \tab \tab \tab \tab a table \cr
   \code{results$person$average} \tab \tab \tab \tab \tab a table \cr
   \code{results$iplot} \tab \tab \tab \tab \tab an image \cr
   \code{results$plot3} \tab \tab \tab \tab \tab an image \cr
@@ -85,6 +93,12 @@ A results object containing:
   \code{results$pinfit} \tab \tab \tab \tab \tab an output \cr
   \code{results$poutfit} \tab \tab \tab \tab \tab an output \cr
 }
+
+Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
+
+\code{results$categoryStats$asDF}
+
+\code{as.data.frame(results$categoryStats)}
 }
 \description{
 Rasch Mixture Model

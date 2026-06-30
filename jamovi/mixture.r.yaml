@@ -184,6 +184,79 @@ items:
               type: number
               superTitle: 'Class'
 
+    - name: categoryStats
+      title: 'Category Statistics'
+      type: Table
+      visible: (catStats)
+      clearWith:
+        - vars
+        - nc
+        - step
+        - type
+
+      columns:
+        - name: item
+          title: Item
+          type: text
+          combineBelow: true
+
+        - name: class
+          title: Class
+          type: integer
+          combineBelow: true
+
+        - name: category
+          title: Category
+          type: integer
+
+        - name: frequency
+          title: Frequency
+          type: integer
+
+        - name: percent
+          title: Percent
+          type: number
+          format: zto
+
+        - name: meanMeasure
+          title: Mean Measure
+          type: number
+          format: zto
+
+    - name: thresholdOrder
+      title: 'PCM Threshold Ordering'
+      type: Table
+      visible: (thresholdOrder)
+      clearWith:
+        - vars
+        - nc
+        - step
+        - type
+
+      columns:
+        - name: item
+          title: Item
+          type: text
+          combineBelow: true
+
+        - name: class
+          title: Class
+          type: integer
+          combineBelow: true
+
+        - name: ordered
+          title: Ordered
+          type: text
+
+        - name: step
+          title: Step
+          type: integer
+
+        - name: threshold
+          title: Threshold
+          type: number
+          format: zto
+
     - name: person
       title: Person Analysis
       type: Group

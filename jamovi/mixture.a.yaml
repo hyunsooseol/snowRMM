@@ -145,4 +145,14 @@ options:
       title: Outfit
       type: Output
 
+    - name: catStats
+      title: 'Category statistics'
+      type: Bool
+      default: false
+
+    - name: thresholdOrder
+      title: 'PCM threshold ordering'
+      type: Bool
+      default: false
+
 ...

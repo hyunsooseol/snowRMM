@@ -86,6 +86,16 @@ children:
                 name: outfit
               - type: CheckBox
                 name: pbis
+          - type: Label
+            label: 'Category diagnostics'
+            children:
+              - type: CheckBox
+                name: catStats
+ 
+              - type: CheckBox
+                name: thresholdOrder
+                enable: (type:PCM && !step:1)
+
       - type: LayoutBox
         stretchFactor: 1
         margin: large
