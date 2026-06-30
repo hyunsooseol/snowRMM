@@ -103,7 +103,7 @@ items:
               type: number
 
     - name: thr
-      title: '`Thresholds table(tau parameter)- ${type}`'
+      title: '`Step parameters (tau)- ${type}`'
       type: Table
       rows: (vars)
       visible: (thr)
@@ -119,7 +119,7 @@ items:
           content: ($key)
 
     - name: rsm
-      title: 'Rating Scale Model'
+      title: 'RSM thresholds'
       type: Table
       rows: (vars)
       visible: (rsm)
@@ -135,7 +135,7 @@ items:
           content: ($key)
 
     - name: pcm
-      title: 'Partial Credit Model'
+      title: 'PCM thresholds'
       type: Table
       rows: (vars)
       visible: (pcm)
@@ -150,6 +150,62 @@ items:
           type: 'number'
           content: ($key)
  
+    - name: categoryStats
+      title: Item category statistics
+      type: Table
+      visible: (catStats)
+      clearWith:
+        - vars
+        - step
+        - type
+      
+      columns:
+        - name: item
+          title: Item
+          type: text
+          combineBelow: true
+      
+        - name: category
+          title: Category
+          type: text
+      
+        - name: frequency
+          title: Frequency
+          type: integer
+      
+        - name: percent
+          title: Percent (%)
+          type: number
+          format: zto
+      
+        - name: meanMeasure
+          title: Mean measure
+          type: number
+          format: zto
+      
+    - name: thresholdOrdering
+      title: 'PCM threshold ordering'
+      type: Table
+      rows: (vars)
+      visible: (thresholdOrder)
+      clearWith:
+        - vars
+        - step
+        - type
+      columns:
+        - name: item
+          title: Item
+          type: text
+          content: ($key)
+      
+        - name: ordering
+          title: Ordering
+          type: text
+      
+        - name: details
+          title: Details
+          type: text
+
     - name: plot
       title: 'Wright Map'
       type: Image
@@ -165,11 +221,11 @@ items:
         - type
 
     - name: piplot
-      title: 'Person-Item Map for Partial Credit Model '
+      title: 'PCM person-item map'
       type: Image
       width: 600
       height: 450      
-      visible: (piplot)
+      visible: (piplot && type:PCM)
       renderFun: .piPlot
       requiresData: TRUE
       refs: eRm
@@ -179,7 +235,7 @@ items:
         - type
 
     - name: gofplot
-      title: 'Goodness-of-Fit for LR test'
+      title: 'Goodness-of-fit plot for dichotomous LR test'
       type: Image
       width: 600
       height: 450      

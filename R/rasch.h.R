@@ -50,7 +50,9 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             num1 = 1,
             nptest = FALSE,
             matrix = 500,
-            npmethod = "T11", ...) {
+            npmethod = "T11",
+            catStats = FALSE,
+            thresholdOrder = FALSE, ...) {
 
             super$initialize(
                 package="snowRMM",
@@ -286,6 +288,14 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "T1m",
                     "T11"),
                 default="T11")
+            private$..catStats <- jmvcore::OptionBool$new(
+                "catStats",
+                catStats,
+                default=FALSE)
+            private$..thresholdOrder <- jmvcore::OptionBool$new(
+                "thresholdOrder",
+                thresholdOrder,
+                default=FALSE)
 
             self$.addOption(private$..vars)
             self$.addOption(private$..num)
@@ -337,6 +347,8 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..nptest)
             self$.addOption(private$..matrix)
             self$.addOption(private$..npmethod)
+            self$.addOption(private$..catStats)
+            self$.addOption(private$..thresholdOrder)
         }),
     active = list(
         vars = function() private$..vars$value,
@@ -388,7 +400,9 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         num1 = function() private$..num1$value,
         nptest = function() private$..nptest$value,
         matrix = function() private$..matrix$value,
-        npmethod = function() private$..npmethod$value),
+        npmethod = function() private$..npmethod$value,
+        catStats = function() private$..catStats$value,
+        thresholdOrder = function() private$..thresholdOrder$value),
     private = list(
         ..vars = NA,
         ..num = NA,
@@ -439,7 +453,9 @@ raschOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..num1 = NA,
         ..nptest = NA,
         ..matrix = NA,
-        ..npmethod = NA)
+        ..npmethod = NA,
+        ..catStats = NA,
+        ..thresholdOrder = NA)
 )
 
 raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -453,6 +469,8 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         thr = function() private$.items[["thr"]],
         rsm = function() private$.items[["rsm"]],
         pcm = function() private$.items[["pcm"]],
+        categoryStats = function() private$.items[["categoryStats"]],
+        thresholdOrdering = function() private$.items[["thresholdOrdering"]],
         plot = function() private$.items[["plot"]],
         piplot = function() private$.items[["piplot"]],
         gofplot = function() private$.items[["gofplot"]],
@@ -607,7 +625,7 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Table$new(
                 options=options,
                 name="thr",
-                title="`Thresholds table(tau parameter)- ${type}`",
+                title="`Step parameters (tau)- ${type}`",
                 rows="(vars)",
                 visible="(thr)",
                 refs="mixRasch",
@@ -624,7 +642,7 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Table$new(
                 options=options,
                 name="rsm",
-                title="Rating Scale Model",
+                title="RSM thresholds",
                 rows="(vars)",
                 visible="(rsm)",
                 refs="eRm",
@@ -641,7 +659,7 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Table$new(
                 options=options,
                 name="pcm",
-                title="Partial Credit Model",
+                title="PCM thresholds",
                 rows="(vars)",
                 visible="(pcm)",
                 refs="eRm",
@@ -655,6 +673,63 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         `title`="", 
                         `type`="number", 
                         `content`="($key)"))))
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="categoryStats",
+                title="Item category statistics",
+                visible="(catStats)",
+                clearWith=list(
+                    "vars",
+                    "step",
+                    "type"),
+                columns=list(
+                    list(
+                        `name`="item", 
+                        `title`="Item", 
+                        `type`="text", 
+                        `combineBelow`=TRUE),
+                    list(
+                        `name`="category", 
+                        `title`="Category", 
+                        `type`="text"),
+                    list(
+                        `name`="frequency", 
+                        `title`="Frequency", 
+                        `type`="integer"),
+                    list(
+                        `name`="percent", 
+                        `title`="Percent (%)", 
+                        `type`="number", 
+                        `format`="zto"),
+                    list(
+                        `name`="meanMeasure", 
+                        `title`="Mean measure", 
+                        `type`="number", 
+                        `format`="zto"))))
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="thresholdOrdering",
+                title="PCM threshold ordering",
+                rows="(vars)",
+                visible="(thresholdOrder)",
+                clearWith=list(
+                    "vars",
+                    "step",
+                    "type"),
+                columns=list(
+                    list(
+                        `name`="item", 
+                        `title`="Item", 
+                        `type`="text", 
+                        `content`="($key)"),
+                    list(
+                        `name`="ordering", 
+                        `title`="Ordering", 
+                        `type`="text"),
+                    list(
+                        `name`="details", 
+                        `title`="Details", 
+                        `type`="text"))))
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot",
@@ -672,10 +747,10 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Image$new(
                 options=options,
                 name="piplot",
-                title="Person-Item Map for Partial Credit Model ",
+                title="PCM person-item map",
                 width=600,
                 height=450,
-                visible="(piplot)",
+                visible="(piplot && type:PCM)",
                 renderFun=".piPlot",
                 requiresData=TRUE,
                 refs="eRm",
@@ -686,7 +761,7 @@ raschResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Image$new(
                 options=options,
                 name="gofplot",
-                title="Goodness-of-Fit for LR test",
+                title="Goodness-of-fit plot for dichotomous LR test",
                 width=600,
                 height=450,
                 visible="(gofplot)",
@@ -1187,6 +1262,8 @@ raschBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param nptest .
 #' @param matrix .
 #' @param npmethod .
+#' @param catStats .
+#' @param thresholdOrder .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
@@ -1197,6 +1274,8 @@ raschBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$thr} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$rsm} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$pcm} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$categoryStats} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$thresholdOrdering} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$piplot} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$gofplot} \tab \tab \tab \tab \tab an image \cr
@@ -1278,7 +1357,9 @@ rasch <- function(
     num1 = 1,
     nptest = FALSE,
     matrix = 500,
-    npmethod = "T11") {
+    npmethod = "T11",
+    catStats = FALSE,
+    thresholdOrder = FALSE) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("rasch requires jmvcore to be installed (restart may be required)")
@@ -1335,7 +1416,9 @@ rasch <- function(
         num1 = num1,
         nptest = nptest,
         matrix = matrix,
-        npmethod = npmethod)
+        npmethod = npmethod,
+        catStats = catStats,
+        thresholdOrder = thresholdOrder)
 
     analysis <- raschClass$new(
         options = options,

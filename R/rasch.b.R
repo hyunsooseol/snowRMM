@@ -160,6 +160,143 @@ raschClass <- if (requireNamespace('jmvcore'))
         pinfit   <- res$person.par$infit
         poutfit  <- res$person.par$outfit
         
+        
+        # Item category statistics ------------------------------------
+        if (isTRUE(self$options$catStats)) {
+          
+          table <- self$results$categoryStats
+          categoryData <- cleanData
+          categoryMeasure <- res$person.par$theta
+          
+          for (i in seq_along(vars)) {
+            
+            itemName <- vars[i]
+            itemValues <- categoryData[[itemName]]
+            
+            # Use the categories actually observed in the data
+            categories <- sort(unique(itemValues))
+            categories <- categories[is.finite(categories)]
+            
+            for (j in seq_along(categories)) {
+              
+              categoryValue <- categories[j]
+              selected <- itemValues == categoryValue
+              
+              frequency <- sum(selected, na.rm = TRUE)
+              percent <- frequency / length(itemValues) * 100
+              
+              measureValues <- categoryMeasure[selected]
+              measureValues <- measureValues[is.finite(measureValues)]
+              
+              if (length(measureValues) > 0) {
+                meanMeasure <- mean(measureValues)
+              } else {
+                meanMeasure <- NA_real_
+              }
+              
+              table$addRow(
+                rowKey = paste0(itemName, "_", categoryValue),
+                values = list(
+                  item = itemName,
+                  category = as.character(categoryValue),
+                  frequency = frequency,
+                  percent = percent,
+                  meanMeasure = meanMeasure
+                )
+              )
+            }
+          }
+          
+          table$setNote(
+            "Note",
+            "Mean measure is the average person measure for respondents in each response category."
+          )
+        }
+        
+        
+        # Threshold ordering diagnostics ------------------------------
+        if (isTRUE(self$options$thresholdOrder) &&
+            self$options$step > 1 &&
+            identical(self$options$type, "PCM")) {
+          
+          table <- self$results$thresholdOrdering
+          
+          thresholdResult <- eRm::thresholds(erm$pcm.res)
+          thresholdTable <- thresholdResult$threshtable
+          thresholdData <- data.frame(
+            Reduce(rbind, thresholdTable),
+            check.names = FALSE
+          )
+          
+          # The first column contains item/location information
+          thresholdData <- thresholdData[, -1, drop = FALSE]
+          
+          for (i in seq_along(vars)) {
+            
+            thresholdValues <- as.numeric(thresholdData[i, ])
+            thresholdValues <- thresholdValues[is.finite(thresholdValues)]
+            
+            if (length(thresholdValues) > 0) {
+              
+              differences <- diff(thresholdValues)
+              ordered <- length(differences) == 0 ||
+                all(differences > 0)
+              
+              ordering <- if (ordered)
+                "Ordered"
+              else
+                "Disordered"
+              
+              if (length(thresholdValues) == 1) {
+                
+                details <- sprintf("%.3f", thresholdValues)
+                
+              } else {
+                
+                signs <- ifelse(
+                  differences > 0,
+                  " < ",
+                  " \u2265 "
+                )
+                
+                details <- sprintf("%.3f", thresholdValues[1])
+                
+                for (j in seq_along(signs)) {
+                  details <- paste0(
+                    details,
+                    signs[j],
+                    sprintf("%.3f", thresholdValues[j + 1])
+                  )
+                }
+              }
+              
+            } else {
+              
+              ordering <- NA_character_
+              details <- NA_character_
+            }
+            
+            table$setRow(
+              rowKey = vars[i],
+              values = list(
+                ordering = ordering,
+                details = details
+              )
+            )
+          }
+          
+          table$setNote(
+            "Note",
+            paste(
+              "Threshold ordering is based on item-specific thresholds",
+              "estimated with the eRm R package.",
+              "Ordered indicates monotonically increasing thresholds.",
+              "Disordered indicates that at least one threshold is",
+              "equal to or lower than the preceding threshold."
+            )
+          )
+        }
+        
         originalRowCount <- nrow(self$data)
         validRows <- private$.validRows
         
@@ -235,10 +372,21 @@ raschClass <- if (requireNamespace('jmvcore'))
         # person separation reliability using eRm R package---------
         
         if (self$options$step == 1) {
+          
           set.seed(1234)
           pers <- eRm::person.parameter(erm$rasch)
           rel <- eRm::SepRel(pers)
-        } else if (self$options$step > 1) {
+          
+        } else if (self$options$step > 1 &&
+                   identical(self$options$type, "RSM")) {
+          
+          set.seed(1234)
+          pers <- eRm::person.parameter(erm$rsm.res)
+          rel <- eRm::SepRel(pers)
+          
+        } else if (self$options$step > 1 &&
+                   identical(self$options$type, "PCM")) {
+          
           set.seed(1234)
           pers <- eRm::person.parameter(erm$pcm.res)
           rel <- eRm::SepRel(pers)
@@ -320,7 +468,8 @@ raschClass <- if (requireNamespace('jmvcore'))
         }
         
         if (self$options$step > 1) {
-          if (isTRUE(self$options$rsm)) {
+          if (isTRUE(self$options$rsm) &&
+              identical(self$options$type, "RSM")) {
             tab <- eRm::thresholds(erm$rsm.res)
             tab <- tab$threshtable
             rsm <- data.frame(Reduce(rbind, tab))
@@ -349,14 +498,18 @@ raschClass <- if (requireNamespace('jmvcore'))
           }
           
           #RSM plot----------
-          if (isTRUE(self$options$plot2)) {
+          if (isTRUE(self$options$plot2) &&
+              identical(self$options$type, "RSM")) {
+            
             image <- self$results$plot2
             image$setState(erm$rsm.res)
           }
           
           # Testing LR test with Rating scale---
           
-          if (isTRUE(self$options$lr1)) {
+          if (isTRUE(self$options$lr1) &&
+              identical(self$options$type, "RSM")) {
+            
             set.seed(1234)
             lr1 <- eRm::LRtest(erm$rsm.res, splitcr = self$options$lrsplit1)
             
@@ -368,7 +521,10 @@ raschClass <- if (requireNamespace('jmvcore'))
           }
         }
         
-        if (isTRUE(self$options$pcm)) {
+        if (isTRUE(self$options$pcm) &&
+            self$options$step > 1 &&
+            identical(self$options$type, "PCM")) {
+          
           tab1 <- eRm::thresholds(erm$pcm.res)
           tab1 <- tab1$threshtable
           pcm <- data.frame(Reduce(rbind, tab1))
@@ -1022,7 +1178,7 @@ raschClass <- if (requireNamespace('jmvcore'))
         TRUE
       },
       
-#### Helper functions =================================
+      #### Helper functions =================================
       .cleanData = function() {
         if (!is.null(private$.cleanDataCache))
           return(private$.cleanDataCache)

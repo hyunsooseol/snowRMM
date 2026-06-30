@@ -99,17 +99,17 @@ options:
       default: FALSE
 
     - name: rsm
-      title: Rating scale(Step>1)
+      title: Rating scale
       type: Bool
       default: FALSE
 
     - name: pcm
-      title: Partial credit(Step>1)
+      title: Partial credit
       type: Bool
       default: FALSE
 
     - name: thr
-      title: 'Thresholds(tau)'
+      title: 'Step parameters (tau)'
       type: Bool
       default: FALSE
 
@@ -163,7 +163,7 @@ options:
       default: median
 
     - name: lr
-      title: 'LR test'
+      title: 'RSM LR test'
       type: Bool
       default: FALSE
 
@@ -191,7 +191,7 @@ options:
       default: FALSE
 
     - name: gofplot
-      title: Fit plot for LR test 
+      title: Goodness-of-fit plot
       type: Bool
       default: false
 
@@ -240,7 +240,7 @@ options:
       default: FALSE   
 
     - name: piplot
-      title: 'Person-item map for PCM' 
+      title: 'PCM map (Step>1)' 
       type: Bool
       default: FALSE
 
@@ -317,5 +317,16 @@ options:
       - name: T11
         title: 'Global test for local dependency'
       default: T11
+
+    - name: catStats
+      title: 'Category statistics'
+      type: Bool
+      default: false
+
+    - name: thresholdOrder
+      title: 'PCM threshold ordering (Step > 1)'
+      type: Bool
+      default: false
+
 
 ...

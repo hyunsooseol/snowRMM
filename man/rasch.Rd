@@ -50,7 +50,9 @@ rasch(
   num1 = 1,
   nptest = FALSE,
   matrix = 500,
-  npmethod = "T11"
+  npmethod = "T11",
+  catStats = FALSE,
+  thresholdOrder = FALSE
 )
 }
 \arguments{
@@ -146,6 +148,10 @@ where 0 degrees represents completely horizontal labels.}
 \item{matrix}{.}
 
 \item{npmethod}{.}
+
+\item{catStats}{.}
+
+\item{thresholdOrder}{.}
 }
 \value{
 A results object containing:
@@ -158,6 +164,8 @@ A results object containing:
   \code{results$thr} \tab \tab \tab \tab \tab a table \cr
   \code{results$rsm} \tab \tab \tab \tab \tab a table \cr
   \code{results$pcm} \tab \tab \tab \tab \tab a table \cr
+  \code{results$categoryStats} \tab \tab \tab \tab \tab a table \cr
+  \code{results$thresholdOrdering} \tab \tab \tab \tab \tab a table \cr
   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
   \code{results$piplot} \tab \tab \tab \tab \tab an image \cr
   \code{results$gofplot} \tab \tab \tab \tab \tab an image \cr
