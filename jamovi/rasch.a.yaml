@@ -39,9 +39,9 @@ options:
       type: List
       options:
       - name: RSM
-        title: 'Rating scale'
+        title: 'Rating scale (RSM)'
       - name: PCM
-        title: 'Partial credit'
+        title: 'Partial credit (PCM)'
       default: RSM
 
     # - name: run
@@ -191,7 +191,7 @@ options:
       default: FALSE
 
     - name: gofplot
-      title: Goodness-of-fit plot
+      title: 'Goodness-of-fit plot'
       type: Bool
       default: false
 
@@ -225,7 +225,7 @@ options:
             where 0 degrees represents completely horizontal labels.
 
     - name: plot1
-      title: 'ICC(Step=1)'
+      title: 'Item characteristic curve'
       type: Bool
       default: FALSE
       
@@ -240,7 +240,7 @@ options:
       default: FALSE   
 
     - name: piplot
-      title: 'PCM map (Step>1)' 
+      title: 'PCM map' 
       type: Bool
       default: FALSE
 
@@ -324,7 +324,7 @@ options:
       default: false
 
     - name: thresholdOrder
-      title: 'PCM threshold ordering (Step > 1)'
+      title: 'PCM threshold ordering'
       type: Bool
       default: false
 

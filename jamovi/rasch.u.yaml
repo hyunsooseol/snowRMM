@@ -79,11 +79,11 @@ children:
                 name: ise
 
           - type: Label
-            label: 'Step parameters (Step > 1)'
+            label: 'RSM step parameters'
             children:
               - type: CheckBox
                 name: thr
-                enable: (!step:1)
+                enable: (type:RSM && !step:1)
 
           - type: Label
             label: 'Category diagnostics'
@@ -134,7 +134,7 @@ children:
         children:
 
           - type: Label
-            label: Dichotomous (Step = 1)
+            label: 'Dichotomous model'
             children:
 
               - type: CheckBox
@@ -171,18 +171,7 @@ children:
         children:
 
           - type: Label
-            label: 'Polytomous (Step > 1)'
-            children:
-              - type: CheckBox
-                name: lr1
-                enable: (type:RSM && !step:1)
-                children:
-                  - type: ComboBox
-                    name: lrsplit1
-                    enable: (lr1 && type:RSM && !step:1)
-
-          - type: Label
-            label: Plot (Step = 1)
+            label: 'Dichotomous Model Plot'
             children:
               - type: CheckBox
                 name: gofplot
@@ -191,6 +180,17 @@ children:
                   - type: ComboBox
                     name: tlab
                     enable: (gofplot && step:1)
+
+          - type: Label
+            label: 'Polytomous RSM model'
+            children:
+              - type: CheckBox
+                name: lr1
+                enable: (type:RSM && !step:1)
+                children:
+                  - type: ComboBox
+                    name: lrsplit1
+                    enable: (lr1 && type:RSM && !step:1)
 
   - type: CollapseBox
     label: 'Plots'
@@ -212,7 +212,7 @@ children:
                 format: number
 
           - type: Label
-            label: Item Characteristic Curve (ICC)
+            label: 'Dichotomous ICC'
             fitToGrid: true
             children:
               - type: CheckBox
@@ -220,7 +220,7 @@ children:
                 enable: (step:1)
 
           - type: Label
-            label: Category (Step > 1)
+            label: 'Polytomous categories'
             fitToGrid: true
             children:
               - type: CheckBox
@@ -337,7 +337,7 @@ children:
         children:
 
           - type: Label
-            label: 'Model-specific thresholds (Step > 1)'
+            label: 'Polytomous thresholds'
             fitToGrid: true
             cell:
               column: 0
@@ -389,7 +389,7 @@ children:
         children:
 
           - type: Label
-            label: eRm-NP test (Step = 1)
+            label: 'Dichotomous Model Diagnostics'
             fitToGrid: true
             cell:
               column: 0

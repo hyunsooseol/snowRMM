@@ -117,12 +117,13 @@ datasets:
     path: rating.omv
     description: Polytomous model
     tags:
-      - Polytomous
+      - Rating scale
   - name: mix
     path: mix.omv
     description: Mixture model
     tags:
       - Mixture
+      - Partial credit
   - name: bootfit
     path: bootfit.omv
     description: Bootstrap Item Fit
