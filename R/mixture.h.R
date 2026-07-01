@@ -485,26 +485,19 @@ mixtureResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     list(
                         `name`="item", 
                         `title`="Item", 
-                        `type`="text", 
-                        `combineBelow`=TRUE),
+                        `type`="text"),
                     list(
                         `name`="class", 
                         `title`="Class", 
-                        `type`="integer", 
-                        `combineBelow`=TRUE),
-                    list(
-                        `name`="ordered", 
-                        `title`="Ordered", 
-                        `type`="text"),
-                    list(
-                        `name`="step", 
-                        `title`="Step", 
                         `type`="integer"),
                     list(
-                        `name`="threshold", 
-                        `title`="Threshold", 
-                        `type`="number", 
-                        `format`="zto"))))
+                        `name`="ordered", 
+                        `title`="Ordering", 
+                        `type`="text"),
+                    list(
+                        `name`="details", 
+                        `title`="Details", 
+                        `type`="text"))))
             self$add(R6::R6Class(
                 inherit = jmvcore::Group,
                 active = list(

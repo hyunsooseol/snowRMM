@@ -757,6 +757,7 @@ mixtureClass <- if (requireNamespace('jmvcore'))
       },
       
       .computeThresholdOrder = function(res, n_items, n_steps, model_type) {
+        
         is_pcm <- grepl(
           "partial|pcm",
           tolower(as.character(model_type)[1])
@@ -767,11 +768,14 @@ mixtureClass <- if (requireNamespace('jmvcore'))
         
         vars <- self$options$vars
         nclass <- min(self$options$nc, length(res$LatentClass))
+        
         rows <- list()
         row_no <- 0L
         
         for (class_no in seq_len(nclass)) {
+          
           item_par <- res$LatentClass[[class_no]]$item.par
+          
           thresholds <- private$.extractThresholdMatrix(
             item_par = item_par,
             n_items = n_items
@@ -780,77 +784,145 @@ mixtureClass <- if (requireNamespace('jmvcore'))
           if (is.null(thresholds))
             next
           
-          threshold_count <- ncol(thresholds)
-          
           for (item_no in seq_len(min(n_items, nrow(thresholds)))) {
-            item_thresholds <- as.numeric(thresholds[item_no, ])
-            valid_thresholds <- item_thresholds[is.finite(item_thresholds)]
             
-            item_ordered <- if (length(valid_thresholds) <= 1)
-              NA
-            else
-              all(diff(valid_thresholds) > 0)
+            item_thresholds <- as.numeric(
+              thresholds[item_no, ]
+            )
             
-            ordered_text <- if (is.na(item_ordered))
-              "Not available"
-            else if (item_ordered)
-              "Yes"
-            else
-              "No"
+            finite_thresholds <- item_thresholds[
+              is.finite(item_thresholds)
+            ]
             
-            for (step_no in seq_along(item_thresholds)) {
+            if (length(finite_thresholds) <= 1L) {
               
-              threshold_value <- item_thresholds[step_no]
-              
-              if (!is.finite(threshold_value))
-                threshold_value <- NA_real_
-              
-              row_no <- row_no + 1L
-              
-              rows[[row_no]] <- data.frame(
-                item = vars[item_no],
-                class = class_no,
-                ordered = if (step_no == 1L) ordered_text else "",
-                step = step_no,
-                threshold = threshold_value,
-                stringsAsFactors = FALSE
+              ordering_text <- "Not available"
+              details_text <- paste(
+                ifelse(
+                  is.finite(item_thresholds),
+                  formatC(
+                    item_thresholds,
+                    format = "f",
+                    digits = 3
+                  ),
+                  "NA"
+                ),
+                collapse = " < "
               )
+              
+            } else {
+              
+              item_ordered <- all(
+                diff(finite_thresholds) > 0
+              )
+              
+              ordering_text <- if (item_ordered) {
+                "Ordered"
+              } else {
+                "Disordered"
+              }
+              
+              formatted_values <- ifelse(
+                is.finite(item_thresholds),
+                formatC(
+                  item_thresholds,
+                  format = "f",
+                  digits = 3
+                ),
+                "NA"
+              )
+              
+              details_text <- formatted_values[1]
+              
+              if (length(item_thresholds) > 1L) {
+                
+                for (step_no in seq_len(
+                  length(item_thresholds) - 1L
+                )) {
+                  
+                  current_value <- item_thresholds[step_no]
+                  next_value <- item_thresholds[step_no + 1L]
+                  
+                  sign_text <- if (
+                    is.finite(current_value) &&
+                    is.finite(next_value)
+                  ) {
+                    
+                    if (next_value > current_value) {
+                      " < "
+                    } else if (next_value < current_value) {
+                      " > "
+                    } else {
+                      " = "
+                    }
+                    
+                  } else {
+                    
+                    " < "
+                  }
+                  
+                  details_text <- paste0(
+                    details_text,
+                    sign_text,
+                    formatted_values[step_no + 1L]
+                  )
+                }
+              }
             }
+            
+            row_no <- row_no + 1L
+            
+            rows[[row_no]] <- data.frame(
+              item = vars[item_no],
+              class = class_no,
+              ordered = ordering_text,
+              details = details_text,
+              stringsAsFactors = FALSE
+            )
           }
         }
         
-        if (length(rows) == 0)
+        if (length(rows) == 0L)
           return(NULL)
         
         values <- do.call(rbind, rows)
+        
         values <- values[
-          order(values$item, values$class, values$step),
+          order(
+            values$item,
+            values$class
+          ),
           ,
           drop = FALSE
         ]
+        
         rownames(values) <- NULL
-        values
+        
+        return(values)
       },
       
       .populateThresholdOrderTable = function(results) {
+        
         if (!isTRUE(self$options$thresholdOrder))
           return()
         
         values <- results$thresholdOrder
+        
         if (is.null(values) || nrow(values) == 0)
           return()
         
         table <- self$results$thresholdOrder
         
         for (i in seq_len(nrow(values))) {
+          
           table$addRow(
             rowKey = paste0(
               values$item[i], "_",
-              values$class[i], "_",
-              values$step[i], "_",
-              i
+              values$class[i]
             ),
-            values = as.list(values[i, , drop = FALSE])
+            values = as.list(
+              values[i, , drop = FALSE]
+            )
           )
         }
       },

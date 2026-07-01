@@ -108,17 +108,20 @@ analyses:
     ribbon: analyses
     category: analyses
 datasets:
-  - name: Rasch
+  - name: binary
     path: rasch.omv
     description: Dichotomous model
     tags:
       - Dichotomous
-      - Mixture
-  - name: mix
+  - name: rating
     path: rating.omv
-    description: Rasch model
+    description: Polytomous model
     tags:
       - Polytomous
+  - name: mix
+    path: mix.omv
+    description: Mixture model
+    tags:
       - Mixture
   - name: bootfit
     path: bootfit.omv

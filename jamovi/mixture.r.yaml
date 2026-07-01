@@ -237,25 +237,18 @@ items:
         - name: item
           title: Item
           type: text
-          combineBelow: true
 
         - name: class
           title: Class
           type: integer
-          combineBelow: true
 
         - name: ordered
-          title: Ordered
+          title: Ordering
           type: text
 
-        - name: step
-          title: Step
-          type: integer
-
-        - name: threshold
-          title: Threshold
-          type: number
-          format: zto
+        - name: details
+          title: Details
+          type: text
 
     - name: person
       title: Person Analysis
