@@ -22,6 +22,22 @@ children:
             height: small
             isTarget: true
             ghostText: Optional 
+  - type: LayoutBox
+    margin: large
+    stretchFactor: 1
+    children:
+      - type: LayoutBox
+        margin: large
+        cell:
+          column: 0
+          row: 0
+        stretchFactor: 1
+        children:
+          - name: nc
+            type: TextBox
+            label: Class
+            format: number 
+
   - type: CollapseBox
     label: 'Statistics'
     margin: normal
@@ -31,13 +47,6 @@ children:
         stretchFactor: 1
         margin: large
         children:
-          - type: Label
-            label: ''
-            children:
-              - name: nc
-                type: TextBox
-                label: Class
-                format: number
           - type: Label
             label: 'Model fit'
             children:
