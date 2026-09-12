@@ -11,8 +11,8 @@ lpaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             nc = 2,
             variances = "equal",
             covariances = "zero",
-            overall = TRUE,
-            fit = FALSE,
+            overall = FALSE,
+            fit = TRUE,
             est = FALSE,
             plot = FALSE,
             plot1 = FALSE,
@@ -64,11 +64,11 @@ lpaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             private$..overall <- jmvcore::OptionBool$new(
                 "overall",
                 overall,
-                default=TRUE)
+                default=FALSE)
             private$..fit <- jmvcore::OptionBool$new(
                 "fit",
                 fit,
-                default=FALSE)
+                default=TRUE)
             private$..est <- jmvcore::OptionBool$new(
                 "est",
                 est,
@@ -646,8 +646,8 @@ lpa <- function(
     nc = 2,
     variances = "equal",
     covariances = "zero",
-    overall = TRUE,
-    fit = FALSE,
+    overall = FALSE,
+    fit = TRUE,
     est = FALSE,
     plot = FALSE,
     plot1 = FALSE,

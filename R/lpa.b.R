@@ -34,8 +34,8 @@ lpaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
               '<div style="text-align:justify;">',
               '<ul>',
               '<li><b>tidyLPA</b> R package is described in the <a href="https://cran.r-project.org/web/packages/tidyLPA/vignettes/Introduction_to_tidyLPA.html" target = "_blank">page</a>.</li>',
-              '<li>Four models(1,2,3,6) are specified using <b>mclust</b> R package.</li>',
-              '<li>Models with many indicators or classes, particularly those with complex covariance structures, may require substantial computation time or may fail to converge. In such cases, consider fewer classes or a simpler variance-covariance structure.</li>',
+              '<li><b>Compare models and classes</b> compares Models 1, 2, and 3 from 2 classes up to the selected number of classes. When varying variances and varying covariances are selected, Model 6 is also included and may require substantially longer computation time. Completed results are displayed as they become available.</li>',
+              '<li>Without model comparison, only the selected solution is estimated, except for the class sequence required by the elbow plot. The mclust EM estimation uses a convergence tolerance of 1e-5 and a maximum of 500 iterations.</li>',
               '<li>3-step auxiliary results are provided as approximate posterior-probability-based comparisons and should be interpreted with caution for strict methodological applications.</li>',
               '<li>Feature requests and bug reports can be made on my <a href="https://github.com/hyunsooseol/snowRMM/issues" target="_blank">GitHub</a>.</li>',
               '</ul></div></div>'
@@ -59,33 +59,16 @@ lpaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         
         all <- private$.allCache
         
-        if (is.null(all) || is.null(all$res))
+        if (is.null(all))
           return()
         
-        # Overall model fit table---
-        if (isTRUE(self$options$overall)) {
-          table <- self$results$overall
-          f <- all$bestfit
-          if (!is.null(f)) {
-            lapply(rownames(f), function(name) {
-              row <- list(
-                model = f[name, "Model"],
-                classes = f[name, "Classes"],
-                log = f[name, "LogLik"],
-                aic = f[name, "AIC"],
-                awe = f[name, "AWE"],
-                bic = f[name, "BIC"],
-                caic = f[name, "CAIC"],
-                clc = f[name, "CLC"],
-                kic = f[name, "KIC"],
-                sabic = f[name, "SABIC"],
-                icl = f[name, "ICL"],
-                entropy = f[name, "Entropy"]
-              )
-              table$addRow(rowKey = name, values = row)
-            })
-          }
-        }
+        # Overall model fit rows are populated incrementally in .computeRES().
+        
+        # If the selected solution did not converge, retain the Overall Model
+        # Fit results from all successfully converged solutions but do not
+        # produce detailed output, saved values, plots, or 3-step results.
+        if (is.null(all$res))
+          return()
         
         # Fit measures----------
         if (isTRUE(self$options$fit)) {
@@ -652,6 +635,105 @@ lpaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         profile
       },
       
+      # Return the convergence status recorded by mclust. A return code of 0
+      # indicates normal convergence; code 1 indicates that the EM iteration
+      # limit was reached. Older mclust objects without returnCodes fall back
+      # to the presence of finite fit information and attached case data.
+      .mclustConvergenceStatus = function(profile) {
+        if (is.null(profile) || is.null(profile$model)) {
+          return(list(
+            converged = FALSE,
+            code = NA_integer_,
+            message = "mclust did not return an estimated model."
+          ))
+        }
+        
+        model <- profile$model
+        return_codes <- try(attr(model$BIC, "returnCodes"), silent = TRUE)
+        code <- NA_integer_
+        
+        if (!inherits(return_codes, "try-error") && !is.null(return_codes)) {
+          if (!is.null(dim(return_codes))) {
+            row_index <- match(as.character(model$G), rownames(return_codes))
+            col_index <- match(as.character(model$modelName), colnames(return_codes))
+            if (!is.na(row_index) && !is.na(col_index)) {
+              code <- suppressWarnings(
+                as.integer(return_codes[row_index, col_index])
+              )
+            }
+          } else if (length(return_codes) == 1) {
+            code <- suppressWarnings(as.integer(return_codes[1]))
+          }
+        }
+        
+        fit <- try(as.data.frame(profile$fit), silent = TRUE)
+        finite_fit <- !inherits(fit, "try-error") &&
+          nrow(fit) > 0 &&
+          "LogLik" %in% names(fit) &&
+          is.finite(suppressWarnings(as.numeric(fit$LogLik[1]))) &&
+          !is.null(profile$dff)
+        
+        if (is.finite(code) && code != 0L) {
+          reason <- switch(
+            as.character(code),
+            `1` = "the maximum of 500 EM iterations was reached",
+            `-1` = "a singular covariance matrix was encountered",
+            `-2` = "a posterior-probability column sum fell below the numerical threshold",
+            `-3` = "a mixing proportion fell below the numerical threshold",
+            `-9` = "the estimated covariance matrix was not positive definite",
+            `9` = "required model parameters were unavailable",
+            paste0("mclust returned convergence code ", code)
+          )
+          return(list(
+            converged = FALSE,
+            code = code,
+            message = paste0("The solution did not converge because ", reason, ".")
+          ))
+        }
+        
+        if (!finite_fit) {
+          return(list(
+            converged = FALSE,
+            code = code,
+            message = "The solution did not return finite fit information."
+          ))
+        }
+        
+        list(converged = TRUE, code = code, message = NULL)
+      },
+      
+      # Preserve the model/class row while ensuring that a non-converged
+      # solution cannot contribute fit indices, estimates, classification,
+      # plots, saved values, 3-step results, or model-selection decisions.
+      .markMclustFailure = function(profile, model_number, classes, message) {
+        fit_names <- c(
+          "Model", "Classes", "LogLik", "parameters", "n", "AIC", "AWE",
+          "BIC", "CAIC", "CLC", "KIC", "SABIC", "ICL", "Entropy",
+          "prob_min", "prob_max", "n_min", "n_max", "BLRT_val", "BLRT_p"
+        )
+        fit <- as.data.frame(
+          as.list(stats::setNames(rep(NA_real_, length(fit_names)), fit_names)),
+          check.names = FALSE
+        )
+        fit$Model[1] <- as.integer(model_number)
+        fit$Classes[1] <- as.integer(classes)
+        
+        if (is.null(profile) || !is.list(profile))
+          profile <- list()
+        
+        existing_warnings <- profile$warnings
+        profile$model <- NULL
+        profile$fit <- fit
+        profile$estimates <- NULL
+        profile$dff <- NULL
+        profile$warnings <- unique(c(
+          as.character(existing_warnings),
+          as.character(message)
+        ))
+        class(profile) <- c("tidyProfile.mclust", "tidyProfile", "list")
+        profile
+      },
+      
       .computeRES = function() {
         
         vars <- self$options$vars
@@ -695,6 +777,11 @@ lpaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         
         set.seed(1234)
         
+        em_control <- mclust::emControl(
+          tol = 1e-5,
+          itmax = 500L
+        )
+        
         if (!is.finite(nc) || nc < 2)
           jmvcore::reject("The number of classes must be at least 2.")
         
@@ -715,58 +802,236 @@ lpaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           )
         }
         
-        # Model 1, 2, 3, and 6 are retained for Overall Model Fit.
-        # Each model is estimated once, and the selected K-class solution is
-        # reused for the detailed output.
-        comparison_models <- c(1L, 2L, 3L, 6L)
-        best <- list()
+        # Estimate only the solutions required by the requested output.
+        # Overall Model Fit automatically compares Models 1, 2, and 3.
+        # Model 6 is added only when it is the directly selected model.
+        # The elbow plot requires classes 2:nc for the selected model only.
+        # Otherwise, estimate only the selected model at the selected class.
+        # In every case, the selected K-class solution is reused for detailed
+        # output, saved values, plots, and the 3-step analysis.
+        automatic_comparison_models <- c(1L, 2L, 3L)
+        compare_requested <- isTRUE(self$options$overall)
+        elbow_requested <- isTRUE(self$options$plot2)
         
-        for (model_number in comparison_models) {
+        models_to_estimate <- if (compare_requested) {
+          if (selected_model == 6L) {
+            c(automatic_comparison_models, 6L)
+          } else {
+            automatic_comparison_models
+          }
+        } else {
+          selected_model
+        }
+        
+        if (compare_requested) {
+          self$results$overall$setNote(
+            key = "comparison_scope",
+            note = paste0(
+              "Models 1, 2, and 3 are compared by default. ",
+              "Model 6 is included only when varying variances and varying ",
+              "covariances are selected and may require substantially longer ",
+              "computation time depending on the data and number of classes."
+            ),
+            init = FALSE
+          )
+        }
+        
+        classes_to_estimate <- if (compare_requested || elbow_requested) {
+          seq.int(2L, as.integer(nc))
+        } else {
+          as.integer(nc)
+        }
+        
+        best <- list()
+        comparison_failures <- character()
+        completed_models <- integer()
+        required_fit_columns <- c(
+          "Model", "Classes", "LogLik", "AIC", "AWE", "BIC",
+          "CAIC", "CLC", "KIC", "SABIC", "ICL", "Entropy"
+        )
+        
+        for (model_number in models_to_estimate) {
+          class_progress <- if (length(classes_to_estimate) == 1L) {
+            paste0(" (", classes_to_estimate, " classes)")
+          } else {
+            paste0(
+              " (classes ", min(classes_to_estimate), "-",
+              max(classes_to_estimate), ")"
+            )
+          }
+          
+          completed_progress <- if (
+            compare_requested && length(completed_models) > 0L
+          ) {
+            paste0(
+              ". Completed: Models ",
+              paste(completed_models, collapse = ", ")
+            )
+          } else {
+            ""
+          }
+          
           self$results$progressBarHTML$setContent(
             appleSpinnerH(
               paste0(
                 "Computing LPA... Model ", model_number,
-                " (classes 2-", as.integer(nc), ")"
+                class_progress,
+                completed_progress
               )
             )
           )
           private$.checkpoint()
           
-          model_results <- tryCatch(
-            tidyLPA::estimate_profiles(
-              datX,
-              n_profiles = seq.int(2L, as.integer(nc)),
-              models = model_number
+          model_attempt <- tryCatch(
+            list(
+              results = tidyLPA::estimate_profiles(
+                datX,
+                n_profiles = classes_to_estimate,
+                models = model_number,
+                control = em_control
+              ),
+              error = NULL
             ),
             error = function(e) {
-              jmvcore::reject(
-                paste0(
-                  "LPA estimation failed for Model ", model_number, ": ",
-                  conditionMessage(e)
-                )
-              )
+              list(results = NULL, error = conditionMessage(e))
             }
           )
           
+          if (!is.null(model_attempt$error)) {
+            failure_message <- paste0(
+              "Model ", model_number, class_progress,
+              " failed: ", model_attempt$error
+            )
+            comparison_failures <- c(comparison_failures, failure_message)
+            
+            model_results <- lapply(
+              classes_to_estimate,
+              function(classes) {
+                private$.markMclustFailure(
+                  profile = NULL,
+                  model_number = model_number,
+                  classes = classes,
+                  message = failure_message
+                )
+              }
+            )
+            names(model_results) <- paste0(
+              "model_", model_number, "_class_",
+              classes_to_estimate
+            )
+            class(model_results) <- c("tidyLPA", "list")
+          } else {
+            model_results <- model_attempt$results
+          }
+          
           model_results_class <- class(model_results)
           for (result_index in seq_along(model_results)) {
-            model_results[[result_index]] <- private$.correctMclustFit(
-              model_results[[result_index]],
-              nvars = ncol(datX)
-            )
+            profile <- model_results[[result_index]]
+            profile_fit <- try(as.data.frame(profile$fit), silent = TRUE)
+            profile_model <- if (
+              !inherits(profile_fit, "try-error") &&
+              nrow(profile_fit) > 0 &&
+              "Model" %in% names(profile_fit)
+            ) {
+              suppressWarnings(as.integer(profile_fit$Model[1]))
+            } else {
+              model_number
+            }
+            if (!is.finite(profile_model))
+              profile_model <- model_number
+            
+            profile_classes <- if (
+              !inherits(profile_fit, "try-error") &&
+              nrow(profile_fit) > 0 &&
+              "Classes" %in% names(profile_fit)
+            ) {
+              suppressWarnings(as.integer(profile_fit$Classes[1]))
+            } else {
+              classes_to_estimate[result_index]
+            }
+            if (!is.finite(profile_classes))
+              profile_classes <- classes_to_estimate[result_index]
+            
+            convergence <- private$.mclustConvergenceStatus(profile)
+            if (isTRUE(convergence$converged)) {
+              model_results[[result_index]] <- private$.correctMclustFit(
+                profile,
+                nvars = ncol(datX)
+              )
+            } else {
+              failure_message <- paste0(
+                "Model ", profile_model, " with ", profile_classes,
+                " classes: ", convergence$message
+              )
+              comparison_failures <- c(comparison_failures, failure_message)
+              model_results[[result_index]] <- private$.markMclustFailure(
+                profile = profile,
+                model_number = profile_model,
+                classes = profile_classes,
+                message = failure_message
+              )
+            }
           }
           class(model_results) <- model_results_class
+          
+          # Populate the Overall Model Fit table as soon as each model has
+          # finished. Model 6 is reached here only when it was directly
+          # selected together with model comparison.
+          if (compare_requested) {
+            model_fit <- as.data.frame(tidyLPA::get_fit(model_results))
+            missing_model_fit_columns <- setdiff(
+              required_fit_columns,
+              names(model_fit)
+            )
+            if (length(missing_model_fit_columns) > 0) {
+              jmvcore::reject(
+                paste0(
+                  "LPA fit output is missing required columns: ",
+                  paste(missing_model_fit_columns, collapse = ", "), "."
+                )
+              )
+            }
+            
+            table <- self$results$overall
+            for (fit_index in seq_len(nrow(model_fit))) {
+              row_key <- paste0(
+                "model_", model_fit$Model[fit_index],
+                "_class_", model_fit$Classes[fit_index]
+              )
+              table$addRow(
+                rowKey = row_key,
+                values = list(
+                  model = model_fit$Model[fit_index],
+                  classes = model_fit$Classes[fit_index],
+                  log = model_fit$LogLik[fit_index],
+                  aic = model_fit$AIC[fit_index],
+                  awe = model_fit$AWE[fit_index],
+                  bic = model_fit$BIC[fit_index],
+                  caic = model_fit$CAIC[fit_index],
+                  clc = model_fit$CLC[fit_index],
+                  kic = model_fit$KIC[fit_index],
+                  sabic = model_fit$SABIC[fit_index],
+                  icl = model_fit$ICL[fit_index],
+                  entropy = model_fit$Entropy[fit_index]
+                )
+              )
+            }
+            completed_models <- c(completed_models, model_number)
+          }
           
           best <- c(best, unclass(model_results))
           private$.checkpoint()
         }
         class(best) <- c("tidyLPA", "list")
         
+        if (compare_requested) {
+          self$results$progressBarHTML$setContent(
+            appleSpinnerH("Finalizing LPA model comparison...")
+          )
+          private$.checkpoint()
+        }
+        
         bestfit <- as.data.frame(tidyLPA::get_fit(best))
-        required_fit_columns <- c(
-          "Model", "Classes", "LogLik", "AIC", "AWE", "BIC",
-          "CAIC", "CLC", "KIC", "SABIC", "ICL", "Entropy"
-        )
         missing_fit_columns <- setdiff(required_fit_columns, names(bestfit))
         if (length(missing_fit_columns) > 0) {
           jmvcore::reject(
@@ -780,30 +1045,29 @@ lpaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         selected_key <- paste0(
           "model_", selected_model, "_class_", as.integer(nc)
         )
-        if (!selected_key %in% names(best)) {
-          jmvcore::reject(
-            paste0("The selected LPA solution was not returned: ", selected_key, ".")
-          )
+        selected_available <- selected_key %in% names(best)
+        if (selected_available) {
+          selected_profile <- best[[selected_key]]
+          selected_fit <- as.data.frame(selected_profile$fit)
+          selected_available <-
+            !is.null(selected_profile$dff) &&
+            nrow(selected_fit) > 0 &&
+            "LogLik" %in% names(selected_fit) &&
+            is.finite(suppressWarnings(as.numeric(selected_fit$LogLik[1])))
         }
         
-        selected_profile <- best[[selected_key]]
-        selected_fit <- as.data.frame(selected_profile$fit)
-        if (
-          is.null(selected_profile$dff) ||
-          nrow(selected_fit) == 0 ||
-          !"LogLik" %in% names(selected_fit) ||
-          !is.finite(as.numeric(selected_fit$LogLik[1]))
-        ) {
-          jmvcore::reject(
-            paste0(
-              "The selected LPA solution did not converge (Model ",
-              selected_model, ", ", as.integer(nc), " classes)."
-            )
+        if (selected_available) {
+          res <- best[selected_key]
+          class(res) <- class(best)
+        } else {
+          res <- NULL
+          selected_failure <- paste0(
+            "The selected solution (Model ", selected_model, ", ",
+            as.integer(nc),
+            " classes) did not converge. Detailed results were not produced."
           )
+          comparison_failures <- c(comparison_failures, selected_failure)
         }
-        
-        res <- best[selected_key]
-        class(res) <- class(best)
         
         # Elbow data for the selected variance/covariance model.
         selected_rows <-
@@ -828,77 +1092,150 @@ lpaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         )
         
         if (isTRUE(self$options$plot2)) {
-          one_profile <- tryCatch(
-            tidyLPA::estimate_profiles(
-              datX,
-              n_profiles = 1,
-              variances = variances,
-              covariances = covariances
+          one_attempt <- tryCatch(
+            list(
+              results = tidyLPA::estimate_profiles(
+                datX,
+                n_profiles = 1,
+                variances = variances,
+                covariances = covariances,
+                control = em_control
+              ),
+              error = NULL
             ),
             error = function(e) {
-              jmvcore::reject(
-                paste0("The one-class LPA solution failed: ", conditionMessage(e))
-              )
+              list(results = NULL, error = conditionMessage(e))
             }
           )
           private$.checkpoint()
           
-          one_profile_class <- class(one_profile)
-          for (result_index in seq_along(one_profile)) {
-            one_profile[[result_index]] <- private$.correctMclustFit(
-              one_profile[[result_index]],
-              nvars = ncol(datX)
+          if (!is.null(one_attempt$error)) {
+            comparison_failures <- c(
+              comparison_failures,
+              paste0("The one-class LPA solution failed: ", one_attempt$error)
             )
           }
-          class(one_profile) <- one_profile_class
+          one_profile <- one_attempt$results
           
-          one_fit <- as.data.frame(tidyLPA::get_fit(one_profile))
-          missing_one_fit_columns <- setdiff(required_fit_columns, names(one_fit))
-          if (length(missing_one_fit_columns) > 0) {
-            jmvcore::reject(
-              paste0(
-                "The one-class LPA fit output is missing required columns: ",
-                paste(missing_one_fit_columns, collapse = ", "), "."
+          if (!is.null(one_profile)) {
+            one_status <- private$.mclustConvergenceStatus(one_profile[[1]])
+            if (isTRUE(one_status$converged)) {
+              one_profile_class <- class(one_profile)
+              for (result_index in seq_along(one_profile)) {
+                one_profile[[result_index]] <- private$.correctMclustFit(
+                  one_profile[[result_index]],
+                  nvars = ncol(datX)
+                )
+              }
+              class(one_profile) <- one_profile_class
+              
+              one_fit <- as.data.frame(tidyLPA::get_fit(one_profile))
+              missing_one_fit_columns <- setdiff(required_fit_columns, names(one_fit))
+              if (length(missing_one_fit_columns) > 0) {
+                jmvcore::reject(
+                  paste0(
+                    "The one-class LPA fit output is missing required columns: ",
+                    paste(missing_one_fit_columns, collapse = ", "), "."
+                  )
+                )
+              }
+              
+              out_one <- data.frame(
+                model = one_fit$Model,
+                log = one_fit$LogLik,
+                aic = one_fit$AIC,
+                awe = one_fit$AWE,
+                bic = one_fit$BIC,
+                caic = one_fit$CAIC,
+                clc = one_fit$CLC,
+                kic = one_fit$KIC,
+                sabic = one_fit$SABIC,
+                icl = one_fit$ICL,
+                entropy = one_fit$Entropy,
+                class = one_fit$Classes
               )
-            )
+              out <- rbind(out_one, out)
+            } else {
+              comparison_failures <- c(
+                comparison_failures,
+                paste0("The one-class LPA solution: ", one_status$message)
+              )
+            }
           }
-          
-          out_one <- data.frame(
-            model = one_fit$Model,
-            log = one_fit$LogLik,
-            aic = one_fit$AIC,
-            awe = one_fit$AWE,
-            bic = one_fit$BIC,
-            caic = one_fit$CAIC,
-            clc = one_fit$CLC,
-            kic = one_fit$KIC,
-            sabic = one_fit$SABIC,
-            icl = one_fit$ICL,
-            entropy = one_fit$Entropy,
-            class = one_fit$Classes
-          )
-          out <- rbind(out_one, out)
         }
         
         out <- out[order(out$class), , drop = FALSE]
         rownames(out) <- NULL
         
-        sol <- tryCatch(
-          tidyLPA::compare_solutions(best),
-          error = function(e) {
-            jmvcore::reject(
-              paste0("LPA model comparison failed: ", conditionMessage(e))
+        sol <- NULL
+        if (compare_requested) {
+          valid_solutions <- is.finite(
+            suppressWarnings(as.numeric(bestfit$LogLik))
+          )
+          if (sum(valid_solutions) >= 2) {
+            sol <- tryCatch(
+              tidyLPA::compare_solutions(best),
+              error = function(e) e
+            )
+            
+            if (inherits(sol, "error")) {
+              comparison_failures <- c(
+                comparison_failures,
+                paste0("LPA model comparison failed: ", conditionMessage(sol))
+              )
+              sol <- NULL
+            }
+          } else {
+            comparison_failures <- c(
+              comparison_failures,
+              "Model comparison was not performed because fewer than two solutions converged."
             )
           }
+        }
+        
+        comparison_failures <- unique(
+          comparison_failures[
+            !is.na(comparison_failures) & nzchar(comparison_failures)
+          ]
         )
-        self$results$text$setContent(sol)
+        if (length(comparison_failures) > 0) {
+          comparison_text <- if (compare_requested) {
+            if (!is.null(sol)) {
+              paste(capture.output(print(sol)), collapse = "\n")
+            } else {
+              "No complete model comparison is available."
+            }
+          } else {
+            "The selected LPA output is incomplete."
+          }
+          comparison_text <- paste0(
+            comparison_text,
+            "\n\nImportant:\n- ",
+            paste(comparison_failures, collapse = "\n- "),
+            if (compare_requested) {
+              "\nBest-model statements apply only to successfully converged solutions."
+            } else {
+              ""
+            }
+          )
+          self$results$text$setContent(comparison_text)
+        } else if (compare_requested) {
+          self$results$text$setContent(sol)
+        } else {
+          self$results$text$setContent("")
+        }
         
         
         # 100%: complete and hide
         self$results$progressBarHTML$setVisible(FALSE)
         
-        class_data <- tidyLPA::get_data(res)
-        post_data  <- tidyLPA::get_data(res, "posterior_probabilities")
+        if (!is.null(res)) {
+          class_data <- tidyLPA::get_data(res)
+          post_data  <- tidyLPA::get_data(res, "posterior_probabilities")
+        } else {
+          class_data <- NULL
+          post_data <- NULL
+        }
         
         list(
           res = res,

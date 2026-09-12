@@ -72,17 +72,17 @@ children:
         stretchFactor: 1
         children:
           - type: Label
-            label: ''
-            children:
-              - type: CheckBox
-                name: overall
-          - type: Label
-            label: Model
+            label: 'Selected model'
             children:
               - type: CheckBox
                 name: fit
               - type: CheckBox
                 name: est
+          - type: Label
+            label: 'Model comparison'
+            children:
+              - type: CheckBox
+                name: overall
       - type: LayoutBox
         stretchFactor: 1
         margin: large
