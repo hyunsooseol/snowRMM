@@ -105,6 +105,33 @@ raschClass <- if (requireNamespace('jmvcore'))
         outfit <- res$item.par$in.out[, 3]
         pbis <- res$item.par$itemDescriptives
         
+        # Store only the minimum data needed by the summary-based plots.
+        # Image state is serialised by jamovi and is therefore available when
+        # a plot is exported without re-running the analysis.
+        if (isTRUE(self$options$wrightmap)) {
+          self$results$plot$setState(list(
+            pmeasure = res$person.par$theta,
+            imeasure = imeasure,
+            itemNames = vars
+          ))
+        }
+        
+        if (isTRUE(self$options$inplot)) {
+          self$results$inplot$setState(data.frame(
+            item = vars,
+            infit = as.numeric(infit),
+            stringsAsFactors = FALSE
+          ))
+        }
+        
+        if (isTRUE(self$options$outplot)) {
+          self$results$outplot$setState(data.frame(
+            item = vars,
+            outfit = as.numeric(outfit),
+            stringsAsFactors = FALSE
+          ))
+        }
+        
         # populate Item Statistics table-----
         table <- self$results$items
         vars <- self$options$vars
@@ -817,14 +844,14 @@ raschClass <- if (requireNamespace('jmvcore'))
       # wrightmap Plot-----------
       
       .plot = function(image, ...) {
-        res <- private$.resCache
+        state <- image$state
         
-        if (is.null(res))
+        if (is.null(state))
           return(FALSE)
         
-        pmeasure <- res$person.par$theta
-        imeasure <- res$item.par$delta.i
-        itemNames <- self$options$vars
+        pmeasure <- state$pmeasure
+        imeasure <- state$imeasure
+        itemNames <- state$itemNames
         
         plot <- ShinyItemAnalysis::ggWrightMap(
           theta = pmeasure,
@@ -841,21 +868,10 @@ raschClass <- if (requireNamespace('jmvcore'))
       
       .inPlot = function(image, ggtheme, theme, ...) {
         
-        res <- private$.resCache
+        infit1 <- image$state
         
-        if (is.null(res))
+        if (is.null(infit1))
           return(FALSE)
-        
-        item <- self$options$vars
-        nitems <- length(item)
-        
-        infit_values <- numeric(nitems)
-        
-        for (i in 1:nitems) {
-          infit_values[i] <- res$item.par$in.out[i, 1]
-        }
-        
-        infit1 <- data.frame(item = item, infit = infit_values)
         
         plot <- ggplot2::ggplot(infit1, ggplot2::aes(x = item, y = infit)) +
           ggplot2::geom_point(
@@ -917,21 +933,10 @@ raschClass <- if (requireNamespace('jmvcore'))
       
       .outPlot = function(image, ggtheme, theme, ...) {
         
-        res <- private$.resCache
+        outfit1 <- image$state
         
-        if (is.null(res))
+        if (is.null(outfit1))
           return(FALSE)
-        
-        item <- self$options$vars
-        nitems <- length(item)
-        
-        outfit_values <- numeric(nitems)
-        
-        for (i in 1:nitems) {
-          outfit_values[i] <- res$item.par$in.out[i, 3]
-        }
-        
-        outfit1 <- data.frame(item = item, outfit = outfit_values)
         
         plot <- ggplot2::ggplot(outfit1, ggplot2::aes(x = item, y = outfit)) +
           ggplot2::geom_point(
@@ -997,8 +1002,10 @@ raschClass <- if (requireNamespace('jmvcore'))
         
         erm <- private$.ermCache
         
-        if (is.null(erm))
-          return(FALSE)
+        if (is.null(erm)) {
+          private$.ermCache <- private$.computeERM()
+          erm <- private$.ermCache
+        }
         
         if (is.null(erm$pcm.res))
           return(FALSE)
@@ -1020,8 +1027,10 @@ raschClass <- if (requireNamespace('jmvcore'))
         
         erm <- private$.ermCache
         
-        if (is.null(erm))
-          return(FALSE)
+        if (is.null(erm)) {
+          private$.ermCache <- private$.computeERM()
+          erm <- private$.ermCache
+        }
         
         if (is.null(erm$rasch))
           return(FALSE)
@@ -1073,8 +1082,10 @@ raschClass <- if (requireNamespace('jmvcore'))
         
         erm <- private$.ermCache
         
-        if (is.null(erm))
-          return(FALSE)
+        if (is.null(erm)) {
+          private$.ermCache <- private$.computeERM()
+          erm <- private$.ermCache
+        }
         
         if (is.null(erm$pcm.res))
           return(FALSE)

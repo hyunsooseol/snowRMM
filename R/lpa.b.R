@@ -214,7 +214,10 @@ lpaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
             if (!inherits(post_df, "try-error") && !is.null(post_df)) {
               
               post_cols <- grep("^CPROB", names(post_df))
-              K <- if (!is.null(self$options$nc)) self$options$nc else if (!is.null(self$options$nclass)) self$options$nclass else 2
+              
+              #K <- if (!is.null(self$options$nc)) self$options$nc else if (!is.null(self$options$nclass)) self$options$nclass else 2
+              K <- self$options$nc
+              
               if (length(post_cols) == 0) post_cols <- seq_len(min(K, ncol(post_df)))
               P_core <- as.matrix(post_df[, post_cols, drop = FALSE])
               
@@ -760,7 +763,9 @@ lpaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           jmvcore::reject("Too few complete cases for the selected indicator variables.")
         
         
-        nc <- if (!is.null(self$options$nc)) self$options$nc else if (!is.null(self$options$nclass)) self$options$nclass else 2
+        #nc <- if (!is.null(self$options$nc)) self$options$nc else if (!is.null(self$options$nclass)) self$options$nclass else 2
+        nc <- self$options$nc
+        
         variances <- self$options$variances
         covariances <- self$options$covariances
         

@@ -349,7 +349,7 @@ lcaordResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 clearWith=list(
                     "vars",
                     "nc",
-                    "missing"),
+                    "miss"),
                 columns=list(
                     list(
                         `name`="item1", 
